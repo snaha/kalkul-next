@@ -5,9 +5,10 @@
 	interface Props {
 		operation: Deposit | Withdrawal
 		currency: Intl.NumberFormat
+		children?: import('svelte').Snippet
 	}
 
-	let { operation, currency }: Props = $props()
+	let { operation, currency, children }: Props = $props()
 	function formatFrequency() {
 		if (operation.isRecurring) {
 			switch (operation.frequency) {
@@ -38,7 +39,9 @@
 		</p>
 	</div>
 	<div class="operation-icon">
-		<slot />
+		{#if children}
+			{@render children()}
+		{/if}
 	</div>
 </div>
 

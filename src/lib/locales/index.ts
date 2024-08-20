@@ -9,6 +9,6 @@ register('cs', () => import('$lib/locales/cs.json'))
 init({
 	fallbackLocale: defaultLocale,
 	initialLocale:
-		(browser ? localStorage.getItem('user-lang') ?? window.navigator.language : undefined) ??
+		(browser ? (localStorage.getItem('user-lang') ?? window.navigator.language) : undefined) ??
 		defaultLocale,
 })

@@ -70,7 +70,7 @@
 		<h5>{$_('editedDeposit')} #{depositIndex} - "{deposit.name}"</h5>
 		<OperationForm bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
-			<Button variant="primary" onclick={save} disabled={!formValid}
+			<Button variant="strong" onclick={save} disabled={!formValid}
 				><Checkmark size={24} />{$_('save')}</Button
 			>
 			<Button variant="secondary" onclick={deleteDeposit} disabled={!formValid}
@@ -84,7 +84,7 @@
 		<h5>{$_('newDeposit')}</h5>
 		<OperationForm bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
-			<Button variant="primary" onclick={add} disabled={!formValid}
+			<Button variant="strong" onclick={add} disabled={!formValid}
 				><Checkmark size={24} />{$_('add')}</Button
 			>
 			<Button variant="secondary" onclick={cancel}><Undo size={24} />{$_('cancel')}</Button>
@@ -97,21 +97,6 @@
 {/if}
 
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-		font-family: Arial, Helvetica, sans-serif;
-	}
-	html {
-		max-width: 1200px;
-	}
-	body {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 1rem;
-	}
 	section {
 		padding-bottom: 1rem;
 		max-width: 1200px;

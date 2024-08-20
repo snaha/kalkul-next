@@ -52,5 +52,5 @@
 </script>
 
 <div class="chart" bind:clientWidth={actChartWidth}>
-	<canvas bind:this={canvas} />
+	<canvas bind:this={canvas}></canvas>
 </div>

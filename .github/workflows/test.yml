@@ -23,9 +23,9 @@ jobs:
         with:
           node-version: 20
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - name: Install npm deps
         run: pnpm install --frozen-lockfile

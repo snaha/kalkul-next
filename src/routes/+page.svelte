@@ -5,7 +5,7 @@
 	import { detailStore, type DetailsStoreValues } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
 	import Language from '$lib/components/language.svelte'
-	import Input from '$lib/components/input.svelte'
+	import Input from '$lib/components/input/input.svelte'
 	import Select from '$lib/components/select.svelte'
 	import Option from '$lib/components/option.svelte'
 	import Operation from '$lib/components/operation.svelte'
@@ -19,6 +19,7 @@
 	import Error from '$lib/components/error.svelte'
 	import { locale } from 'svelte-i18n'
 	import ChartComponent from '$lib/components/chart.svelte'
+	import DateInput from '$lib/components/input/date-input.svelte'
 
 	let hash = $state('')
 	let loading = $state<boolean>(true)
@@ -128,8 +129,6 @@
 	const getTotalSuccessFee = () => resultStore.graphData.map((row) => row.totalSuccessFee)
 
 	let localeAmount = $derived(
-		// TODO: remove once issue with using $ in svelte 5 is clearer
-		// eslint-disable-next-line svelte/valid-compile
 		new Intl.NumberFormat($locale ?? 'cs-CZ', {
 			style: 'currency',
 			currency: detailStore.currency,
@@ -144,15 +143,21 @@
 		<h5>{$_('clientInformations')}</h5>
 		<Language />
 		<div class="grid">
-			<Input
-				type="date"
+			<DateInput
 				labelFor="dateOfBirth"
 				placeholder={$_('dateOfBirth')}
 				bind:value={dateOfBirth.value}
+				variant="solid"
 			>
-				<Error errors={dateOfBirth.error} />
-			</Input>
-			<Input type="number" labelFor="endAge" placeholder={$_('endAge')} bind:value={endAge.value}>
+				<!-- <Error errors={dateOfBirth.error} /> -->
+			</DateInput>
+			<Input
+				type="number"
+				labelFor="endAge"
+				placeholder={$_('endAge')}
+				bind:value={endAge.value}
+				variant="solid"
+			>
 				<Error errors={endAge.error} />
 			</Input>
 		</div>
@@ -160,16 +165,23 @@
 	<section>
 		<h5>{$_('portfolioInformations')}</h5>
 		<div class="grid">
-			<Input type="number" labelFor="apy" placeholder={$_('apy')} bind:value={apy.value}></Input>
+			<Input
+				type="number"
+				labelFor="apy"
+				placeholder={$_('apy')}
+				bind:value={apy.value}
+				variant="solid"
+			></Input>
 			<Input
 				type="number"
 				labelFor="inflation"
 				placeholder={$_('inflation')}
 				bind:value={inflation.value}
+				variant="solid"
 			>
 				<Error errors={inflation.error} />
 			</Input>
-			<Select bind:value={currency.value} placeholder={$_('currency')}>
+			<Select bind:value={currency.value} placeholder={$_('currency')} variant="solid">
 				{#each Object.entries(supportedCurrenciesWithLabels) as [value, label]}
 					<Option {value}>{label}</Option>
 				{/each}
@@ -179,6 +191,7 @@
 				labelFor="entryFee"
 				placeholder={$_('entryFee')}
 				bind:value={entryFee.value}
+				variant="solid"
 			>
 				<Error errors={entryFee.error} />
 			</Input>
@@ -187,6 +200,7 @@
 				labelFor="inflation"
 				placeholder={$_('withdrawalFee')}
 				bind:value={withdrawalFee.value}
+				variant="solid"
 			>
 				<Error errors={withdrawalFee.error} />
 			</Input>
@@ -195,6 +209,7 @@
 				labelFor="feeManagement"
 				placeholder={$_('feeMangement')}
 				bind:value={feeManagement.value}
+				variant="solid"
 			>
 				<Error errors={feeManagement.error} />
 			</Input>
@@ -203,6 +218,7 @@
 				labelFor="feeSuccess"
 				placeholder={$_('feeSuccess')}
 				bind:value={feeSuccess.value}
+				variant="solid"
 			>
 				<Error errors={feeSuccess.error} />
 			</Input>
@@ -293,26 +309,31 @@
 				readonly
 				placeholder={$_('effectiveEvaluation')}
 				value={`${(resultStore.effectiveApy * 100).toFixed(2)} %`}
+				variant="solid"
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalDeposits')}
 				value={localeAmount.format(resultStore.totalDeposited)}
+				variant="solid"
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalWithdrawals')}
 				value={localeAmount.format(resultStore.totalWithdrawn)}
+				variant="solid"
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('remainingPortfolioValue')}
 				value={localeAmount.format(resultStore.totalInvested)}
+				variant="solid"
 			></Input>
-			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
+			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age} variant="solid"
+			></Input>
 		</div>
 		<h5>{$_('paidOnFees')}</h5>
 		<div class="grid">
@@ -321,24 +342,28 @@
 				readonly
 				placeholder={$_('entryFee')}
 				value={localeAmount.format(resultStore.totalDepositFee)}
+				variant="solid"
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('withdrawalFee')}
 				value={localeAmount.format(resultStore.totalWithdrawFee)}
+				variant="solid"
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('feeMangement')}
 				value={localeAmount.format(resultStore.totalManagementFee)}
+				variant="solid"
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('feeSuccess')}
 				value={localeAmount.format(resultStore.totalSuccessFee)}
+				variant="solid"
 			></Input>
 		</div>
 	</section>
@@ -349,19 +374,6 @@
 {/if}
 
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-		font-family: Arial, Helvetica, sans-serif;
-	}
-	html {
-		max-width: 1200px;
-		padding: 0 auto;
-	}
-	body {
-		padding: 1rem;
-	}
 	section {
 		position: relative;
 		padding-bottom: 1rem;
@@ -379,21 +391,11 @@
 		align-items: start;
 		width: 100%;
 	}
-	.flex {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
 	.flex-add-deposit {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
 		position: relative;
-	}
-	.flex-add-deposit > a {
-		position: absolute;
-		top: 0;
-		left: 13rem;
 	}
 	h5 {
 		color: var(--colors-ultraHigh, #303030);
@@ -404,19 +406,6 @@
 		font-weight: 700;
 		line-height: 1.5rem;
 		letter-spacing: 0.02rem;
-	}
-	.edit > a {
-		display: inline-flex;
-		padding: 12px;
-		justify-content: center;
-		align-items: center;
-		text-decoration: none;
-		background: transparent;
-		color: var(--colors-ultraHigh);
-	}
-	.edit > a:active {
-		background: var(--colors-low);
-		color: var(--colors-high);
 	}
 	.smallParagraph {
 		align-self: stretch;

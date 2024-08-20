@@ -1,51 +1,178 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	import { CaretDown, CaretUp } from 'carbon-icons-svelte'
-	import { setContext } from 'svelte'
-	import { withSelectStore } from '$lib/stores/select.svelte'
+	import { setContext, type Snippet } from 'svelte'
+	import { withSelectStore } from './select-store.svelte'
+	import Option from './option.svelte'
 
+	type Layout = 'vertical' | 'horizontal'
+	type Dimension = 'default' | 'large' | 'compact' | 'small'
+	type Variant = 'outline' | 'solid'
 	interface Props extends HTMLInputAttributes {
-		helperText?: string
+		helperText?: Snippet
+		label?: string
 		labelFor?: string
+		dimension?: Dimension
+		value?: string
+		layout?: Layout
+		hover?: boolean
+		active?: boolean
+		focus?: boolean
+		variant?: Variant
 	}
 	let {
-		labelFor = Math.random().toString(16),
 		helperText,
+		label,
+		labelFor = Math.random().toString(16),
+		dimension = 'default',
 		placeholder,
-		value,
+		value = $bindable(),
+		layout = 'vertical',
+		hover,
+		active,
+		focus,
+		class: className = '',
+		children,
+		variant = 'outline',
 		...restProps
 	}: Props = $props()
 
-	const store = withSelectStore(value)
+	let input: HTMLInputElement | undefined = $state(undefined)
+	let focused = $state(false)
+
+	const store = withSelectStore(dimension, value ?? (placeholder ? '' : undefined))
 	setContext('select-store', store)
 
+	// Focused input when user clicks on caret,Unfocused input when user clicks outside input or caret
+	// Close the select when user clicks outside, when user clicks on the tab button
+	$effect(() => {
+		function closeMenu() {
+			if (store.open) store.open = false
+		}
+
+		function closeMenuKeyboard(e: KeyboardEvent) {
+			if (e.key === 'Tab') closeMenu()
+		}
+
+		window.addEventListener('click', closeMenu)
+		window.addEventListener('keydown', closeMenuKeyboard)
+
+		return () => {
+			window.removeEventListener('click', closeMenu)
+			window.removeEventListener('keydown', closeMenuKeyboard)
+		}
+	})
+
+	// Update store dimension if the dimension dynamically changes
+	$effect(() => {
+		store.size = dimension
+	})
+
+	// Bind store value to the value prop
 	$effect(() => {
 		value = store.value
 	})
+	$effect(() => {
+		if (!store.open && store.value === undefined) {
+			store.marked = undefined
+		} else {
+			store.marked = store.value
+		}
+	})
+	$effect(() => {
+		let lastTabInteraction = false
+		const keyDown = (e: KeyboardEvent) => {
+			if (e.key.toLowerCase() === 'tab') {
+				lastTabInteraction = true
+			}
+		}
+
+		function addFocus() {
+			if (lastTabInteraction) {
+				focused = true
+			}
+		}
+
+		function removeFocus() {
+			lastTabInteraction = false
+			focused = false
+		}
+
+		window.addEventListener('keydown', keyDown)
+		window.addEventListener('mousedown', removeFocus)
+		input?.addEventListener('blur', removeFocus)
+		input?.addEventListener('focus', addFocus)
+
+		return () => {
+			window.removeEventListener('keydown', keyDown)
+			window.removeEventListener('mousedown', removeFocus)
+			input?.removeEventListener('blur', removeFocus)
+			input?.removeEventListener('focus', addFocus)
+		}
+	})
 </script>
 
-<div class="root">
-	<div class="wrapper">
-		<div class="icon">
-			{#if store.open}
-				<CaretUp size={24} />
-			{:else}
-				<CaretDown size={24} />
-			{/if}
-		</div>
+<div class="root {dimension} {layout} {className}">
+	<label class="label" for={labelFor}>
+		{label}
+	</label>
+	<div class="select-container">
 		<input
-			value={store.value ? store.labels[store.value] : value}
-			class="select"
-			onclick={(e) => {
-				e.preventDefault()
-				e.stopPropagation()
-				store.open = !store.open
+			bind:this={input}
+			value={store.value ? (store.labels[store.value] ?? store.value) : value}
+			class="select {variant}"
+			class:hover
+			class:active
+			class:focus
+			class:focused
+			class:open={store.open}
+			onclick={() => {
+				if (!store.open)
+					setTimeout(() => {
+						store.open = true
+					})
 			}}
 			onkeydown={(e) => {
-				if (e.key === 'ArrowDown') {
-					e.preventDefault()
-					e.stopPropagation()
-					store.open = true
+				switch (e.key) {
+					case 'ArrowDown': {
+						e.preventDefault()
+						if (!store.open) {
+							store.open = true
+						} else {
+							const values = Object.keys(store.labels)
+							const index = store.marked ? values.indexOf(store.marked) : -1
+							store.marked = values[(index + 1) % values.length]
+						}
+						break
+					}
+					case 'ArrowUp': {
+						e.preventDefault()
+						if (!store.open) {
+							store.open = true
+						} else {
+							const values = Object.keys(store.labels)
+							const index = store.marked ? values.indexOf(store.marked) : 0
+							if (index - 1 >= 0) store.marked = values[index - 1]
+							else store.marked = values[values.length - 1]
+						}
+						break
+					}
+					case 'Enter': {
+						e.preventDefault()
+						if (!store.open) {
+							store.open = true
+						} else {
+							store.value = store.marked
+							store.open = false
+						}
+						break
+					}
+					case 'Escape': {
+						if (store.open) {
+							e.preventDefault()
+							store.open = false
+						}
+					}
 				}
 			}}
 			id={labelFor}
@@ -53,130 +180,266 @@
 			readonly
 			{...restProps}
 		/>
-		<label class="label" for={labelFor}>
-			{placeholder}
-		</label>
-		<div class="options" class:hidden={!store.open}>
-			<slot />
+		<div class="wrapper">
+			<button
+				class="icon"
+				onclick={() => {
+					if (!store.open) setTimeout(() => (store.open = true))
+				}}
+				tabindex="-1"
+			>
+				<div>
+					{#if store.open}
+						<CaretUp size={dimension === 'small' ? 16 : 24} />
+					{:else}
+						<CaretDown size={dimension === 'small' ? 16 : 24} />
+					{/if}
+				</div>
+			</button>
+			{#if children}
+				<div class="options" class:hidden={!store.open}>
+					<div>
+						{#if placeholder}
+							<Option class="placeholder" value="">{placeholder}</Option>
+						{/if}
+						{@render children()}
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
-	<div class="helper-text">
-		{helperText}
-	</div>
+	{#if helperText && layout === 'vertical'}
+		<div class="helper-text">
+			{@render helperText()}
+		</div>
+	{/if}
 </div>
 
-<style>
-	.root {
-		color: var(--colors-ultraHigh);
-		font-family: Arial;
-		font-size: 0.75rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 1rem;
-		letter-spacing: 0.0375rem;
-		display: flex;
+<style lang="postcss">
+	.vertical {
 		flex-direction: column;
 		align-items: stretch;
+	}
+	.horizontal {
+		flex-direction: row;
+		align-items: center;
+	}
+	.root {
+		--transition-delay: 50ms;
+		--transition: 0;
+		display: flex;
+		flex-grow: 1;
 		justify-content: center;
+		gap: 0.5rem;
+		color: var(--colors-ultra-high);
+		font-family: var(--font-family-sans-serif);
+		.select-container {
+			display: flex;
+			flex-grow: 1;
+			flex-direction: column;
+			&:has(.icon:hover) {
+				.select:not(:disabled):not(.open):not(.focused) {
+					border: 1px solid var(--colors-top);
+					background: var(--colors-low);
+					color: var(--colors-top);
+					& + .wrapper > button {
+						color: var(--colors-top);
+					}
+				}
+			}
+		}
+	}
+	.select {
+		flex-grow: 1;
+		appearance: none;
+		cursor: pointer;
+		border-radius: var(--border-radius);
+		color: var(--colors-ultra-high);
+		&.outline {
+			border: 1px solid var(--colors-ultra-high);
+			background: transparent;
+		}
+		&.solid {
+			border: 1px solid var(--colors-low);
+			background: var(--colors-base);
+		}
+		&::placeholder {
+			opacity: 0.5;
+			color: var(--colors-ultra-high);
+		}
+		&:hover:not(:disabled),
+		&:hover:not(:disabled),
+		&.hover:not(:disabled) {
+			border: 1px solid var(--colors-top);
+			background: var(--colors-low);
+			color: var(--colors-top);
+			& + .wrapper > button {
+				color: var(--colors-top);
+			}
+		}
+		&:active:not(:disabled),
+		&.active:not(:disabled),
+		&.open:not(:disabled):not(.focused) {
+			outline: none;
+			border: 1px solid var(--colors-high);
+			background: var(--colors-low);
+			color: var(--colors-high);
+			& + .wrapper > button {
+				color: var(--colors-high);
+			}
+		}
+		&:focus {
+			outline: none;
+		}
+		&.focus:not(:disabled),
+		&.focused:not(:disabled) {
+			outline: var(--focus-outline);
+			outline-offset: var(--focus-outline-offset);
+			background: var(--colors-base);
+			color: var(--colors-top);
+			& + .wrapper > button {
+				color: var(--colors-top);
+			}
+		}
+		&.focused.open:not(:disabled) {
+			border: 1px var(--colors-top);
+			background: var(--colors-top);
+			color: var(--colors-base);
+			& + .wrapper > button {
+				color: var(--colors-base);
+			}
+			&::placeholder {
+				color: var(--colors-base);
+			}
+		}
+		&:disabled {
+			opacity: 0.25;
+			cursor: not-allowed;
+			& + .wrapper > button {
+				pointer-events: none;
+				div {
+					opacity: 0.25;
+					cursor: not-allowed;
+				}
+			}
+		}
+	}
+	.label {
+		cursor: pointer;
+		width: fit-content;
+	}
+	button {
+		position: absolute;
+		cursor: pointer;
+		margin: 0;
+		outline: none;
+		border: none;
+		background-color: transparent;
+		padding: 0;
+		width: 1.5rem;
+		height: 1.5rem;
+		color: var(--colors-ultra-high);
+	}
+	.default {
+		.select {
+			padding: var(--three-quarters-padding);
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			letter-spacing: var(--letter-spacing);
+		}
+		.label {
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			letter-spacing: var(--letter-spacing);
+		}
+		button {
+			right: var(--three-quarters-padding);
+			bottom: var(--three-quarters-padding);
+		}
+	}
+	.large {
+		.select {
+			padding: var(--three-quarters-padding);
+			font-size: var(--font-size-large);
+			line-height: var(--line-height-large);
+			letter-spacing: var(--letter-spacing-large);
+		}
+		.label {
+			font-size: var(--font-size-large);
+			line-height: var(--line-height-large);
+			letter-spacing: var(--letter-spacing-large);
+		}
+		button {
+			right: var(--three-quarters-padding);
+			bottom: calc(var(--three-quarters-padding) + var(--three-quarters-padding) / 3);
+		}
+	}
+	.compact {
+		.select {
+			padding: var(--half-padding);
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			letter-spacing: var(--letter-spacing);
+		}
+		.label {
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			letter-spacing: var(--letter-spacing);
+		}
+		button {
+			right: var(--half-padding);
+			bottom: var(--half-padding);
+		}
+	}
+	.small {
+		.select {
+			padding: var(--half-padding);
+			font-size: var(--font-size-small);
+			line-height: var(--line-height-small);
+			letter-spacing: var(--letter-spacing-small);
+		}
+		.label {
+			font-size: var(--font-size-small);
+			line-height: var(--line-height-small);
+			letter-spacing: var(--letter-spacing-small);
+		}
+		button {
+			right: var(--half-padding);
+			bottom: var(--half-padding);
+			width: 1rem;
+			height: 1rem;
+		}
+	}
+	.helper-text {
+		font-size: var(--font-size-small);
+		line-height: var(--line-height-small);
+		letter-spacing: var(--letter-spacing-small);
 	}
 	.wrapper {
 		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		justify-content: center;
-		flex-grow: 1;
-	}
-	.icon {
-		position: absolute;
-		top: 1.5rem;
-		right: 0.75rem;
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-	.select {
-		background: var(--colors-low);
-		border: 1px solid var(--colors-low);
-		border-radius: 0.25rem;
-		font-family: Arial;
-		font-size: 1rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 1.5rem;
-		letter-spacing: 0.02rem;
-		padding: 1.5rem 0.75rem;
-		appearance: none;
-		flex-grow: 1;
-		cursor: pointer;
-	}
-	.select:focus-visible {
-		border: 1px solid var(--colors-high);
-		outline: none;
-		background: var(--colors-base);
-		padding: 2.25rem 0.75rem 0.75rem;
-		line-height: 1.5rem;
-		font-size: 1rem;
-	}
-	.select::placeholder {
-		text-align: center;
-		color: transparent;
-	}
-	.label {
-		position: absolute;
-		top: 1.75rem;
-		left: 0.75rem;
-		pointer-events: none;
-		transform-origin: left center;
-		transition: transform 0.25s;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		text-align: center;
-		align-self: stretch;
-		border: none;
-		border-radius: 0.25rem;
-		color: var(--colors-high);
-		background: var(--colors-low);
-		font-family: Arial;
-		font-size: 1rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 1rem;
-		letter-spacing: 0.0375rem;
-	}
-	.select:focus + .label {
-		background: var(--colors-base);
-	}
-	.select:focus + .label,
-	.select:not(:placeholder-shown) + .label {
-		transform: translateY(-100%);
-		font-size: 0.75rem;
-		line-height: 1rem;
-	}
-	.select:not(:placeholder-shown) {
-		padding: 2.25rem 0.75rem 0.75rem;
-		color: var(--colors-ultraHigh);
-	}
-	.helper-text {
-		padding: 0.5rem 0.75rem;
 	}
 	.options {
 		position: absolute;
 		top: 100%;
 		left: 0;
-		/* FIXME: remove the calc and solve this with nesting */
-		width: calc(100% - 1rem);
-		border-radius: 0.25rem;
-		border: 1px solid var(--colors-high);
-		background: var(--colors-base);
 		z-index: 1;
-		list-style: none;
-		margin: 0;
-		padding: 0.5rem;
 		margin-top: 0.25rem;
-		display: flex;
-		flex-direction: column;
-		justify-content: stretch;
+		border-radius: var(--border-radius);
+		background: var(--colors-base);
+		width: 100%;
+
+		div {
+			display: flex;
+			flex-direction: column;
+			justify-content: stretch;
+			align-items: stretch;
+			border: 1px solid var(--colors-low);
+			border-radius: var(--border-radius);
+			padding: var(--half-padding);
+			:global(.placeholder) {
+				opacity: 0.5;
+			}
+		}
 	}
 	.hidden {
 		display: none;

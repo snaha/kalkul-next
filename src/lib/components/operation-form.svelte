@@ -2,15 +2,16 @@
 	import type { DepositForm, WithdrawalForm } from '$lib/types'
 	import { _ } from 'svelte-i18n'
 	import Toggle from './toggle.svelte'
-	import Input from '$lib/components/input.svelte'
+	import Input from '$lib/components/input/input.svelte'
 	import Select from './select.svelte'
 	import Option from './option.svelte'
 
 	interface Props {
 		operation: DepositForm | WithdrawalForm
 		recurringOperationText: string
+		children?: import('svelte').Snippet
 	}
-	let { operation, recurringOperationText }: Props = $props()
+	let { operation = $bindable(), recurringOperationText, children }: Props = $props()
 </script>
 
 <section>
@@ -19,7 +20,7 @@
 		<Input type="number" bind:value={operation.amount} placeholder={$_('amount')}></Input>
 		<Input type="date" bind:value={operation.startDate} placeholder={$_('startDate')}></Input>
 	</div>
-	<Toggle bind:checked={operation.isRecurring}>{$_(recurringOperationText)}</Toggle>
+	<Toggle bind:checked={operation.isRecurring} label={$_(recurringOperationText)}></Toggle>
 	{#if operation.isRecurring}
 		<div class="grid">
 			<Input type="date" bind:value={operation.endDate} placeholder={$_('endDate')}></Input>
@@ -31,23 +32,12 @@
 			</Select>
 		</div>
 	{/if}
-	<slot />
+	{#if children}
+		{@render children()}
+	{/if}
 </section>
 
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-		font-family: Arial, Helvetica, sans-serif;
-	}
-	html {
-		max-width: 1200px;
-		padding: 0 auto;
-	}
-	body {
-		padding: 1rem;
-	}
 	section {
 		padding-bottom: 1rem;
 		max-width: 1200px;

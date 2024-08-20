@@ -1,65 +1,103 @@
 <script lang="ts">
-	import type { SelectStore } from '$lib/stores/select.svelte'
+	import { Checkmark } from 'carbon-icons-svelte'
+	import type { SelectStore } from './select-store.svelte'
 	import { getContext } from 'svelte'
 	import type { HTMLButtonAttributes } from 'svelte/elements'
 
 	interface Props extends HTMLButtonAttributes {
 		value: string
 	}
-	let { value, ...restProps }: Props = $props()
+	let { value, children, class: className = '', ...restProps }: Props = $props()
 
 	const store = getContext<SelectStore>('select-store')
 
-	let liElement = $state<HTMLButtonElement | undefined>()
+	let button = $state<HTMLButtonElement | undefined>()
 
-	const updateLabel = () => {
-		if (liElement && liElement.childNodes.length > 0) {
-			const filteredNodes = Array.from(liElement.childNodes).filter(
-				(node) => node.nodeType !== Node.COMMENT_NODE,
-			)
-			const content = filteredNodes.map((node) => node.nodeValue).join('')
-			store.registerValue(value, content)
-		}
-	}
 	$effect(() => {
-		updateLabel()
+		store.registerValue(value, button?.innerText)
 	})
-
+	let marked = $derived(store.marked === value)
 	let selected = $derived(store.value === value)
 </script>
 
 <button
-	bind:this={liElement}
-	onclick={(e: MouseEvent) => {
+	class="ghost {store.size} {className}"
+	bind:this={button}
+	onclick={() => {
 		if (!store.open) return
-		e.preventDefault()
-		e.stopPropagation()
-		store.open = false
+		store.marked = value
 		store.value = value
 	}}
+	onmouseenter={() => {
+		store.marked = value
+	}}
 	class:selected
+	class:marked
+	tabindex="-1"
 	{...restProps}
 >
-	<slot />
+	{#if children}
+		{@render children()}
+	{:else}
+		{value}
+	{/if}
+	{#if selected}
+		<Checkmark size={store.size === 'small' ? 16 : 24} />
+	{/if}
 </button>
 
-<style>
+<style lang="postcss">
 	button {
-		background: none;
-		border: none;
-		color: var(--colors-ultraHigh, #303030);
-		font-family: Arial;
-		font-size: 1rem;
+		display: inline-flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 0.5rem;
+		cursor: pointer;
+		border-radius: var(--border-radius);
 		font-style: normal;
 		font-weight: 400;
-		line-height: 1.5rem; /* 150% */
-		letter-spacing: 0.02rem;
-		padding: 0.75rem;
+		font-family: var(--font-family-sans-serif);
+		&:disabled {
+			opacity: 0.25;
+			cursor: not-allowed;
+		}
 	}
-	button.selected,
-	button:hover {
-		background-color: var(--colors-low);
-		border-radius: 0.25rem;
-		cursor: pointer;
+	.ghost {
+		border: 1px solid transparent;
+		background: transparent;
+		color: var(--colors-ultra-high);
+		&.marked:not(:disabled),
+		&.marked:not(:disabled).selected:not(:disabled) {
+			background: var(--colors-low);
+		}
+	}
+	.default {
+		padding: var(--three-quarters-padding);
+		min-width: 3rem;
+		font-size: var(--font-size);
+		line-height: var(--line-height);
+		letter-spacing: var(--letter-spacing);
+	}
+	.large {
+		padding: var(--three-quarters-padding);
+		min-width: 3.5rem;
+		font-size: var(--font-size-large);
+		line-height: var(--line-height-large);
+		letter-spacing: var(--letter-spacing-large);
+	}
+	.compact {
+		padding: var(--half-padding);
+		min-width: 2.5rem;
+		font-size: var(--font-size);
+		line-height: var(--line-height);
+		letter-spacing: var(--letter-spacing);
+	}
+	.small {
+		gap: 0.25rem;
+		padding: var(--half-padding);
+		min-width: 2rem;
+		font-size: var(--font-size-small);
+		line-height: var(--line-height-small);
+		letter-spacing: var(--letter-spacing-small);
 	}
 </style>

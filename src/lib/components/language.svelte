@@ -21,7 +21,6 @@
 
 <div class="lang">
 	<Button
-		bind:value={$locale}
 		variant={'ghost'}
 		onclick={() => {
 			$locale = $locale === 'en' ? 'cs' : 'en'
