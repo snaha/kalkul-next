@@ -50,9 +50,11 @@
 </script>
 
 <div class="root {layout} {dimension} {className}">
-	<label class="label" for={labelFor}>
-		{label}
-	</label>
+	{#if label}
+		<label class="label" for={labelFor}>
+			{label}
+		</label>
+	{/if}
 	{#if children && layout === 'horizontal'}
 		<div class="helper-button">
 			<Information size={dimension === 'small' ? 16 : 24} />

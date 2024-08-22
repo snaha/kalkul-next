@@ -16,6 +16,8 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@dicebear/collection": "^9.2.1",
+		"@dicebear/core": "^9.2.1",
 		"@playwright/test": "^1.44.1",
 		"@sveltejs/adapter-auto": "^3.2.1",
 		"@sveltejs/kit": "^2.5.10",
@@ -36,8 +38,8 @@
 		"knip": "5.17.4",
 		"pako": "^2.1.0",
 		"postcss": "^8.4.38",
-		"postcss-nesting": "^12.1.5",
 		"postcss-load-config": "^5.0.3",
+		"postcss-nesting": "^12.1.5",
 		"prettier": "^3.3.1",
 		"prettier-plugin-css-order": "^2.1.2",
 		"prettier-plugin-svelte": "^3.2.3",

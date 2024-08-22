@@ -114,6 +114,20 @@ export function formatDate(date: Date): string {
 	return `${year}-${month}-${day}`
 }
 
+export function formatAge(birthDate: Date, currentDate = new Date()): string {
+	// Extract year, month, and day components
+	const birthYear = birthDate.getFullYear()
+	const birthMonth = (birthDate.getMonth() + 1).toFixed().padStart(2, '0')
+	const birthDay = birthDate.getDate().toFixed().padStart(2, '0')
+
+	const currentMonth = (currentDate.getMonth() + 1).toFixed().padStart(2, '0')
+	const currentDay = currentDate.getDate().toFixed().padStart(2, '0')
+	const compareDayOfMonth = `${currentMonth}${currentDay}`.localeCompare(`${birthMonth}${birthDay}`)
+
+	const age = new Date().getFullYear() - birthYear - (compareDayOfMonth === -1 ? 1 : 0)
+	return age.toFixed()
+}
+
 const base64abc = [
 	'A',
 	'B',

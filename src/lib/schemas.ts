@@ -67,3 +67,5 @@ export const detailStoreSchema = portfolioSchema.extend({
 	endAge: endAgeSchema,
 	inflation: z.number().nonnegative(),
 })
+
+export const investmentSchema = z.object({})
