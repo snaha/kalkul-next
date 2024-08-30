@@ -1,32 +1,29 @@
-import type { Investment, Portfolio } from '$lib/types'
+import type { Client, Store } from '$lib/types'
 
-export interface Client {
-	name: string
-	birthDate: Date
-	imageURI: string | undefined
-	portfolios: Portfolio[]
-	investments: Investment[]
-}
-
-export interface ClientStore {
-	readonly clients: Client[]
-
-	addClient: (client: Client) => void
+export interface ClientStore extends Store<Client> {
+	data: Client[]
+	loading: boolean
+	reset: () => void
 }
 
 export function withClientStore(): ClientStore {
-	const clients: Client[] = $state([])
-
-	function addClient(client: Client) {
-		clients.push(client)
-	}
+	let data = $state<Client[]>([])
+	let loading = $state(true)
 
 	return {
-		get clients() {
-			return clients
+		get data() {
+			return data
 		},
-		addClient,
+		set data(newValue) {
+			data = newValue
+			loading = false
+		},
+		get loading() {
+			return loading
+		},
+		reset() {
+			data = []
+			loading = true
+		},
 	}
 }
-
-export const clientStore = withClientStore()

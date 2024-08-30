@@ -31,6 +31,8 @@ export default typescriptEslint.config(
 			'**/node_modules',
 			'**/package',
 			'**/static/generated/css',
+			'src/lib/typesdb.ts',
+			'src/lib/types.ts',
 		],
 	},
 )

@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import type { Tables } from './typesdb'
+
 import type {
 	depositWithdrawalFormSchema,
 	depositWithdrawalSchema,
@@ -24,3 +26,11 @@ export const supportedCurrenciesWithLabels: CurrencyWithLabel = {
 	EUR: '€',
 	USD: '$',
 } as const
+
+export interface Store<T> {
+	data: T[]
+	loading: boolean
+}
+
+export type Client = Tables<'client'>
+export type ClientNoId = Omit<Client, 'id' | 'created_at' | 'advisor'>

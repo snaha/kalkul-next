@@ -6,15 +6,16 @@
 	import Input from './input/input.svelte'
 	import Typography from './typography.svelte'
 	import Avatar from './avatar.svelte'
+	import type { ClientNoId } from '$lib/types'
 
 	type Props = {
 		close: () => void
-		createClient: (name: string, birthDate: Date, imageURI?: string) => void
+		createClient: (client: ClientNoId) => void
 	}
 
 	let { close, createClient }: Props = $props()
 
-	const date = new Date()
+	const date = new Date().toDateString()
 	let name = $state('')
 	let birthDate = $state(date)
 	let imageURI: string | undefined = $state()
@@ -22,18 +23,20 @@
 	let createDisabled = $derived(name === '' || birthDate === date)
 
 	function create() {
-		createClient(name, new Date(birthDate), imageURI)
-
-		// local state needs to be cleared in order to be reusable in a modal
+		const client: ClientNoId = {
+			name,
+			birth_date: birthDate,
+		}
 		name = ''
 		birthDate = date
 		imageURI = undefined
+		createClient(client)
 	}
 </script>
 
 <form class="vertical">
 	<section class="horizontal">
-		<Typography variant="h5">{$_('Add client')}</Typography>
+		<Typography variant="h5">{$_('addClient')}</Typography>
 		<div class="grower"></div>
 		<Button variant="ghost" onclick={close}><Close size={24} /></Button>
 	</section>

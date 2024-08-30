@@ -69,3 +69,22 @@ export const detailStoreSchema = portfolioSchema.extend({
 })
 
 export const investmentSchema = z.object({})
+
+export const loginFormSchema = z.object({
+	email: z.string().email({ message: 'Enter a valid email.' }),
+	password: z.string().min(6, { message: 'Password must be at least 6 characters long.' }),
+})
+
+export const registerFormSchema = loginFormSchema
+	.extend({
+		confirmPassword: z.string(),
+	})
+	.superRefine((data, ctx) => {
+		if (data.password !== data.confirmPassword) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['confirmPassword'],
+				message: 'Passwords must match.',
+			})
+		}
+	})
