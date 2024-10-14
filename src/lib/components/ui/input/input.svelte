@@ -1,5 +1,5 @@
-<script lang="ts" context="module">
-	import { type Snippet } from 'svelte'
+<script lang="ts" module>
+	import type { Snippet } from 'svelte'
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	import { WarningAltFilled, Information } from 'carbon-icons-svelte'
 
@@ -50,11 +50,9 @@
 </script>
 
 <div class="root {layout} {dimension} {className}">
-	{#if label}
-		<label class="label" for={labelFor}>
-			{label}
-		</label>
-	{/if}
+	<label class="label" for={labelFor}>
+		{label}
+	</label>
 	{#if children && layout === 'horizontal'}
 		<div class="helper-button">
 			<Information size={dimension === 'small' ? 16 : 24} />
