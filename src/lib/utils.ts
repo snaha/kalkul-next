@@ -124,7 +124,7 @@ export function formatAge(birthDate: Date, currentDate = new Date()): string {
 	const currentDay = currentDate.getDate().toFixed().padStart(2, '0')
 	const compareDayOfMonth = `${currentMonth}${currentDay}`.localeCompare(`${birthMonth}${birthDay}`)
 
-	const age = new Date().getFullYear() - birthYear - (compareDayOfMonth === -1 ? 1 : 0)
+	const age = currentDate.getFullYear() - birthYear - (compareDayOfMonth === -1 ? 1 : 0)
 	return age.toFixed()
 }
 

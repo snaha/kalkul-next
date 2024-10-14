@@ -2,25 +2,28 @@ import { createClient, type Subscription as SupabaseSubscription } from '@supaba
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 import type { Adapter } from '..'
 import { withAuthStore } from '$lib/stores/auth.svelte'
-import type { Client, ClientNoId } from '$lib/types'
+import type { Client, ClientNoId, MetaFields, Portfolio } from '$lib/types'
 import { withClientStore, type ClientStore } from '$lib/stores/clients.svelte'
+import { portfolioStore, type PortfolioStore } from '$lib/stores/portfolio.svelte'
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
 
-const clientCollection = 'client'
+const clientTable = 'client'
+const portfolioTable = 'portfolio'
 
 interface Subscription {
 	unsubscribe: () => void
+	promise: PromiseLike<void>
 }
 
 function subscribeClients(store: ClientStore, uuid: string): Subscription {
 	store.reset()
 
-	let query = supabase.from(clientCollection).select('*')
+	let query = supabase.from(clientTable).select('*')
 
 	query = query.eq('advisor', uuid)
 
-	query.then((res) => {
+	const promise = query.then((res) => {
 		if (res.error) {
 			console.error('Error fetching data:', res.error)
 		} else {
@@ -28,7 +31,7 @@ function subscribeClients(store: ClientStore, uuid: string): Subscription {
 		}
 	})
 
-	const channel = supabase.channel(`public:${clientCollection}`)
+	const channel = supabase.channel(`public:${clientTable}`)
 
 	channel
 		.on(
@@ -36,7 +39,7 @@ function subscribeClients(store: ClientStore, uuid: string): Subscription {
 			{
 				event: '*',
 				schema: 'public',
-				table: clientCollection,
+				table: clientTable,
 			},
 			(payload) => {
 				switch (payload.eventType) {
@@ -66,6 +69,62 @@ function subscribeClients(store: ClientStore, uuid: string): Subscription {
 			supabase.removeChannel(channel)
 			store.reset()
 		},
+		promise,
+	}
+}
+
+function subscribePortfolios(store: PortfolioStore, clientIds: number[]): Subscription {
+	store.reset()
+
+	const query = supabase.from(portfolioTable).select('*').in('client', clientIds)
+
+	const promise = query.then((res) => {
+		if (res.error) {
+			console.error('Error fetching data:', res.error)
+		} else {
+			store.data = res.data as Portfolio[]
+		}
+	})
+
+	const channel = supabase.channel(`public:${portfolioTable}`)
+
+	channel
+		.on(
+			'postgres_changes',
+			{
+				event: '*',
+				schema: 'public',
+				table: portfolioTable,
+			},
+			(payload) => {
+				switch (payload.eventType) {
+					case 'INSERT':
+						store.data.push(payload.new as Portfolio)
+						break
+					case 'UPDATE':
+						store.data = store.data.map((item) =>
+							item.id === payload.new.id ? { ...item, ...payload.new } : item,
+						)
+						break
+					case 'DELETE':
+						store.data = store.data.filter((item) => item.id !== payload.old.id)
+						break
+				}
+			},
+		)
+		.subscribe((status, error) => {
+			console.log('Status:', status)
+			if (error) {
+				console.error('Subscription error:', error)
+			}
+		})
+
+	return {
+		unsubscribe: () => {
+			supabase.removeChannel(channel)
+			store.reset()
+		},
+		promise,
 	}
 }
 
@@ -73,6 +132,7 @@ export default class Supabase implements Adapter {
 	public authStore = withAuthStore()
 	private clientsStore = withClientStore()
 	private clientsSubscription: Subscription | undefined = undefined
+	private portfoliosSubscription: Subscription | undefined = undefined
 	private authSubscription: SupabaseSubscription | undefined
 
 	start() {
@@ -93,11 +153,16 @@ export default class Supabase implements Adapter {
 						this.authStore.user = data.user
 						if (this.clientsSubscription) this.clientsSubscription.unsubscribe()
 						this.clientsSubscription = subscribeClients(this.clients, data.user.id)
+
+						await this.clientsSubscription.promise
+						this.portfoliosSubscription = subscribePortfolios(
+							portfolioStore,
+							this.clientsStore.data.map((client) => client.id),
+						)
 					}
 				} else if (event === 'SIGNED_OUT') {
 					this.authStore.user = null
-					this.clientsSubscription?.unsubscribe()
-					this.clientsSubscription = undefined
+					this.stop()
 				} else {
 					console.log('User status changed', event)
 				}
@@ -113,6 +178,9 @@ export default class Supabase implements Adapter {
 
 		this.clientsSubscription?.unsubscribe()
 		this.clientsSubscription = undefined
+
+		this.portfoliosSubscription?.unsubscribe()
+		this.portfoliosSubscription = undefined
 	}
 
 	async signUp(email: string, password: string) {
@@ -126,7 +194,7 @@ export default class Supabase implements Adapter {
 	async signIn(email: string, password: string) {
 		const { error } = await supabase.auth.signInWithPassword({ email, password })
 		if (error) {
-			console.error('Failed to create user', error)
+			console.error('Failed to sign in', error)
 			throw new Error(error.message)
 		}
 	}
@@ -137,12 +205,9 @@ export default class Supabase implements Adapter {
 			throw new Error(error.message)
 		}
 	}
+
 	async addClient(client: ClientNoId) {
-		const { data, error } = await supabase
-			.from(clientCollection)
-			.insert(client)
-			.select('id')
-			.single()
+		const { data, error } = await supabase.from(clientTable).insert(client).select('id').single()
 		if (error) {
 			console.error('Failed to add client', error)
 			throw new Error(error.message)
@@ -150,6 +215,23 @@ export default class Supabase implements Adapter {
 		if (data.id === null) {
 			console.error('Failed to get id of added client', error)
 			throw new Error('Failed to get id of added client')
+		}
+		return data.id
+	}
+
+	async addPortfolio(portfolio: Omit<Portfolio, MetaFields>) {
+		const { data, error } = await supabase
+			.from(portfolioTable)
+			.insert(portfolio)
+			.select('id')
+			.single()
+		if (error) {
+			console.error('Failed to add portfolio', error)
+			throw new Error(error.message)
+		}
+		if (data.id === null) {
+			console.error('Failed to get id of added portfolio', error)
+			throw new Error('Failed to get id of added portfolio')
 		}
 		return data.id
 	}

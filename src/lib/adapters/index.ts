@@ -1,4 +1,4 @@
-import type { ClientNoId } from '$lib/types'
+import type { ClientNoId, Portfolio } from '$lib/types'
 import SupabaseAdapter from './supabase'
 
 export interface Adapter {
@@ -12,6 +12,9 @@ export interface Adapter {
 	signOut: () => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>
+	addPortfolio: (
+		portfolio: Omit<Portfolio, 'id' | 'created_at' | 'last_edited_at'>,
+	) => Promise<number>
 }
 
 export default new SupabaseAdapter()

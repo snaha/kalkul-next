@@ -1,13 +1,18 @@
 import { detailStoreSchema } from '$lib/schemas'
-import type { Deposit, Portfolio, Withdrawal, Currency } from '$lib/types'
+import type { Deposit, Withdrawal, Currency } from '$lib/types'
 import { base64ToBytes, bytesToBase64, compareArrays, initialValues } from '$lib/utils'
 import pako from 'pako'
 
-export interface DetailsStoreValues extends Portfolio {
+export interface DetailsStoreValues {
 	dateOfBirth: Date
 	endAge: number
 	currency: Currency
 	inflation: number
+	apy: number
+	feeSuccess: number
+	feeManagement: number
+	entryFee: number
+	withdrawalFee: number
 }
 
 export interface DetailsStore extends DetailsStoreValues {

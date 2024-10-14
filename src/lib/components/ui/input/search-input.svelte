@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Delete, Search } from 'carbon-icons-svelte'
-	import Button from '../button.svelte'
+	import Button from '$lib/components/ui/button.svelte'
 	import Input, { type Props } from './input.svelte'
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	interface SearchProps extends Props {

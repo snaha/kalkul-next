@@ -3,7 +3,7 @@
 	/* eslint svelte/valid-compile: 0 */
 	import { browser } from '$app/environment'
 	import { locale, locales } from 'svelte-i18n'
-	import Button from './button.svelte'
+	import Button from './ui/button.svelte'
 
 	// Assuming $locale is automatically set by svelte-i18n to the browser's setting, e.g., 'en-US'
 	$effect(() => {

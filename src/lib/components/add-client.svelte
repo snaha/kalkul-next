@@ -1,21 +1,22 @@
 <script lang="ts">
 	import { Close, Checkmark, Image } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
-	import Button from './button.svelte'
-	import DateInput from './input/date-input.svelte'
-	import Input from './input/input.svelte'
-	import Typography from './typography.svelte'
-	import Avatar from './avatar.svelte'
+	import Button from '$lib/components/ui/button.svelte'
+	import DateInput from '$lib/components/ui/input/date-input.svelte'
+	import Input from '$lib/components/ui/input/input.svelte'
+	import Typography from '$lib/components/ui/typography.svelte'
+	import Avatar from '$lib/components/avatar.svelte'
 	import type { ClientNoId } from '$lib/types'
 
 	type Props = {
 		close: () => void
 		createClient: (client: ClientNoId) => void
+		hasClose?: boolean
 	}
 
-	let { close, createClient }: Props = $props()
+	let { close, createClient, hasClose = false }: Props = $props()
 
-	const date = new Date().toDateString()
+	const date = new Date()
 	let name = $state('')
 	let birthDate = $state(date)
 	let imageURI: string | undefined = $state()
@@ -25,12 +26,18 @@
 	function create() {
 		const client: ClientNoId = {
 			name,
-			birth_date: birthDate,
+			birth_date: birthDate.toDateString(),
 		}
 		name = ''
 		birthDate = date
 		imageURI = undefined
 		createClient(client)
+	}
+
+	function cancel(event: Event) {
+		// FIXME: not sure why this is needed here, but it won't work without it
+		event.preventDefault()
+		close()
 	}
 </script>
 
@@ -38,7 +45,9 @@
 	<section class="horizontal">
 		<Typography variant="h5">{$_('addClient')}</Typography>
 		<div class="grower"></div>
-		<Button variant="ghost" onclick={close}><Close size={24} /></Button>
+		{#if hasClose}
+			<Button variant="ghost" onclick={close}><Close size={24} /></Button>
+		{/if}
 	</section>
 	<Input
 		autofocus
@@ -67,7 +76,7 @@
 		<Button variant="strong" onclick={create} disabled={createDisabled}
 			><Checkmark size={24} />{$_('createClient')}</Button
 		>
-		<Button variant="secondary" onclick={close}><Close size={24} />{$_('cancel')}</Button>
+		<Button variant="secondary" onclick={cancel}><Close size={24} />{$_('cancel')}</Button>
 	</section>
 </form>
 

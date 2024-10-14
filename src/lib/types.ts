@@ -14,7 +14,6 @@ export type DepositForm = z.infer<typeof depositWithdrawalFormSchema>
 export type WithdrawalForm = z.infer<typeof depositWithdrawalFormSchema>
 export type Deposit = z.infer<typeof depositWithdrawalSchema>
 export type Withdrawal = z.infer<typeof depositWithdrawalSchema>
-export type Portfolio = z.infer<typeof portfolioSchema>
 export type Investment = z.infer<typeof investmentSchema>
 export type Currency = z.infer<typeof supportedCurrenciesSchema>
 export type Frequency = z.infer<typeof frequencySchema>
@@ -34,3 +33,6 @@ export interface Store<T> {
 
 export type Client = Tables<'client'>
 export type ClientNoId = Omit<Client, 'id' | 'created_at' | 'advisor'>
+
+export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
+export type Portfolio = Tables<'portfolio'>

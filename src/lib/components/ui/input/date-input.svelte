@@ -11,9 +11,12 @@
 	let {
 		dimension = 'default',
 		disabled,
-		value = $bindable(),
+		value = $bindable(new Date()),
+		class: className = '',
 		...restProps
 	}: Props & HTMLInputAttributes = $props()
+
+	let stringValue = $state(formatDate(value))
 
 	let currentDate = new Date()
 	let selectedMonth = $state(currentDate.getMonth())
@@ -58,7 +61,7 @@
 		}),
 	)
 
-	let datePicker: HTMLDivElement | undefined
+	let datePicker: HTMLDivElement
 	let selectedYearElement: HTMLSpanElement | undefined = $state(undefined)
 
 	const months = getLocalMonthNames()
@@ -102,7 +105,8 @@
 
 	function selectDate(date: number) {
 		selectedDate = new Date(selectedYear, selectedMonth, date)
-		value = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+		value = selectedDate
+		stringValue = formatDate(selectedDate)
 	}
 
 	function isSelected(date: number) {
@@ -126,18 +130,29 @@
 		return new Date(year, month - 1, day)
 	}
 
+	function formatDate(date: Date) {
+		if (!(date instanceof Date) || isNaN(date.getTime())) {
+			return ''
+		}
+		const year = date.getFullYear()
+		const month = String(date.getMonth() + 1).padStart(2, '0')
+		const day = String(date.getDate()).padStart(2, '0')
+		return `${year}-${month}-${day}`
+	}
+
 	function inputChange(event: Event) {
 		const input = event.target as HTMLInputElement
 		const newDate = parseDate(input.value)
 		selectedDate = newDate
 		selectedMonth = newDate.getMonth()
 		selectedYear = newDate.getFullYear()
+		value = newDate
 		showYearPicker = false
 	}
 
 	function close(e: MouseEvent) {
 		const target = e.target as unknown as Node
-		if (datePicker?.contains(target)) {
+		if (datePicker.contains(target)) {
 			// Clicked on the date picker
 		} else {
 			showDatePicker = false
@@ -172,9 +187,22 @@
 			window.removeEventListener('resize', resize)
 		}
 	})
+	$effect(() => {
+		const menuButton = document.querySelector('.menu-button-container') as HTMLElement
+		const modeButton = document.querySelector('.dark-mode-button-container') as HTMLElement
+		if (isMobile && showDatePicker) {
+			menuButton.style.zIndex = '1'
+			modeButton.style.zIndex = '1'
+			document.body.style.overflow = 'hidden'
+		} else {
+			menuButton.style.zIndex = '100'
+			modeButton.style.zIndex = '100'
+			document.body.style.overflow = 'auto'
+		}
+	})
 </script>
 
-{#snippet buttons()}
+{#snippet buttons(input: HTMLInputElement)}
 	<Button
 		{dimension}
 		{disabled}
@@ -183,23 +211,23 @@
 			e.stopPropagation()
 			showDatePicker = !showDatePicker
 			showYearPicker = false
+			input.focus()
 		}}
 	>
 		<Calendar {size} />
 	</Button>
 {/snippet}
 
-<div class="calendar-root {dimension}">
+<div class="calendar-root {dimension} {className}">
 	<Input
 		{dimension}
 		{disabled}
 		{...restProps}
-		bind:value
+		value={stringValue}
 		oninput={inputChange}
 		{buttons}
 		type="date"
 	/>
-
 	<div class:modal={isMobile}>
 		<div class="date-picker" class:showDatePicker bind:this={datePicker}>
 			<div class="header">

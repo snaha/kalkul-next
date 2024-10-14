@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Button from '$lib/components/button.svelte'
-	import Input from '$lib/components/input/input.svelte'
+	import Button from '$lib/components/ui/button.svelte'
+	import Input from '$lib/components/ui/input/input.svelte'
 	import adapter from '$lib/adapters'
-	import Typography from '$lib/components/typography.svelte'
+	import Typography from '$lib/components/ui/typography.svelte'
 	import { z, type ZodFormattedError } from 'zod'
 	import { loginFormSchema } from '$lib/schemas'
 

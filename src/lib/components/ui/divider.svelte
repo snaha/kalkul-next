@@ -12,18 +12,20 @@
 
 <style>
 	.horizontal {
-		margin-top: var(--double-padding);
-		margin-bottom: var(--double-padding);
+		margin-top: var(--padding);
+		margin-bottom: var(--padding);
 		width: 100%;
 	}
 	.vertical {
-		margin-right: var(--double-padding);
-		margin-left: var(--double-padding);
+		margin-right: var(--padding);
+		margin-left: var(--padding);
+		min-width: 1px;
 		height: 100%;
+		min-height: var(--padding);
 	}
 	hr {
 		appearance: none;
-		border-width: 1px;
+		border-width: 1px 1px 0 0;
 		border-style: solid;
 		color: var(--colors-low);
 	}
