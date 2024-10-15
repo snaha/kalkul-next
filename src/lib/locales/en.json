@@ -77,6 +77,16 @@
 	"remainingPortfolioValue": "Remaining portfolio value",
 	"disclaimer": "Disclaimer",
 	"disclaimerText": "The information provided above is for illustrative purposes only and does not constitute financial advice. Investments involve risks, and past performance is not indicative of future results. The figures displayed are hypothetical and do not reflect actual investment returns. It is important to conduct thorough research and seek advice from a qualified financial advisor before making any investment decisions. We do not guarantee the accuracy or completeness of the information presented here. The user assumes all responsibility for their investment choices.",
+	"investmentName": "Investment name",
+	"entryFeePayment": "Entry fee payment",
+	"exitFee": "Exit fee",
+	"successFee": "Success fee",
+	"managementFee": "Management fee",
+	"createInvestment": "Create investment",
+	"ongoing": "Ongoing",
+	"upfront": "Upfront",
+	"percentage": "Percentage",
+	"fixedFee": "Fixed fee",
 
 	"errors": {
 		"too_small": "Please enter larger value"

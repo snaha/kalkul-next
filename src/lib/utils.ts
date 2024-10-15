@@ -1,107 +1,13 @@
-import type { Deposit, DepositForm, Withdrawal, WithdrawalForm } from './types'
-
 export const day = 24 * 60 * 60 * 1000
 export const week = 7 * day
 export const year = 365.25 * day
 export const month = year / 12
 
-export const initialValues = {
-	dateOfBirth: formatDate(new Date()),
-	endAge: 80,
-	currency: 'CZK',
-	inflation: 2,
-	apy: 0,
-	feeSuccess: 0,
-	feeManagement: 0,
-	entryFee: 0,
-	withdrawalFee: 0,
-} as const
-
-function checkInt(x: number) {
-	return (x | 0) === x
-}
-
-export function isInt(value: unknown) {
-	return (
-		!isNaN(Number(value)) &&
-		((typeof value === 'string' && checkInt(parseFloat(value))) ||
-			(typeof value === 'number' && checkInt(value)))
-	)
-}
-
-export function getElementFromArray<T>(array: T[], index: unknown): T | undefined {
-	if (isInt(index)) {
-		const i = index as number
-		if (i >= 0 && i < array.length) {
-			return array[i]
-		}
+export function capitalizeFirstLetter(s: string) {
+	if (s.length === 0) {
+		return s
 	}
-	return undefined
-}
-
-export function initializeForm<T extends Deposit | Withdrawal>(
-	array: T[],
-	index: unknown,
-): DepositForm | WithdrawalForm {
-	const d = getElementFromArray(array, index)
-	if (d && d.isRecurring) {
-		return {
-			...d,
-			startDate: formatDate(new Date(d.startDate)),
-			endDate: formatDate(new Date(d.endDate)),
-		}
-	}
-	if (d) {
-		return {
-			...d,
-			startDate: formatDate(new Date(d.startDate)),
-		}
-	}
-	return {
-		name: '',
-		amount: 0,
-		startDate: formatDate(new Date()),
-		isRecurring: false,
-	}
-}
-
-export function compareArrays<T extends Deposit | Withdrawal | DepositForm | WithdrawalForm>(
-	a: T[],
-	b: T[],
-) {
-	if (a.length !== b.length) {
-		return false
-	}
-	for (let i = 0; i < a.length; i++) {
-		if (!areObjectsEqual(a[i], b[i])) {
-			return false
-		}
-	}
-	return true
-}
-export function areObjectsEqual<T extends Record<string, string | number | boolean | Date>>(
-	obj1: T,
-	obj2: T,
-): boolean {
-	for (const key in obj1) {
-		if (Object.hasOwnProperty.call(obj1, key) && Object.hasOwnProperty.call(obj2, key)) {
-			if (
-				typeof obj1[key] === 'object' &&
-				obj1[key] instanceof Date &&
-				typeof obj2[key] === 'object' &&
-				obj2[key] instanceof Date
-			) {
-				if ((obj1[key] as Date).getTime() !== (obj2[key] as Date).getTime()) return false
-				continue
-			}
-			if (obj1[key] !== obj2[key]) {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-	return true
+	return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 export function formatDate(date: Date): string {
@@ -126,6 +32,18 @@ export function formatAge(birthDate: Date, currentDate = new Date()): string {
 
 	const age = currentDate.getFullYear() - birthYear - (compareDayOfMonth === -1 ? 1 : 0)
 	return age.toFixed()
+}
+
+export function formatCurrency(value: number | bigint, currency: string) {
+	// detect locale automatically
+	const locale = undefined
+	const intl = new Intl.NumberFormat(locale, {
+		style: 'currency',
+		currency,
+		currencyDisplay: 'code',
+		maximumFractionDigits: 0,
+	})
+	return intl.format(value)
 }
 
 const base64abc = [

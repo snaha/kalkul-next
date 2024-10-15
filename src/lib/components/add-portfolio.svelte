@@ -10,7 +10,7 @@
 	import Option from '$lib/components/ui/select/option.svelte'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
-	import { formatAge, formatDate } from '$lib/utils'
+	import { capitalizeFirstLetter, formatAge, formatDate } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 
 	type Props = {
@@ -53,13 +53,6 @@
 		// FIXME: not sure why this is needed here, but it won't work without it
 		event.preventDefault()
 		close()
-	}
-
-	function capitalizeFirstLetter(s: string) {
-		if (s.length === 0) {
-			return s
-		}
-		return s.charAt(0).toUpperCase() + s.slice(1)
 	}
 
 	function onHorizonInput() {

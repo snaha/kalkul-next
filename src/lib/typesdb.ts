@@ -58,23 +58,61 @@ export type Database = {
         }
         Relationships: []
       }
-      currency: {
+      investment: {
         Row: {
+          apy: number | null
           created_at: string
+          entry_fee: number | null
+          entry_fee_type: string | null
+          exit_fee: number | null
+          exit_fee_type: string | null
           id: number
-          name: string | null
+          last_edited_at: string | null
+          management_fee: number | null
+          management_fee_type: string | null
+          name: string
+          portfolio: number
+          success_fee: number | null
         }
         Insert: {
+          apy?: number | null
           created_at?: string
+          entry_fee?: number | null
+          entry_fee_type?: string | null
+          exit_fee?: number | null
+          exit_fee_type?: string | null
           id?: number
-          name?: string | null
+          last_edited_at?: string | null
+          management_fee?: number | null
+          management_fee_type?: string | null
+          name: string
+          portfolio: number
+          success_fee?: number | null
         }
         Update: {
+          apy?: number | null
           created_at?: string
+          entry_fee?: number | null
+          entry_fee_type?: string | null
+          exit_fee?: number | null
+          exit_fee_type?: string | null
           id?: number
-          name?: string | null
+          last_edited_at?: string | null
+          management_fee?: number | null
+          management_fee_type?: string | null
+          name?: string
+          portfolio?: number
+          success_fee?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "investment_portfolio_fkey"
+            columns: ["portfolio"]
+            isOneToOne: false
+            referencedRelation: "portfolio"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       portfolio: {
         Row: {

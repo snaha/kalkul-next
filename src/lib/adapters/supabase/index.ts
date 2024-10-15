@@ -2,14 +2,16 @@ import { createClient, type Subscription as SupabaseSubscription } from '@supaba
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 import type { Adapter } from '..'
 import { withAuthStore } from '$lib/stores/auth.svelte'
-import type { Client, ClientNoId, MetaFields, Portfolio } from '$lib/types'
+import type { Client, ClientNoId, Investment, MetaFields, Portfolio } from '$lib/types'
 import { withClientStore, type ClientStore } from '$lib/stores/clients.svelte'
 import { portfolioStore, type PortfolioStore } from '$lib/stores/portfolio.svelte'
+import { investmentStore, type InvestmentStore } from '$lib/stores/investment.svelte'
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
 
 const clientTable = 'client'
 const portfolioTable = 'portfolio'
+const investmentTable = 'investment'
 
 interface Subscription {
 	unsubscribe: () => void
@@ -128,11 +130,67 @@ function subscribePortfolios(store: PortfolioStore, clientIds: number[]): Subscr
 	}
 }
 
+function subscribeInvestments(store: InvestmentStore, portfolioIds: number[]): Subscription {
+	store.reset()
+
+	const query = supabase.from(investmentTable).select('*').in('portfolio', portfolioIds)
+
+	const promise = query.then((res) => {
+		if (res.error) {
+			console.error('Error fetching data:', res.error)
+		} else {
+			store.data = res.data as Investment[]
+		}
+	})
+
+	const channel = supabase.channel(`public:${investmentTable}`)
+
+	channel
+		.on(
+			'postgres_changes',
+			{
+				event: '*',
+				schema: 'public',
+				table: investmentTable,
+			},
+			(payload) => {
+				switch (payload.eventType) {
+					case 'INSERT':
+						store.data.push(payload.new as Investment)
+						break
+					case 'UPDATE':
+						store.data = store.data.map((item) =>
+							item.id === payload.new.id ? { ...item, ...payload.new } : item,
+						)
+						break
+					case 'DELETE':
+						store.data = store.data.filter((item) => item.id !== payload.old.id)
+						break
+				}
+			},
+		)
+		.subscribe((status, error) => {
+			console.log('Status:', status)
+			if (error) {
+				console.error('Subscription error:', error)
+			}
+		})
+
+	return {
+		unsubscribe: () => {
+			supabase.removeChannel(channel)
+			store.reset()
+		},
+		promise,
+	}
+}
+
 export default class Supabase implements Adapter {
 	public authStore = withAuthStore()
 	private clientsStore = withClientStore()
 	private clientsSubscription: Subscription | undefined = undefined
 	private portfoliosSubscription: Subscription | undefined = undefined
+	private investmentSubscription: Subscription | undefined = undefined
 	private authSubscription: SupabaseSubscription | undefined
 
 	start() {
@@ -159,6 +217,12 @@ export default class Supabase implements Adapter {
 							portfolioStore,
 							this.clientsStore.data.map((client) => client.id),
 						)
+
+						await this.portfoliosSubscription.promise
+						this.investmentSubscription = subscribeInvestments(
+							investmentStore,
+							portfolioStore.data.map((portfolio) => portfolio.id),
+						)
 					}
 				} else if (event === 'SIGNED_OUT') {
 					this.authStore.user = null
@@ -181,6 +245,9 @@ export default class Supabase implements Adapter {
 
 		this.portfoliosSubscription?.unsubscribe()
 		this.portfoliosSubscription = undefined
+
+		this.investmentSubscription?.unsubscribe()
+		this.investmentSubscription = undefined
 	}
 
 	async signUp(email: string, password: string) {
@@ -232,6 +299,24 @@ export default class Supabase implements Adapter {
 		if (data.id === null) {
 			console.error('Failed to get id of added portfolio', error)
 			throw new Error('Failed to get id of added portfolio')
+		}
+		return data.id
+	}
+
+	async addInvestment(investment: Omit<Investment, MetaFields>) {
+		const { data, error } = await supabase
+			.from(investmentTable)
+			.insert(investment)
+			.select('id')
+			.single()
+
+		if (error) {
+			console.error('Failed to add investment', error)
+			throw new Error(error.message)
+		}
+		if (data.id === null) {
+			console.error('Failed to get id of added investment', error)
+			throw new Error('Failed to get id of added investment')
 		}
 		return data.id
 	}

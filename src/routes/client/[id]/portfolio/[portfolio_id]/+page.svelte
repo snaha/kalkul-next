@@ -9,11 +9,19 @@
 	import routes from '$lib/routes'
 	import { page } from '$app/stores'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
+	import { goto } from '$app/navigation'
+	import { investmentStore } from '$lib/stores/investment.svelte'
+	import InvestmentCard from '$lib/components/investment-card.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(adapter.clients.data.find((client) => client.id === clientId))
 	const portfolioId = parseInt($page.params.portfolio_id, 10)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+	const investments = $derived(investmentStore.filter(portfolioId))
+
+	function addInvestment() {
+		goto(routes.NEW_INVESTMENT(clientId, portfolioId))
+	}
 
 	function notImplemented() {
 		alert('Not implemented!')
@@ -42,7 +50,12 @@
 		</section>
 		<section class="horizontal grower">
 			<section class="sidebar vertical">
-				<Button dimension="small" variant="strong" onclick={notImplemented}>
+				<section class="investments">
+					{#each investments as investment}
+						<InvestmentCard {investment} {portfolio} />
+					{/each}
+				</section>
+				<Button dimension="small" variant="strong" onclick={addInvestment}>
 					<Add size={16} />{$_('addInvestment')}</Button
 				>
 			</section>
@@ -89,5 +102,10 @@
 		border-right: 1px solid var(--colors-low);
 		height: 100%;
 		padding: var(--padding);
+	}
+	.investments {
+		display: flex;
+		flex-direction: column;
+		gap: var(--half-padding);
 	}
 </style>
