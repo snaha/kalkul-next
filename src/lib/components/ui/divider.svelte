@@ -10,15 +10,15 @@
 
 <hr class="{orientation} {className}" {...restProps} />
 
-<style>
+<style lang="postcss">
 	.horizontal {
-		margin-top: var(--padding);
-		margin-bottom: var(--padding);
+		margin-top: var(--margin, var(--padding));
+		margin-bottom: var(--margin, var(--padding));
 		width: 100%;
 	}
 	.vertical {
-		margin-right: var(--padding);
-		margin-left: var(--padding);
+		margin-right: var(--margin, var(--padding));
+		margin-left: var(--margin, var(--padding));
 		min-width: 1px;
 		height: 100%;
 		min-height: var(--padding);

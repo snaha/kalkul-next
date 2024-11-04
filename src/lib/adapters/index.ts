@@ -10,6 +10,8 @@ export interface Adapter {
 	signUp: (email: string, password: string) => Promise<void>
 	signIn: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
+	sendResetPasswordLink: (email: string) => Promise<void>
+	updatePassword: (newPassword: string) => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>
 	addPortfolio: (

@@ -224,6 +224,8 @@ export default class Supabase implements Adapter {
 							portfolioStore.data.map((portfolio) => portfolio.id),
 						)
 					}
+				} else if (event === 'PASSWORD_RECOVERY') {
+					this.authStore.passwordRecovery = true
 				} else if (event === 'SIGNED_OUT') {
 					this.authStore.user = null
 					this.stop()
@@ -269,6 +271,21 @@ export default class Supabase implements Adapter {
 		const { error } = await supabase.auth.signOut()
 		if (error) {
 			console.error('Failed to sign out', error)
+			throw new Error(error.message)
+		}
+	}
+
+	async sendResetPasswordLink(email: string) {
+		const { error } = await supabase.auth.resetPasswordForEmail(email)
+		if (error) {
+			console.error('Failed to send reset password link', error)
+			throw new Error(error.message)
+		}
+	}
+	async updatePassword(newPassword: string) {
+		const { error } = await supabase.auth.updateUser({ password: newPassword })
+		if (error) {
+			console.error('Failed to update password', error)
 			throw new Error(error.message)
 		}
 	}

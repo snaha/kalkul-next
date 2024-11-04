@@ -70,9 +70,12 @@ export const detailStoreSchema = portfolioSchema.extend({
 
 export const investmentSchema = z.object({})
 
-export const loginFormSchema = z.object({
-	email: z.string().email({ message: 'Enter a valid email.' }),
-	password: z.string().min(6, { message: 'Password must be at least 6 characters long.' }),
+export const emailFormSchema = z.object({
+	email: z.string().email({ message: 'emailError' }),
+})
+
+export const loginFormSchema = emailFormSchema.extend({
+	password: z.string().min(6, { message: 'passwordError' }),
 })
 
 export const registerFormSchema = loginFormSchema
@@ -84,7 +87,7 @@ export const registerFormSchema = loginFormSchema
 			ctx.addIssue({
 				code: 'custom',
 				path: ['confirmPassword'],
-				message: 'Passwords must match.',
+				message: 'confirmPasswordError',
 			})
 		}
 	})

@@ -1,0 +1,89 @@
+<script lang="ts">
+	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
+	import Button from './ui/button.svelte'
+	import Input from './ui/input/input.svelte'
+	import Typography from './ui/typography.svelte'
+	import { _ } from 'svelte-i18n'
+	import adapter from '$lib/adapters'
+
+	let password = $state('')
+	let confirmPassword = $state('')
+	let error = $state('')
+
+	async function updatePassword(newPassword: string) {
+		try {
+			await adapter.updatePassword(newPassword)
+		} catch (e) {
+			error = (e as Error).message
+		}
+	}
+</script>
+
+<div class="logo">
+	<img src="/logo.svg" alt="Logo" />
+</div>
+<div class="update-password">
+	<Typography variant="h4">{$_('updatePassword')}</Typography>
+	<form>
+		<Input label="Password" bind:value={password}></Input>
+		<Input label="Confirm password" bind:value={confirmPassword}></Input>
+	</form>
+	{#if error}
+		<div class="error">
+			<WarningAltFilled size={24} />
+			{error}
+		</div>
+	{/if}
+	<div class="buttons">
+		<Button onclick={() => updatePassword(password)}
+			><Checkmark size={24} />{$_('updatePassword')}</Button
+		>
+	</div>
+</div>
+
+<style>
+	.logo {
+		position: fixed;
+		top: var(--padding);
+		left: var(--padding);
+		width: 40px;
+		height: 40px;
+	}
+	.logo img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+	.update-password {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: var(--double-padding);
+		max-width: 560px;
+		height: 100vh;
+		margin: 0 auto;
+	}
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--half-padding);
+	}
+	.buttons {
+		display: flex;
+		gap: var(--half-padding);
+	}
+	.error {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--half-padding);
+		border: 1px solid var(--colors-top);
+		border-radius: var(--border-radius);
+		background: var(--colors-top);
+		padding: var(--quarter-padding) var(--half-padding);
+		color: var(--colors-base);
+		font-family: var(--font-family-sans-serif);
+		font-size: var(--font-size);
+		line-height: var(--line-height);
+		letter-spacing: var(--letter-spacing);
+	}
+</style>
