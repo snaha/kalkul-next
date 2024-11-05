@@ -2,7 +2,7 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import SearchInput from '$lib/components/ui/input/search-input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { ChevronDown, Logout, OverflowMenuVertical, UserFollow } from 'carbon-icons-svelte'
+	import { ChevronDown, OverflowMenuVertical, UserFollow } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge, formatDate } from '$lib/utils'
 	import Avatar from '$lib/components/avatar.svelte'
@@ -18,23 +18,6 @@
 </script>
 
 <main>
-	<section class="top-bar horizontal">
-		<Typography variant="h4">{$_('allClients')}</Typography>
-		<div class="grower"></div>
-		<SearchInput dimension="compact" variant="solid" placeholder="Search"></SearchInput>
-		<Button dimension="compact" variant="strong" onclick={addClient}
-			><UserFollow />{$_('addClient')}</Button
-		>
-		<Button
-			dimension="compact"
-			variant="strong"
-			onclick={() => {
-				adapter.signOut()
-			}}
-		>
-			<Logout size={24} /></Button
-		>
-	</section>
 	{#if adapter.clients}
 		{#if adapter.clients.loading}
 			<Typography>Loading...</Typography><Loader />
@@ -46,6 +29,14 @@
 				<Button variant="strong" onclick={addClient}><UserFollow />{$_('addClient')}</Button>
 			</section>
 		{:else}
+			<section class="top-bar horizontal">
+				<Typography variant="h4">{$_('allClients')}</Typography>
+				<div class="grower"></div>
+				<SearchInput dimension="compact" variant="solid" placeholder="Search"></SearchInput>
+				<Button dimension="compact" variant="strong" onclick={addClient}
+					><UserFollow />{$_('addClient')}</Button
+				>
+			</section>
 			<ul>
 				<li class="clients title">
 					<span>{$_('name')}<ChevronDown size={24} /></span>
@@ -89,6 +80,9 @@
 	}
 	main {
 		margin: var(--padding);
+	}
+	.top-bar {
+		padding-bottom: var(--padding);
 	}
 	.horizontal {
 		display: flex;

@@ -7,7 +7,6 @@
 		ChevronDown,
 		OverflowMenuVertical,
 		UserFollow,
-		UserSettings,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatDate } from '$lib/utils'
@@ -48,15 +47,6 @@
 		<div class="grower"></div>
 		<Button dimension="compact" variant="strong" onclick={addPortfolio}
 			><Add size={24} />{$_('addPortfolio')}</Button
-		>
-		<Button
-			dimension="compact"
-			variant="secondary"
-			onclick={() => {
-				adapter.signOut()
-			}}
-		>
-			<UserSettings size={24} /></Button
 		>
 	</section>
 	<main>
