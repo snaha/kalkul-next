@@ -9,18 +9,17 @@
 	import { ArrowRight } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import UpdatePassword from '$lib/components/update-password.svelte'
+	import { authStore } from '$lib/stores/auth.svelte'
 
 	let { children } = $props()
 
 	let login: boolean = $state(false)
 	let registration: boolean = $state(false)
-	let passworRecovery: boolean = $derived(adapter.authStore.passwordRecovery)
-	const isLoggedIn = $derived(adapter.authStore.isLoggedIn)
-	let loggedOut: boolean = $derived(!isLoggedIn && !registration && !login && !passworRecovery)
+	let passwordRecovery: boolean = $derived(authStore.passwordRecovery)
+	const isLoggedIn = $derived(authStore.isLoggedIn)
+	let loggedOut: boolean = $derived(!isLoggedIn && !registration && !login && !passwordRecovery)
 	onMount(() => {
-		console.debug(isLoggedIn)
 		adapter.start()
-		console.debug('after', isLoggedIn)
 	})
 	onDestroy(() => {
 		adapter.stop()
@@ -68,7 +67,7 @@
 		}}
 		cancel={() => (login = false)}
 	/>
-{:else if passworRecovery}
+{:else if passwordRecovery}
 	<UpdatePassword />
 {:else if children}
 	{@render children()}

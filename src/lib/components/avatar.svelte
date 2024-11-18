@@ -11,8 +11,6 @@
 
 	let { name, birthDate, imageURI, size = 40 }: Props = $props()
 
-	console.debug({ birthDate })
-
 	const seed = $derived(name + ' ' + birthDate.getDate())
 	let avatar = $derived(
 		createAvatar(initials, {

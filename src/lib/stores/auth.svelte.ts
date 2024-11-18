@@ -1,16 +1,16 @@
 import type { User } from '@supabase/supabase-js'
 interface AuthStore {
 	isLoggedIn: boolean
-	user: User | null
+	user?: User
 	loading: boolean
 	passwordRecovery: boolean
 }
 
 export function withAuthStore(): AuthStore {
-	let user = $state<User | null>(null)
+	let user = $state<User | undefined>()
 	let loading = $state(false)
 	let passwordRecovery = $state(false)
-	const isLoggedIn = $derived(user !== null)
+	const isLoggedIn = $derived(user !== undefined)
 
 	return {
 		get isLoggedIn() {
@@ -22,7 +22,7 @@ export function withAuthStore(): AuthStore {
 		get user() {
 			return user
 		},
-		set user(value: User | null) {
+		set user(value: User | undefined) {
 			user = value
 			loading = false
 		},
@@ -34,3 +34,5 @@ export function withAuthStore(): AuthStore {
 		},
 	}
 }
+
+export const authStore = withAuthStore()

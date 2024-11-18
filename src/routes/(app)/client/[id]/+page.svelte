@@ -11,15 +11,15 @@
 	import { _ } from 'svelte-i18n'
 	import { formatDate } from '$lib/utils'
 	import Avatar from '$lib/components/avatar.svelte'
-	import adapter from '$lib/adapters'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
 	import { page } from '$app/stores'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
+	import { clientStore } from '$lib/stores/clients.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
-	const client = $derived(adapter.clients.data.find((client) => client.id === clientId))
+	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolios = $derived(
 		portfolioStore.data.filter((portfolio) => portfolio.client === clientId),
 	)

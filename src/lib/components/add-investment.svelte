@@ -82,6 +82,7 @@
 		unit="%"
 		type="number"
 		step={0.001}
+		min={0}
 	></Input>
 	<section class="horizontal">
 		<Input
@@ -93,6 +94,7 @@
 			label={$_('entryFee')}
 			unit="%"
 			step={'.001'}
+			min={0}
 			class="grower"
 		></Input>
 		<Select
@@ -127,6 +129,7 @@
 			unit={exitFeeType === 'percentage' ? '%' : currency}
 			bind:value={exitFee}
 			step={'.001'}
+			min={0}
 			class="grower"
 		></Input>
 	</section>
@@ -137,6 +140,8 @@
 		placeholder={'0'}
 		label={$_('successFee')}
 		unit="%"
+		min={0}
+		step={0.001}
 		bind:value={successFee}
 	></Input>
 
@@ -159,6 +164,7 @@
 			unit={managementFeeType === 'percentage' ? '%' : currency}
 			bind:value={managementFee}
 			step={'.001'}
+			min={0}
 			class="grower"
 		></Input>
 	</section>

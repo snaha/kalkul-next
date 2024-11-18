@@ -10,7 +10,7 @@
 	import Option from '$lib/components/ui/select/option.svelte'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
-	import { capitalizeFirstLetter, formatAge, formatDate } from '$lib/utils'
+	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 
 	type Props = {
@@ -28,12 +28,12 @@
 	let currency = $state('EUR')
 	let inflation = $state(0.0225)
 	let nowDate = new Date()
-	let startDate = $state(formatDate(nowDate))
+	let startDate = $state(nowDate)
 	let horizon = $state('0')
 	let initialHorizonYears = 30
 	let initialEndDate = new Date(nowDate)
 	initialEndDate.setFullYear(nowDate.getFullYear() + initialHorizonYears)
-	let endDate = $state(formatDate(initialEndDate))
+	let endDate = $state(initialEndDate)
 
 	let createDisabled = $derived(name === '')
 
@@ -42,8 +42,8 @@
 			client: client.id,
 			name,
 			currency,
-			start_date: startDate,
-			end_date: endDate,
+			start_date: startDate.toDateString(),
+			end_date: endDate.toDateString(),
 			inflation_rate: inflation,
 		})
 		close()
@@ -71,7 +71,7 @@
 		const date = new Date(startDate)
 		date.setFullYear(new Date(startDate).getFullYear() + horizonNumber)
 
-		endDate = formatDate(date)
+		endDate = date
 	}
 
 	function checkHorizonInput() {

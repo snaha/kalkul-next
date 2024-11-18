@@ -26,6 +26,7 @@ export const supportedCurrenciesWithLabels: CurrencyWithLabel = {
 export interface Store<T> {
 	data: T[]
 	loading: boolean
+	reset: () => void
 }
 
 export type Client = Tables<'client'>
@@ -34,6 +35,10 @@ export type ClientNoId = Omit<Client, 'id' | 'created_at' | 'advisor'>
 export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
 export type Portfolio = Tables<'portfolio'>
 export type Investment = Tables<'investment'>
+export type Transaction = Tables<'transaction'>
 
 export type EntryFeeType = 'ongoing' | 'forty-sixty' | 'upfront'
 export type FeeType = 'percentage' | 'fixed'
+
+export type TimeUnit = 'day' | 'week' | 'month' | 'year'
+export type TransactionType = 'deposit' | 'withdrawal'

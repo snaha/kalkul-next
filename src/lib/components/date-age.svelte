@@ -1,24 +1,37 @@
 <script lang="ts">
 	import DateInput from '$lib/components/ui/input/date-input.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
-	import { formatAge, formatDate } from '$lib/utils'
+	import { formatAge } from '$lib/utils'
+	import { addYears } from 'date-fns'
 	import { _ } from 'svelte-i18n'
 
+	type Dimension = 'default' | 'large' | 'compact' | 'small'
+
 	type Props = {
+		dimension?: Dimension
 		dateInputLabel: string
 		ageLabel: string
 		agePlaceholder: string
-		date: string
+		date: Date
 		birthDate: Date
+		onchange?: () => void
 	}
 
-	let { dateInputLabel, ageLabel, agePlaceholder, date = $bindable(), birthDate }: Props = $props()
+	let {
+		dimension = 'default',
+		dateInputLabel,
+		ageLabel,
+		agePlaceholder,
+		date = $bindable(),
+		birthDate,
+		onchange,
+	}: Props = $props()
 
-	let age = $state(formatAge(new Date(birthDate), new Date(date)))
+	let age = $state(formatAge(birthDate, date))
 
 	function onAgeInput() {
 		if (!age) {
-			date = formatDate(new Date())
+			date = new Date()
 			return
 		}
 		let ageNumber = parseInt(age, 10)
@@ -30,10 +43,7 @@
 			ageNumber = Math.abs(ageNumber)
 		}
 
-		const dateOfAge = new Date(birthDate)
-		dateOfAge.setFullYear(birthDate.getFullYear() + ageNumber)
-
-		date = formatDate(dateOfAge)
+		date = addYears(birthDate, ageNumber)
 	}
 
 	function checkAgeInput() {
@@ -62,24 +72,28 @@
 <section class="horizontal">
 	<DateInput
 		variant="solid"
-		dimension="compact"
+		{dimension}
 		label={dateInputLabel}
 		bind:value={date}
-		class="grower"
+		class="date-age-grower"
+		style="max-width: 100%"
+		{onchange}
 	></DateInput>
 	<Input
 		type="number"
 		variant="solid"
-		dimension="compact"
+		{dimension}
 		placeholder={agePlaceholder}
 		label={ageLabel}
 		unit={$_('years')}
 		bind:value={age}
-		class="grower"
+		class="date-age-grower"
+		style="max-width: 100%"
 		oninput={onAgeInput}
 		step={1}
 		min={0}
 		onblur={checkAgeInput}
+		{onchange}
 	></Input>
 </section>
 
@@ -91,7 +105,8 @@
 		align-items: center;
 		gap: var(--padding);
 	}
-	.horizontal :global(.grower) {
+	.horizontal :global(.date-age-grower) {
 		flex: 1;
+		max-width: calc(50% - var(--half-padding));
 	}
 </style>

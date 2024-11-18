@@ -161,6 +161,10 @@
 	}
 
 	$effect(() => {
+		stringValue = formatDate(value)
+	})
+
+	$effect(() => {
 		window.addEventListener('click', close)
 		return () => {
 			window.removeEventListener('click', close)
@@ -185,19 +189,6 @@
 		window.addEventListener('resize', resize)
 		return () => {
 			window.removeEventListener('resize', resize)
-		}
-	})
-	$effect(() => {
-		const menuButton = document.querySelector('.menu-button-container') as HTMLElement
-		const modeButton = document.querySelector('.dark-mode-button-container') as HTMLElement
-		if (isMobile && showDatePicker) {
-			menuButton.style.zIndex = '1'
-			modeButton.style.zIndex = '1'
-			document.body.style.overflow = 'hidden'
-		} else {
-			menuButton.style.zIndex = '100'
-			modeButton.style.zIndex = '100'
-			document.body.style.overflow = 'auto'
 		}
 	})
 </script>

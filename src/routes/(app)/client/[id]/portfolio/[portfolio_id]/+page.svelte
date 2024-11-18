@@ -4,7 +4,6 @@
 	import { Add, DocumentExport, Settings } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Avatar from '$lib/components/avatar.svelte'
-	import adapter from '$lib/adapters'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import routes from '$lib/routes'
 	import { page } from '$app/stores'
@@ -12,9 +11,10 @@
 	import { goto } from '$app/navigation'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import InvestmentCard from '$lib/components/investment-card.svelte'
+	import { clientStore } from '$lib/stores/clients.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
-	const client = $derived(adapter.clients.data.find((client) => client.id === clientId))
+	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolioId = parseInt($page.params.portfolio_id, 10)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investments = $derived(investmentStore.filter(portfolioId))

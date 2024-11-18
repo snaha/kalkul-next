@@ -3,6 +3,7 @@
 	import Dropdown from '$lib/components/ui/dropdown.svelte'
 	import { ChatBot, Logout, Moon, SettingsEdit, UserAvatarFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
+	import { authStore } from '$lib/stores/auth.svelte'
 	let { children } = $props()
 
 	function notImplemented() {
@@ -15,7 +16,7 @@
 		<img src="/logo.svg" alt="Logo" width="40" height="40" />
 	</a>
 	{#snippet trigger()}
-		<UserAvatarFilled size={24} />{adapter.authStore.user?.email}
+		<UserAvatarFilled size={24} />{authStore.user?.email}
 	{/snippet}
 	<div class="user-info">
 		<Dropdown {trigger} dimension="compact">

@@ -1,39 +1,50 @@
-import { createClient, type Subscription as SupabaseSubscription } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 import type { Adapter } from '..'
-import { withAuthStore } from '$lib/stores/auth.svelte'
-import type { Client, ClientNoId, Investment, MetaFields, Portfolio } from '$lib/types'
-import { withClientStore, type ClientStore } from '$lib/stores/clients.svelte'
-import { portfolioStore, type PortfolioStore } from '$lib/stores/portfolio.svelte'
-import { investmentStore, type InvestmentStore } from '$lib/stores/investment.svelte'
+import { authStore } from '$lib/stores/auth.svelte'
+import {
+	type Transaction,
+	type Client,
+	type ClientNoId,
+	type Investment,
+	type MetaFields,
+	type Portfolio,
+	type Store,
+} from '$lib/types'
+import { clientStore } from '$lib/stores/clients.svelte'
+import { portfolioStore } from '$lib/stores/portfolio.svelte'
+import { investmentStore } from '$lib/stores/investment.svelte'
+import { transactionStore } from '$lib/stores/transaction.svelte'
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
 
-const clientTable = 'client'
-const portfolioTable = 'portfolio'
-const investmentTable = 'investment'
-
 interface Subscription {
 	unsubscribe: () => void
-	promise: PromiseLike<void>
 }
 
-function subscribeClients(store: ClientStore, uuid: string): Subscription {
+interface StoreSubscription extends Subscription {
+	queryPromise: PromiseLike<void>
+}
+
+function subscribe<T extends { id: string | number }>(
+	store: Store<T>,
+	table: string,
+	name: string,
+	ids: (string | number)[],
+): StoreSubscription {
 	store.reset()
 
-	let query = supabase.from(clientTable).select('*')
+	const query = supabase.from(table).select('*').in(name, ids)
 
-	query = query.eq('advisor', uuid)
-
-	const promise = query.then((res) => {
+	const queryPromise = query.then((res) => {
 		if (res.error) {
 			console.error('Error fetching data:', res.error)
 		} else {
-			store.data = res.data as Client[]
+			store.data = res.data as T[]
 		}
 	})
 
-	const channel = supabase.channel(`public:${clientTable}`)
+	const channel = supabase.channel(`public:${table}`)
 
 	channel
 		.on(
@@ -41,12 +52,12 @@ function subscribeClients(store: ClientStore, uuid: string): Subscription {
 			{
 				event: '*',
 				schema: 'public',
-				table: clientTable,
+				table,
 			},
 			(payload) => {
 				switch (payload.eventType) {
 					case 'INSERT':
-						store.data.push(payload.new as Client)
+						store.data.push(payload.new as T)
 						break
 					case 'UPDATE':
 						store.data = store.data.map((item) =>
@@ -71,163 +82,72 @@ function subscribeClients(store: ClientStore, uuid: string): Subscription {
 			supabase.removeChannel(channel)
 			store.reset()
 		},
-		promise,
-	}
-}
-
-function subscribePortfolios(store: PortfolioStore, clientIds: number[]): Subscription {
-	store.reset()
-
-	const query = supabase.from(portfolioTable).select('*').in('client', clientIds)
-
-	const promise = query.then((res) => {
-		if (res.error) {
-			console.error('Error fetching data:', res.error)
-		} else {
-			store.data = res.data as Portfolio[]
-		}
-	})
-
-	const channel = supabase.channel(`public:${portfolioTable}`)
-
-	channel
-		.on(
-			'postgres_changes',
-			{
-				event: '*',
-				schema: 'public',
-				table: portfolioTable,
-			},
-			(payload) => {
-				switch (payload.eventType) {
-					case 'INSERT':
-						store.data.push(payload.new as Portfolio)
-						break
-					case 'UPDATE':
-						store.data = store.data.map((item) =>
-							item.id === payload.new.id ? { ...item, ...payload.new } : item,
-						)
-						break
-					case 'DELETE':
-						store.data = store.data.filter((item) => item.id !== payload.old.id)
-						break
-				}
-			},
-		)
-		.subscribe((status, error) => {
-			console.log('Status:', status)
-			if (error) {
-				console.error('Subscription error:', error)
-			}
-		})
-
-	return {
-		unsubscribe: () => {
-			supabase.removeChannel(channel)
-			store.reset()
-		},
-		promise,
-	}
-}
-
-function subscribeInvestments(store: InvestmentStore, portfolioIds: number[]): Subscription {
-	store.reset()
-
-	const query = supabase.from(investmentTable).select('*').in('portfolio', portfolioIds)
-
-	const promise = query.then((res) => {
-		if (res.error) {
-			console.error('Error fetching data:', res.error)
-		} else {
-			store.data = res.data as Investment[]
-		}
-	})
-
-	const channel = supabase.channel(`public:${investmentTable}`)
-
-	channel
-		.on(
-			'postgres_changes',
-			{
-				event: '*',
-				schema: 'public',
-				table: investmentTable,
-			},
-			(payload) => {
-				switch (payload.eventType) {
-					case 'INSERT':
-						store.data.push(payload.new as Investment)
-						break
-					case 'UPDATE':
-						store.data = store.data.map((item) =>
-							item.id === payload.new.id ? { ...item, ...payload.new } : item,
-						)
-						break
-					case 'DELETE':
-						store.data = store.data.filter((item) => item.id !== payload.old.id)
-						break
-				}
-			},
-		)
-		.subscribe((status, error) => {
-			console.log('Status:', status)
-			if (error) {
-				console.error('Subscription error:', error)
-			}
-		})
-
-	return {
-		unsubscribe: () => {
-			supabase.removeChannel(channel)
-			store.reset()
-		},
-		promise,
+		queryPromise,
 	}
 }
 
 export default class Supabase implements Adapter {
-	public authStore = withAuthStore()
-	private clientsStore = withClientStore()
-	private clientsSubscription: Subscription | undefined = undefined
-	private portfoliosSubscription: Subscription | undefined = undefined
-	private investmentSubscription: Subscription | undefined = undefined
-	private authSubscription: SupabaseSubscription | undefined
+	private subscriptions: Subscription[] = []
 
 	start() {
-		if (this.authSubscription) return
+		if (authStore.user) return
 
 		supabase.auth.startAutoRefresh()
 
 		const onAuthStateChangeRes = supabase.auth.onAuthStateChange((event) => {
 			setTimeout(async () => {
-				if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+				if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
 					const { data, error } = await supabase.auth.getUser()
 					if (error) {
 						console.error('Failed to fetch user', error)
 						throw new Error('Failed to fetch user')
 					}
 					// New user or different user is signed in
-					if (this.authStore.user?.id !== data?.user?.id) {
-						this.authStore.user = data.user
-						if (this.clientsSubscription) this.clientsSubscription.unsubscribe()
-						this.clientsSubscription = subscribeClients(this.clients, data.user.id)
+					if (authStore.user?.id !== data?.user?.id) {
+						authStore.user = data.user
+						this.stop()
 
-						await this.clientsSubscription.promise
-						this.portfoliosSubscription = subscribePortfolios(
+						const clientsSubscription = subscribe<Client>(clientStore, 'client', 'advisor', [
+							data.user.id,
+						])
+						this.subscriptions.push(clientsSubscription)
+
+						await clientsSubscription.queryPromise
+
+						const portfoliosSubscription = subscribe<Portfolio>(
 							portfolioStore,
-							this.clientsStore.data.map((client) => client.id),
+							'portfolio',
+							'client',
+							clientStore.data.map((client) => client.id),
 						)
+						this.subscriptions.push(portfoliosSubscription)
 
-						await this.portfoliosSubscription.promise
-						this.investmentSubscription = subscribeInvestments(
+						await portfoliosSubscription.queryPromise
+
+						const investmentSubscription = subscribe<Investment>(
 							investmentStore,
+							'investment',
+							'portfolio',
 							portfolioStore.data.map((portfolio) => portfolio.id),
 						)
+						this.subscriptions.push(investmentSubscription)
+
+						await investmentSubscription.queryPromise
+
+						const transactionSubscription = subscribe<Transaction>(
+							transactionStore,
+							'transaction',
+							'investment_id',
+							investmentStore.data.map((investment) => investment.id),
+						)
+						this.subscriptions.push(transactionSubscription)
+
+						await transactionSubscription.queryPromise
 					}
 				} else if (event === 'PASSWORD_RECOVERY') {
-					this.authStore.passwordRecovery = true
+					authStore.passwordRecovery = true
 				} else if (event === 'SIGNED_OUT') {
-					this.authStore.user = null
+					authStore.user = undefined
 					this.stop()
 				} else {
 					console.log('User status changed', event)
@@ -235,21 +155,11 @@ export default class Supabase implements Adapter {
 			}, 0)
 		})
 
-		this.authSubscription = onAuthStateChangeRes.data.subscription
+		this.subscriptions.push(onAuthStateChangeRes.data.subscription)
 	}
 
 	stop() {
-		this.authSubscription?.unsubscribe()
-		this.authSubscription = undefined
-
-		this.clientsSubscription?.unsubscribe()
-		this.clientsSubscription = undefined
-
-		this.portfoliosSubscription?.unsubscribe()
-		this.portfoliosSubscription = undefined
-
-		this.investmentSubscription?.unsubscribe()
-		this.investmentSubscription = undefined
+		this.subscriptions.forEach((subscription) => subscription.unsubscribe())
 	}
 
 	async signUp(email: string, password: string) {
@@ -291,7 +201,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async addClient(client: ClientNoId) {
-		const { data, error } = await supabase.from(clientTable).insert(client).select('id').single()
+		const { data, error } = await supabase.from('client').insert(client).select('id').single()
 		if (error) {
 			console.error('Failed to add client', error)
 			throw new Error(error.message)
@@ -303,42 +213,57 @@ export default class Supabase implements Adapter {
 		return data.id
 	}
 
-	async addPortfolio(portfolio: Omit<Portfolio, MetaFields>) {
-		const { data, error } = await supabase
-			.from(portfolioTable)
-			.insert(portfolio)
-			.select('id')
-			.single()
+	private async addData<T>(tableName: string, value: Omit<T, MetaFields>) {
+		const { data, error } = await supabase.from(tableName).insert(value).select('id').single()
 		if (error) {
-			console.error('Failed to add portfolio', error)
+			console.error(`Failed to add ${tableName}`, error)
 			throw new Error(error.message)
 		}
 		if (data.id === null) {
-			console.error('Failed to get id of added portfolio', error)
-			throw new Error('Failed to get id of added portfolio')
+			console.error(`Failed to get id of added ${tableName}`, error)
+			throw new Error(`Failed to get id of added ${tableName}`)
 		}
 		return data.id
+	}
+
+	async addPortfolio(portfolio: Omit<Portfolio, MetaFields>) {
+		return this.addData('portfolio', portfolio)
 	}
 
 	async addInvestment(investment: Omit<Investment, MetaFields>) {
-		const { data, error } = await supabase
-			.from(investmentTable)
-			.insert(investment)
-			.select('id')
-			.single()
-
-		if (error) {
-			console.error('Failed to add investment', error)
-			throw new Error(error.message)
-		}
-		if (data.id === null) {
-			console.error('Failed to get id of added investment', error)
-			throw new Error('Failed to get id of added investment')
-		}
-		return data.id
+		return this.addData('investment', investment)
 	}
 
-	get clients(): ClientStore {
-		return this.clientsStore
+	async addTransaction(transaction: Omit<Transaction, MetaFields>) {
+		return this.addData('transaction', transaction)
+	}
+
+	private async updateData<T extends { id: number }>(
+		tableName: string,
+		value: Partial<T> & Pick<T, 'id'>,
+	) {
+		const { error } = await supabase.from(tableName).update(value).eq('id', value.id)
+
+		if (error) {
+			console.error(`Failed to update ${tableName}`, error)
+			throw new Error(error.message)
+		}
+	}
+
+	async updateTransaction(transaction: Partial<Transaction> & Pick<Transaction, 'id'>) {
+		this.updateData('transaction', transaction)
+	}
+
+	private async deleteData<T extends { id: number }>(tableName: string, value: T) {
+		const { error } = await supabase.from(tableName).delete().eq('id', value.id)
+
+		if (error) {
+			console.error(`Failed to delete from ${tableName}`, error)
+			throw new Error(error.message)
+		}
+	}
+
+	async deleteTransaction(transaction: Partial<Transaction> & Pick<Transaction, 'id'>) {
+		return this.deleteData('transaction', transaction)
 	}
 }

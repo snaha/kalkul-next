@@ -34,6 +34,7 @@
 		class: className = '',
 		children,
 		variant = 'outline',
+		onchange = $bindable(),
 		...restProps
 	}: Props = $props()
 
@@ -70,7 +71,12 @@
 
 	// Bind store value to the value prop
 	$effect(() => {
-		value = store.value
+		if (value !== store.value) {
+			value = store.value
+			if (onchange && input) {
+				onchange({ ...new Event('onchange'), currentTarget: input })
+			}
+		}
 	})
 	$effect(() => {
 		if (!store.open && store.value === undefined) {

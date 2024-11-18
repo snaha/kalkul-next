@@ -158,6 +158,66 @@ export type Database = {
           },
         ]
       }
+      transaction: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          end_date: string | null
+          id: number
+          investment_id: number
+          label: string | null
+          last_edited_at: string | null
+          repeat: number | null
+          repeat_unit: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date: string
+          end_date?: string | null
+          id?: number
+          investment_id: number
+          label?: string | null
+          last_edited_at?: string | null
+          repeat?: number | null
+          repeat_unit?: string | null
+          type: string
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          end_date?: string | null
+          id?: number
+          investment_id?: number
+          label?: string | null
+          last_edited_at?: string | null
+          repeat?: number | null
+          repeat_unit?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_investment_id_fkey"
+            columns: ["investment_id"]
+            isOneToOne: false
+            referencedRelation: "investment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

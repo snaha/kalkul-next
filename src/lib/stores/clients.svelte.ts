@@ -27,3 +27,5 @@ export function withClientStore(): ClientStore {
 		},
 	}
 }
+
+export const clientStore = withClientStore()
