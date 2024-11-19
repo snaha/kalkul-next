@@ -1,70 +1,134 @@
 <script lang="ts">
-	import Button from './button.svelte'
-	import type { HTMLAttributes } from 'svelte/elements'
-	import type { Dimension } from './button.svelte'
 	import type { Snippet } from 'svelte'
+	import Button, { type Variant, type Dimension } from '$lib/components/ui/button.svelte'
 
-	interface Props extends HTMLAttributes<HTMLDivElement> {
-		dimension?: Dimension
-		open?: boolean
-		trigger: Snippet
+	type Props = {
+		disabled?: boolean
+		up?: boolean
+		left?: boolean
+		button: Snippet
+		children: Snippet
+		buttonVariant?: Variant
+		buttonDimension?: Dimension
+		autoClose?: boolean
 	}
-	let { children, trigger, open = false, dimension = 'default' }: Props = $props()
+
+	let {
+		disabled = false,
+		up = false,
+		left = false,
+		button,
+		children,
+		buttonVariant = 'ghost',
+		buttonDimension = 'default',
+		autoClose = true,
+	}: Props = $props()
+
+	let showDropdown = $state(false)
+	let dropdownElement: HTMLElement
+	let dropdownMenu: HTMLElement
+	let dropdownId: string
+
+	function close(ev: MouseEvent) {
+		const target = ev.target as unknown as Node
+		if (dropdownElement.contains(target)) {
+			// Clicked on the dropdown button or inside the dropdown
+			if (dropdownMenu.contains(target) && autoClose) {
+				showDropdown = false
+			}
+		} else {
+			// Clicked outside the dropdown
+			showDropdown = false
+		}
+	}
+
+	function onKeyUp(ev: KeyboardEvent) {
+		if (ev.key === 'Escape') {
+			showDropdown = false
+		}
+	}
 
 	$effect(() => {
-		function closeMenu() {
-			if (open) open = false
-		}
-
-		window.addEventListener('click', closeMenu)
+		window.addEventListener('click', close)
+		window.addEventListener('keyup', onKeyUp)
 
 		return () => {
-			window.removeEventListener('click', closeMenu)
+			window.removeEventListener('click', close)
+			window.removeEventListener('keyup', onKeyUp)
 		}
 	})
+
+	function onClick() {
+		if (!disabled) showDropdown = !showDropdown
+	}
+
+	function onKeyPress() {
+		// omit keypress because onClick will be dispatched anyways
+	}
 </script>
 
-<div class="relative">
-	<Button
-		{dimension}
-		variant="ghost"
-		onclick={() => {
-			if (!open)
-				setTimeout(() => {
-					open = true
-				})
-		}}
-	>
-		{#if trigger}
-			{@render trigger()}
-		{/if}
-	</Button>
-	<div class="dropdown" class:open>
-		{#if children}
+<div
+	bind:this={dropdownElement}
+	class="dropdown"
+	role="combobox"
+	aria-haspopup="listbox"
+	aria-expanded={showDropdown}
+	aria-controls={dropdownId}
+	tabindex={-1}
+>
+	<div onclick={onClick} onkeypress={onKeyPress} role="button" tabindex={-1}>
+		<Button
+			style="max-width:320px;"
+			variant={buttonVariant}
+			dimension={buttonDimension}
+			active={showDropdown}>{@render button()}</Button
+		>
+	</div>
+
+	<div class={`root`} aria-hidden={!showDropdown}>
+		<div
+			bind:this={dropdownMenu}
+			class:hidden={!showDropdown}
+			class:up
+			class:left
+			id={dropdownId}
+			role="listbox"
+			aria-labelledby="dropdown-button"
+			tabindex={-1}
+		>
 			{@render children()}
-		{/if}
+		</div>
 	</div>
 </div>
 
 <style lang="postcss">
-	.relative {
+	.root {
 		position: relative;
-	}
-	.dropdown {
-		display: none;
-		position: absolute;
-		bottom: -0.25rem;
-		left: 100%;
-		flex-direction: column;
-		gap: 1rem;
-		transform: translate(-100%, 100%);
-		z-index: 1;
-		border: 1px solid var(--colors-low);
-		border-radius: var(--border-radius);
-		background: var(--colors-base);
-		padding: var(--padding);
-		&.open {
-			display: flex;
+
+		div {
+			position: absolute;
+			z-index: 1;
+			backdrop-filter: blur(var(--blur));
+			inset: calc(100% + var(--spacing-6)) 0 auto auto;
+			box-shadow: 0 1px 5px 0 rgba(var(--color-accent-rgb, var(--color-dark-base-rgb)), 0.25);
+			border-radius: var(--border-radius);
+			width: max-content;
+			max-width: 450px;
+
+			&.hidden {
+				display: none;
+			}
+
+			&.up {
+				inset: auto 0 50px auto;
+			}
+
+			&.left {
+				top: 4px;
+				right: 0;
+				bottom: auto;
+				left: auto;
+			}
 		}
 	}
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements'
-	type Variant = 'strong' | 'secondary' | 'ghost' | 'solid' | 'darkoverlay' | 'lightoverlay'
+	export type Variant = 'strong' | 'secondary' | 'ghost' | 'solid' | 'darkoverlay' | 'lightoverlay'
 	export type Dimension = 'default' | 'large' | 'compact' | 'small'
 	type Mode = 'light' | 'dark' | 'auto'
 	type ButtonProps = {
