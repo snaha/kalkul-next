@@ -116,7 +116,7 @@
 			return
 		}
 
-		if (confirm('Are you sure you want to delete?')) {
+		if (confirm($_('Are you sure you want to delete?'))) {
 			await adapter.deleteTransaction(transaction)
 			close()
 		}
@@ -208,7 +208,13 @@
 <form class="vertical">
 	<section class="horizontal">
 		<Typography variant="h5"
-			>{$_(transaction.type === 'deposit' ? 'Add deposit' : 'Add withdrawal')}</Typography
+			>{formType === 'create'
+				? transaction.type === 'deposit'
+					? $_('Add deposit')
+					: $_('Add withdrawal')
+				: transaction.type === 'deposit'
+					? $_('Edit deposit')
+					: $_('Edit withdrawal')}</Typography
 		>
 	</section>
 	<div class="spacer"></div>
@@ -224,7 +230,7 @@
 		variant="solid"
 		dimension="small"
 		placeholder={'0'}
-		label={$_(transaction.type == 'deposit' ? 'Deposit amount' : 'Withdrawal amount')}
+		label={transaction.type == 'deposit' ? $_('Deposit amount') : $_('Withdrawal amount')}
 		unit={portfolio.currency}
 		bind:value={amount}
 		min={0}
@@ -233,14 +239,14 @@
 	></Input>
 	<Toggle
 		dimension="small"
-		label={$_(transaction.type === 'deposit' ? 'Recurring deposit' : 'Recurring withdrawal')}
+		label={transaction.type === 'deposit' ? $_('Recurring deposit') : $_('Recurring withdrawal')}
 		bind:checked={isRecurring}
 		onchange={toggleRecurring}
 	></Toggle>
 	<DateAge
 		dimension="small"
-		dateInputLabel={$_(transaction.type === 'deposit' ? 'Deposit date' : 'Withdrawal date')}
-		ageLabel={$_(transaction.type === 'deposit' ? 'Age at deposit' : 'Age at withdrawal')}
+		dateInputLabel={transaction.type === 'deposit' ? $_('Deposit date') : $_('Withdrawal date')}
+		ageLabel={transaction.type === 'deposit' ? $_('Age at deposit') : $_('Age at withdrawal')}
 		agePlaceholder={'0'}
 		bind:date
 		birthDate={new Date(client.birth_date)}
@@ -330,9 +336,9 @@
 	</menu>
 	{#if formType === 'edit'}
 		<Button variant="ghost" dimension="small" onclick={deleteTransaction}
-			><TrashCan size={16} />{$_(
-				transaction.type === 'deposit' ? 'Delete deposit' : 'Delete withdrawal',
-			)}</Button
+			><TrashCan size={16} />{transaction.type === 'deposit'
+				? $_('Delete deposit')
+				: $_('Delete withdrawal')}</Button
 		>
 	{/if}
 </form>

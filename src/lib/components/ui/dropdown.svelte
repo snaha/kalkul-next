@@ -58,12 +58,9 @@
 		}
 	})
 
-	function onClick() {
+	function onClick(e: MouseEvent) {
 		if (!disabled) showDropdown = !showDropdown
-	}
-
-	function onKeyPress() {
-		// omit keypress because onClick will be dispatched anyways
+		e.preventDefault()
 	}
 </script>
 
@@ -76,14 +73,13 @@
 	aria-controls={dropdownId}
 	tabindex={-1}
 >
-	<div onclick={onClick} onkeypress={onKeyPress} role="button" tabindex={-1}>
-		<Button
-			style="max-width:320px;"
-			variant={buttonVariant}
-			dimension={buttonDimension}
-			active={showDropdown}>{@render button()}</Button
-		>
-	</div>
+	<Button
+		onclick={onClick}
+		style="max-width:320px;"
+		variant={buttonVariant}
+		dimension={buttonDimension}
+		active={showDropdown}>{@render button()}</Button
+	>
 
 	<div class={`root`} aria-hidden={!showDropdown}>
 		<div
@@ -108,9 +104,6 @@
 		div {
 			position: absolute;
 			z-index: 1;
-			backdrop-filter: blur(var(--blur));
-			inset: calc(100% + var(--spacing-6)) 0 auto auto;
-			box-shadow: 0 1px 5px 0 rgba(var(--color-accent-rgb, var(--color-dark-base-rgb)), 0.25);
 			border-radius: var(--border-radius);
 			width: max-content;
 			max-width: 450px;

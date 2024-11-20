@@ -1,10 +1,19 @@
 <script lang="ts">
 	import type { Transaction } from '$lib/types'
-	import { OverflowMenuVertical } from 'carbon-icons-svelte'
+	import {
+		Copy,
+		OverflowMenuVertical,
+		SettingsEdit,
+		TrashCan,
+		ViewFilled,
+	} from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatCurrency, formatDate, formatNumber, month } from '$lib/utils'
+	import Dropdown from './ui/dropdown.svelte'
+	import adapter from '$lib/adapters'
+	import { notImplemented } from '$lib/not-implemented'
 
 	type Props = {
 		transaction: Transaction
@@ -31,8 +40,37 @@
 		return word + 's'
 	}
 
-	function openTransaction() {
+	function openTransaction(e: MouseEvent) {
+		if (e.defaultPrevented) {
+			return
+		}
 		open(transaction)
+	}
+
+	async function deleteTransaction(e: Event) {
+		e.stopPropagation()
+
+		if (!transaction.id) {
+			return
+		}
+
+		if (confirm($_('Are you sure you want to delete?'))) {
+			await adapter.deleteTransaction(transaction)
+		}
+	}
+
+	async function duplicateTransaction(e: Event) {
+		e.stopPropagation()
+
+		if (!transaction.id) {
+			return
+		}
+
+		const duplicatedTransaction = {
+			...transaction,
+			id: undefined,
+		}
+		await adapter.addTransaction(duplicatedTransaction)
 	}
 </script>
 
@@ -48,7 +86,31 @@
 			{/if}
 		</Typography>
 		<div class="grower"></div>
-		<Button variant="ghost" dimension="compact"><OverflowMenuVertical size={16} /></Button>
+		<Dropdown buttonDimension="compact" left>
+			{#snippet button()}
+				<OverflowMenuVertical size={16} />
+			{/snippet}
+			<ul class="dropdown-menu">
+				<Button variant="ghost" dimension="compact" leftAlign onclick={notImplemented}
+					><ViewFilled size={24} />{$_('Show in charts')}</Button
+				>
+				<Button variant="ghost" dimension="compact" leftAlign onclick={openTransaction}
+					><SettingsEdit size={24} />{transaction.type === 'deposit'
+						? $_('Edit deposit details')
+						: $_('Edit withdrawal details')}</Button
+				>
+				<Button variant="ghost" dimension="compact" leftAlign onclick={duplicateTransaction}
+					><Copy size={24} />{transaction.type === 'deposit'
+						? $_('Duplicate deposit')
+						: $_('Duplicate withdrawal')}</Button
+				>
+				<Button variant="ghost" dimension="compact" leftAlign onclick={deleteTransaction}
+					><TrashCan size={24} />{transaction.type === 'deposit'
+						? $_('Delete deposit')
+						: $_('Delete withdrawal')}</Button
+				>
+			</ul>
+		</Dropdown>
 	</div>
 	<div class="info">
 		<Typography variant="small">{transaction.label}</Typography>
@@ -92,5 +154,16 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--quarter-padding);
+	}
+	.dropdown-menu {
+		display: flex;
+		flex-direction: column;
+		width: auto;
+		margin: 0;
+		padding: var(--padding);
+		gap: 0;
+		background-color: var(--colors-base);
+		border-radius: var(--quarter-padding);
+		border: solid 1px var(--colors-low);
 	}
 </style>
