@@ -42,3 +42,10 @@ export type FeeType = 'percentage' | 'fixed'
 
 export type TimeUnit = 'day' | 'week' | 'month' | 'year'
 export type TransactionType = 'deposit' | 'withdrawal'
+
+export interface PortfolioView {
+	portfolio: Portfolio
+	client: Client
+	investments: Investment[]
+	transactions: Transaction[]
+}

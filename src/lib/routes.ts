@@ -1,7 +1,5 @@
 export default {
 	HOME: '/',
-	DEPOSIT: (index?: number) => `/deposit${index === undefined ? '' : `/${index}`}`,
-	WITHDRAWAL: (index?: number) => `/withdrawal${index === undefined ? '' : `/${index}`}`,
 	NEW_CLIENT: '/client/new',
 	CLIENT: (id: number) => `/client/${id}`,
 	CLIENT_NEW_PORTFOLIO: (clientId: number) => `/client/${clientId}/portfolio/new`,
@@ -11,4 +9,5 @@ export default {
 		`/client/${clientId}/portfolio/${portfolioId}/investment/${investmentId}`,
 	NEW_INVESTMENT: (clientId: number, portfolioId: number) =>
 		`/client/${clientId}/portfolio/${portfolioId}/investment/new`,
+	SHARE: (portfolioId: number) => `/share/${portfolioId}`,
 }

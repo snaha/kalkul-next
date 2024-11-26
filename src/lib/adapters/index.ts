@@ -1,4 +1,11 @@
-import type { ClientNoId, Investment, MetaFields, Portfolio, Transaction } from '$lib/types'
+import type {
+	ClientNoId,
+	Investment,
+	MetaFields,
+	Portfolio,
+	PortfolioView,
+	Transaction,
+} from '$lib/types'
 import SupabaseAdapter from './supabase'
 
 export interface Adapter {
@@ -14,11 +21,17 @@ export interface Adapter {
 	updatePassword: (newPassword: string) => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>
+
 	addPortfolio: (portfolio: Omit<Portfolio, MetaFields>) => Promise<number>
+	updatePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
+
 	addInvestment: (investment: Omit<Investment, MetaFields>) => Promise<number>
+
 	addTransaction: (transaction: Omit<Transaction, MetaFields>) => Promise<number>
 	updateTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
 	deleteTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
+
+	portfolioView: (id: string) => Promise<PortfolioView | undefined>
 }
 
 export default new SupabaseAdapter() as Adapter

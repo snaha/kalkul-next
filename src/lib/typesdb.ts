@@ -1,3 +1,4 @@
+
 export type Json =
   | string
   | number
@@ -123,6 +124,7 @@ export type Database = {
           id: number
           inflation_rate: number
           last_edited_at: string
+          link: string | null
           name: string
           start_date: string
         }
@@ -134,6 +136,7 @@ export type Database = {
           id?: number
           inflation_rate: number
           last_edited_at?: string
+          link?: string | null
           name: string
           start_date: string
         }
@@ -145,6 +148,7 @@ export type Database = {
           id?: number
           inflation_rate?: number
           last_edited_at?: string
+          link?: string | null
           name?: string
           start_date?: string
         }

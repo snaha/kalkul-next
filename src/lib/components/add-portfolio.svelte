@@ -45,6 +45,7 @@
 			start_date: startDate.toDateString(),
 			end_date: endDate.toDateString(),
 			inflation_rate: inflation,
+			link: null,
 		})
 		close()
 	}

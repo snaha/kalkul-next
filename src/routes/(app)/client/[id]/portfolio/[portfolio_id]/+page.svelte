@@ -26,6 +26,10 @@
 	function notImplemented() {
 		alert('Not implemented!')
 	}
+
+	function share() {
+		goto(routes.SHARE(portfolioId))
+	}
 </script>
 
 {#if portfolioStore.loading}
@@ -41,7 +45,7 @@
 			<Typography variant="h4" bold>{portfolio.name}</Typography>
 			<Typography variant="large">| {client.name}</Typography>
 			<div class="grower"></div>
-			<Button dimension="compact" variant="secondary" onclick={notImplemented}
+			<Button dimension="compact" variant="secondary" onclick={share}
 				><DocumentExport size={24} />{$_('share')}</Button
 			>
 			<Button dimension="compact" variant="secondary" onclick={notImplemented}>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Investment, Portfolio } from '$lib/types'
-	import { Download, Export, OverflowMenuVertical } from 'carbon-icons-svelte'
+	import { Download, Export, OverflowMenuVertical, ViewOff } from 'carbon-icons-svelte'
 	import Badge from './ui/badge.svelte'
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
@@ -8,15 +8,20 @@
 	import { formatCurrency } from '$lib/utils'
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
+	import { notImplemented } from '$lib/not-implemented'
 
 	type Props = {
 		investment: Investment
 		portfolio: Portfolio
+		viewOnly?: boolean
 	}
 
-	let { investment, portfolio }: Props = $props()
+	let { investment, portfolio, viewOnly = false }: Props = $props()
 
 	function openInvestment() {
+		if (viewOnly) {
+			return
+		}
 		goto(routes.INVESTMENT(portfolio.client, portfolio.id, investment.id))
 	}
 </script>
@@ -28,7 +33,13 @@
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
 		<div class="grower"></div>
-		<Button variant="ghost" dimension="compact"><OverflowMenuVertical size={16} /></Button>
+		{#if viewOnly}
+			<Button variant="ghost" dimension="compact" onclick={notImplemented}
+				><ViewOff size={16} /></Button
+			>
+		{:else}
+			<Button variant="ghost" dimension="compact"><OverflowMenuVertical size={16} /></Button>
+		{/if}
 	</div>
 	<div class="info">
 		<span>

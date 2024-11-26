@@ -230,6 +230,10 @@ export default class Supabase implements Adapter {
 		return this.addData('portfolio', portfolio)
 	}
 
+	async updatePortfolio(portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) {
+		return this.updateData('portfolio', portfolio)
+	}
+
 	async addInvestment(investment: Omit<Investment, MetaFields>) {
 		return this.addData('investment', investment)
 	}
@@ -265,5 +269,72 @@ export default class Supabase implements Adapter {
 
 	async deleteTransaction(transaction: Partial<Transaction> & Pick<Transaction, 'id'>) {
 		return this.deleteData('transaction', transaction)
+	}
+
+	async portfolioView(link_id: string) {
+		const { data: portfolioData, error: portfolioError } = await supabase.rpc(
+			'portfolio_readonly_view',
+			{
+				link_id,
+			},
+		)
+		if (portfolioError) {
+			console.error(portfolioError)
+			return
+		}
+
+		const portfolios = portfolioData as Portfolio[]
+		if (portfolios.length !== 1) {
+			return
+		}
+
+		const portfolio = portfolios[0]
+
+		const { data: clientData, error: clientError } = await supabase.rpc('client_readonly_view', {
+			link_id,
+		})
+		if (clientError) {
+			console.error(clientError)
+			return
+		}
+
+		const clients = clientData as Client[]
+		if (clients.length !== 1) {
+			return
+		}
+
+		const client = clients[0]
+
+		const { data: investmentData, error: investmentError } = await supabase.rpc(
+			'investment_readonly_view',
+			{
+				link_id,
+			},
+		)
+		if (investmentError) {
+			console.error(investmentError)
+			return
+		}
+		const investments = investmentData as Investment[]
+
+		const { data: transactionData, error: transactionError } = await supabase.rpc(
+			'transaction_readonly_view',
+			{
+				link_id,
+			},
+		)
+		if (transactionError) {
+			console.error(transactionError)
+			return
+		}
+
+		const transactions = transactionData as Transaction[]
+
+		return {
+			portfolio,
+			client,
+			investments,
+			transactions,
+		}
 	}
 }

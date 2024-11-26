@@ -157,6 +157,15 @@
 	"End date": "End date",
 	"Age at end": "Age at end",
 	"occurences": "occurences",
+	"Page not found": "Page not found",
+	"Share portfolio": "Share portfolio",
+	"Link sharing (view only)": "Link sharing (view only)",
+	"Portfolio link": "Portfolio link",
+	"Link copied": "Link copied",
+	"Activate link sharing to easily share this portfolio page with your client.": "Activate link sharing to easily share this portfolio page with your client.",
+	"The client will not be able to edit or make any changes to the portfolio data.": "The client will not be able to edit or make any changes to the portfolio data.",
+	"Done": "Done",
+	"Don't share": "Don't share",
 
 	"errors": {
 		"too_small": "Please enter larger value"
