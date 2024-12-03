@@ -98,7 +98,7 @@
 {#snippet resetPassError()}
 	{#if resetPasswordError?.email?._errors}
 		{#each resetPasswordError?.email?._errors as error}
-			{error}
+			{$_(error)}
 		{/each}
 	{/if}
 {/snippet}
@@ -106,7 +106,7 @@
 {#snippet emailError()}
 	{#if loginFormErrors?.email?._errors}
 		{#each loginFormErrors?.email?._errors as error}
-			{error}
+			{$_(error)}
 		{/each}
 	{/if}
 {/snippet}
@@ -114,7 +114,7 @@
 {#snippet passwordError()}
 	{#if loginFormErrors?.password?._errors}
 		{#each loginFormErrors?.password?._errors as error}
-			{error}
+			{$_(error)}
 		{/each}
 	{/if}
 {/snippet}

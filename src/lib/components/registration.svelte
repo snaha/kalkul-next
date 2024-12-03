@@ -121,7 +121,7 @@
 			/>
 			<Input
 				bind:value={user.password}
-				label="Password"
+				label={$_('password')}
 				error={passwordTouched && user.password?.trim() !== '' && formErrors?.password?._errors
 					? passwordError
 					: undefined}
@@ -130,7 +130,7 @@
 			/>
 			<Input
 				bind:value={user.confirmPassword}
-				label="Confirm password"
+				label={$_('confirmPassword')}
 				error={confirmPasswordTouched &&
 				user.confirmPassword?.trim() !== '' &&
 				formErrors?.confirmPassword?._errors

@@ -200,6 +200,14 @@ export default class Supabase implements Adapter {
 		}
 	}
 
+	async updateEmail(newEmail: string) {
+		const { error } = await supabase.auth.updateUser({ email: newEmail })
+		if (error) {
+			console.error('Failed to update email', error)
+			throw new Error(error.message)
+		}
+	}
+
 	async addClient(client: ClientNoId) {
 		const { data, error } = await supabase.from('client').insert(client).select('id').single()
 		if (error) {

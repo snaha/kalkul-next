@@ -5,6 +5,8 @@
 	import Dropdown from '$lib/components/ui/dropdown.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
 
+	import routes from '$lib/routes'
+	import { _ } from 'svelte-i18n'
 	let { children } = $props()
 
 	function notImplemented() {
@@ -13,24 +15,24 @@
 </script>
 
 <header>
-	<a href="/">
+	<a href={routes.HOME}>
 		<img src="/logo.svg" alt="Logo" width="40" height="40" />
 	</a>
-	{#snippet button()}
-		<UserAvatarFilled size={24} />{authStore.user?.email}
-	{/snippet}
 	<div class="user-info">
-		<Dropdown {button} buttonDimension="compact" buttonVariant="ghost">
-			<div class="dropdown-item">
-				<Button variant="ghost" dimension="compact" onclick={notImplemented} leftAlign>
+		<Dropdown buttonDimension="compact">
+			{#snippet button()}
+				<UserAvatarFilled size={24} />{authStore.user?.new_email ?? authStore.user?.email}
+			{/snippet}
+			<ul class="dropdown-menu">
+				<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
 					<SettingsEdit size={24} />
-					Account settings
+					{$_('accountSettings')}
 				</Button>
 				<Button variant="ghost" dimension="compact" onclick={() => adapter.signOut()} leftAlign>
 					<Logout size={24} />
-					Logout
+					{$_('logout')}
 				</Button>
-			</div>
+			</ul>
 		</Dropdown>
 		<Button dimension="compact" variant="ghost" onclick={notImplemented}
 			><ChatBot size={24} /></Button
@@ -54,12 +56,15 @@
 		display: flex;
 		gap: var(--half-padding);
 	}
-	.dropdown-item {
+	.dropdown-menu {
 		display: flex;
 		flex-direction: column;
+		width: auto;
+		margin: 0;
 		padding: var(--padding);
-		border: 1px solid var(--colors-low);
-		background: var(--colors-base);
-		border-radius: var(--border-radius);
+		gap: 0;
+		background-color: var(--colors-base);
+		border-radius: var(--quarter-padding);
+		border: solid 1px var(--colors-low);
 	}
 </style>

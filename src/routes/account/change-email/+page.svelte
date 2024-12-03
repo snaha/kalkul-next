@@ -1,0 +1,202 @@
+<script lang="ts">
+	import Typography from '$lib/components/ui/typography.svelte'
+	import { loginFormSchema } from '$lib/schemas'
+	import { z } from 'zod'
+	import Input from '$lib/components/ui/input/input.svelte'
+	import { _ } from 'svelte-i18n'
+	import type { ZodFormattedError } from 'zod'
+	import Button from '$lib/components/ui/button.svelte'
+	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
+	import adapter from '$lib/adapters'
+	import { authStore } from '$lib/stores/auth.svelte'
+
+	type User = z.infer<typeof loginFormSchema>
+	let formErrors: ZodFormattedError<User> | undefined = $state(undefined)
+	let formValid = $state(false)
+
+	let passwordTouched = $state(false)
+	let emailTouched = $state(false)
+
+	let email = $derived(authStore.user?.new_email ?? authStore.user?.email ?? '')
+	let newEmail = $state('')
+	let currentPassword = $state('')
+
+	let success = $state(false)
+	let error: string | undefined = $state(undefined)
+
+	const baseAddress =
+		window.location.hostname === 'localhost'
+			? 'http://localhost:64324'
+			: window.location.hostname === '127.0.0.1'
+				? 'http://127.0.0.1:64324'
+				: ''
+
+	async function updateUserEmail() {
+		try {
+			await adapter.signIn(email, currentPassword)
+			await adapter.updateEmail(newEmail)
+			success = true
+		} catch (e) {
+			console.error(e)
+			error = (e as Error).message
+			currentPassword = ''
+		}
+	}
+
+	function onEmailBlur() {
+		if (newEmail.trim() === '') {
+			emailTouched = false
+		} else {
+			emailTouched = true
+		}
+	}
+
+	function onPasswordBlur() {
+		if (currentPassword.trim() === '') {
+			passwordTouched = false
+		} else {
+			passwordTouched = true
+		}
+	}
+	$effect(() => {
+		const res = loginFormSchema.safeParse({ email: newEmail, password: currentPassword })
+		if (res.success) {
+			formErrors = undefined
+			formValid = true
+		} else {
+			formErrors = res.error.format()
+			formValid = false
+		}
+	})
+</script>
+
+{#snippet emailError()}
+	{#if formErrors?.email?._errors}
+		{#each formErrors?.email?._errors as error}
+			{$_(error)}
+		{/each}
+	{/if}
+{/snippet}
+
+{#snippet passwordError()}
+	{#if formErrors?.password?._errors}
+		{#each formErrors?.password?._errors as error}
+			{$_(error)}
+		{/each}
+	{/if}
+{/snippet}
+<main>
+	{#if success}
+		<div class="logo">
+			<a href="/"><img src="/logo.svg" alt="Logo" /></a>
+		</div>
+		<img class="main-image" src="/unboxed-cat.png" alt="cat" width="320px" />
+		<div class="confirm-information">
+			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
+			<Typography variant="large">
+				{#if window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'}
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+					{@html $_('checkNewEmail.bodyLocal', { values: { baseAddress, newEmail } })}
+				{:else}
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+					{@html $_('checkNewEmail.bodyRemote', { values: { newEmail } })}
+				{/if}
+			</Typography>
+			<Typography>{$_('checkNewEmail.footer')}</Typography>
+		</div>
+	{:else}
+		<Typography variant="h4">{$_('changeEmailAddress')}</Typography>
+		<form onsubmit={updateUserEmail} class="change-email">
+			<Input
+				label={$_('newEmailAddress')}
+				bind:value={newEmail}
+				onblur={onEmailBlur}
+				error={emailTouched && newEmail.trim() !== '' && formErrors?.email?._errors
+					? emailError
+					: undefined}
+			/>
+			<Input
+				type="password"
+				label={$_('currentPassword')}
+				bind:value={currentPassword}
+				onblur={onPasswordBlur}
+				error={passwordTouched && currentPassword.trim() !== '' && formErrors?.password?._errors
+					? passwordError
+					: undefined}
+				oninput={() => (error = undefined)}
+			>
+				{$_('credentialsChangeHelperText')}
+			</Input>
+		</form>
+		{#if error}
+			<div class="error">
+				<WarningAltFilled size={24} />
+				{error}
+			</div>
+		{/if}
+		<div class="control-buttons">
+			<Button dimension="compact" disabled={!formValid} onclick={updateUserEmail}
+				><Checkmark size={24} />{$_('changeEmail')}</Button
+			>
+			<Button dimension="compact" variant="secondary" href="/account"
+				><Close size={24} />{$_('cancel')}</Button
+			>
+		</div>
+	{/if}
+</main>
+
+<style>
+	main {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100vh;
+		max-width: 560px;
+		margin: 0 auto;
+		gap: var(--double-padding);
+	}
+	.change-email {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+	}
+	.control-buttons {
+		display: flex;
+		gap: var(--half-padding);
+	}
+	.confirm-information {
+		display: flex;
+		flex-direction: column;
+		gap: var(--half-padding);
+		text-align: center;
+	}
+	.main-image {
+		margin: 0 auto;
+	}
+	.logo {
+		position: fixed;
+		top: var(--padding);
+		left: var(--padding);
+		width: 40px;
+		height: 40px;
+	}
+	.logo img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+	.error {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--half-padding);
+		border: 1px solid var(--colors-top);
+		border-radius: var(--border-radius);
+		background: var(--colors-top);
+		padding: var(--quarter-padding) var(--half-padding);
+		color: var(--colors-base);
+		font-family: var(--font-family-sans-serif);
+		font-size: var(--font-size);
+		line-height: var(--line-height);
+		letter-spacing: var(--letter-spacing);
+	}
+</style>

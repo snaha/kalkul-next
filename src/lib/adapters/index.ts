@@ -19,6 +19,7 @@ export interface Adapter {
 	signOut: () => Promise<void>
 	sendResetPasswordLink: (email: string) => Promise<void>
 	updatePassword: (newPassword: string) => Promise<void>
+	updateEmail: (newEmail: string) => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>
 
