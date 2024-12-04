@@ -97,6 +97,7 @@ export default class Supabase implements Adapter {
 		const onAuthStateChangeRes = supabase.auth.onAuthStateChange((event) => {
 			setTimeout(async () => {
 				if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+					authStore.signingIn = true
 					const { data, error } = await supabase.auth.getUser()
 					if (error) {
 						console.error('Failed to fetch user', error)
@@ -146,6 +147,10 @@ export default class Supabase implements Adapter {
 					}
 				} else if (event === 'PASSWORD_RECOVERY') {
 					authStore.passwordRecovery = true
+				} else if (event === 'INITIAL_SESSION') {
+					if (!authStore.signingIn) {
+						authStore.loading = false
+					}
 				} else if (event === 'SIGNED_OUT') {
 					authStore.user = undefined
 					this.stop()
@@ -176,7 +181,10 @@ export default class Supabase implements Adapter {
 			console.error('Failed to sign in', error)
 			throw new Error(error.message)
 		}
+		authStore.signingIn = true
+		authStore.loading = true
 	}
+
 	async signOut() {
 		const { error } = await supabase.auth.signOut()
 		if (error) {

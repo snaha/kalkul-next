@@ -5,6 +5,8 @@
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
 	import adapter from '$lib/adapters'
+	import { goto } from '$app/navigation'
+	import routes from '$lib/routes'
 
 	let password = $state('')
 	let confirmPassword = $state('')
@@ -13,6 +15,7 @@
 	async function updatePassword(newPassword: string) {
 		try {
 			await adapter.updatePassword(newPassword)
+			goto(routes.HOME)
 		} catch (e) {
 			error = (e as Error).message
 		}
@@ -25,8 +28,8 @@
 <div class="update-password">
 	<Typography variant="h4">{$_('updatePassword')}</Typography>
 	<form>
-		<Input label="Password" bind:value={password}></Input>
-		<Input label="Confirm password" bind:value={confirmPassword}></Input>
+		<Input type="password" label="Password" bind:value={password}></Input>
+		<Input type="password" label="Confirm password" bind:value={confirmPassword}></Input>
 	</form>
 	{#if error}
 		<div class="error">

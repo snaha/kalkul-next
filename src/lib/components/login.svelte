@@ -64,8 +64,8 @@
 	}
 	async function login() {
 		try {
+			await adapter.start()
 			await adapter.signIn(email, password)
-			adapter.start()
 			signIn()
 			email = ''
 			password = ''
@@ -154,7 +154,7 @@
 			{/if}
 			<div class="controls">
 				<div class="buttons">
-					<Button type="submit" disabled={!loginFormValid} onclick={login}
+					<Button type="submit" disabled={!loginFormValid}
 						><Checkmark size={24} />{$_('login')}</Button
 					>
 					<Button variant="secondary" onclick={cancel}><Close size={24} /> {$_('cancel')}</Button>

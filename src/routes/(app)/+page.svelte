@@ -12,12 +12,14 @@
 	import routes from '$lib/routes'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { clientStore } from '$lib/stores/clients.svelte'
+	import Header from '$lib/components/header.svelte'
 
 	function addClient() {
 		goto(routes.NEW_CLIENT)
 	}
 </script>
 
+<Header />
 <main>
 	<section class="top-bar horizontal">
 		<Typography variant="h4">{$_('allClients')}</Typography>

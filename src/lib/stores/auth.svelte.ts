@@ -4,12 +4,14 @@ interface AuthStore {
 	user?: User
 	loading: boolean
 	passwordRecovery: boolean
+	signingIn: boolean
 }
 
 export function withAuthStore(): AuthStore {
 	let user = $state<User | undefined>()
-	let loading = $state(false)
+	let loading = $state(true)
 	let passwordRecovery = $state(false)
+	let signingIn = $state(false)
 	const isLoggedIn = $derived(user !== undefined)
 
 	return {
@@ -18,6 +20,9 @@ export function withAuthStore(): AuthStore {
 		},
 		get loading() {
 			return loading
+		},
+		set loading(value: boolean) {
+			loading = value
 		},
 		get user() {
 			return user
@@ -31,6 +36,12 @@ export function withAuthStore(): AuthStore {
 		},
 		set passwordRecovery(value: boolean) {
 			passwordRecovery = value
+		},
+		get signingIn() {
+			return signingIn
+		},
+		set signingIn(value: boolean) {
+			signingIn = value
 		},
 	}
 }

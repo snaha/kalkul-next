@@ -1,70 +1,105 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
-	import { ChatBot, Logout, Moon, SettingsEdit, UserAvatarFilled } from 'carbon-icons-svelte'
-	import adapter from '$lib/adapters'
-	import Dropdown from '$lib/components/ui/dropdown.svelte'
+	import { ArrowRight } from 'carbon-icons-svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
-
-	import routes from '$lib/routes'
+	import UpdatePassword from '$lib/components/update-password.svelte'
+	import Typography from '$lib/components/ui/typography.svelte'
+	import Registration from '$lib/components/registration.svelte'
+	import Login from '$lib/components/login.svelte'
+	import Loader from '$lib/components/ui/loader.svelte'
 	import { _ } from 'svelte-i18n'
 	let { children } = $props()
 
-	function notImplemented() {
-		alert('Not implemented!')
-	}
+	let screen: 'intro' | 'login' | 'registration' = $state('intro')
 </script>
 
-<header>
-	<a href={routes.HOME}>
-		<img src="/logo.svg" alt="Logo" width="40" height="40" />
-	</a>
-	<div class="user-info">
-		<Dropdown buttonDimension="compact">
-			{#snippet button()}
-				<UserAvatarFilled size={24} />{authStore.user?.new_email ?? authStore.user?.email}
-			{/snippet}
-			<ul class="dropdown-menu">
-				<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
-					<SettingsEdit size={24} />
-					{$_('accountSettings')}
-				</Button>
-				<Button variant="ghost" dimension="compact" onclick={() => adapter.signOut()} leftAlign>
-					<Logout size={24} />
-					{$_('logout')}
-				</Button>
-			</ul>
-		</Dropdown>
-		<Button dimension="compact" variant="ghost" onclick={notImplemented}
-			><ChatBot size={24} /></Button
-		>
-		<Button dimension="compact" variant="ghost" onclick={notImplemented}><Moon size={24} /></Button>
+{#if authStore.loading}
+	<div class="center">
+		<Loader />
 	</div>
-</header>
-{#if children}
-	{@render children()}
+{:else if authStore.isLoggedIn}
+	{#if children}
+		{@render children()}
+	{/if}
+{:else if authStore.passwordRecovery}
+	<UpdatePassword />
+{:else if screen === 'intro'}
+	<div class="intro-screen">
+		<div class="intro-banner">
+			<div class="logo">
+				<img src="/logo.svg" alt="Logo" />
+			</div>
+			<div class="info">
+				<Typography variant="h1">Fingerstache mukbang</Typography>
+				<Typography variant="large"
+					>Viral meggings austin, chicharrones cray vinyl banjo pickled adaptogen bitters affogato
+					cornhole vaporware messenger bag.</Typography
+				>
+			</div>
+			<div class="buttons">
+				<Button onclick={() => (screen = 'registration')}>{$_('signUp')}</Button>
+				<Button onclick={() => (screen = 'login')} variant="secondary"
+					>{$_('login')}<ArrowRight size={24} /></Button
+				>
+			</div>
+		</div>
+		<div class="image">
+			<img src="/intro-image.png" alt="bird" width="100%" />
+		</div>
+	</div>
+{:else if screen === 'registration'}
+	<Registration
+		login={() => {
+			screen = 'login'
+		}}
+		cancel={() => (screen = 'intro')}
+	/>
+{:else if screen === 'login'}
+	<Login
+		signIn={() => (screen = 'intro')}
+		register={() => {
+			screen = 'registration'
+		}}
+		cancel={() => (screen = 'intro')}
+	/>
 {/if}
 
-<style>
-	header {
-		padding: var(--padding);
+<style lang="postcss">
+	.center {
 		display: flex;
-		justify-content: space-between;
+		justify-content: center;
 		align-items: center;
-		border-bottom: 1px solid var(--colors-low);
+		height: 100vh;
 	}
-	.user-info {
+	.intro-screen {
 		display: flex;
-		gap: var(--half-padding);
+		justify-content: center;
+		align-items: center;
+		gap: var(--padding);
+		height: 100vh;
 	}
-	.dropdown-menu {
+	.intro-banner {
 		display: flex;
 		flex-direction: column;
-		width: auto;
-		margin: 0;
-		padding: var(--padding);
-		gap: 0;
-		background-color: var(--colors-base);
-		border-radius: var(--quarter-padding);
-		border: solid 1px var(--colors-low);
+		gap: var(--double-padding);
+		width: 560px;
+	}
+	.logo {
+		width: 80px;
+		height: 96px;
+	}
+	.info {
+		display: flex;
+		flex-direction: column;
+		gap: var(--half-padding);
+	}
+	.image {
+		display: flex;
+		justify-content: center;
+		width: 560px;
+	}
+	.buttons {
+		display: flex;
+		gap: var(--half-padding);
 	}
 </style>

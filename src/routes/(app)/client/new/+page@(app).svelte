@@ -15,14 +15,7 @@
 	}
 
 	function close() {
-		try {
-			console.debug('close clicked')
-			// goto(routes.HOME)
-			// event.preventDefault()
-			goto('/')
-		} catch (error) {
-			console.error(error)
-		}
+		goto(routes.HOME)
 	}
 </script>
 
