@@ -1,4 +1,5 @@
 import type {
+	Client,
 	ClientNoId,
 	Investment,
 	MetaFields,
@@ -22,6 +23,8 @@ export interface Adapter {
 	updateEmail: (newEmail: string) => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>
+	updateClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>
+	deleteClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>
 
 	addPortfolio: (portfolio: Omit<Portfolio, MetaFields>) => Promise<number>
 	updatePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>

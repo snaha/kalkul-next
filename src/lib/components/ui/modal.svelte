@@ -1,0 +1,95 @@
+<script lang="ts" module>
+	import { onDestroy, onMount } from 'svelte'
+	import type { HTMLDialogAttributes } from 'svelte/elements'
+
+	export interface ModalProps extends HTMLDialogAttributes {
+		oncancel?: () => void
+		onshow?: () => void
+		open?: boolean
+	}
+</script>
+
+<script lang="ts">
+	let {
+		oncancel = () => {},
+		onshow = () => {},
+		open = $bindable(false),
+		children,
+	}: ModalProps = $props()
+
+	let dialog: HTMLDialogElement | undefined = $state()
+	let modalContent: HTMLDivElement | undefined = $state()
+
+	let prevOpen = $state(open)
+
+	function handleClickOutside(e: MouseEvent) {
+		const target = e.target as unknown as Node
+		if (!modalContent?.contains(target)) {
+			closeModal()
+		}
+	}
+
+	function showModal() {
+		setTimeout(() => {
+			window.addEventListener('click', handleClickOutside)
+		})
+		open = true
+		dialog?.showModal()
+		onshow()
+	}
+
+	function closeModal() {
+		window.removeEventListener('click', handleClickOutside)
+		open = false
+		dialog?.close()
+		oncancel()
+	}
+	$effect(() => {
+		if (prevOpen === open) {
+			return
+		}
+		prevOpen = open
+		if (open) {
+			showModal()
+		} else {
+			closeModal()
+		}
+	})
+	onMount(() => {
+		if (open) {
+			showModal()
+		}
+	})
+	onDestroy(() => {
+		window.removeEventListener('click', handleClickOutside)
+	})
+</script>
+
+<dialog bind:this={dialog} oncancel={closeModal}>
+	<div bind:this={modalContent}>
+		{#if children}
+			{@render children()}
+		{/if}
+	</div>
+</dialog>
+
+<style>
+	dialog {
+		border: 0;
+		background-color: var(--colors-ultra-low);
+		padding: 0;
+		max-width: 624px;
+		color: var(--colors-ultra-high);
+	}
+	@media screen and (max-width: 560px) {
+		dialog {
+			width: 100%;
+			max-width: 100%;
+			height: 100%;
+			max-height: 100%;
+		}
+	}
+	::backdrop {
+		background-color: var(--colors-dark-overlay);
+	}
+</style>

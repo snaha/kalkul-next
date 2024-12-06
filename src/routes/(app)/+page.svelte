@@ -2,22 +2,68 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import SearchInput from '$lib/components/ui/input/search-input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { ChevronDown, OverflowMenuVertical, UserFollow, Logout } from 'carbon-icons-svelte'
+	import {
+		ChevronDown,
+		OverflowMenuVertical,
+		UserFollow,
+		FolderShared,
+		UserProfile,
+		TrashCan,
+	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge, formatDate } from '$lib/utils'
 	import Avatar from '$lib/components/avatar.svelte'
-	import adapter from '$lib/adapters'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { clientStore } from '$lib/stores/clients.svelte'
 	import Header from '$lib/components/header.svelte'
+	import Dropdown from '$lib/components/ui/dropdown.svelte'
+	import List from '$lib/components/ui/list/list.svelte'
+	import ListItem from '$lib/components/ui/list/list-item.svelte'
+	import DeleteClientModal from '$lib/components/delete-client-modal.svelte'
+	import adapter from '$lib/adapters'
+
+	let showConfirmModal = $state(false)
+	let clientToBeDeleted: number | undefined = $state()
 
 	function addClient() {
 		goto(routes.NEW_CLIENT)
 	}
+
+	function confirmDeleteClient(clientId: number) {
+		showConfirmModal = true
+		clientToBeDeleted = clientId
+	}
+
+	async function deleteClient() {
+		if (clientToBeDeleted) {
+			await adapter.deleteClient({ id: clientToBeDeleted })
+			clientToBeDeleted = undefined
+			showConfirmModal = false
+		}
+	}
 </script>
+
+{#snippet clientDropdown(clientId: number)}
+	<Dropdown left buttonDimension="compact">
+		{#snippet button()}
+			<OverflowMenuVertical size={24} />
+		{/snippet}
+		<List>
+			<ListItem onclick={() => goto(routes.CLIENT(clientId))}
+				><FolderShared size={24} />{$_('View portfolios')}</ListItem
+			>
+			<ListItem onclick={() => goto(routes.EDIT_CLIENT(clientId))}
+				><UserProfile size={24} />{$_('Edit client details')}</ListItem
+			>
+			<ListItem onclick={() => confirmDeleteClient(clientId)}
+				><TrashCan size={24} />{$_('Delete client')}</ListItem
+			>
+		</List>
+	</Dropdown>
+{/snippet}
 
 <Header />
 <main>
@@ -27,15 +73,6 @@
 		<SearchInput dimension="compact" variant="solid" placeholder="Search"></SearchInput>
 		<Button dimension="compact" variant="strong" onclick={addClient}
 			><UserFollow />{$_('addClient')}</Button
-		>
-		<Button
-			dimension="compact"
-			variant="strong"
-			onclick={() => {
-				adapter.signOut()
-			}}
-		>
-			<Logout size={24} /></Button
 		>
 	</section>
 	{#if clientStore.loading}
@@ -61,7 +98,14 @@
 				{@const birtDate = new Date(client.birth_date)}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<li class="clients client" onclick={() => goto(routes.CLIENT(client.id))}>
+				<li
+					class="clients client"
+					onclick={(e: MouseEvent) => {
+						if (!e.defaultPrevented) {
+							goto(routes.CLIENT(client.id))
+						}
+					}}
+				>
 					<span
 						><Avatar
 							name={client.name}
@@ -73,15 +117,18 @@
 					<span class="right-aligned">{formatAge(birtDate)}</span>
 					<span class="right-aligned">{portfolioStore.filter(client.id).length}</span>
 					<span class="right-aligned">{0}</span>
-					<span class="right-aligned"
-						><Button dimension="compact" variant="ghost"><OverflowMenuVertical size={24} /></Button
-						></span
-					>
+					<span class="right-aligned">{@render clientDropdown(client.id)}</span>
 				</li>
 			{/each}
 		</ul>
 	{/if}
 </main>
+
+<DeleteClientModal
+	confirm={deleteClient}
+	oncancel={() => (showConfirmModal = false)}
+	bind:open={showConfirmModal}
+/>
 
 <style>
 	:root {
@@ -98,7 +145,7 @@
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
-		gap: var(--padding);
+		gap: var(--half-padding);
 	}
 	.grower {
 		flex: 1;

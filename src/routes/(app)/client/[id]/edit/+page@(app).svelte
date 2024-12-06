@@ -3,6 +3,11 @@
 	import EditClient from '$lib/components/edit-client.svelte'
 	import routes from '$lib/routes'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import { page } from '$app/stores'
+	import { clientStore } from '$lib/stores/clients.svelte'
+
+	const clientId = parseInt($page.params.id, 10)
+	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 
 	function close() {
 		goto(routes.HOME)
@@ -10,5 +15,5 @@
 </script>
 
 <Fullscreen>
-	<EditClient {close} />
+	<EditClient {close} {client} />
 </Fullscreen>

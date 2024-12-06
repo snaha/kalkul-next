@@ -229,6 +229,14 @@ export default class Supabase implements Adapter {
 		return data.id
 	}
 
+	async updateClient(client: Partial<Client> & Pick<Client, 'id'>) {
+		return this.updateData('client', client)
+	}
+
+	async deleteClient(client: Partial<Client> & Pick<Client, 'id'>) {
+		return this.deleteData('client', client)
+	}
+
 	private async addData<T>(tableName: string, value: Omit<T, MetaFields>) {
 		const { data, error } = await supabase.from(tableName).insert(value).select('id').single()
 		if (error) {

@@ -8,6 +8,7 @@ export default {
 	CLIENT_NEW_PORTFOLIO: (clientId: number) => `/client/${clientId}/portfolio/new`,
 	CLIENT_PORTFOLIO: (clientId: number, portfolioId: number) =>
 		`/client/${clientId}/portfolio/${portfolioId}`,
+	EDIT_CLIENT: (id: number) => `/client/${id}/edit`,
 	INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
 		`/client/${clientId}/portfolio/${portfolioId}/investment/${investmentId}`,
 	NEW_INVESTMENT: (clientId: number, portfolioId: number) =>

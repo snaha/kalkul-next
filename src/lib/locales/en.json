@@ -166,6 +166,14 @@
 	"The client will not be able to edit or make any changes to the portfolio data.": "The client will not be able to edit or make any changes to the portfolio data.",
 	"Done": "Done",
 	"Don't share": "Don't share",
+	"Edit client": "Edit client",
+	"Delete client": "Delete client",
+	"Delete client?": "Delete client?",
+	"This client and all the portfolios it contains will be deleted permanently. There’s no undo.": "This client and all the portfolios it contains will be deleted permanently. There’s no undo.",
+	"Don't delete": "Don't delete",
+	"Confirm delete": "Confirm delete",
+	"View portfolios": "View portfolios",
+	"Edit client details": "Edit client details",
 
 	"errors": {
 		"too_small": "Please enter larger value"
