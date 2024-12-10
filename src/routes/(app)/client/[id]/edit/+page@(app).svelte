@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
 	import EditClient from '$lib/components/edit-client.svelte'
-	import routes from '$lib/routes'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import { page } from '$app/stores'
 	import { clientStore } from '$lib/stores/clients.svelte'
@@ -10,7 +8,7 @@
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 
 	function close() {
-		goto(routes.HOME)
+		history.back()
 	}
 </script>
 

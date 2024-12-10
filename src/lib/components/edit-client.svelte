@@ -8,7 +8,7 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Avatar from '$lib/components/avatar.svelte'
 	import type { Client, ClientNoId } from '$lib/types'
-	import DeleteClientModal from './delete-client-modal.svelte'
+	import DeleteModal from './delete-modal.svelte'
 
 	type Props = {
 		close: () => void
@@ -142,10 +142,14 @@
 	</section>
 </form>
 
-<DeleteClientModal
+<DeleteModal
 	confirm={deleteClient}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
+	title={$_('Delete client?')}
+	text={$_(
+		'This client and all the portfolios it contains will be deleted permanently. There’s no undo.',
+	)}
 />
 
 <style>

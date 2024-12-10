@@ -7,23 +7,28 @@
 
 	type Props = {
 		confirm: () => void
+		title: string
+		text: string
 	}
-	let { oncancel, confirm, open = $bindable(false), ...restProps }: ModalProps & Props = $props()
+	let {
+		oncancel,
+		confirm,
+		open = $bindable(false),
+		title,
+		text,
+		...restProps
+	}: ModalProps & Props = $props()
 </script>
 
 <Modal {oncancel} bind:open {...restProps}>
 	<section class="dialog">
 		<header class="horizontal">
-			<Typography variant="h5">{$_('Delete client?')}</Typography>
+			<Typography variant="h5">{title}</Typography>
 			<div class="grower"></div>
 			<Button variant="ghost" dimension="compact" onclick={oncancel}><Close size={24} /></Button>
 		</header>
 
-		<Typography
-			>{$_(
-				'This client and all the portfolios it contains will be deleted permanently. There’s no undo.',
-			)}</Typography
-		>
+		<Typography>{text}</Typography>
 		<section class="buttons">
 			<Button variant="strong" dimension="compact" onclick={confirm}
 				><TrashCan size={24} />{$_('Confirm delete')}</Button

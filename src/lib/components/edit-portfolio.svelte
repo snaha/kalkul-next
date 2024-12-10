@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Close, Checkmark } from 'carbon-icons-svelte'
+	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import type { Client } from '$lib/types'
+	import type { Client, Portfolio } from '$lib/types'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Option from '$lib/components/ui/select/option.svelte'
@@ -12,13 +12,15 @@
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
+	import DeleteModal from './delete-modal.svelte'
 
 	type Props = {
 		client: Client
+		portfolio?: Portfolio
 		close: () => void
 	}
 
-	let { client, close }: Props = $props()
+	let { client, portfolio, close }: Props = $props()
 
 	let name = $state(
 		capitalizeFirstLetter($_('portfolio')) +
@@ -34,10 +36,28 @@
 	let initialEndDate = new Date(nowDate)
 	initialEndDate.setFullYear(nowDate.getFullYear() + initialHorizonYears)
 	let endDate = $state(initialEndDate)
-
+	let showConfirmModal = $state(false)
 	let createDisabled = $derived(name === '')
+	let formType: 'edit' | 'create' = $derived(portfolio ? 'edit' : 'create')
 
-	async function create() {
+	$effect(() => {
+		if (!portfolio) {
+			return
+		}
+		name = portfolio.name
+		currency = portfolio.currency
+		inflation = portfolio.inflation_rate
+		startDate = new Date(portfolio.start_date)
+		endDate = new Date(portfolio.end_date)
+	})
+
+	$effect(() => {
+		if (startDate || endDate) {
+			horizon = formatAge(new Date(startDate), new Date(endDate))
+		}
+	})
+
+	async function createPortfolio() {
 		await adapter.addPortfolio({
 			client: client.id,
 			name,
@@ -46,6 +66,22 @@
 			end_date: endDate.toDateString(),
 			inflation_rate: inflation,
 			link: null,
+		})
+		close()
+	}
+
+	async function updatePortfolio() {
+		if (!portfolio) {
+			return
+		}
+
+		await adapter.updatePortfolio({
+			id: portfolio.id,
+			name,
+			currency,
+			start_date: startDate.toDateString(),
+			end_date: endDate.toDateString(),
+			inflation_rate: inflation,
 		})
 		close()
 	}
@@ -91,18 +127,29 @@
 		}
 	}
 
-	$effect(() => {
-		if (startDate || endDate) {
-			horizon = formatAge(new Date(startDate), new Date(endDate))
+	function confirmDeletePortfolio() {
+		showConfirmModal = true
+	}
+
+	async function deletePortfolio() {
+		if (!portfolio) {
+			return
 		}
-	})
+		showConfirmModal = false
+		await adapter.deletePortfolio({ id: portfolio.id })
+		close()
+	}
 </script>
 
 <form class="vertical">
 	<section class="horizontal">
-		<Typography variant="h4">{$_('addPortfolio')}</Typography>
+		{#if formType === 'create'}
+			<Typography variant="h4">{$_('addPortfolio')}</Typography>
+		{:else}
+			<Typography variant="h4">{$_('Edit portfolio')}</Typography>
+		{/if}
 		<div class="grower"></div>
-		<Typography>{$_('for')} {client.name}</Typography>
+		<Typography>{client.name}</Typography>
 	</section>
 	<div class="spacer"></div>
 	<Input
@@ -141,6 +188,7 @@
 	<Divider />
 
 	<DateAge
+		dimension="compact"
 		dateInputLabel={$_('startDate')}
 		bind:date={startDate}
 		ageLabel={$_('clientAge') + ' ' + $_('atPortfolioStart')}
@@ -160,6 +208,7 @@
 	></Input>
 
 	<DateAge
+		dimension="compact"
 		dateInputLabel={$_('endDate')}
 		bind:date={endDate}
 		ageLabel={$_('clientAge') + ' ' + $_('atPortfolioEnd')}
@@ -168,14 +217,42 @@
 	/>
 
 	<section class="buttons horizontal">
-		<Button variant="strong" dimension="compact" onclick={create} disabled={createDisabled}
-			><Checkmark size={24} />{$_('createPortfolio')}</Button
-		>
+		{#if formType === 'create'}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={createPortfolio}
+				disabled={createDisabled}><Checkmark size={24} />{$_('createPortfolio')}</Button
+			>
+		{:else}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={updatePortfolio}
+				disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
+			>
+		{/if}
 		<Button variant="secondary" dimension="compact" onclick={cancel}
 			><Close size={24} />{$_('cancel')}</Button
 		>
+		{#if formType === 'edit'}
+			<div class="grower"></div>
+			<Button variant="ghost" dimension="compact" onclick={confirmDeletePortfolio}
+				><TrashCan size={24} />{$_('Delete portfolio')}</Button
+			>
+		{/if}
 	</section>
 </form>
+
+<DeleteModal
+	confirm={deletePortfolio}
+	oncancel={() => (showConfirmModal = false)}
+	bind:open={showConfirmModal}
+	title={$_('Delete portfolio?')}
+	text={$_(
+		'This portfolio and all the investments it contains will be deleted permanently. There’s no undo.',
+	)}
+/>
 
 <style>
 	form {
@@ -204,5 +281,8 @@
 	}
 	.spacer {
 		margin-top: var(--half-padding);
+	}
+	.grower {
+		flex: 1;
 	}
 </style>

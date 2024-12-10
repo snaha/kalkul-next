@@ -28,8 +28,10 @@ export interface Adapter {
 
 	addPortfolio: (portfolio: Omit<Portfolio, MetaFields>) => Promise<number>
 	updatePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
+	deletePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
 
 	addInvestment: (investment: Omit<Investment, MetaFields>) => Promise<number>
+	deleteInvestment: (investment: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
 
 	addTransaction: (transaction: Omit<Transaction, MetaFields>) => Promise<number>
 	updateTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>

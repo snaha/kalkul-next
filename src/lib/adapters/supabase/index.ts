@@ -258,8 +258,16 @@ export default class Supabase implements Adapter {
 		return this.updateData('portfolio', portfolio)
 	}
 
+	async deletePortfolio(portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) {
+		return this.deleteData('portfolio', portfolio)
+	}
+
 	async addInvestment(investment: Omit<Investment, MetaFields>) {
 		return this.addData('investment', investment)
+	}
+
+	async deleteInvestment(investment: Partial<Transaction> & Pick<Transaction, 'id'>) {
+		return this.deleteData('investment', investment)
 	}
 
 	async addTransaction(transaction: Omit<Transaction, MetaFields>) {

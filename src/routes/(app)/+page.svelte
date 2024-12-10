@@ -22,8 +22,8 @@
 	import Dropdown from '$lib/components/ui/dropdown.svelte'
 	import List from '$lib/components/ui/list/list.svelte'
 	import ListItem from '$lib/components/ui/list/list-item.svelte'
-	import DeleteClientModal from '$lib/components/delete-client-modal.svelte'
 	import adapter from '$lib/adapters'
+	import DeleteModal from '$lib/components/delete-modal.svelte'
 
 	let showConfirmModal = $state(false)
 	let clientToBeDeleted: number | undefined = $state()
@@ -124,10 +124,14 @@
 	{/if}
 </main>
 
-<DeleteClientModal
+<DeleteModal
 	confirm={deleteClient}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
+	title={$_('Delete client?')}
+	text={$_(
+		'This client and all the portfolios it contains will be deleted permanently. There’s no undo.',
+	)}
 />
 
 <style>

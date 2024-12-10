@@ -4,7 +4,7 @@ export interface TransactionStore extends Store<Transaction> {
 	data: Transaction[]
 	loading: boolean
 	reset: () => void
-	filter: (clientId: number) => Transaction[]
+	filter: (investmentId: number) => Transaction[]
 }
 
 export function withTransactionStore(): TransactionStore {

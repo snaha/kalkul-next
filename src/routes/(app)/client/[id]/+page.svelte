@@ -5,8 +5,14 @@
 		Add,
 		ArrowLeft,
 		ChevronDown,
+		Copy,
+		Folder,
+		FolderDetails,
 		OverflowMenuVertical,
+		Share,
+		TrashCan,
 		UserFollow,
+		UserProfile,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatDate } from '$lib/utils'
@@ -17,17 +23,64 @@
 	import { page } from '$app/stores'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { clientStore } from '$lib/stores/clients.svelte'
+	import Dropdown from '$lib/components/ui/dropdown.svelte'
+	import List from '$lib/components/ui/list/list.svelte'
+	import ListItem from '$lib/components/ui/list/list-item.svelte'
+	import DeleteModal from '$lib/components/delete-modal.svelte'
+	import { cascadeDeletePortfolio, cascadeDuplicatePortfolio } from '$lib/cascade'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolios = $derived(
 		portfolioStore.data.filter((portfolio) => portfolio.client === clientId),
 	)
+	let showConfirmModal = $state(false)
+	let portfolioToBeDeleted: number | undefined = $state()
 
 	function addPortfolio() {
 		goto(routes.CLIENT_NEW_PORTFOLIO(clientId))
 	}
+
+	function confirmDeletePortfolio(portfolioId: number) {
+		portfolioToBeDeleted = portfolioId
+		showConfirmModal = true
+	}
+
+	async function deletePortfolio() {
+		if (!portfolioToBeDeleted) {
+			return
+		}
+
+		await cascadeDeletePortfolio(portfolioToBeDeleted)
+		portfolioToBeDeleted = undefined
+		showConfirmModal = false
+	}
 </script>
+
+{#snippet portfolioDropdown(portfolioId: number)}
+	<Dropdown left buttonDimension="compact">
+		{#snippet button()}
+			<OverflowMenuVertical size={24} />
+		{/snippet}
+		<List>
+			<ListItem onclick={() => goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))}
+				><Folder size={24} />{$_('Open portfolio')}</ListItem
+			>
+			<ListItem onclick={() => goto(routes.SHARE(portfolioId))}
+				><Share size={24} />{$_('Share portfolio')}</ListItem
+			>
+			<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(clientId, portfolioId))}
+				><FolderDetails size={24} />{$_('Edit portfolio details')}</ListItem
+			>
+			<ListItem onclick={() => cascadeDuplicatePortfolio(clientId, portfolioId)}
+				><Copy size={24} />{$_('Duplicate portfolio')}</ListItem
+			>
+			<ListItem onclick={() => confirmDeletePortfolio(portfolioId)}
+				><TrashCan size={24} />{$_('Delete portfolio')}</ListItem
+			>
+		</List>
+	</Dropdown>
+{/snippet}
 
 {#if !client}
 	<Loader />
@@ -47,6 +100,12 @@
 		<div class="grower"></div>
 		<Button dimension="compact" variant="strong" onclick={addPortfolio}
 			><Add size={24} />{$_('addPortfolio')}</Button
+		>
+		<Button
+			dimension="compact"
+			variant="secondary"
+			onclick={() => goto(routes.EDIT_CLIENT(clientId))}
+			><UserProfile size={24} />{$_('Edit client details')}</Button
 		>
 	</section>
 	<main>
@@ -78,7 +137,11 @@
 						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 						<li
 							class="portfolios portfolio"
-							onclick={() => goto(routes.CLIENT_PORTFOLIO(clientId, portfolio.id))}
+							onclick={(e: MouseEvent) => {
+								if (!e.defaultPrevented) {
+									goto(routes.CLIENT_PORTFOLIO(clientId, portfolio.id))
+								}
+							}}
 						>
 							<span>{portfolio.name}</span>
 							<span>{portfolio.currency}</span>
@@ -87,11 +150,7 @@
 							<span class="right-aligned">{0}</span>
 							<span class="right-aligned">{0}</span>
 							<span class="right-aligned">{0}</span>
-							<span class="right-aligned"
-								><Button dimension="compact" variant="ghost"
-									><OverflowMenuVertical size={24} /></Button
-								></span
-							>
+							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
 						</li>
 					{/each}
 				</ul>
@@ -99,6 +158,16 @@
 		{/if}
 	</main>
 {/if}
+
+<DeleteModal
+	confirm={deletePortfolio}
+	oncancel={() => (showConfirmModal = false)}
+	bind:open={showConfirmModal}
+	title={$_('Delete portfolio?')}
+	text={$_(
+		'This portfolio and all the investments it contains will be deleted permanently. There’s no undo.',
+	)}
+/>
 
 <style>
 	:root {
