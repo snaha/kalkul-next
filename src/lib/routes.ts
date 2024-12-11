@@ -15,5 +15,7 @@ export default {
 		`/client/${clientId}/portfolio/${portfolioId}/investment/${investmentId}`,
 	NEW_INVESTMENT: (clientId: number, portfolioId: number) =>
 		`/client/${clientId}/portfolio/${portfolioId}/investment/new`,
+	EDIT_INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
+		`/client/${clientId}/portfolio/${portfolioId}/investment/${investmentId}/edit`,
 	SHARE: (portfolioId: number) => `/share/${portfolioId}`,
 }

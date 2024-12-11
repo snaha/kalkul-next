@@ -5,7 +5,7 @@
 	let { children, onclick, ...restProps }: Props = $props()
 
 	function onClick(e: MouseEvent) {
-		e.stopPropagation()
+		e.preventDefault()
 		if (onclick) {
 			onclick(
 				e as MouseEvent & { currentTarget: EventTarget & HTMLAnchorElement } & {

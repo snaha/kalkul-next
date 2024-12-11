@@ -1,16 +1,8 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import {
-		Add,
-		OverflowMenuVertical,
-		ArrowLeft,
-		SettingsEdit,
-		Download,
-		Export,
-	} from 'carbon-icons-svelte'
+	import { Add, ArrowLeft, SettingsEdit, Download, Export } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
-	import Avatar from '$lib/components/avatar.svelte'
 	import routes from '$lib/routes'
 	import { page } from '$app/stores'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
@@ -23,6 +15,7 @@
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import TransactionCard from '$lib/components/transaction-card.svelte'
 	import type { Transaction, TransactionType } from '$lib/types'
+	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -41,14 +34,6 @@
 	let dialogAction: TransactionType = $state('deposit')
 	let dialog: HTMLDialogElement | undefined = $state()
 	let editedTransaction: Transaction | undefined = $state()
-
-	function notImplemented() {
-		alert('Not implemented!')
-	}
-
-	function addPortfolio() {
-		goto(routes.CLIENT_NEW_PORTFOLIO(clientId))
-	}
 
 	function goBack() {
 		goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))
@@ -80,26 +65,17 @@
 
 		openDialog()
 	}
+
+	function editInvestment() {
+		goto(routes.EDIT_INVESTMENT(clientId, portfolioId, investmentId))
+	}
 </script>
 
 {#if !portfolio || !client || !investment}
 	404 Not found
 {:else}
 	<main>
-		<section class="topbar horizontal">
-			<a href={routes.CLIENT(clientId)}>
-				<Avatar name={client.name} birthDate={new Date(client.birth_date)} />
-			</a>
-			<Typography variant="h4" bold>{portfolio.name}</Typography>
-			<Typography variant="large">| {client.name}</Typography>
-			<div class="grower"></div>
-			<Button dimension="compact" variant="secondary" onclick={addPortfolio}
-				><Add size={24} />{$_('addPortfolio')}</Button
-			>
-			<Button dimension="compact" variant="secondary" onclick={notImplemented}>
-				<OverflowMenuVertical size={24} /></Button
-			>
-		</section>
+		<PortfolioHeader {client} {portfolio} />
 		<section class="horizontal grower">
 			<section class="sidebar vertical">
 				<dialog bind:this={dialog}>
@@ -124,7 +100,7 @@
 						>
 						<Typography variant="h5">{investment.name}</Typography>
 						<div class="grower"></div>
-						<Button dimension="small" variant="solid" onclick={goBack}
+						<Button dimension="small" variant="solid" onclick={editInvestment}
 							><SettingsEdit size={16} /></Button
 						>
 					</section>
@@ -209,20 +185,12 @@
 		display: flex;
 		flex-direction: column;
 	}
-	.topbar {
-		padding: var(--padding);
-		border-top: 1px solid var(--colors-low);
-		border-bottom: 1px solid var(--colors-low);
-	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
 		gap: var(--half-padding);
-	}
-	.horizontal a {
-		display: flex;
 	}
 	.vertical {
 		display: flex;

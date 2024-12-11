@@ -1,6 +1,17 @@
 <script lang="ts">
+	import { cascadeDeleteInvestment, cascadeDuplicateInvestment } from '$lib/cascade'
+
 	import type { Investment, Portfolio } from '$lib/types'
-	import { Download, Export, OverflowMenuVertical, ViewOff } from 'carbon-icons-svelte'
+	import {
+		ArrowRight,
+		Copy,
+		Download,
+		Export,
+		OverflowMenuVertical,
+		Settings,
+		TrashCan,
+		ViewOff,
+	} from 'carbon-icons-svelte'
 	import Badge from './ui/badge.svelte'
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
@@ -9,6 +20,9 @@
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
 	import { notImplemented } from '$lib/not-implemented'
+	import Dropdown from './ui/dropdown.svelte'
+	import List from './ui/list/list.svelte'
+	import ListItem from './ui/list/list-item.svelte'
 
 	type Props = {
 		investment: Investment
@@ -18,17 +32,28 @@
 
 	let { investment, portfolio, viewOnly = false }: Props = $props()
 
-	function openInvestment() {
+	function cardOpenInvestment(e: MouseEvent) {
 		if (viewOnly) {
 			return
 		}
+		if (e.defaultPrevented) {
+			return
+		}
+		openInvestment()
+	}
+
+	function openInvestment() {
 		goto(routes.INVESTMENT(portfolio.client, portfolio.id, investment.id))
+	}
+
+	function editInvestment() {
+		goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
 	}
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={openInvestment}>
+<div class="card" onclick={cardOpenInvestment}>
 	<div class="title">
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
@@ -38,7 +63,26 @@
 				><ViewOff size={16} /></Button
 			>
 		{:else}
-			<Button variant="ghost" dimension="compact"><OverflowMenuVertical size={16} /></Button>
+			<Dropdown left buttonDimension="compact">
+				{#snippet button()}
+					<OverflowMenuVertical size={16} />
+				{/snippet}
+				<List>
+					<ListItem onclick={openInvestment}
+						><ArrowRight size={24} />{$_('Open investment')}</ListItem
+					>
+					<ListItem onclick={notImplemented}><ViewOff size={24} />{$_('Hide in charts')}</ListItem>
+					<ListItem onclick={editInvestment}
+						><Settings size={24} />{$_('Edit investment details')}</ListItem
+					>
+					<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
+						><Copy size={24} />{$_('Duplicate investment')}</ListItem
+					>
+					<ListItem onclick={() => cascadeDeleteInvestment(investment.id)}
+						><TrashCan size={24} />{$_('Delete investment')}</ListItem
+					>
+				</List>
+			</Dropdown>
 		{/if}
 	</div>
 	<div class="info">

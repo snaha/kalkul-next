@@ -48,7 +48,7 @@
 		justify-content: center;
 		gap: var(--padding);
 		background-color: var(--colors-ultra-low);
-		padding: var(--double-padding);
+		padding: var(--padding);
 		height: 100%;
 	}
 	.horizontal {

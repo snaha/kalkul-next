@@ -28,7 +28,10 @@ export async function cascadeDuplicatePortfolio(clientId: number, portfolioId: n
 	return duplicatedPortfolioId
 }
 
-async function cascadeDuplicateInvestment(investment: Investment, duplicatedPortfolioId: number) {
+export async function cascadeDuplicateInvestment(
+	investment: Investment,
+	duplicatedPortfolioId: number,
+) {
 	const duplicatedInvestment = {
 		...investment,
 		id: undefined,
@@ -65,7 +68,7 @@ export async function cascadeDeletePortfolio(portfolioId: number) {
 	await adapters.deletePortfolio({ id: portfolioId })
 }
 
-async function cascadeDeleteInvestment(investmentId: number) {
+export async function cascadeDeleteInvestment(investmentId: number) {
 	const transactions = transactionStore.filter(investmentId)
 	for (const transaction of transactions) {
 		await cascadeDeleteTransaction(transaction.id)

@@ -57,7 +57,7 @@ function subscribe<T extends { id: string | number }>(
 			(payload) => {
 				switch (payload.eventType) {
 					case 'INSERT':
-						store.data.push(payload.new as T)
+						store.data = [...store.data, payload.new as T]
 						break
 					case 'UPDATE':
 						store.data = store.data.map((item) =>
@@ -264,6 +264,10 @@ export default class Supabase implements Adapter {
 
 	async addInvestment(investment: Omit<Investment, MetaFields>) {
 		return this.addData('investment', investment)
+	}
+
+	async updateInvestment(investment: Partial<Transaction> & Pick<Transaction, 'id'>) {
+		return this.updateData('investment', investment)
 	}
 
 	async deleteInvestment(investment: Partial<Transaction> & Pick<Transaction, 'id'>) {

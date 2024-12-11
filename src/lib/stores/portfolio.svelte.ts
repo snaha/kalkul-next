@@ -22,6 +22,9 @@ export function withPortfolioStore(): PortfolioStore {
 		get loading() {
 			return loading
 		},
+		set loading(value: boolean) {
+			loading = value
+		},
 		reset() {
 			data = []
 			loading = true
