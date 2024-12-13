@@ -28,7 +28,7 @@
 			(portfolioStore.filter(client.id).length + 1).toString(),
 	)
 	let currency = $state('EUR')
-	let inflation = $state(0.0225)
+	let inflation = $state('2.25')
 	let nowDate = new Date()
 	let startDate = $state(nowDate)
 	let horizon = $state('0')
@@ -46,7 +46,7 @@
 		}
 		name = portfolio.name
 		currency = portfolio.currency
-		inflation = portfolio.inflation_rate
+		inflation = (portfolio.inflation_rate * 100).toString()
 		startDate = new Date(portfolio.start_date)
 		endDate = new Date(portfolio.end_date)
 	})
@@ -64,7 +64,7 @@
 			currency,
 			start_date: startDate.toDateString(),
 			end_date: endDate.toDateString(),
-			inflation_rate: inflation,
+			inflation_rate: Number(inflation) / 100,
 			link: null,
 		})
 		close()
@@ -81,7 +81,7 @@
 			currency,
 			start_date: startDate.toDateString(),
 			end_date: endDate.toDateString(),
-			inflation_rate: inflation,
+			inflation_rate: Number(inflation) / 100,
 		})
 		close()
 	}
@@ -180,7 +180,7 @@
 			placeholder={$_('inflation')}
 			label={$_('inflation')}
 			unit="%"
-			value={(inflation * 100).toString(10)}
+			bind:value={inflation}
 			step={'.01'}
 			class="grower"
 		></Input>

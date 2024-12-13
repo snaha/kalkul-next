@@ -4,7 +4,6 @@
 	import {
 		Add,
 		ArrowLeft,
-		ChevronDown,
 		Copy,
 		Folder,
 		FolderDetails,
@@ -28,6 +27,7 @@
 	import ListItem from '$lib/components/ui/list/list-item.svelte'
 	import DeleteModal from '$lib/components/delete-modal.svelte'
 	import { cascadeDeletePortfolio, cascadeDuplicatePortfolio } from '$lib/cascade'
+	import { investmentStore } from '$lib/stores/investment.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -54,6 +54,10 @@
 		await cascadeDeletePortfolio(portfolioToBeDeleted)
 		portfolioToBeDeleted = undefined
 		showConfirmModal = false
+	}
+
+	function numInvestments(portfolioId: number) {
+		return investmentStore.filter(portfolioId).length
 	}
 </script>
 
@@ -123,9 +127,8 @@
 			{:else}
 				<ul>
 					<li class="portfolios title">
-						<span>{$_('portfolioName')}<ChevronDown size={24} /></span>
+						<span>{$_('portfolioName')}</span>
 						<span>{$_('currency')}</span>
-						<span>{$_('created')}</span>
 						<span>{$_('lastEdit')}</span>
 						<span class="right-aligned">{$_('investments')}</span>
 						<span class="right-aligned">{$_('totalDeposits')}</span>
@@ -145,9 +148,8 @@
 						>
 							<span>{portfolio.name}</span>
 							<span>{portfolio.currency}</span>
-							<span>{formatDate(new Date(portfolio.created_at))}</span>
 							<span>{formatDate(new Date(portfolio.last_edited_at))}</span>
-							<span class="right-aligned">{0}</span>
+							<span class="right-aligned">{numInvestments(portfolio.id)}</span>
 							<span class="right-aligned">{0}</span>
 							<span class="right-aligned">{0}</span>
 							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
@@ -203,7 +205,7 @@
 	}
 	.portfolios {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 		align-items: center;
 		gap: var(--double-padding);
 		border-bottom: 1px solid var(--colors-low);
