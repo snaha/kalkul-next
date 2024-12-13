@@ -25,10 +25,12 @@
 	const investmentId = parseInt($page.params.investment_id, 10)
 	const investment = $derived(investments.find((investment) => investment.id === investmentId))
 	const deposits = $derived(
-		transactionStore.data.filter((transaction) => transaction.type === 'deposit'),
+		transactionStore.filter(investmentId).filter((transaction) => transaction.type === 'deposit'),
 	)
 	const withdrawals = $derived(
-		transactionStore.data.filter((transaction) => transaction.type === 'withdrawal'),
+		transactionStore
+			.filter(investmentId)
+			.filter((transaction) => transaction.type === 'withdrawal'),
 	)
 	let showDialog = $state(false)
 	let dialogAction: TransactionType = $state('deposit')

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { differenceInMonths } from 'date-fns'
+
 	import type { Transaction } from '$lib/types'
 	import {
 		Copy,
@@ -10,7 +12,7 @@
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
-	import { formatCurrency, formatDate, formatNumber, month } from '$lib/utils'
+	import { formatCurrency, formatDate, formatNumber } from '$lib/utils'
 	import Dropdown from './ui/dropdown.svelte'
 	import adapter from '$lib/adapters'
 	import { notImplemented } from '$lib/not-implemented'
@@ -24,10 +26,9 @@
 	let { transaction, currency, open }: Props = $props()
 
 	const numOccurences = $derived(
-		Math.floor(
-			(new Date(transaction.end_date || transaction.date).getTime() -
-				new Date(transaction.date).getTime()) /
-				month,
+		differenceInMonths(
+			new Date(transaction.end_date || transaction.date),
+			new Date(transaction.date),
 		),
 	)
 	const totalAmount = $derived(numOccurences * Number(transaction.amount))

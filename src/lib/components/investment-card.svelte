@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { transactionStore } from '$lib/stores/transaction.svelte'
+
 	import { cascadeDeleteInvestment, cascadeDuplicateInvestment } from '$lib/cascade'
 
 	import type { Investment, Portfolio } from '$lib/types'
@@ -31,6 +33,18 @@
 	}
 
 	let { investment, portfolio, viewOnly = false }: Props = $props()
+
+	const transactions = $derived(transactionStore.filter(investment.id))
+	const totalDeposits = $derived(
+		transactions
+			.filter((transaction) => transaction.type === 'deposit')
+			.reduce((prev, curr) => prev + curr.amount, 0),
+	)
+	const totalWithdrawals = $derived(
+		transactions
+			.filter((transaction) => transaction.type === 'withdrawal')
+			.reduce((prev, curr) => prev + curr.amount, 0),
+	)
 
 	function cardOpenInvestment(e: MouseEvent) {
 		if (viewOnly) {
@@ -88,12 +102,14 @@
 	<div class="info">
 		<span>
 			<Download size={16} /><Typography font="mono" variant="small"
-				>{formatCurrency(100000, portfolio.currency)} ({$_('total deposits')})</Typography
+				>{formatCurrency(totalDeposits, portfolio.currency)} ({$_('total deposits')})</Typography
 			>
 		</span>
 		<span>
 			<Export size={16} /><Typography font="mono" variant="small"
-				>{formatCurrency(0, portfolio.currency)} ({$_('total withdrawals')})</Typography
+				>{formatCurrency(totalWithdrawals, portfolio.currency)} ({$_(
+					'total withdrawals',
+				)})</Typography
 			>
 		</span>
 	</div>
