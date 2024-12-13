@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
@@ -14,7 +18,4 @@ jobs:
       - uses: GoogleCloudPlatform/release-please-action@v4
         id: release
         with:
-          token: ${{ secrets.REPO_GH_PAT }}
           release-type: node
-          package-name: luminance
-          bump-minor-pre-major: true

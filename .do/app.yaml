@@ -1,0 +1,43 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+domains:
+  - domain: kalkul.app
+    type: PRIMARY
+features:
+  - buildpack-stack=ubuntu-22
+ingress:
+  rules:
+    - component:
+        name: kalkul-app
+      match:
+        path:
+          prefix: /
+name: kalkul
+region: fra
+services:
+  - build_command: pnpm build
+    environment_slug: node-js
+    envs:
+      - key: PUBLIC_SUPABASE_ANON_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${PUBLIC_SUPABASE_ANON_KEY}
+      - key: PUBLIC_SUPABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${PUBLIC_SUPABASE_URL}
+      - key: SUPABASE_JWT_SECRET
+        scope: RUN_AND_BUILD_TIME
+        value: ${SUPABASE_JWT_SECRET}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: snaha/kalkul
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    name: kalkul-app
+    run_command: pnpm preview --host 0.0.0.0 --port 8080
+    source_dir: /
