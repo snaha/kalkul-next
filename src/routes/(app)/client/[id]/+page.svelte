@@ -28,6 +28,7 @@
 	import DeleteModal from '$lib/components/delete-modal.svelte'
 	import { cascadeDeletePortfolio, cascadeDuplicatePortfolio } from '$lib/cascade'
 	import { investmentStore } from '$lib/stores/investment.svelte'
+	import { transactionStore } from '$lib/stores/transaction.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -58,6 +59,30 @@
 
 	function numInvestments(portfolioId: number) {
 		return investmentStore.filter(portfolioId).length
+	}
+
+	function totalPortfolioDeposits(portfolioId: number) {
+		return investmentStore
+			.filter(portfolioId)
+			.reduce((prev, curr) => prev + totalInvestmentDeposits(curr.id), 0)
+	}
+
+	function totalInvestmentDeposits(investmentId: number) {
+		return transactionStore
+			.filter(investmentId)
+			.reduce((prev, curr) => (curr.type === 'deposit' ? prev + curr.amount : prev), 0)
+	}
+
+	function totalPortfolioWithdrawals(portfolioId: number) {
+		return investmentStore
+			.filter(portfolioId)
+			.reduce((prev, curr) => prev + totalInvestmentWithdrawals(curr.id), 0)
+	}
+
+	function totalInvestmentWithdrawals(investmentId: number) {
+		return transactionStore
+			.filter(investmentId)
+			.reduce((prev, curr) => (curr.type === 'withdrawal' ? prev + curr.amount : prev), 0)
 	}
 </script>
 
@@ -150,8 +175,8 @@
 							<span>{portfolio.currency}</span>
 							<span>{formatDate(new Date(portfolio.last_edited_at))}</span>
 							<span class="right-aligned">{numInvestments(portfolio.id)}</span>
-							<span class="right-aligned">{0}</span>
-							<span class="right-aligned">{0}</span>
+							<span class="right-aligned">{totalPortfolioDeposits(portfolio.id)}</span>
+							<span class="right-aligned">{totalPortfolioWithdrawals(portfolio.id)}</span>
 							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
 						</li>
 					{/each}
