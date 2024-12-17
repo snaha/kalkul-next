@@ -5,6 +5,7 @@
 	import InvestmentCard from '$lib/components/investment-card.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
+	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import type { PortfolioView } from '$lib/types'
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
@@ -46,7 +47,7 @@
 					{/each}
 				</section>
 			</section>
-			<section class="graph"></section>
+			<PortfolioGraph portfolio={portfolioView.portfolio} investments={portfolioView.investments} />
 		</section>
 	{/if}
 </main>

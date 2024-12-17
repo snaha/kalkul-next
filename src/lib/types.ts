@@ -49,3 +49,23 @@ export interface PortfolioView {
 	investments: Investment[]
 	transactions: Transaction[]
 }
+
+export interface InvestmentData {
+	startDate: Date
+	endDate: Date
+	deposits: Map<string, number>
+	withdrawals: Map<string, number>
+}
+
+export interface Arity {
+	frequency: Frequency
+	count: number
+}
+
+export interface GraphData {
+	label: string
+	graphLabels: string[]
+	graphDeposits: number[]
+	graphWithdrawals: number[]
+	graphInvestmentValue: number[]
+}

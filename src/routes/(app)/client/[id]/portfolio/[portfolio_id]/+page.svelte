@@ -12,6 +12,7 @@
 	import { clientStore } from '$lib/stores/clients.svelte'
 	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -46,7 +47,7 @@
 					<Add size={16} />{$_('addInvestment')}</Button
 				>
 			</section>
-			<section class="graph"></section>
+			<PortfolioGraph {portfolio} {investments} />
 		</section>
 	</main>
 {/if}

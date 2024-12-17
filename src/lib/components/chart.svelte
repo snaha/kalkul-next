@@ -1,56 +1,97 @@
 <script lang="ts">
-	import Chart, { type ChartDataset } from 'chart.js/auto'
+	import Chart, { type ChartDataset, type ChartOptions, type ChartType } from 'chart.js/auto'
+
+	type ChartDatasetWithColor = ChartDataset & {
+		colorIndex?: number
+	}
 
 	interface Props {
 		labels: (number | string)[]
-		series: ChartDataset[]
+		datasets: ChartDatasetWithColor[]
+		type: ChartType
+		options?: ChartOptions<ChartType>
 	}
-	let { labels, series }: Props = $props()
+
+	const DEFAULT_OPTIONS: ChartOptions<ChartType> = {
+		maintainAspectRatio: false,
+		responsive: false,
+	}
+
+	const SERIES_COLORS = [
+		'#6929C4',
+		'#1192E8',
+		'#005D5D',
+		'#9F1853',
+		'#FA4D56',
+		'#520408',
+		'#198038',
+		'#002D9C',
+		'#EE5396',
+		'#B28600',
+		'#012749',
+		'#8A3800',
+		'#A56EFF',
+	]
+
+	let { labels, datasets, type, options = {} }: Props = $props()
 
 	let canvas: HTMLCanvasElement | null = $state(null)
 	let chart: Chart | null = $state(null)
 
+	function setDatasetColors(datasets: ChartDatasetWithColor[]): ChartDatasetWithColor[] {
+		return datasets.map((d, i) => ({
+			borderColor: SERIES_COLORS[d.colorIndex ?? i % SERIES_COLORS.length],
+			backgroundColor: SERIES_COLORS[d.colorIndex ?? i % SERIES_COLORS.length],
+			...d,
+		}))
+	}
+
 	$effect(() => {
 		if (canvas && !chart) {
 			chart = new Chart(canvas, {
-				type: 'line',
+				type,
 				data: {
-					labels: labels,
-					datasets: series,
+					labels,
+					datasets: setDatasetColors(datasets),
 				},
-
 				options: {
-					scales: {
-						y: {
-							min: 0,
-						},
-					},
-					responsive: false,
+					...DEFAULT_OPTIONS,
+					...options,
 				},
 			})
 			chart.resize()
 		}
 		if (chart) {
 			chart.data.labels = labels
-			chart.data.datasets = series
+			chart.data.datasets = setDatasetColors(datasets)
 			chart.update()
 		}
 	})
 	let prevChartWidth: number = $state(0)
 	let actChartWidth: number = $state(0)
+	let actChartHeight: number = $state(0)
+	let prevChartHeight: number = $state(0)
 	$effect(() => {
 		const interval = setInterval(() => {
-			if (actChartWidth !== prevChartWidth && chart) {
+			if ((actChartWidth !== prevChartWidth || actChartHeight !== prevChartHeight) && chart) {
+				prevChartHeight = actChartHeight
 				prevChartWidth = actChartWidth
 				chart.resize()
 			}
-		}, 1000)
+		}, 500)
 		return () => {
 			clearInterval(interval)
 		}
 	})
 </script>
 
-<div class="chart" bind:clientWidth={actChartWidth}>
+<div class="chart" bind:clientWidth={actChartWidth} bind:clientHeight={actChartHeight}>
 	<canvas bind:this={canvas}></canvas>
 </div>
+
+<style>
+	.chart {
+		width: 100%;
+		height: 100%;
+	}
+</style>

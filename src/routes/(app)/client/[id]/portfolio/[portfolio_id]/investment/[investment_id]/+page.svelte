@@ -16,6 +16,7 @@
 	import TransactionCard from '$lib/components/transaction-card.svelte'
 	import type { Transaction, TransactionType } from '$lib/types'
 	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
+	import InvestmentGraph from '$lib/components/graph-investment.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -32,6 +33,7 @@
 			.filter(investmentId)
 			.filter((transaction) => transaction.type === 'withdrawal'),
 	)
+
 	let showDialog = $state(false)
 	let dialogAction: TransactionType = $state('deposit')
 	let dialog: HTMLDialogElement | undefined = $state()
@@ -172,7 +174,11 @@
 					</section>
 				{/if}
 			</section>
-			<section class="graph"></section>
+			<InvestmentGraph
+				{investment}
+				investmentData={transactionStore.filter(investmentId)}
+				{portfolio}
+			/>
 		</section>
 	</main>
 {/if}
