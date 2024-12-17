@@ -82,7 +82,7 @@ function transactionMapToGraphArray(
 		let value = 0
 		for (
 			let d = new Date(date);
-			d <= incrementDate(date, frequency, count);
+			d < incrementDate(date, frequency, count);
 			d = incrementDate(d, 'day', 1)
 		) {
 			const amount = values.get(formatDate(d)) ?? 0
