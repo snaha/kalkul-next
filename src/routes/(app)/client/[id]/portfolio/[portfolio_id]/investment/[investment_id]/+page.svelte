@@ -17,6 +17,9 @@
 	import type { Transaction, TransactionType } from '$lib/types'
 	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 	import InvestmentGraph from '$lib/components/graph-investment.svelte'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import Loader from '$lib/components/ui/loader.svelte'
+	import Sidebar from '$lib/components/sidebar.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -38,6 +41,12 @@
 	let dialogAction: TransactionType = $state('deposit')
 	let dialog: HTMLDialogElement | undefined = $state()
 	let editedTransaction: Transaction | undefined = $state()
+	let isLoading = $derived(
+		clientStore.loading ||
+			portfolioStore.loading ||
+			investmentStore.loading ||
+			transactionStore.loading,
+	)
 
 	function goBack() {
 		goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))
@@ -75,13 +84,17 @@
 	}
 </script>
 
-{#if !portfolio || !client || !investment}
+{#if isLoading}
+	<Fullscreen>
+		<Loader />
+	</Fullscreen>
+{:else if !portfolio || !client || !investment}
 	404 Not found
 {:else}
 	<main>
 		<PortfolioHeader {client} {portfolio} />
 		<section class="horizontal grower">
-			<section class="sidebar vertical">
+			<Sidebar>
 				<dialog bind:this={dialog}>
 					<div class="dialog-background">
 						<section class="vertical dialog">
@@ -173,7 +186,7 @@
 						</TabBar>
 					</section>
 				{/if}
-			</section>
+			</Sidebar>
 			<InvestmentGraph
 				{investment}
 				investmentData={transactionStore.filter(investmentId)}
@@ -186,7 +199,6 @@
 <style>
 	:root {
 		--max-width: 1370px;
-		--sidebar-width: 320px;
 	}
 	main {
 		height: 100vh;
@@ -208,11 +220,6 @@
 	}
 	:global(.grower) {
 		flex: 1;
-	}
-	.sidebar {
-		width: var(--sidebar-width);
-		border-right: 1px solid var(--colors-low);
-		height: 100%;
 	}
 	.investment {
 		padding: var(--half-padding) var(--padding);

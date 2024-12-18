@@ -13,6 +13,7 @@
 	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
+	import Sidebar from '$lib/components/sidebar.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -37,7 +38,7 @@
 	<main>
 		<PortfolioHeader {client} {portfolio} />
 		<section class="horizontal grower">
-			<section class="sidebar vertical">
+			<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="var(--padding)">
 				<section class="investments">
 					{#each investments as investment}
 						<InvestmentCard {investment} {portfolio} />
@@ -46,7 +47,7 @@
 				<Button dimension="small" variant="strong" onclick={addInvestment}>
 					<Add size={16} />{$_('addInvestment')}</Button
 				>
-			</section>
+			</Sidebar>
 			<PortfolioGraph {portfolio} {investments} />
 		</section>
 	</main>
@@ -68,20 +69,8 @@
 		align-items: center;
 		gap: var(--half-padding);
 	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		gap: var(--padding);
-	}
 	:global(.grower) {
 		flex: 1;
-	}
-	.sidebar {
-		width: 320px;
-		border-right: 1px solid var(--colors-low);
-		height: 100%;
-		padding: var(--padding);
 	}
 	.investments {
 		display: flex;
