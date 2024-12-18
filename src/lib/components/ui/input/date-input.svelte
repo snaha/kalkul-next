@@ -6,13 +6,14 @@
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	import Typography from '../typography.svelte'
 
-	type Variant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'large' | 'default' | 'small'
+	type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'large' | 'default' | 'small'
 
 	let {
 		dimension = 'default',
 		disabled,
 		value = $bindable(new Date()),
 		class: className = '',
+		variant,
 		...restProps
 	}: Props & HTMLInputAttributes = $props()
 
@@ -26,7 +27,7 @@
 	let showDatePicker = $state(false)
 	let isMobile = $state(false)
 	let size: 16 | 24 | 32 = $derived(dimension === 'large' ? 32 : dimension === 'small' ? 16 : 24)
-	let variant: Variant = $derived(
+	let typographyVariant: TypographyVariant = $derived(
 		isMobile
 			? 'small'
 			: dimension === 'large'
@@ -197,7 +198,7 @@
 	<Button
 		{dimension}
 		{disabled}
-		variant="secondary"
+		variant={variant === 'solid' ? 'solid' : 'secondary'}
 		onclick={(e: MouseEvent) => {
 			e.stopPropagation()
 			showDatePicker = !showDatePicker
@@ -213,11 +214,13 @@
 	<Input
 		{dimension}
 		{disabled}
+		{variant}
 		{...restProps}
 		value={stringValue}
 		oninput={inputChange}
 		{buttons}
 		type="date"
+		style="padding-right: 0;"
 	/>
 	<div class:modal={isMobile}>
 		<div class="date-picker" class:showDatePicker bind:this={datePicker}>
@@ -229,7 +232,9 @@
 						onclick={() => changeMonth(-1)}><ChevronLeft size={isMobile ? 16 : size} /></Button
 					>
 					<div class="current-month">
-						<Typography {variant} bold>{months[selectedMonth]} {selectedYear}</Typography>
+						<Typography variant={typographyVariant} bold
+							>{months[selectedMonth]} {selectedYear}</Typography
+						>
 						<Button
 							dimension={isMobile ? 'small' : dimension}
 							variant="ghost"
@@ -254,7 +259,7 @@
 				{#if !showYearPicker}
 					<div class="days">
 						{#each days as day}
-							<Typography {variant}>{day}</Typography>
+							<Typography variant={typographyVariant}>{day}</Typography>
 						{/each}
 					</div>
 				{/if}
