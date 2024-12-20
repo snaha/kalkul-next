@@ -12,6 +12,12 @@
 		options?: ChartOptions<ChartType>
 	}
 
+	const defaultFontFamily = window
+		.getComputedStyle(document.documentElement)
+		.getPropertyValue('--font-family-sans-serif')
+
+	Chart.defaults.font.family = defaultFontFamily
+
 	const DEFAULT_OPTIONS: ChartOptions<ChartType> = {
 		maintainAspectRatio: false,
 		responsive: false,

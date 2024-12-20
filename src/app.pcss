@@ -1,40 +1,32 @@
 :root {
-	/* legacy */
-	--colors-top: #191919;
-	--colors-ultraHigh: #303030;
-	--colors-high: #555;
-	--colors-low: #e7e7e7;
-	--colors-ultraLow: #f9f9f9;
-	--colors-base: #fefefe;
-	--colors-darkOverlay: rgba(25, 25, 25, 0.7);
-	--colors-baseOverlay: rgba(254, 254, 254, 0.9);
-
-	/* diete.css */
 	--colors-top: #191919;
 	--colors-ultra-high: #303030;
-	--colors-high: #555;
-	--colors-low: #e7e7e7;
-	--colors-ultra-low: #f9f9f9;
-	--colors-base: #fefefe;
+	--colors-high-neutral: #555;
+	--colors-high: #008765;
+	--colors-low: #e5dfd5;
+	--colors-ultra-low: #f9f3eb;
+	--colors-base: #fffcf9;
 
-	--colors-dark-top: #fefefe;
-	--colors-dark-ultra-high: #f9f9f9;
-	--colors-dark-high: #e7e7e7;
-	--colors-dark-low: #555;
-	--colors-dark-ultra-low: #303030;
+	--colors-dark-top: #fffcf9;
+	--colors-dark-ultra-high: #f9f3eb;
+	--colors-dark-high: #008765;
+	--colors-dark-high-neutral: #aea9a4;
+	--colors-dark-low: #3f3f3f;
+	--colors-dark-ultra-low: #3f3f3f;
 	--colors-dark-base: #191919;
 
 	--colors-light-top: #191919;
 	--colors-light-ultra-high: #303030;
-	--colors-light-high: #555;
-	--colors-light-low: #e7e7e7;
-	--colors-light-ultra-low: #f9f9f9;
-	--colors-light-base: #fefefe;
+	--colors-light-high-neutral: #555;
+	--colors-light-high: #008765;
+	--colors-light-low: #e5dfd5;
+	--colors-light-ultra-low: #f9f3eb;
+	--colors-light-base: #fffcf9;
 
 	--colors-dark-overlay: rgba(25, 25, 25, 0.7);
-	--colors-light-overlay: rgba(254, 254, 254, 0.7);
+	--colors-light-overlay: rgba(255, 251, 249, 0.7);
 
-	--font-family-sans-serif: sans-serif;
+	--font-family-sans-serif: 'Reddit Sans', sans-serif;
 	--font-family-serif: serif;
 	--font-family-monospace: monospace;
 
@@ -97,4 +89,10 @@ body {
 	background-color: var(--colors-ultra-low);
 	color: var(--colors-ultra-high);
 	font-family: var(--font-family-sans-serif);
+}
+
+@font-face {
+	src: url('/fonts/RedditSans-Regular.ttf') format('truetype');
+	font-family: 'Reddit Sans';
+	font-feature-settings: 'tnum';
 }
