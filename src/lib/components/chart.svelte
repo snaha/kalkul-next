@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { SERIES_COLORS } from '$lib/colors'
+	import { getCSSVariableValue } from '$lib/css-vars'
 	import Chart, { type ChartDataset, type ChartOptions, type ChartType } from 'chart.js/auto'
 
 	type ChartDatasetWithColor = ChartDataset & {
@@ -12,32 +14,14 @@
 		options?: ChartOptions<ChartType>
 	}
 
-	const defaultFontFamily = window
-		.getComputedStyle(document.documentElement)
-		.getPropertyValue('--font-family-sans-serif')
-
-	Chart.defaults.font.family = defaultFontFamily
+	Chart.defaults.font.family = getCSSVariableValue('--font-family-sans-serif')
+	Chart.defaults.borderColor = getCSSVariableValue('--colors-low')
+	Chart.defaults.color = getCSSVariableValue('--colors-high-neutral')
 
 	const DEFAULT_OPTIONS: ChartOptions<ChartType> = {
 		maintainAspectRatio: false,
 		responsive: false,
 	}
-
-	const SERIES_COLORS = [
-		'#6929C4',
-		'#1192E8',
-		'#005D5D',
-		'#9F1853',
-		'#FA4D56',
-		'#520408',
-		'#198038',
-		'#002D9C',
-		'#EE5396',
-		'#B28600',
-		'#012749',
-		'#8A3800',
-		'#A56EFF',
-	]
 
 	let { labels, datasets, type, options = {} }: Props = $props()
 

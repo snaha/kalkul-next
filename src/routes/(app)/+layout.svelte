@@ -30,10 +30,10 @@
 				<img src="/logo.svg" alt="Logo" />
 			</div>
 			<div class="info">
-				<Typography variant="h1">Fingerstache mukbang</Typography>
+				<Typography variant="h1">Envision financial freedom</Typography>
 				<Typography variant="large"
-					>Viral meggings austin, chicharrones cray vinyl banjo pickled adaptogen bitters affogato
-					cornhole vaporware messenger bag.</Typography
+					>Kalkul helps financial advisors create, visualise and share beautifully clear investment
+					plans with their clients.</Typography
 				>
 			</div>
 			<div class="buttons">
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 		<div class="image">
-			<img src="/intro-image.png" alt="bird" width="100%" />
+			<img src="/capa2.svg" alt="intro" width="100%" />
 		</div>
 	</div>
 {:else if screen === 'registration'}
@@ -77,6 +77,8 @@
 		align-items: center;
 		gap: var(--padding);
 		height: 100vh;
+		padding: var(--padding);
+		flex-wrap: wrap;
 	}
 	.intro-banner {
 		display: flex;

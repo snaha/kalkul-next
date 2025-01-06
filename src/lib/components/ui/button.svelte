@@ -2,7 +2,7 @@
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements'
 	export type Variant = 'strong' | 'secondary' | 'ghost' | 'solid' | 'darkoverlay' | 'lightoverlay'
 	export type Dimension = 'default' | 'large' | 'compact' | 'small'
-	type Mode = 'light' | 'dark' | 'auto'
+	export type Mode = 'light' | 'dark' | 'auto'
 	type ButtonProps = {
 		variant?: Variant
 		active?: boolean

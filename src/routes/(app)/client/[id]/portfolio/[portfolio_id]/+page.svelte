@@ -35,18 +35,18 @@
 		404 - {$_('Not found')}
 	</Fullscreen>
 {:else}
+	<PortfolioHeader {client} {portfolio} back={() => goto(routes.CLIENT(clientId))} />
 	<main>
-		<PortfolioHeader {client} {portfolio} />
 		<section class="horizontal grower">
-			<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="var(--padding)">
+			<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
 				<section class="investments">
-					{#each investments as investment}
-						<InvestmentCard {investment} {portfolio} />
+					<Button dimension="compact" variant="solid" onclick={addInvestment}>
+						<Add size={24} /></Button
+					>
+					{#each investments as investment, i}
+						<InvestmentCard {investment} {portfolio} index={i} />
 					{/each}
 				</section>
-				<Button dimension="small" variant="strong" onclick={addInvestment}>
-					<Add size={16} />{$_('addInvestment')}</Button
-				>
 			</Sidebar>
 			<PortfolioGraph {portfolio} {investments} />
 		</section>
@@ -61,13 +61,14 @@
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
+		padding: var(--double-padding);
 	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
-		gap: var(--half-padding);
+		gap: var(--padding);
 	}
 	:global(.grower) {
 		flex: 1;

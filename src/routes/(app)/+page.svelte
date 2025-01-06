@@ -139,7 +139,7 @@
 		--max-width: 1370px;
 	}
 	main {
-		margin: var(--padding);
+		margin: var(--double-padding);
 	}
 	.top-bar {
 		padding-bottom: var(--padding);

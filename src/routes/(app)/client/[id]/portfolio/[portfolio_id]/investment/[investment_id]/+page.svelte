@@ -15,11 +15,12 @@
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import TransactionCard from '$lib/components/transaction-card.svelte'
 	import type { Transaction, TransactionType } from '$lib/types'
-	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 	import InvestmentGraph from '$lib/components/graph-investment.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import Sidebar from '$lib/components/sidebar.svelte'
+	import FlexItem from '$lib/components/ui/flex-item.svelte'
+	import Vertical from '$lib/components/ui/vertical.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -47,10 +48,6 @@
 			investmentStore.loading ||
 			transactionStore.loading,
 	)
-
-	function goBack() {
-		goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))
-	}
 
 	function addDeposit() {
 		openDialog()
@@ -91,8 +88,23 @@
 {:else if !portfolio || !client || !investment}
 	404 Not found
 {:else}
+	<header class="horizontal top-bar">
+		<Button
+			dimension="compact"
+			variant="ghost"
+			onclick={() => {
+				goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))
+			}}
+		>
+			<ArrowLeft size={24} /></Button
+		>
+		<Typography variant="h4" bold>{investment.name}</Typography>
+		<FlexItem />
+		<Button variant="secondary" onclick={editInvestment}
+			><SettingsEdit size={24} />{$_('Edit investment')}</Button
+		>
+	</header>
 	<main>
-		<PortfolioHeader {client} {portfolio} />
 		<section class="horizontal grower">
 			<Sidebar>
 				<dialog bind:this={dialog}>
@@ -111,16 +123,6 @@
 					</div>
 				</dialog>
 				{#if !showDialog}
-					<section class="horizontal investment">
-						<Button dimension="small" variant="ghost" onclick={goBack}
-							><ArrowLeft size={16} /></Button
-						>
-						<Typography variant="h5">{investment.name}</Typography>
-						<div class="grower"></div>
-						<Button dimension="small" variant="solid" onclick={editInvestment}
-							><SettingsEdit size={16} /></Button
-						>
-					</section>
 					<section class="vertical tabs">
 						<TabBar
 							dimension="small"
@@ -135,26 +137,28 @@
 									Deposits
 								{/snippet}
 								<section class="transactions vertical">
+									<Button variant="strong" onclick={addDeposit}>
+										<Add size={16} />{$_('Add deposit')}</Button
+									>
 									{#if deposits.length === 0}
-										<img src="/images/pets-21.png" alt="No deposit yet" />
 										<section class="vertical centered">
+											<img src="/add-deposit.svg" alt="No deposit yet" />
 											<Typography variant="h5">{$_('No deposit yet')}</Typography>
 											<Typography variant="small"
-												>{$_('Create a first deposit in this investment')}</Typography
+												>{$_('Use the button above to add one')}</Typography
 											>
 										</section>
 									{/if}
-									{#each deposits as deposit}
-										<TransactionCard
-											transaction={deposit}
-											currency={portfolio.currency}
-											open={() => openTransaction(deposit)}
-										/>
-									{/each}
+									<Vertical --vertical-gap="var(--half-padding)">
+										{#each deposits as deposit}
+											<TransactionCard
+												transaction={deposit}
+												currency={portfolio.currency}
+												open={() => openTransaction(deposit)}
+											/>
+										{/each}
+									</Vertical>
 								</section>
-								<Button dimension="small" variant="strong" onclick={addDeposit}>
-									<Add size={16} />{$_('Add deposit')}</Button
-								>
 							</TabContent>
 							<TabContent id="withdrawal">
 								{#snippet value()}
@@ -162,6 +166,9 @@
 									Withdrawals
 								{/snippet}
 								<section class="transactions vertical">
+									<Button variant="strong" onclick={addWithdrawal}>
+										<Add size={24} />{$_('Add withdrawal')}</Button
+									>
 									{#if deposits.length === 0}
 										<img src="/images/pets-29.png" alt="No withdrawal yet" />
 										<section class="vertical centered">
@@ -171,27 +178,22 @@
 											>
 										</section>
 									{/if}
-									{#each withdrawals as withdrawal}
-										<TransactionCard
-											transaction={withdrawal}
-											currency={portfolio.currency}
-											open={() => openTransaction(withdrawal)}
-										/>
-									{/each}
-									<Button dimension="small" variant="strong" onclick={addWithdrawal}>
-										<Add size={16} />{$_('Add withdrawal')}</Button
-									>
+									<Vertical --vertical-gap="var(--half-padding)">
+										{#each withdrawals as withdrawal}
+											<TransactionCard
+												transaction={withdrawal}
+												currency={portfolio.currency}
+												open={() => openTransaction(withdrawal)}
+											/>
+										{/each}
+									</Vertical>
 								</section>
 							</TabContent>
 						</TabBar>
 					</section>
 				{/if}
 			</Sidebar>
-			<InvestmentGraph
-				{investment}
-				investmentData={transactionStore.filter(investmentId)}
-				{portfolio}
-			/>
+			<InvestmentGraph {investment} {portfolio} />
 		</section>
 	</main>
 {/if}
@@ -204,13 +206,18 @@
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
+		padding: var(--double-padding);
+	}
+	.top-bar {
+		padding: var(--double-padding);
+		border-bottom: 1px solid var(--colors-low);
 	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
-		gap: var(--half-padding);
+		gap: var(--padding);
 	}
 	.vertical {
 		display: flex;
@@ -221,15 +228,10 @@
 	:global(.grower) {
 		flex: 1;
 	}
-	.investment {
-		padding: var(--half-padding) var(--padding);
-		border-bottom: 1px solid var(--colors-low);
-	}
 	.tabs {
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
-		padding: var(--padding);
 	}
 	:global(.investment-tab-controls) {
 		display: flex;
@@ -248,16 +250,16 @@
 		flex: 1 !important;
 	}
 	.transactions {
-		gap: var(--half-padding);
+		gap: var(--padding);
 		justify-content: center;
 		padding-top: var(--padding);
 		padding-bottom: var(--padding);
 	}
 	.dialog {
-		margin: var(--half-padding);
 		padding: var(--padding);
 		border-radius: var(--border-radius);
 		background-color: var(--colors-ultra-low);
+		border: 1px solid var(--colors-low);
 	}
 	dialog {
 		top: 0;
@@ -276,9 +278,9 @@
 		position: absolute;
 		width: var(--sidebar-width);
 		height: 100%;
-		background-color: var(--colors-dark-overlay);
 	}
 	.centered {
 		align-items: center;
+		padding: var(--padding);
 	}
 </style>

@@ -26,7 +26,6 @@
 	}
 	.sidebar {
 		min-width: var(--sidebar-width);
-		border-right: 1px solid var(--colors-low);
 		height: 100%;
 		padding: var(--sidebar-padding);
 	}

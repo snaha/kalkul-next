@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
-	import Button, { type Variant, type Dimension } from '$lib/components/ui/button.svelte'
+	import Button, { type Variant, type Dimension, type Mode } from '$lib/components/ui/button.svelte'
 
 	type Props = {
 		disabled?: boolean
@@ -13,6 +13,7 @@
 		autoClose?: boolean
 		class?: string
 		open?: boolean
+		mode?: Mode
 	}
 
 	let {
@@ -26,6 +27,7 @@
 		autoClose = true,
 		class: className,
 		open = $bindable(false),
+		mode = 'auto',
 	}: Props = $props()
 
 	let dropdownElement: HTMLElement
@@ -85,7 +87,8 @@
 			style="max-width:320px;"
 			variant={buttonVariant}
 			dimension={buttonDimension}
-			active={open}>{@render button()}</Button
+			active={open}
+			{mode}>{@render button()}</Button
 		>
 	</div>
 

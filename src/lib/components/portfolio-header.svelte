@@ -12,9 +12,9 @@
 		FolderDetails,
 		Copy,
 		TrashCan,
+		ArrowLeft,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
-	import Avatar from './avatar.svelte'
 	import Button from './ui/button.svelte'
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
@@ -25,9 +25,10 @@
 	type Props = {
 		client: Client
 		portfolio: Portfolio
+		back?: () => void
 	}
 
-	let { client, portfolio }: Props = $props()
+	let { client, portfolio, back }: Props = $props()
 
 	let showConfirmModal = $state(false)
 
@@ -51,19 +52,21 @@
 </script>
 
 <section class="topbar horizontal">
-	<a href={routes.CLIENT(client.id)}>
-		<Avatar name={client.name} birthDate={new Date(client.birth_date)} />
-	</a>
+	<Button
+		dimension="compact"
+		variant="ghost"
+		onclick={() => {
+			back ? back() : history.back()
+		}}
+	>
+		<ArrowLeft size={24} /></Button
+	>
 	<Typography variant="h4" bold>{portfolio.name}</Typography>
 	<Typography variant="large">| {client.name}</Typography>
 	<div class="grower"></div>
-	<Button dimension="compact" variant="strong" onclick={addInvestment}
-		><Add size={24} />{$_('Add investment')}</Button
-	>
-	<Button dimension="compact" variant="secondary" onclick={share}
-		><Share size={24} />{$_('share')}</Button
-	>
-	<Dropdown left buttonDimension="compact">
+	<Button variant="strong" onclick={addInvestment}><Add size={24} />{$_('Add investment')}</Button>
+	<Button variant="secondary" onclick={share}><Share size={24} />{$_('share')}</Button>
+	<Dropdown left>
 		{#snippet button()}
 			<OverflowMenuVertical size={24} />
 		{/snippet}
@@ -103,7 +106,7 @@
 
 <style>
 	.topbar {
-		padding: var(--padding);
+		padding: var(--double-padding);
 		border-top: 1px solid var(--colors-low);
 		border-bottom: 1px solid var(--colors-low);
 	}
@@ -113,9 +116,6 @@
 		justify-content: flex-start;
 		align-items: center;
 		gap: var(--half-padding);
-	}
-	.horizontal a {
-		display: flex;
 	}
 	:global(.grower) {
 		flex: 1;

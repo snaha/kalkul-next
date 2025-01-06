@@ -141,7 +141,7 @@
 	}
 </script>
 
-<form class="vertical">
+<main class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}
 			<Typography variant="h4">{$_('addPortfolio')}</Typography>
@@ -242,7 +242,7 @@
 			>
 		{/if}
 	</section>
-</form>
+</main>
 
 <DeleteModal
 	confirm={deletePortfolio}
@@ -255,7 +255,7 @@
 />
 
 <style>
-	form {
+	main {
 		max-width: 560px;
 		flex: 1;
 	}

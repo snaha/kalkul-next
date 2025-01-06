@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
+	import Logo from '$lib/components/icons/logo.svelte'
 	import { ChatBot, Logout, Moon, SettingsEdit, UserAvatarFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
 	import Dropdown from '$lib/components/ui/dropdown.svelte'
@@ -18,13 +19,13 @@
 </script>
 
 <header>
-	<a href="/">
-		<img src="/logo.svg" alt="Logo" width="40" height="40" />
+	<a class="logo-link" href="/">
+		<Logo size={32} />
 	</a>
 	<div class="user-info">
-		<Dropdown buttonDimension="compact">
+		<Dropdown buttonDimension="small" mode="dark">
 			{#snippet button()}
-				<UserAvatarFilled size={24} />{authStore.user?.new_email ?? authStore.user?.email}
+				<UserAvatarFilled size={16} />{authStore.user?.new_email ?? authStore.user?.email}
 			{/snippet}
 			<ul class="dropdown-menu">
 				<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
@@ -37,20 +38,27 @@
 				</Button>
 			</ul>
 		</Dropdown>
-		<Button dimension="compact" variant="ghost" onclick={notImplemented}
-			><ChatBot size={24} /></Button
+		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
+			><ChatBot size={16} /></Button
 		>
-		<Button dimension="compact" variant="ghost" onclick={notImplemented}><Moon size={24} /></Button>
+		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
+			><Moon size={16} /></Button
+		>
 	</div>
 </header>
 
 <style lang="postcss">
 	header {
-		padding: var(--padding);
+		padding: var(--half-padding);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		border-bottom: 1px solid var(--colors-low);
+		background-color: var(--colors-dark-ultra-low);
+		color: var(--colors-dark-ultra-high);
+	}
+	.logo-link {
+		display: flex;
+		color: var(--colors-dark-ultra-high);
 	}
 	.user-info {
 		display: flex;

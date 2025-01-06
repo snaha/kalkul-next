@@ -16,6 +16,8 @@
 	import Dropdown from './ui/dropdown.svelte'
 	import adapter from '$lib/adapters'
 	import { notImplemented } from '$lib/not-implemented'
+	import Horizontal from './ui/horizontal.svelte'
+	import FlexItem from './ui/flex-item.svelte'
 
 	type Props = {
 		transaction: Transaction
@@ -78,15 +80,15 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="card" onclick={openTransaction}>
-	<div class="title">
-		<Typography font="mono">
+	<Horizontal>
+		<Typography bold>
 			{#if transaction.repeat}
 				{`${formatCurrency(transaction.amount, currency)}, every ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${pluralize(transaction.repeat_unit || '', transaction.repeat)}`}
 			{:else}
 				{formatCurrency(transaction.amount, currency)}
 			{/if}
 		</Typography>
-		<div class="grower"></div>
+		<FlexItem />
 		<Dropdown buttonDimension="compact" left>
 			{#snippet button()}
 				<OverflowMenuVertical size={16} />
@@ -112,23 +114,23 @@
 				>
 			</ul>
 		</Dropdown>
-	</div>
+	</Horizontal>
 	<div class="info">
-		<Typography variant="small">{transaction.label}</Typography>
-		<Typography variant="small"
+		<Typography>{transaction.label}</Typography>
+		<Typography
 			>{formatDate(new Date(transaction.date))}
 			{#if transaction.end_date}
 				{` → ` + formatDate(new Date(transaction.end_date))}
 			{/if}
 		</Typography>
 		{#if transaction.end_date}
-			<Typography variant="small">
+			<Typography>
 				{formatNumber(numOccurences, { useGrouping: true })}
 				{$_('occurences')}
 			</Typography>
-			<Typography variant="small">
+			<Typography>
 				{formatCurrency(totalAmount, currency)}
-				({transaction.type === 'deposit' ? $_('total deposits') : $_('total withdrawals')})
+				{transaction.type === 'deposit' ? $_('total deposits') : $_('total withdrawals')}
 			</Typography>
 		{/if}
 	</div>
@@ -139,22 +141,16 @@
 		border: 1px solid var(--colors-low);
 		border-radius: var(--border-radius);
 		background-color: var(--colors-base);
-		padding: var(--half-padding);
+		padding: var(--padding);
 		display: flex;
 		flex-direction: column;
 		gap: var(--half-padding);
 		cursor: pointer;
 	}
-	.title {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: var(--quarter-padding);
-	}
 	.info {
 		display: flex;
 		flex-direction: column;
-		gap: var(--quarter-padding);
+		gap: 0;
 	}
 	.dropdown-menu {
 		display: flex;

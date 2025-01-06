@@ -245,6 +245,7 @@
 		gap: var(--double-padding);
 		height: 100vh;
 		margin: 0 auto;
+		padding: var(--padding);
 	}
 	.login-form {
 		display: flex;
@@ -255,6 +256,8 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: var(--half-padding);
+		flex-wrap: wrap;
 	}
 	.buttons {
 		display: flex;

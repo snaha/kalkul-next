@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import adapters from '$lib/adapters'
-	import Avatar from '$lib/components/avatar.svelte'
 	import InvestmentCard from '$lib/components/investment-card.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
@@ -9,6 +8,9 @@
 	import type { PortfolioView } from '$lib/types'
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
+	import ViewHeader from '$lib/components/view-header.svelte'
+	import Sidebar from '$lib/components/sidebar.svelte'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
 
 	const session_id = $page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
@@ -22,35 +24,40 @@
 	})
 </script>
 
-<main>
-	{#if notFound}
+{#if notFound}
+	<Fullscreen>
 		<div class="center">404 - {$_('Page not found')}</div>
-	{:else if !portfolioView}
+	</Fullscreen>
+{:else if !portfolioView}
+	<Fullscreen>
 		<div class="center">
 			<Loader />
 		</div>
-	{:else}
-		<section class="topbar horizontal">
-			<Avatar
-				name={portfolioView.client.name}
-				birthDate={new Date(portfolioView.client.birth_date)}
-			/>
-			<Typography variant="h4" bold>{portfolioView.portfolio.name}</Typography>
-			<Typography variant="large">| {portfolioView.client.name}</Typography>
-			<div class="grower"></div>
-		</section>
+	</Fullscreen>
+{:else}
+	<ViewHeader />
+	<section class="topbar horizontal">
+		<Typography variant="h4" bold>{portfolioView.portfolio.name}</Typography>
+		<div class="grower"></div>
+	</section>
+	<main>
 		<section class="horizontal grower">
-			<section class="sidebar vertical">
+			<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
 				<section class="investments">
-					{#each portfolioView.investments as investment}
-						<InvestmentCard viewOnly={true} {investment} portfolio={portfolioView.portfolio} />
+					{#each portfolioView.investments as investment, i}
+						<InvestmentCard
+							viewOnly={true}
+							{investment}
+							portfolio={portfolioView.portfolio}
+							index={i}
+						/>
 					{/each}
 				</section>
-			</section>
+			</Sidebar>
 			<PortfolioGraph portfolio={portfolioView.portfolio} investments={portfolioView.investments} />
 		</section>
-	{/if}
-</main>
+	</main>
+{/if}
 
 <style>
 	:root {
@@ -61,6 +68,7 @@
 		width: 100vw;
 		display: flex;
 		flex-direction: column;
+		padding: var(--double-padding);
 	}
 	.center {
 		display: flex;
@@ -69,8 +77,7 @@
 		height: 100%;
 	}
 	.topbar {
-		padding: var(--padding);
-		border-top: 1px solid var(--colors-low);
+		padding: var(--double-padding);
 		border-bottom: 1px solid var(--colors-low);
 	}
 	.horizontal {
@@ -78,22 +85,10 @@
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
-		gap: var(--half-padding);
-	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
 		gap: var(--padding);
 	}
 	:global(.grower) {
 		flex: 1;
-	}
-	.sidebar {
-		width: 320px;
-		border-right: 1px solid var(--colors-low);
-		height: 100%;
-		padding: var(--padding);
 	}
 	.investments {
 		display: flex;

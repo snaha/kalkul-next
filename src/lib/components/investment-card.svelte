@@ -7,8 +7,6 @@
 	import {
 		ArrowRight,
 		Copy,
-		Download,
-		Export,
 		OverflowMenuVertical,
 		Settings,
 		TrashCan,
@@ -25,14 +23,19 @@
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
+	import { SERIES_COLORS } from '$lib/colors'
+	import Horizontal from './ui/horizontal.svelte'
+	import FlexItem from './ui/flex-item.svelte'
+	import Vertical from './ui/vertical.svelte'
 
 	type Props = {
 		investment: Investment
 		portfolio: Portfolio
 		viewOnly?: boolean
+		index: number
 	}
 
-	let { investment, portfolio, viewOnly = false }: Props = $props()
+	let { investment, portfolio, viewOnly = false, index }: Props = $props()
 
 	const transactions = $derived(transactionStore.filter(investment.id))
 	const totalDeposits = $derived(
@@ -68,10 +71,11 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="card" onclick={cardOpenInvestment}>
-	<div class="title">
+	<Horizontal --horizontal-gap="var(--quarter-padding)">
+		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
-		<div class="grower"></div>
+		<FlexItem />
 		{#if viewOnly}
 			<Button variant="ghost" dimension="compact" onclick={notImplemented}
 				><ViewOff size={16} /></Button
@@ -98,21 +102,19 @@
 				</List>
 			</Dropdown>
 		{/if}
-	</div>
-	<div class="info">
-		<span>
-			<Download size={16} /><Typography font="mono" variant="small"
-				>{formatCurrency(totalDeposits, portfolio.currency)} ({$_('total deposits')})</Typography
-			>
-		</span>
-		<span>
-			<Export size={16} /><Typography font="mono" variant="small"
-				>{formatCurrency(totalWithdrawals, portfolio.currency)} ({$_(
-					'total withdrawals',
-				)})</Typography
-			>
-		</span>
-	</div>
+	</Horizontal>
+	<Vertical --vertical-gap="var(--quarter-padding)">
+		<Horizontal>
+			<Typography>{$_('Total deposits')}</Typography>
+			<FlexItem />
+			<Typography>{formatCurrency(totalDeposits, portfolio.currency)}</Typography>
+		</Horizontal>
+		<Horizontal>
+			<Typography>{$_('Total withdrawals')}</Typography>
+			<FlexItem />
+			<Typography>{formatCurrency(totalWithdrawals, portfolio.currency)}</Typography>
+		</Horizontal>
+	</Vertical>
 </div>
 
 <style type="postcss">
@@ -120,28 +122,15 @@
 		border: 1px solid var(--colors-low);
 		border-radius: var(--border-radius);
 		background-color: var(--colors-base);
-		padding: var(--half-padding);
+		padding: var(--padding);
 		display: flex;
 		flex-direction: column;
 		gap: var(--half-padding);
 		cursor: pointer;
 	}
-	.title {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: var(--quarter-padding);
-	}
-	.info {
-		display: flex;
-		flex-direction: column;
-		gap: 1px;
-
-		span {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			gap: 1px;
-		}
+	.color-box {
+		width: 36px;
+		height: 24px;
+		border-radius: var(--border-radius);
 	}
 </style>

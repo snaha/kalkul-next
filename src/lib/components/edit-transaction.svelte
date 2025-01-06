@@ -30,6 +30,7 @@
 		differenceInMonths,
 		differenceInYears,
 	} from 'date-fns'
+	import FlexItem from './ui/flex-item.svelte'
 
 	type Props = {
 		investment: Investment
@@ -216,10 +217,12 @@
 					? $_('Edit deposit')
 					: $_('Edit withdrawal')}</Typography
 		>
+		<FlexItem />
+		<Button dimension="compact" variant="ghost" onclick={cancel}><Close size={24} /></Button>
 	</section>
 	<div class="spacer"></div>
 	<Input
-		dimension="small"
+		dimension="compact"
 		variant="solid"
 		placeholder={$_('Label')}
 		label={$_('Label')}
@@ -228,7 +231,7 @@
 	<Input
 		type="number"
 		variant="solid"
-		dimension="small"
+		dimension="compact"
 		placeholder={'0'}
 		label={transaction.type == 'deposit' ? $_('Deposit amount') : $_('Withdrawal amount')}
 		unit={portfolio.currency}
@@ -238,13 +241,13 @@
 		class="grower"
 	></Input>
 	<Toggle
-		dimension="small"
+		dimension="compact"
 		label={transaction.type === 'deposit' ? $_('Recurring deposit') : $_('Recurring withdrawal')}
 		bind:checked={isRecurring}
 		onchange={toggleRecurring}
 	></Toggle>
 	<DateAge
-		dimension="small"
+		dimension="compact"
 		dateInputLabel={transaction.type === 'deposit' ? $_('Deposit date') : $_('Withdrawal date')}
 		ageLabel={transaction.type === 'deposit' ? $_('Age at deposit') : $_('Age at withdrawal')}
 		agePlaceholder={'0'}
@@ -257,7 +260,7 @@
 			<Input
 				type="number"
 				variant="solid"
-				dimension="small"
+				dimension="compact"
 				placeholder={'1'}
 				label={$_('Repeats every')}
 				min={1}
@@ -265,7 +268,7 @@
 				bind:value={repeat}
 				style="max-width: 100%"
 			></Input>
-			<Select variant="solid" dimension="small" bind:value={repeatUnit}>
+			<Select variant="solid" dimension="compact" bind:value={repeatUnit}>
 				<Option value="day">{$_('day')}</Option>
 				<Option value="week">{$_('week')}</Option>
 				<Option value="month">{$_('month')}</Option>
@@ -276,7 +279,7 @@
 			<Input
 				type="number"
 				variant="solid"
-				dimension="small"
+				dimension="compact"
 				placeholder={'30'}
 				label={$_('For')}
 				min={1}
@@ -287,7 +290,7 @@
 			></Input>
 			<Select
 				variant="solid"
-				dimension="small"
+				dimension="compact"
 				bind:value={periodUnit}
 				onchange={onPeriodUnitChange}
 			>
@@ -298,7 +301,7 @@
 			</Select>
 		</section>
 		<DateAge
-			dimension="small"
+			dimension="compact"
 			dateInputLabel={$_('End date')}
 			ageLabel={$_('Age at end')}
 			agePlaceholder={'0'}
@@ -308,8 +311,8 @@
 		></DateAge>
 		<div class="spacer"></div>
 		<section class="summary vertical">
-			<Typography font="mono" variant="small">{numOccurences} {$_('occurences')}</Typography>
-			<Typography font="mono" variant="small"
+			<Typography>{numOccurences} {$_('occurences')}</Typography>
+			<Typography
 				>{formatCurrency(totalAmount, portfolio.currency)} ({transaction.type === 'deposit'
 					? $_('total deposits')
 					: $_('total withdrawals')})</Typography
@@ -321,21 +324,24 @@
 		{#if formType === 'create'}
 			<Button
 				variant="strong"
-				dimension="small"
+				dimension="compact"
 				onclick={createTransaction}
 				disabled={createDisabled}><Checkmark size={16} />{$_('Create')}</Button
 			>
 		{:else}
-			<Button variant="strong" dimension="small" onclick={editTransaction} disabled={createDisabled}
-				><Checkmark size={16} />{$_('Done')}</Button
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={editTransaction}
+				disabled={createDisabled}><Checkmark size={16} />{$_('Done')}</Button
 			>
 		{/if}
-		<Button variant="secondary" dimension="small" onclick={cancel}
+		<Button variant="secondary" dimension="compact" onclick={cancel}
 			><Close size={16} />{$_('Cancel')}</Button
 		>
 	</menu>
 	{#if formType === 'edit'}
-		<Button variant="ghost" dimension="small" onclick={deleteTransaction}
+		<Button variant="ghost" dimension="compact" onclick={deleteTransaction}
 			><TrashCan size={16} />{transaction.type === 'deposit'
 				? $_('Delete deposit')
 				: $_('Delete withdrawal')}</Button

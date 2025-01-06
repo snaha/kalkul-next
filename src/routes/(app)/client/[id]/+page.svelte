@@ -124,7 +124,7 @@
 		>
 			<ArrowLeft size={24} /></Button
 		>
-		<Avatar name={client.name} birthDate={new Date(client.birth_date)} />
+		<Avatar size={48} name={client.name} birthDate={new Date(client.birth_date)} />
 		<Typography variant="h4">{client.name}</Typography>
 		<div class="grower"></div>
 		<Button dimension="compact" variant="strong" onclick={addPortfolio}
@@ -201,10 +201,10 @@
 		--max-width: 1370px;
 	}
 	main {
-		margin: var(--padding);
+		margin: var(--double-padding);
 	}
 	.topbar {
-		padding: var(--padding);
+		padding: var(--double-padding);
 		border-top: 1px solid var(--colors-low);
 		border-bottom: 1px solid var(--colors-low);
 	}
