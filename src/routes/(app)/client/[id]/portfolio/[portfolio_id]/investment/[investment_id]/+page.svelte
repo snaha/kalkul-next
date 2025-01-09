@@ -169,9 +169,9 @@
 									<Button variant="strong" onclick={addWithdrawal}>
 										<Add size={24} />{$_('Add withdrawal')}</Button
 									>
-									{#if deposits.length === 0}
-										<img src="/images/pets-29.png" alt="No withdrawal yet" />
+									{#if withdrawals.length === 0}
 										<section class="vertical centered">
+											<img src="/images/add-withdrawal.svg" alt="No withdrawal yet" />
 											<Typography variant="h5">{$_('No withdrawal yet')}</Typography>
 											<Typography variant="small"
 												>{$_('Create a first withdrawal in this investment')}</Typography
