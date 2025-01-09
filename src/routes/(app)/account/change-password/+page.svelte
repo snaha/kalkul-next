@@ -102,7 +102,7 @@
 		<div class="logo">
 			<a href="/"><img src="/logo.svg" alt="Logo" /></a>
 		</div>
-		<img class="main-image" src="/skateboarding-dog.png" alt="cat" width="320px" />
+		<img class="main-image" src="/images/change-password.svg" alt="Change password" />
 		<Typography variant="h4" class="center-align">{$_('successChangePassword')}</Typography>
 		<Button class="fit-content center-align" variant="solid" dimension="compact" href="/account"
 			>{$_('backToSettings')}</Button
