@@ -40,12 +40,12 @@
 		<section class="horizontal grower">
 			<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
 				<section class="investments">
-					<Button dimension="compact" variant="solid" onclick={addInvestment}>
-						<Add size={24} /></Button
-					>
 					{#each investments as investment, i}
 						<InvestmentCard {investment} {portfolio} index={i} />
 					{/each}
+					<Button dimension="compact" variant="solid" onclick={addInvestment}>
+						<Add size={24} /></Button
+					>
 				</section>
 			</Sidebar>
 			<PortfolioGraph {portfolio} {investments} />
