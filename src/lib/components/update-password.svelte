@@ -7,6 +7,7 @@
 	import adapter from '$lib/adapters'
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
+	import Logo from './icons/logo.svelte'
 
 	let password = $state('')
 	let confirmPassword = $state('')
@@ -22,9 +23,7 @@
 	}
 </script>
 
-<div class="logo">
-	<img src="/logo.svg" alt="Logo" />
-</div>
+<div class="logo"><Logo size={40} /></div>
 <div class="update-password">
 	<Typography variant="h4">{$_('updatePassword')}</Typography>
 	<form>
@@ -47,15 +46,10 @@
 <style>
 	.logo {
 		position: fixed;
-		top: var(--padding);
-		left: var(--padding);
-		width: 40px;
-		height: 40px;
-	}
-	.logo img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
+		display: flex;
+		top: var(--double-padding);
+		left: var(--double-padding);
+		color: var(--colors-ultra-high);
 	}
 	.update-password {
 		display: flex;

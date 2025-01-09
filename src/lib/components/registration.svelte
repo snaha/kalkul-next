@@ -8,6 +8,7 @@
 	import Divider from './ui/divider.svelte'
 	import { _ } from 'svelte-i18n'
 	import { Close, Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
+	import Logo from './icons/logo.svelte'
 
 	type User = z.infer<typeof registerFormSchema>
 
@@ -104,9 +105,7 @@
 	{/if}
 {/snippet}
 
-<div class="logo">
-	<a href="/" onclick={cancel}><img src="/logo.svg" alt="Logo" /></a>
-</div>
+<a href="/" class="logo" onclick={cancel}><Logo size={40} /></a>
 {#if !success}
 	<div class="regitration">
 		<Typography variant="h4">{$_('signUp')}</Typography>
@@ -179,15 +178,10 @@
 <style>
 	.logo {
 		position: fixed;
-		top: var(--padding);
-		left: var(--padding);
-		width: 40px;
-		height: 40px;
-	}
-	.logo img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
+		display: flex;
+		top: var(--double-padding);
+		left: var(--double-padding);
+		color: var(--colors-ultra-high);
 	}
 	.regitration {
 		display: flex;
