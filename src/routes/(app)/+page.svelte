@@ -3,7 +3,6 @@
 	import SearchInput from '$lib/components/ui/input/search-input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import {
-		ChevronDown,
 		OverflowMenuVertical,
 		UserFollow,
 		FolderShared,
@@ -88,7 +87,7 @@
 	{:else}
 		<ul>
 			<li class="clients title">
-				<span>{$_('name')}<ChevronDown size={24} /></span>
+				<span>{$_('name')}</span>
 				<span>{$_('birthDate')}</span>
 				<span class="right-aligned">{$_('age')}</span>
 				<span class="right-aligned">{$_('portfolios')}</span>
