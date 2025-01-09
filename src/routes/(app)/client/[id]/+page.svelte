@@ -116,7 +116,7 @@
 {:else}
 	<section class="topbar horizontal">
 		<Button
-			dimension="compact"
+			dimension="default"
 			variant="ghost"
 			onclick={() => {
 				goto(routes.HOME)
@@ -127,11 +127,11 @@
 		<Avatar size={48} name={client.name} birthDate={new Date(client.birth_date)} />
 		<Typography variant="h4">{client.name}</Typography>
 		<div class="grower"></div>
-		<Button dimension="compact" variant="strong" onclick={addPortfolio}
+		<Button dimension="default" variant="strong" onclick={addPortfolio}
 			><Add size={24} />{$_('addPortfolio')}</Button
 		>
 		<Button
-			dimension="compact"
+			dimension="default"
 			variant="secondary"
 			onclick={() => goto(routes.EDIT_CLIENT(clientId))}
 			><UserProfile size={24} />{$_('Edit client details')}</Button
