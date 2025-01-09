@@ -79,6 +79,7 @@
 		<Typography>Loading...</Typography><Loader />
 	{:else if clientStore.data.length === 0}
 		<section class="empty">
+			<img src="/images/no-client.svg" alt="No client yet" />
 			<Typography variant="h4">{$_('noClientsYet')}</Typography>
 			<Typography>{$_('createYourFirstClient')}</Typography>
 			<div class="spacer"></div>
