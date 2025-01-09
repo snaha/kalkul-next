@@ -90,7 +90,7 @@
 		<div class="logo">
 			<a href="/"><img src="/logo.svg" alt="Logo" /></a>
 		</div>
-		<img class="main-image" src="/unboxed-cat.png" alt="cat" width="320px" />
+		<img class="main-image" src="/images/change-email.svg" alt="Change email" />
 		<div class="confirm-information">
 			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
 			<Typography variant="large">
