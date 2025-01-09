@@ -2,6 +2,7 @@
 	"allClients": "Klienti",
 	"name": "Jméno",
 	"birthDate": "Datum narození",
+	"birthDateError": "Datum narození nemůže být v budoucnosti.",
 	"age": "Věk",
 	"portfolios": "Portfolia",
 	"investments": "Investice",

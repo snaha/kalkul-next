@@ -2,6 +2,7 @@
 	"allClients": "All clients",
 	"name": "Name",
 	"birthDate": "Birthdate",
+	"birthDateError": "Birthdate cannot be in the future.",
 	"age": "Age",
 	"portfolios": "Portfolios",
 	"investments": "Investments",

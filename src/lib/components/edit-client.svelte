@@ -23,7 +23,7 @@
 	let birthDate = $state(date)
 	let imageURI: string | undefined = $state()
 
-	let createDisabled = $derived(name === '' || birthDate === date)
+	let createDisabled = $derived(name === '' || birthDate === date || birthDate > date)
 	let formType: 'edit' | 'create' = $derived(client ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
 
@@ -100,12 +100,16 @@
 		label={$_('name')}
 		bind:value={name}
 	></Input>
+	{#snippet birthDateError()}
+		{$_('birthDateError')}
+	{/snippet}
 	<DateInput
 		variant="solid"
 		dimension="compact"
 		placeholder={$_('datePlaceholder')}
 		label={$_('birthDate')}
 		bind:value={birthDate}
+		error={birthDate > date ? birthDateError : undefined}
 	></DateInput>
 	<section class="profile-picture">
 		<Typography>{$_('profilePicture')}</Typography>
