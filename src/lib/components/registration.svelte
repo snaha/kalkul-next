@@ -160,7 +160,7 @@
 	</div>
 {:else}
 	<div class="regitration success">
-		<img src="/unboxed-cat.png" alt="cat" width="320px" />
+		<img src="/images/registration-link.svg" alt="Verification link sent" />
 		<div class="text">
 			<Typography variant="h4">{$_('checkEmail')}</Typography>
 			<Typography variant="large">
