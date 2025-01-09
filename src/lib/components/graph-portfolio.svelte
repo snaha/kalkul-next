@@ -74,6 +74,7 @@
 					},
 					plugins: {
 						legend: {
+							position: 'bottom',
 							labels: {
 								useBorderRadius: true,
 								borderRadius: 1,
