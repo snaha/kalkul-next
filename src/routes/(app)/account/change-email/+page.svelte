@@ -85,6 +85,7 @@
 		{/each}
 	{/if}
 {/snippet}
+
 <main>
 	{#if success}
 		<div class="logo">

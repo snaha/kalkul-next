@@ -13,6 +13,7 @@
 	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import DeleteModal from './delete-modal.svelte'
+	import CustomHeader from './custom-header.svelte'
 
 	type Props = {
 		client: Client
@@ -141,6 +142,7 @@
 	}
 </script>
 
+<CustomHeader />
 <main class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}

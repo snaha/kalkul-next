@@ -14,6 +14,7 @@
 	import Option from '$lib/components/ui/select/option.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import { capitalizeFirstLetter } from '$lib/utils'
+	import CustomHeader from './custom-header.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -131,6 +132,7 @@
 	}
 </script>
 
+<CustomHeader />
 <form class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}

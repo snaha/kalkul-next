@@ -9,6 +9,7 @@
 	import Avatar from '$lib/components/avatar.svelte'
 	import type { Client, ClientNoId } from '$lib/types'
 	import DeleteModal from './delete-modal.svelte'
+	import CustomHeader from './custom-header.svelte'
 
 	type Props = {
 		close: () => void
@@ -79,6 +80,7 @@
 	}
 </script>
 
+<CustomHeader />
 <form class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}
