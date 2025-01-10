@@ -74,6 +74,7 @@
 			formValid = false
 		}
 	})
+	$inspect(success)
 </script>
 
 {#snippet newPasswordError()}

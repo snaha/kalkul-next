@@ -165,10 +165,16 @@
 			<Typography variant="large">
 				{#if window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('verificationLinkLocal', { values: { baseAddress, email: user.email } })}
+					{@html $_('verificationLinkLocal', {
+						values: {
+							email: `<a class='green' href="${baseAddress}/m/${user.email}" target="_blank">inbucket</a>`,
+						},
+					})}
 				{:else}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('verificationLinkRemote', { values: { email: user.email } })}
+					{@html $_('verificationLinkRemote', {
+						values: { email: `<span class='green'>${user.email}</span>` },
+					})}
 				{/if}</Typography
 			>
 		</div>

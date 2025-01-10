@@ -96,10 +96,16 @@
 			<Typography variant="large">
 				{#if window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('checkNewEmail.bodyLocal', { values: { baseAddress, newEmail } })}
+					{@html $_('checkNewEmail.bodyLocal', {
+						values: {
+							link: `<a class='green' href="${baseAddress}/m/${newEmail}" target="_blank">inbucket</a>`,
+						},
+					})}
 				{:else}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('checkNewEmail.bodyRemote', { values: { newEmail } })}
+					{@html $_('checkNewEmail.bodyRemote', {
+						values: { newEmail: `<span class='green'>${newEmail}</span>` },
+					})}
 				{/if}
 			</Typography>
 			<Typography>{$_('checkNewEmail.footer')}</Typography>

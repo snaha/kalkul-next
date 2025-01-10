@@ -99,10 +99,10 @@
 	"goBack": "Go back to ",
 	"updatePassword": "Update password",
 	"forgotPasswordText": "Enter the email associated with your account and you will receive a link to reset your password.",
-	"resetPasswordLocal": "If there’s an account associated {email} you will receive an email to your <a href=\"{baseAddress}/m/{email}\" target=\"_blank\">inbucket</a> with instructions to reset your password.",
+	"resetPasswordLocal": "If there’s an account associated {email}, you will receive an email to your {link} with instructions to reset your password.",
 	"resetPasswordRemote": "If there’s an account {email} you will receive an email with instructions to reset your password.",
 	"emailSent": "✅ Email sent!",
-	"verificationLinkLocal": "An email with a verification link was sent to your <a href=\"{baseAddress}/m/{email}\" target=\"_blank\">inbucket</a>.",
+	"verificationLinkLocal": "An email with a verification link was sent to your {email}.",
 	"verificationLinkRemote": "An email with a verification link was sent to {email}.",
 	"checkEmail": "✅ Check your email to complete sign up!",
 	"passwordError": "Password must be at least 6 characters long",
@@ -124,7 +124,7 @@
 	"checkNewEmail": {
 		"header": "✅ Check your new email to confirm change!",
 		"bodyRemote": "An email with a verification link was sent to {newEmail}.",
-		"bodyLocal": "An email with a verification link was sent to your <a href=\"{baseAddress}/m/{newEmail}\" target=\"_blank\">inbucket</a>.",
+		"bodyLocal": "An email with a verification link was sent to your {link}.",
 		"footer": "Your account’s email won’t be changed until the new address is verified."
 	},
 	"newPassword": "New password",

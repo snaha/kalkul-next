@@ -99,10 +99,10 @@
 	"goBack": "Vrátit se na ",
 	"updatePassword": "Aktualizovat heslo",
 	"forgotPasswordText": "Zadejte e-mail spojený s vaším účtem a obdržíte odkaz pro obnovení hesla.",
-	"resetPasswordLocal": "Pokud existuje účet spojený s {email}, obdržíte e-mail na svou <a href=\"{baseAddress}/m/{email}\" target=\"_blank\">schránku</a> s pokyny pro obnovení hesla.",
+	"resetPasswordLocal": "Pokud existuje účet spojený s {email}, obdržíte e-mail na {link} s pokyny pro obnovení hesla.",
 	"resetPasswordRemote": "Pokud existuje účet {email}, obdržíte e-mail s pokyny pro obnovení hesla.",
 	"emailSent": "✅ E-mail odeslán!",
-	"verificationLinkLocal": "Byl odeslán e-mail s ověřovacím odkazem na vaši <a href=\"{baseAddress}/m/{email}\" target=\"_blank\">schránku</a>.",
+	"verificationLinkLocal": "Byl odeslán e-mail s ověřovacím odkazem na {email}.",
 	"verificationLinkRemote": "Byl odeslán e-mail s ověřovacím odkazem na {email}.",
 	"checkEmail": "✅ Zkontrolujte svůj e-mail a dokončete registraci!",
 	"passwordError": "Heslo musí mít alespoň 6 znaků",
@@ -124,7 +124,7 @@
 	"checkNewEmail": {
 		"header": "✅ Zkontrolujte svůj nový e-mail pro potvrzení změny!",
 		"bodyRemote": "Byl odeslán e-mail s ověřovacím odkazem na {newEmail}.",
-		"bodyLocal": "Byl odeslán e-mail s ověřovacím odkazem na vaši <a href=\"{baseAddress}/m/{newEmail}\" target=\"_blank\">schránku</a>.",
+		"bodyLocal": "Byl odeslán e-mail s ověřovacím odkazem na {link}",
 		"footer": "E-mailová adresa vašeho účtu nebude změněna, dokud nebude nová adresa ověřena."
 	},
 	"newPassword": "Nové heslo",

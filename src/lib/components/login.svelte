@@ -212,10 +212,17 @@
 			<Typography variant="large">
 				{#if window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('resetPasswordLocal', { values: { baseAddress, email } })}
+					{@html $_('resetPasswordLocal', {
+						values: {
+							email: `<span class='green'>${email}</span>`,
+							link: `<a href="${baseAddress}/m/${email}" target="_blank">inbucket</a>`,
+						},
+					})}
 				{:else}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('resetPasswordRemote', { values: { email } })}
+					{@html $_('resetPasswordRemote', {
+						values: { email: `<span class='green'>${email}</span>` },
+					})}
 				{/if}
 			</Typography>
 		</div>
