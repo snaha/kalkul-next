@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
-	import { Add } from 'carbon-icons-svelte'
+	import { Add, UserFollow } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import routes from '$lib/routes'
@@ -14,6 +14,7 @@
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import Sidebar from '$lib/components/sidebar.svelte'
+	import Typography from '$lib/components/ui/typography.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -36,21 +37,32 @@
 	</Fullscreen>
 {:else}
 	<PortfolioHeader {client} {portfolio} back={() => goto(routes.CLIENT(clientId))} />
-	<main>
-		<section class="horizontal grower">
-			<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
-				<section class="investments">
-					{#each investments as investment, i}
-						<InvestmentCard {investment} {portfolio} index={i} />
-					{/each}
-					<Button dimension="compact" variant="solid" onclick={addInvestment}>
-						<Add size={24} /></Button
-					>
-				</section>
-			</Sidebar>
-			<PortfolioGraph {portfolio} {investments} />
+	{#if investments.length === 0}
+		<section class="empty">
+			<img src="/images/no-investment.svg" alt="No investments yet" />
+			<div class="spacer"></div>
+			<Typography variant="h4">{$_('noInvestmentYet')}</Typography>
+			<Typography>{$_('createYourFirstInvestment')}</Typography>
+			<div class="spacer"></div>
+			<Button variant="strong" onclick={addInvestment}><UserFollow />{$_('addInvestment')}</Button>
 		</section>
-	</main>
+	{:else}
+		<main>
+			<section class="horizontal grower">
+				<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
+					<section class="investments">
+						<Button dimension="compact" variant="solid" onclick={addInvestment}>
+							<Add size={24} /></Button
+						>
+						{#each investments as investment, i}
+							<InvestmentCard {investment} {portfolio} index={i} />
+						{/each}
+					</section>
+				</Sidebar>
+				<PortfolioGraph {portfolio} {investments} />
+			</section>
+		</main>
+	{/if}
 {/if}
 
 <style>
@@ -77,5 +89,16 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--half-padding);
+	}
+	.empty {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: var(--half-padding);
+		height: 80vh;
+	}
+	.spacer {
+		margin-top: var(--half-padding);
 	}
 </style>

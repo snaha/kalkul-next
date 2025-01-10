@@ -175,6 +175,8 @@
 	"Confirm delete": "Confirm delete",
 	"View portfolios": "View portfolios",
 	"Edit client details": "Edit client details",
+	"noInvestmentYet": "No investment yet",
+	"createYourFirstInvestment": "Create a first investment in this portfolio",
 
 	"errors": {
 		"too_small": "Please enter larger value"

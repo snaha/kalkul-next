@@ -131,6 +131,8 @@
 	"confirmNewPassword": "Potvrdit nové heslo",
 	"successChangePassword": "✅ Vaše heslo bylo úspěšně změněno!",
 	"backToSettings": "Zpět na nastavení účtu",
+	"noInvestmentYet": "Zatím žádná investice",
+	"createYourFirstInvestment": "Vytvoř první investici v tomto portfoliu",
 
 	"errors": {
 		"too_small": "Zadejte větší hodnotu"
