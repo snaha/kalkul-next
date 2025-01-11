@@ -257,7 +257,8 @@
 				color: var(--colors-ultra-high);
 			}
 			&:disabled {
-				opacity: 0.25;
+				opacity: 1;
+				border: 1px solid var(--colors-low);
 				cursor: not-allowed;
 				& ~ .start-icon,
 				& ~ .unit,

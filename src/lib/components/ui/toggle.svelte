@@ -123,6 +123,8 @@
 			background: var(--colors-ultra-low);
 		}
 		&:disabled {
+			opacity: 1;
+			border: 1px solid var(--colors-low);
 			cursor: not-allowed;
 		}
 	}

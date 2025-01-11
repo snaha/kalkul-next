@@ -42,7 +42,7 @@
 		<Input
 			label={$_('emailAddress')}
 			value={authStore.user?.new_email ?? authStore.user?.email}
-			readonly
+			disabled
 		/>
 	</div>
 	<div class="control-buttons">

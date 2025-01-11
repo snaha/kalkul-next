@@ -60,7 +60,8 @@
 			}
 		}
 		&:has(input[type='checkbox']:disabled) {
-			opacity: 0.25;
+			opacity: 1;
+			border: 1px solid var(--colors-low);
 			cursor: not-allowed;
 		}
 		&:active:has(input[type='checkbox']:not(:disabled)),
