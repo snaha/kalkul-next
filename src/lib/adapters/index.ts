@@ -19,7 +19,7 @@ export interface Adapter {
 	signIn: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
 	sendResetPasswordLink: (email: string) => Promise<void>
-	updatePassword: (newPassword: string) => Promise<void>
+	resetPassword: (newPassword: string) => Promise<void>
 	updateEmail: (newEmail: string) => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>

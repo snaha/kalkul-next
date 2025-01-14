@@ -29,7 +29,7 @@
 	async function updateUserPassword() {
 		try {
 			await adapter.signIn(email, currentPassword)
-			await adapter.updatePassword(newPassword)
+			await adapter.resetPassword(newPassword)
 			success = true
 		} catch (e) {
 			console.error(e)
@@ -74,7 +74,6 @@
 			formValid = false
 		}
 	})
-	$inspect(success)
 </script>
 
 {#snippet newPasswordError()}

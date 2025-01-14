@@ -97,7 +97,7 @@
 	"haveAccount": "Already have an account?",
 	"resetLink": "Send me a reset link",
 	"goBack": "Go back to ",
-	"updatePassword": "Update password",
+	"resetPassword": "Reset password",
 	"forgotPasswordText": "Enter the email associated with your account and you will receive a link to reset your password.",
 	"resetPasswordLocal": "If there’s an account associated {email}, you will receive an email to your {link} with instructions to reset your password.",
 	"resetPasswordRemote": "If there’s an account {email} you will receive an email with instructions to reset your password.",

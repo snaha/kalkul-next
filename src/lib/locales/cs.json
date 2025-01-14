@@ -97,7 +97,7 @@
 	"haveAccount": "Už máte účet?",
 	"resetLink": "Poslat odkaz na resetování hesla",
 	"goBack": "Vrátit se na ",
-	"updatePassword": "Aktualizovat heslo",
+	"resetPassword": "Resetovat heslo",
 	"forgotPasswordText": "Zadejte e-mail spojený s vaším účtem a obdržíte odkaz pro obnovení hesla.",
 	"resetPasswordLocal": "Pokud existuje účet spojený s {email}, obdržíte e-mail na {link} s pokyny pro obnovení hesla.",
 	"resetPasswordRemote": "Pokud existuje účet {email}, obdržíte e-mail s pokyny pro obnovení hesla.",

@@ -107,3 +107,18 @@ export const updatePasswordFormSchema = z
 			})
 		}
 	})
+
+export const resetPasswordFormSchema = z
+	.object({
+		newPassword: z.string().min(6, { message: 'passwordError' }),
+		confirmNewPassword: z.string(),
+	})
+	.superRefine((data, ctx) => {
+		if (data.newPassword !== data.confirmNewPassword) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['confirmNewPassword'],
+				message: 'confirmPasswordError',
+			})
+		}
+	})

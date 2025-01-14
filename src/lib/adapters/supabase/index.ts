@@ -194,13 +194,16 @@ export default class Supabase implements Adapter {
 	}
 
 	async sendResetPasswordLink(email: string) {
-		const { error } = await supabase.auth.resetPasswordForEmail(email)
+		const redirectTo = `${window.location.origin}/reset-password`
+
+		const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+
 		if (error) {
 			console.error('Failed to send reset password link', error)
 			throw new Error(error.message)
 		}
 	}
-	async updatePassword(newPassword: string) {
+	async resetPassword(newPassword: string) {
 		const { error } = await supabase.auth.updateUser({ password: newPassword })
 		if (error) {
 			console.error('Failed to update password', error)

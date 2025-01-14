@@ -2,7 +2,6 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import { ArrowRight } from 'carbon-icons-svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
-	import UpdatePassword from '$lib/components/update-password.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Registration from '$lib/components/registration.svelte'
 	import Login from '$lib/components/login.svelte'
@@ -21,8 +20,6 @@
 	{#if children}
 		{@render children()}
 	{/if}
-{:else if authStore.passwordRecovery}
-	<UpdatePassword />
 {:else if screen === 'intro'}
 	<div class="intro-screen">
 		<div class="intro-banner">
