@@ -26,6 +26,8 @@
 
 	let showConfirmModal = $state(false)
 	let clientToBeDeleted: number | undefined = $state()
+	let searchQuery = $state('')
+	let filteredClient = $derived(searchByName(searchQuery))
 
 	function addClient() {
 		goto(routes.NEW_CLIENT)
@@ -41,6 +43,15 @@
 			await adapter.deleteClient({ id: clientToBeDeleted })
 			clientToBeDeleted = undefined
 			showConfirmModal = false
+		}
+	}
+	function searchByName(searchQuery: string) {
+		if (searchQuery) {
+			return clientStore.data.filter((client) =>
+				client.name.toLowerCase().includes(searchQuery.toLowerCase()),
+			)
+		} else {
+			return clientStore.data
 		}
 	}
 </script>
@@ -69,7 +80,8 @@
 	<section class="top-bar horizontal">
 		<Typography variant="h4">{$_('allClients')}</Typography>
 		<div class="grower"></div>
-		<SearchInput dimension="compact" variant="solid" placeholder="Search"></SearchInput>
+		<SearchInput bind:value={searchQuery} dimension="compact" variant="solid" placeholder="Search"
+		></SearchInput>
 		<Button dimension="compact" variant="strong" onclick={addClient}
 			><UserFollow />{$_('addClient')}</Button
 		>
@@ -94,7 +106,7 @@
 				<span class="right-aligned">{$_('investments')}</span>
 				<span class="right-aligned"></span>
 			</li>
-			{#each clientStore.data as client}
+			{#each filteredClient as client}
 				{@const birtDate = new Date(client.birth_date)}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
