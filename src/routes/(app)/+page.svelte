@@ -199,6 +199,9 @@
 		font-family: var(--font-family-sans-serif);
 		cursor: pointer;
 	}
+	.client:hover {
+		background-color: color-mix(in srgb, var(--colors-low) 25%, transparent);
+	}
 	.right-aligned {
 		display: flex;
 		justify-content: flex-end;

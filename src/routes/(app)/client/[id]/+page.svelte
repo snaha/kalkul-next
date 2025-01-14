@@ -166,7 +166,7 @@
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 						<li
-							class="portfolios portfolio"
+							class="portfolios portfolio table-row"
 							onclick={(e: MouseEvent) => {
 								if (!e.defaultPrevented) {
 									goto(routes.CLIENT_PORTFOLIO(clientId, portfolio.id))
@@ -253,6 +253,9 @@
 		font-size: var(--font-size);
 		font-family: var(--font-family-sans-serif);
 		cursor: pointer;
+	}
+	.portfolio:hover {
+		background-color: color-mix(in srgb, var(--colors-low) 25%, transparent);
 	}
 	.right-aligned {
 		display: flex;
