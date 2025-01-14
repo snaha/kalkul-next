@@ -127,6 +127,13 @@
 		flex-direction: column;
 		gap: var(--half-padding);
 		cursor: pointer;
+		transition: border 0.2s;
+		transition-timing-function: ease-in;
+	}
+	.card:hover {
+		border: 1px solid var(--colors-ultra-high);
+		transition: border 0.2s;
+		transition-timing-function: ease-out;
 	}
 	.color-box {
 		width: 36px;
