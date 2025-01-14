@@ -142,7 +142,7 @@
 									>
 									{#if deposits.length === 0}
 										<section class="vertical centered">
-											<img src="/add-deposit.svg" alt="No deposit yet" />
+											<img src="/images/add-deposit.svg" alt="No deposit yet" />
 											<Typography variant="h5">{$_('No deposit yet')}</Typography>
 											<Typography variant="small"
 												>{$_('Use the button above to add one')}</Typography
