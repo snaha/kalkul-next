@@ -180,5 +180,14 @@
 
 	"errors": {
 		"too_small": "Please enter larger value"
+	},
+	"feedback": {
+		"title": "We love feedback",
+		"text": "Have an idea how to improve Kalkul? Something didn’t work as expected? Something you really loved? Anything else?... we’re listening. Your feedback help us make Kalkul better, thank you!",
+		"textareaPlaceholder": "Say anything...",
+		"checkboxLabel": "Share my account’s email",
+		"checkboxHelperText": "This allows us to contact you if needed. Unselect if you prefer to send feedback anonymously.",
+		"confirmButton": "Send feedback",
+		"cancelButton": "Don't send"
 	}
 }

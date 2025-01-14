@@ -136,5 +136,14 @@
 
 	"errors": {
 		"too_small": "Zadejte větší hodnotu"
+	},
+	"feedback": {
+		"title": "Rádi slyšíme zpětnou vazbu",
+		"text": "Máte nápad, jak vylepšit Kalkul? Něco nefungovalo, jak by mělo? Něco se vám opravdu líbilo? Cokoliv jiného?... nasloucháme. Vaše zpětná vazba nám pomáhá zlepšovat Kalkul, děkujeme!",
+		"textareaPlaceholder": "Řekněte cokoliv...",
+		"checkboxLabel": "Sdílet e-mail mého účtu",
+		"checkboxHelperText": "Tím nám umožníte vás kontaktovat, pokud bude potřeba. Odškrtněte, pokud chcete zpětnou vazbu poslat anonymně.",
+		"confirmButton": "Odeslat zpětnou vazbu",
+		"cancelButton": "Neodesílat"
 	}
 }

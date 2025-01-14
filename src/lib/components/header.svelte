@@ -7,6 +7,9 @@
 	import { authStore } from '$lib/stores/auth.svelte'
 	import routes from '$lib/routes'
 	import { _ } from 'svelte-i18n'
+	import FeedbackModal from './feedback-modal.svelte'
+
+	let showFeedbackModal = $state(false)
 
 	async function logout() {
 		await adapter.signOut()
@@ -38,7 +41,7 @@
 				</Button>
 			</ul>
 		</Dropdown>
-		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
+		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
 			><ChatBot size={16} /></Button
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
@@ -46,6 +49,11 @@
 		>
 	</div>
 </header>
+<FeedbackModal
+	bind:open={showFeedbackModal}
+	oncancel={() => (showFeedbackModal = false)}
+	confirm={notImplemented}
+/>
 
 <style lang="postcss">
 	header {
