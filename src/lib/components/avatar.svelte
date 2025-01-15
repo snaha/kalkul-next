@@ -11,7 +11,7 @@
 
 	let { name, birthDate, imageURI, size = 40 }: Props = $props()
 
-	const seed = $derived(name + ' ' + birthDate.getDate())
+	const seed = $derived(`${name} ${Number(birthDate)}`)
 	let avatar = $derived(
 		createAvatar(initials, {
 			seed,

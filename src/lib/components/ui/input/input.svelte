@@ -279,6 +279,9 @@
 					color: var(--colors-top);
 				}
 			}
+			&:focus::placeholder {
+				color: transparent;
+			}
 			&:active:not(:disabled),
 			&.active:not(:disabled) {
 				outline: none;

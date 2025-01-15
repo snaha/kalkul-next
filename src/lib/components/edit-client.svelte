@@ -3,7 +3,7 @@
 	import { Close, Checkmark, Image, TrashCan } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
-	import DateInput from '$lib/components/ui/input/date-input.svelte'
+	import DateInput from '$lib/components/ui/input/date/input.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Avatar from '$lib/components/avatar.svelte'
@@ -21,10 +21,10 @@
 
 	const date = new Date()
 	let name = $state('')
-	let birthDate = $state(date)
+	let birthDate: Date | undefined = $state()
 	let imageURI: string | undefined = $state()
 
-	let createDisabled = $derived(name === '' || birthDate === date || birthDate > date)
+	let createDisabled = $derived(name === '' || !birthDate || birthDate > date)
 	let formType: 'edit' | 'create' = $derived(client ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
 
@@ -36,12 +36,16 @@
 	})
 
 	async function create() {
+		if (!birthDate) {
+			return
+		}
+
 		const client: ClientNoId = {
 			name,
 			birth_date: birthDate.toDateString(),
 		}
 		name = ''
-		birthDate = date
+		birthDate = undefined
 		imageURI = undefined
 		await adapter.addClient(client)
 		close()
@@ -54,7 +58,7 @@
 	}
 
 	async function updateClient() {
-		if (!client) {
+		if (!client || !birthDate) {
 			return
 		}
 
@@ -81,7 +85,7 @@
 </script>
 
 <CustomHeader />
-<form class="vertical">
+<main class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}
 			<Typography variant="h4">{$_('addClient')}</Typography>
@@ -108,15 +112,31 @@
 	<DateInput
 		variant="solid"
 		dimension="compact"
-		placeholder={$_('datePlaceholder')}
+		yearLabel={$_('Year')}
+		yearPlaceholder="1990"
+		monthLabel={$_('Month')}
+		monthPlaceholder="01"
+		dayLabel={$_('Day')}
+		dayPlaceholder="01"
 		label={$_('birthDate')}
 		bind:value={birthDate}
-		error={birthDate > date ? birthDateError : undefined}
+		error={birthDate && birthDate > date ? birthDateError : undefined}
+		errorMessages={{
+			invalidYear: $_('Invalid year'),
+			invalidMonth: $_('Invalid month'),
+			invalidDay: $_('Invalid day'),
+			invalidDate: $_('Invalid date'),
+		}}
 	></DateInput>
 	<section class="profile-picture">
 		<Typography>{$_('profilePicture')}</Typography>
 		<section class="horizontal">
-			<Avatar {name} birthDate={new Date(birthDate)} {imageURI} size={80} />
+			<Avatar
+				{name}
+				birthDate={birthDate ? new Date(birthDate) : new Date()}
+				{imageURI}
+				size={80}
+			/>
 			<section class="profile-helper">
 				<Typography variant="small">{$_('profileImageHelper')}</Typography>
 				<Button variant="solid" dimension="small"><Image size={16} />{$_('uploadImage')}</Button>
@@ -146,7 +166,7 @@
 			>
 		{/if}
 	</section>
-</form>
+</main>
 
 <DeleteModal
 	confirm={deleteClient}
@@ -159,6 +179,9 @@
 />
 
 <style>
+	main {
+		max-width: 560px;
+	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
