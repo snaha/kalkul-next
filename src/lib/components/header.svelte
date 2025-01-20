@@ -28,7 +28,7 @@
 	<div class="user-info">
 		<Dropdown buttonDimension="small" mode="dark">
 			{#snippet button()}
-				<UserAvatarFilled size={16} />{authStore.user?.new_email ?? authStore.user?.email}
+				<UserAvatarFilled size={16} />{authStore.user?.email}
 			{/snippet}
 			<ul class="dropdown-menu">
 				<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
