@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { updatePasswordFormSchema } from '$lib/schemas'
+	import { resetPasswordFormSchema } from '$lib/schemas'
 	import { z } from 'zod'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { _ } from 'svelte-i18n'
@@ -8,18 +8,15 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
-	import { authStore } from '$lib/stores/auth.svelte'
+	import routes from '$lib/routes'
 
-	type User = z.infer<typeof updatePasswordFormSchema>
-	let formErrors: ZodFormattedError<User> | undefined = $state(undefined)
+	let formErrors: ZodFormattedError<z.infer<typeof resetPasswordFormSchema>> | undefined =
+		$state(undefined)
 	let formValid = $state(false)
 
-	let currentPasswordTouched = $state(false)
 	let passwordTouched = $state(false)
 	let confirmPasswordTouched = $state(false)
 
-	let email = $derived(authStore.user?.new_email ?? authStore.user?.email ?? '')
-	let currentPassword = $state('')
 	let confirmNewPassword = $state('')
 	let newPassword = $state('')
 
@@ -28,13 +25,11 @@
 
 	async function updateUserPassword() {
 		try {
-			await adapter.signIn(email, currentPassword)
 			await adapter.resetPassword(newPassword)
 			success = true
 		} catch (e) {
 			console.error(e)
 			error = (e as Error).message
-			currentPassword = ''
 		}
 	}
 
@@ -52,19 +47,19 @@
 			confirmPasswordTouched = true
 		}
 	}
-	function onCurrentPasswordBlur() {
-		if (currentPassword.trim() === '') {
-			currentPasswordTouched = false
-		} else {
-			currentPasswordTouched = true
+
+	function clearErrorState() {
+		if (error) {
+			error = undefined
+			passwordTouched = false
+			confirmPasswordTouched = false
 		}
 	}
 
 	$effect(() => {
-		const res = updatePasswordFormSchema.safeParse({
+		const res = resetPasswordFormSchema.safeParse({
 			newPassword,
 			confirmNewPassword,
-			currentPassword,
 		})
 		if (res.success) {
 			formErrors = undefined
@@ -90,23 +85,19 @@
 		{/each}
 	{/if}
 {/snippet}
-{#snippet currentPasswordError()}
-	{#if formErrors?.currentPassword?._errors}
-		{#each formErrors?.currentPassword?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
 
 <main>
 	{#if success}
 		<div class="logo">
-			<a href="/"><img src="/logo.svg" alt="Logo" /></a>
+			<a href={routes.HOME}><img src="/logo.svg" alt="Logo" /></a>
 		</div>
 		<img class="main-image" src="/images/change-password.svg" alt="Change password" />
 		<Typography variant="h4" class="center-align">{$_('successChangePassword')}</Typography>
-		<Button class="fit-content center-align" variant="solid" dimension="compact" href="/account"
-			>{$_('backToSettings')}</Button
+		<Button
+			class="fit-content center-align"
+			variant="solid"
+			dimension="compact"
+			href={routes.ACCOUNT}>{$_('backToSettings')}</Button
 		>
 	{:else}
 		<Typography variant="h4">{$_('changePassword')}</Typography>
@@ -115,6 +106,7 @@
 				type="password"
 				label={$_('newPassword')}
 				bind:value={newPassword}
+				oninput={clearErrorState}
 				onblur={onPasswordBlur}
 				error={passwordTouched && newPassword.trim() !== '' && formErrors?.newPassword?._errors
 					? newPasswordError
@@ -124,6 +116,7 @@
 				type="password"
 				label={$_('confirmNewPassword')}
 				bind:value={confirmNewPassword}
+				oninput={clearErrorState}
 				onblur={onConfirmPasswordBlur}
 				error={confirmPasswordTouched &&
 				confirmNewPassword.trim() !== '' &&
@@ -131,20 +124,6 @@
 					? confirmNewPassError
 					: undefined}
 			/>
-			<Input
-				type="password"
-				label={$_('currentPassword')}
-				bind:value={currentPassword}
-				onblur={onCurrentPasswordBlur}
-				error={currentPasswordTouched &&
-				currentPassword.trim() !== '' &&
-				formErrors?.currentPassword?._errors
-					? currentPasswordError
-					: undefined}
-				oninput={() => (error = undefined)}
-			>
-				{$_('credentialsChangeHelperText')}
-			</Input>
 		</form>
 		{#if error}
 			<div class="error">
@@ -156,7 +135,7 @@
 			<Button dimension="compact" disabled={!formValid} onclick={updateUserPassword}
 				><Checkmark size={24} />{$_('changePassword')}</Button
 			>
-			<Button dimension="compact" variant="secondary" href="/account"
+			<Button dimension="compact" variant="secondary" href={routes.ACCOUNT}
 				><Close size={24} />{$_('cancel')}</Button
 			>
 		</div>

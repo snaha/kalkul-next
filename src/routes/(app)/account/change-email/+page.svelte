@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { loginFormSchema } from '$lib/schemas'
+	import { emailFormSchema } from '$lib/schemas'
 	import { z } from 'zod'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { _ } from 'svelte-i18n'
@@ -8,18 +8,15 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
+	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 
-	type User = z.infer<typeof loginFormSchema>
-	let formErrors: ZodFormattedError<User> | undefined = $state(undefined)
+	let formErrors: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state(undefined)
 	let formValid = $state(false)
 
-	let passwordTouched = $state(false)
 	let emailTouched = $state(false)
 
-	let email = $derived(authStore.user?.new_email ?? authStore.user?.email ?? '')
 	let newEmail = $state('')
-	let currentPassword = $state('')
 
 	let success = $state(false)
 	let error: string | undefined = $state(undefined)
@@ -33,13 +30,11 @@
 
 	async function updateUserEmail() {
 		try {
-			await adapter.signIn(email, currentPassword)
 			await adapter.updateEmail(newEmail)
 			success = true
 		} catch (e) {
 			console.error(e)
 			error = (e as Error).message
-			currentPassword = ''
 		}
 	}
 
@@ -50,19 +45,25 @@
 			emailTouched = true
 		}
 	}
-
-	function onPasswordBlur() {
-		if (currentPassword.trim() === '') {
-			passwordTouched = false
-		} else {
-			passwordTouched = true
+	function clearErrorState() {
+		if (error) {
+			error = undefined
+			emailTouched = false
 		}
 	}
 	$effect(() => {
-		const res = loginFormSchema.safeParse({ email: newEmail, password: currentPassword })
+		const res = emailFormSchema.safeParse({ email: newEmail })
 		if (res.success) {
-			formErrors = undefined
-			formValid = true
+			if (newEmail === authStore.user?.email) {
+				formErrors = {
+					email: { _errors: ['This email is already associated with your account.'] },
+					_errors: [],
+				}
+				formValid = false
+			} else {
+				formErrors = undefined
+				formValid = true
+			}
 		} else {
 			formErrors = res.error.format()
 			formValid = false
@@ -78,18 +79,10 @@
 	{/if}
 {/snippet}
 
-{#snippet passwordError()}
-	{#if formErrors?.password?._errors}
-		{#each formErrors?.password?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
-
 <main>
 	{#if success}
 		<div class="logo">
-			<a href="/"><img src="/logo.svg" alt="Logo" /></a>
+			<a href={routes.HOME}><img src="/logo.svg" alt="Logo" /></a>
 		</div>
 		<img class="main-image" src="/images/change-email.svg" alt="Change email" />
 		<div class="confirm-information">
@@ -117,23 +110,12 @@
 			<Input
 				label={$_('newEmailAddress')}
 				bind:value={newEmail}
+				oninput={clearErrorState}
 				onblur={onEmailBlur}
 				error={emailTouched && newEmail.trim() !== '' && formErrors?.email?._errors
 					? emailError
 					: undefined}
 			/>
-			<Input
-				type="password"
-				label={$_('currentPassword')}
-				bind:value={currentPassword}
-				onblur={onPasswordBlur}
-				error={passwordTouched && currentPassword.trim() !== '' && formErrors?.password?._errors
-					? passwordError
-					: undefined}
-				oninput={() => (error = undefined)}
-			>
-				{$_('credentialsChangeHelperText')}
-			</Input>
 		</form>
 		{#if error}
 			<div class="error">
@@ -145,7 +127,7 @@
 			<Button dimension="compact" disabled={!formValid} onclick={updateUserEmail}
 				><Checkmark size={24} />{$_('changeEmail')}</Button
 			>
-			<Button dimension="compact" variant="secondary" href="/account"
+			<Button dimension="compact" variant="secondary" href={routes.ACCOUNT}
 				><Close size={24} />{$_('cancel')}</Button
 			>
 		</div>

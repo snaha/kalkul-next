@@ -92,22 +92,6 @@ export const registerFormSchema = loginFormSchema
 		}
 	})
 
-export const updatePasswordFormSchema = z
-	.object({
-		newPassword: z.string().min(6, { message: 'passwordError' }),
-		confirmNewPassword: z.string(),
-		currentPassword: z.string().min(6, { message: 'passwordError' }),
-	})
-	.superRefine((data, ctx) => {
-		if (data.newPassword !== data.confirmNewPassword) {
-			ctx.addIssue({
-				code: 'custom',
-				path: ['confirmNewPassword'],
-				message: 'confirmPasswordError',
-			})
-		}
-	})
-
 export const resetPasswordFormSchema = z
 	.object({
 		newPassword: z.string().min(6, { message: 'passwordError' }),
