@@ -39,11 +39,12 @@
 		leftAlign = false,
 		children,
 		mode = 'auto',
+		style,
 		...restProps
 	}: Props = $props()
 </script>
 
-<span class={`root ${className}`} class:disabled>
+<span class={`root ${className}`} class:disabled {style}>
 	<svelte:element
 		this={href ? 'a' : 'button'}
 		class={`${dimension} ${variant} ${mode}`}
@@ -63,7 +64,7 @@
 
 <style lang="postcss">
 	.root {
-		display: inline-flex;
+		display: flex;
 		flex-grow: 0;
 		flex-direction: row;
 		justify-content: stretch;

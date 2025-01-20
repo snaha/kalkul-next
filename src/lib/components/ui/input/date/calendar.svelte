@@ -18,6 +18,7 @@
 		dateValue = $bindable(),
 		showDatePicker = $bindable(),
 		class: className = '',
+		children,
 		...restProps
 	}: Props & HTMLButtonAttributes = $props()
 
@@ -64,6 +65,7 @@
 	)
 
 	let datePicker: HTMLDivElement
+	let rootElement: HTMLElement | undefined = $state()
 	let selectedYearElement: HTMLSpanElement | undefined = $state(undefined)
 
 	const months = getLocalMonthNames()
@@ -128,11 +130,21 @@
 
 	function close(e: MouseEvent) {
 		const target = e.target as unknown as Node
-		if (datePicker.contains(target)) {
+		if (datePicker.contains(target) || rootElement?.contains(target)) {
 			// Clicked on the date picker
 		} else {
 			showDatePicker = false
 			showYearPicker = false
+		}
+	}
+
+	function onKeyUp(e: KeyboardEvent) {
+		switch (e.key) {
+			case 'Escape': {
+				showDatePicker = false
+				showYearPicker = false
+				return
+			}
 		}
 	}
 
@@ -146,8 +158,10 @@
 
 	$effect(() => {
 		window.addEventListener('click', close)
+		window.addEventListener('keyup', onKeyUp)
 		return () => {
 			window.removeEventListener('click', close)
+			window.removeEventListener('keyup', onKeyUp)
 		}
 	})
 
@@ -173,20 +187,22 @@
 	})
 </script>
 
-<div class="calendar-root {dimension} {className}">
+<div class="calendar-root {dimension} {className}" bind:this={rootElement}>
 	<Button
 		{dimension}
 		{disabled}
 		active={showDatePicker}
 		variant="ghost"
-		onclick={(e: MouseEvent) => {
-			e.stopPropagation()
+		onclick={() => {
 			showDatePicker = !showDatePicker
 			showYearPicker = false
 		}}
 		{...restProps}
 	>
 		<Calendar {size} />
+		{#if children}
+			{@render children()}
+		{/if}
 	</Button>
 	<div class:modal={isMobile}>
 		<div class="date-picker" class:showDatePicker bind:this={datePicker}>

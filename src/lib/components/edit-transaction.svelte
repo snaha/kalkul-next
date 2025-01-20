@@ -206,7 +206,7 @@
 	}
 </script>
 
-<form class="vertical">
+<main class="vertical">
 	<section class="horizontal">
 		<Typography variant="h5"
 			>{formType === 'create'
@@ -347,10 +347,10 @@
 				: $_('Delete withdrawal')}</Button
 		>
 	{/if}
-</form>
+</main>
 
 <style type="postcss">
-	form {
+	main {
 		max-width: 560px;
 		flex: 1;
 	}

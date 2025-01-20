@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DateInput from '$lib/components/ui/input/date-input.svelte'
+	import DatePicker from '$lib/components/ui/input/date/picker.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { formatAge } from '$lib/utils'
 	import { addYears } from 'date-fns'
@@ -70,15 +70,8 @@
 </script>
 
 <section class="horizontal">
-	<DateInput
-		variant="solid"
-		{dimension}
-		label={dateInputLabel}
-		bind:value={date}
-		class="date-age-grower"
-		style="max-width: 100%"
-		{onchange}
-	></DateInput>
+	<DatePicker {dimension} label={dateInputLabel} bind:value={date} style="max-width: 100%"
+	></DatePicker>
 	<Input
 		type="number"
 		variant="solid"
@@ -101,12 +94,12 @@
 	.horizontal {
 		display: flex;
 		flex-direction: row;
-		justify-content: flex-start;
+		justify-content: space-between;
 		align-items: center;
-		gap: var(--padding);
+		gap: var(--half-padding);
 	}
 	.horizontal :global(.date-age-grower) {
 		flex: 1;
-		max-width: calc(50% - var(--half-padding));
+		max-width: calc(50% - var(--quarter-padding));
 	}
 </style>
