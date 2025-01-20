@@ -3,6 +3,7 @@
 	import { page } from '$app/stores'
 	import adapters from '$lib/adapters'
 	import CopyButton from '$lib/components/copy-button.svelte'
+	import LinkSharingModal from '$lib/components/link-sharing-modal.svelte'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Toggle from '$lib/components/ui/toggle.svelte'
@@ -17,6 +18,7 @@
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	let linkSharing = $state(false)
 	let linkValue = $derived(portfolio?.link ? createLink(portfolio?.link) : undefined)
+	let showSharingOffModal = $state(false)
 
 	onMount(() => {
 		linkSharing = portfolio?.link ? true : false
@@ -26,12 +28,27 @@
 		history.back()
 	}
 
-	async function switchLinkSharing() {
-		if (!portfolio || !browser) {
-			return
-		}
-
+	function handleToggleClick(event: Event) {
+		event.preventDefault()
 		if (linkSharing) {
+			showSharingOffModal = true
+		} else {
+			switchLinkSharing(true)
+		}
+	}
+
+	async function confirmModal() {
+		await switchLinkSharing(false)
+		showSharingOffModal = false
+	}
+
+	function cancelModal() {
+		showSharingOffModal = false
+	}
+
+	async function switchLinkSharing(enable: boolean) {
+		if (!browser || !portfolio) return
+		if (enable) {
 			const randomLength = 16
 			const randomBase = 36
 			const getRandomValues = () =>
@@ -39,9 +56,9 @@
 			const random = generateRandomString(randomLength, randomBase, getRandomValues)
 			await adapters.updatePortfolio({ id: portfolio.id, link: random })
 		} else {
-			const link = null
-			await adapters.updatePortfolio({ id: portfolio.id, link })
+			await adapters.updatePortfolio({ id: portfolio.id, link: null })
 		}
+		linkSharing = enable
 	}
 
 	function createLink(random: string) {
@@ -58,8 +75,8 @@
 		<div class="spacer"></div>
 		<Toggle
 			label={$_('Link sharing (view only)')}
-			bind:checked={linkSharing}
-			onchange={switchLinkSharing}
+			checked={linkSharing}
+			onclick={(e) => handleToggleClick(e)}
 		></Toggle>
 		<div class="spacer"></div>
 		<div class="spacer"></div>
@@ -101,6 +118,7 @@
 		{/if}
 	</form>
 </main>
+<LinkSharingModal bind:open={showSharingOffModal} confirm={confirmModal} oncancel={cancelModal} />
 
 <style lang="postcss">
 	main {

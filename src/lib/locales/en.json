@@ -189,5 +189,12 @@
 		"checkboxHelperText": "This allows us to contact you if needed. Unselect if you prefer to send feedback anonymously.",
 		"confirmButton": "Send feedback",
 		"cancelButton": "Don't send"
+	},
+	"linkSharingConfirmation": {
+		"title": "Turn link sharing off?",
+		"text": "The current link will no longer work, people might lose access.",
+		"smallText": "If you re-activate link sharing later on, a new link will be generated.",
+		"confirmButton": "Turn off link sharing",
+		"cancelButton": "Keep link sharing on"
 	}
 }

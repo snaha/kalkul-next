@@ -145,5 +145,12 @@
 		"checkboxHelperText": "Tím nám umožníte vás kontaktovat, pokud bude potřeba. Odškrtněte, pokud chcete zpětnou vazbu poslat anonymně.",
 		"confirmButton": "Odeslat zpětnou vazbu",
 		"cancelButton": "Neodesílat"
+	},
+	"linkSharingConfirmation": {
+		"title": "Vypnout sdílení odkazu?",
+		"text": "Aktuální odkaz přestane fungovat a lidé mohou ztratit přístup.",
+		"smallText": "Pokud později znovu aktivujete sdílení odkazu, bude vygenerován nový odkaz.",
+		"confirmButton": "Vypnout sdílení odkazu",
+		"cancelButton": "Nechat sdílení odkazu zapnuté"
 	}
 }
