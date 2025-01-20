@@ -67,6 +67,8 @@
 	let datePicker: HTMLDivElement
 	let rootElement: HTMLElement | undefined = $state()
 	let selectedYearElement: HTMLSpanElement | undefined = $state(undefined)
+	let bottomElement: HTMLElement | undefined = $state(undefined)
+	let scrollTopPosition = $state(0)
 
 	const months = getLocalMonthNames()
 	const days = getLocalDayNames()
@@ -148,6 +150,20 @@
 		}
 	}
 
+	function isScrolledIntoView(el: HTMLElement, completelyVisible = true) {
+		const rect = el.getBoundingClientRect()
+		const elemTop = rect.top
+		const elemBottom = rect.bottom
+
+		if (completelyVisible) {
+			// Only completely visible elements return true
+			return elemTop >= 0 && elemBottom <= window.innerHeight
+		} else {
+			// Partially visible elements return true:
+			return elemTop < window.innerHeight && elemBottom >= 0
+		}
+	}
+
 	$effect(() => {
 		if (dateValue) {
 			selectedMonth = dateValue.getMonth()
@@ -172,7 +188,17 @@
 
 	$effect(() => {
 		if (showYearPicker) {
-			selectedYearElement?.scrollIntoView({ block: 'center', behavior: 'auto' })
+			selectedYearElement?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+		}
+		if (showDatePicker) {
+			scrollTopPosition = document.documentElement.scrollTop
+			if (bottomElement && !isScrolledIntoView(bottomElement)) {
+				bottomElement?.scrollIntoView({ block: 'end', behavior: 'smooth' })
+			}
+		} else {
+			if (rootElement && !isScrolledIntoView(rootElement)) {
+				document.documentElement.scrollTo({ top: scrollTopPosition, behavior: 'smooth' })
+			}
 		}
 	})
 	$effect(() => {
@@ -297,6 +323,7 @@
 					</div>
 				</div>
 			{/if}
+			<div bind:this={bottomElement}></div>
 		</div>
 	</div>
 </div>
@@ -309,7 +336,8 @@
 		position: relative;
 	}
 	.date-picker {
-		display: none;
+		display: flex;
+		visibility: hidden;
 		position: absolute;
 		bottom: -0.25rem;
 		left: 0;
@@ -320,9 +348,20 @@
 		border-radius: var(--border-radius);
 		background: var(--colors-base);
 		&.showDatePicker {
-			display: flex;
+			visibility: visible;
+			animation: fadeInFromNone 0.2s ease-in;
 		}
 	}
+	@keyframes fadeInFromNone {
+		0% {
+			opacity: 0;
+		}
+
+		100% {
+			opacity: 1;
+		}
+	}
+
 	.modal {
 		display: none;
 		position: fixed;
