@@ -68,4 +68,7 @@ export interface GraphData {
 	graphDeposits: number[]
 	graphWithdrawals: number[]
 	graphInvestmentValue: number[]
+	graphInflationDeposits: number[]
+	graphInflationWithdrawals: number[]
+	graphInflationInvestmentValue: number[]
 }

@@ -23,27 +23,90 @@
 
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
+	let adjustWithInflation = $state(false)
 
-	const graphData = $derived(getGraphDataForPortfolio(transactionStore, investments, portfolio))
+	const { total, data } = $derived(
+		getGraphDataForPortfolio(transactionStore, investments, portfolio),
+	)
 	const deposits = $derived(
-		graphData.map((r, i) => ({
-			data: r.graphDeposits,
-			label: r.label,
-			fill: 'origin',
-			colorIndex: i,
-		})),
+		adjustWithInflation
+			? [
+					...data.map((r, i) => ({
+						data: r.graphInflationDeposits,
+						label: r.label,
+						fill: 'origin',
+						colorIndex: i,
+					})),
+					{
+						data: total.graphDeposits.map((w, i) => w - total.graphInflationDeposits[i]),
+						label: '_hidden',
+						borderColor: '#303030',
+						borderWidth: 1,
+						backgroundColor: 'transparent',
+					},
+				]
+			: data.map((r, i) => ({
+					data: r.graphDeposits,
+					label: r.label,
+					fill: 'origin',
+					colorIndex: i,
+				})),
 	)
 	const withdrawals = $derived(
-		graphData.map((r, i) => ({
-			data: r.graphWithdrawals,
-			label: r.label,
-			fill: 'origin',
-			colorIndex: i,
-		})),
+		adjustWithInflation
+			? [
+					...data.map((r, i) => ({
+						data: r.graphInflationWithdrawals,
+						label: r.label,
+						fill: 'origin',
+						colorIndex: i,
+					})),
+					{
+						data: total.graphWithdrawals.map((w, i) => w - total.graphInflationWithdrawals[i]),
+						label: '_hidden',
+						borderColor: '#303030',
+						borderWidth: 1,
+						backgroundColor: 'transparent',
+					},
+				]
+			: data.map((r, i) => ({
+					data: r.graphWithdrawals,
+					label: r.label,
+					fill: 'origin',
+					colorIndex: i,
+				})),
+	)
+
+	const investmentGraphData = $derived(
+		adjustWithInflation
+			? [
+					...data.map((r, i) => ({
+						data: r.graphInflationInvestmentValue,
+						label: r.label,
+						fill: 'origin',
+						colorIndex: i,
+						stack: 'g1',
+					})),
+					{
+						data: total.graphInvestmentValue,
+						label: '_hidden',
+						fill: 'origin',
+						stack: 'g2',
+						borderColor: '#30303090',
+						backgroundColor: 'transparent',
+						borderWidth: 1,
+					},
+				]
+			: data.map((r) => ({
+					data: r.graphInvestmentValue,
+					label: r.label,
+					fill: 'origin',
+					stack: 'g1',
+				})),
 	)
 </script>
 
-{#if investments.length === 0 || graphData.length === 0}
+{#if investments.length === 0 || data.length === 0}
 	<section class="graph">
 		<Typography variant="h1">No data</Typography>
 	</section>
@@ -53,35 +116,80 @@
 			<Horizontal --horizontal-gap="var(--half-padding)">
 				<Typography variant="h5">{title}</Typography>
 				<FlexItem />
-				<Toggle label={$_('Adjust with inflation')} dimension="small"></Toggle>
+				<Toggle
+					label={$_('Adjust with inflation')}
+					dimension="small"
+					bind:checked={adjustWithInflation}
+				></Toggle>
 				<Select dimension="small" variant="solid" label="View" layout="horizontal"></Select>
 				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
 			</Horizontal>
 			<Chart
 				type="line"
-				labels={graphData[0]?.graphLabels}
-				datasets={graphData.map((r) => ({
-					data: r.graphInvestmentValue,
-					label: r.label,
-					fill: 'origin',
-				}))}
+				labels={data[0]?.graphLabels}
+				datasets={investmentGraphData}
 				options={{
+					interaction: {
+						intersect: false,
+						mode: 'index',
+					},
 					scales: {
 						y: {
 							stacked: true,
 							min: 0,
 						},
 					},
+					elements: {
+						point: {
+							radius: 0,
+						},
+					},
 					plugins: {
 						legend: {
 							position: 'bottom',
 							labels: {
+								filter: (legendItem) => !legendItem.text.endsWith('_hidden'),
 								useBorderRadius: true,
 								borderRadius: 1,
 							},
 						},
+						tooltip: {
+							caretPadding: 20,
+							filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
+							callbacks: {
+								footer: (tooltipItems) => {
+									const index = tooltipItems[0].dataIndex
+									const val = adjustWithInflation
+										? total.graphInflationInvestmentValue
+										: total.graphInvestmentValue
+
+									return 'Total: ' + val[index].toLocaleString()
+								},
+							},
+						},
 					},
 				}}
+				plugins={[
+					{
+						id: 'verticalLine',
+						afterDraw(chart) {
+							if (chart?.tooltip && chart.tooltip.opacity > 0) {
+								const ctx = chart.ctx
+								const x = chart.tooltip.caretX
+								const yAxis = chart.scales.y
+
+								ctx.save()
+								ctx.beginPath()
+								ctx.moveTo(x, yAxis.top)
+								ctx.lineTo(x, yAxis.bottom)
+								ctx.lineWidth = 1
+								ctx.strokeStyle = 'gray'
+								ctx.stroke()
+								ctx.restore()
+							}
+						},
+					},
+				]}
 			/>
 		</div>
 		<div class="graph-main-sub">
@@ -95,9 +203,13 @@
 			</Horizontal>
 			<Chart
 				type="bar"
-				labels={graphData[0]?.graphLabels}
+				labels={data[0]?.graphLabels}
 				datasets={[...(showDeposits ? deposits : []), ...(showWithdrawals ? withdrawals : [])]}
 				options={{
+					interaction: {
+						intersect: false,
+						mode: 'index',
+					},
 					scales: {
 						y: {
 							stacked: true,
@@ -110,8 +222,46 @@
 						legend: {
 							display: false,
 						},
+						tooltip: {
+							caretPadding: 20,
+							filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
+							callbacks: {
+								footer: (tooltipItems) => {
+									const index = tooltipItems[0].dataIndex
+									const withdrawals = adjustWithInflation
+										? total.graphInflationWithdrawals
+										: total.graphWithdrawals
+									const deposits = adjustWithInflation
+										? total.graphInflationDeposits
+										: total.graphDeposits
+
+									return `Total: ${(deposits[index] + withdrawals[index]).toLocaleString()}`
+								},
+							},
+						},
 					},
 				}}
+				plugins={[
+					{
+						id: 'verticalLine',
+						afterDraw(chart) {
+							if (chart?.tooltip && chart.tooltip.opacity > 0) {
+								const ctx = chart.ctx
+								const x = chart.tooltip.caretX
+								const yAxis = chart.scales.y
+
+								ctx.save()
+								ctx.beginPath()
+								ctx.moveTo(x, yAxis.top)
+								ctx.lineTo(x, yAxis.bottom)
+								ctx.lineWidth = 1
+								ctx.strokeStyle = 'gray'
+								ctx.stroke()
+								ctx.restore()
+							}
+						},
+					},
+				]}
 			/>
 		</div>
 	</section>

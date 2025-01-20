@@ -13,3 +13,19 @@ export const SERIES_COLORS = [
 	'#8A3800',
 	'#A56EFF',
 ]
+
+export const DESATURATED_SERIES_COLORS = [
+	'#C4C4C4',
+	'#E8E8E8',
+	'#5D5D5D',
+	'#9F9F9F',
+	'#FAFAFA',
+	'#525252',
+	'#808080',
+	'#9C9C9C',
+	'#EEEEEE',
+	'#B2B2B2',
+	'#494949',
+	'#8A8A8A',
+	'#FFFFFF',
+]

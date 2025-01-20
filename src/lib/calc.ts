@@ -182,8 +182,23 @@ export function getGraphData(
 		{ frequency, count },
 		{ deposits, withdrawals, startDate, endDate },
 		investment,
-		portfolio,
 	)
+
+	const inflationPerPeriod = getInflationAdjustment(portfolio.inflation_rate, frequency, count)
+
+	const graphInflationDeposits: number[] = []
+	const graphInflationWithdrawals: number[] = []
+	const graphInflationInvestmentValue: number[] = []
+
+	for (let i = 0; i < graphLabels.length; i++) {
+		const inflation = inflationPerPeriod.pow(i)
+
+		graphInflationDeposits.push(new Decimal(graphDeposits[i]).div(inflation).toNumber())
+		graphInflationWithdrawals.push(new Decimal(graphWithdrawals[i]).div(inflation).toNumber())
+		graphInflationInvestmentValue.push(
+			new Decimal(graphInvestmentValue[i]).div(inflation).toNumber(),
+		)
+	}
 
 	return {
 		label: investment.name,
@@ -191,6 +206,35 @@ export function getGraphData(
 		graphDeposits,
 		graphWithdrawals,
 		graphInvestmentValue,
+		graphInflationDeposits,
+		graphInflationWithdrawals,
+		graphInflationInvestmentValue,
+	}
+}
+
+export function getInflationAdjustment(
+	inflationRate: number,
+	frequency: Frequency,
+	count: number,
+): Decimal {
+	switch (frequency) {
+		case 'day':
+			return c1
+				.add(inflationRate)
+				.pow(1 / 365.25)
+				.pow(count)
+		case 'week':
+			return c1
+				.add(inflationRate)
+				.pow(1 / 365.25)
+				.pow(count * 7)
+		case 'month':
+			return c1
+				.add(inflationRate)
+				.pow(1 / 12)
+				.pow(count)
+		case 'year':
+			return c1.add(inflationRate).pow(count)
 	}
 }
 
@@ -198,7 +242,10 @@ export function getGraphDataForPortfolio(
 	transactionStore: TransactionStore,
 	investments: Investment[],
 	portfolio: Portfolio,
-): GraphData[] {
+): {
+	total: GraphData
+	data: GraphData[]
+} {
 	const baseData = investments.map((i) => {
 		const transactions = transactionStore.filter(i.id)
 		return { baseData: getBaseData(transactions), investment: i }
@@ -215,33 +262,53 @@ export function getGraphDataForPortfolio(
 		},
 	)
 
-	return baseData.map((d) =>
+	const data = baseData.map((d) =>
 		getGraphData({ ...d.baseData, startDate, endDate }, d.investment, portfolio),
 	)
+
+	const total: GraphData = {
+		label: 'Total',
+		graphLabels: [...data[0].graphLabels],
+		graphDeposits: [...data[0].graphDeposits],
+		graphWithdrawals: [...data[0].graphWithdrawals],
+		graphInvestmentValue: [...data[0].graphInvestmentValue],
+
+		graphInflationDeposits: [...data[0].graphInflationDeposits],
+		graphInflationWithdrawals: [...data[0].graphInflationWithdrawals],
+		graphInflationInvestmentValue: [...data[0].graphInflationInvestmentValue],
+	}
+	for (let i = 1; i < data.length; i++) {
+		for (let j = 0; j < total.graphLabels.length; j++) {
+			total.graphDeposits[j] += data[i].graphDeposits[j]
+			total.graphWithdrawals[j] += data[i].graphWithdrawals[j]
+			total.graphInvestmentValue[j] += data[i].graphInvestmentValue[j]
+
+			total.graphInflationDeposits[j] += data[i].graphInflationDeposits[j]
+			total.graphInflationWithdrawals[j] += data[i].graphInflationWithdrawals[j]
+			total.graphInflationInvestmentValue[j] += data[i].graphInflationInvestmentValue[j]
+		}
+	}
+
+	return { data, total }
 }
 
 function getInvestmentValues(
 	{ frequency, count }: Arity,
 	{ deposits, withdrawals, startDate, endDate }: InvestmentData,
 	investment: Investment,
-	portfolio: Portfolio,
 ): number[] {
 	// TODO: add fees into the calculation
 	const portfolioData: number[] = []
 
 	let currentValue = new Decimal(0)
 	const apy = c1.add(new Decimal(investment.apy ?? 0).div(c100))
-	const inflation = c1.add(portfolio.inflation_rate)
 	const dailyAPY = apy.pow(1 / 365.25)
-	const dailyInflation = c1.sub(inflation.pow(1 / 365.25)).add(c1)
-
-	const gain = dailyAPY.mul(dailyInflation)
 
 	let nextRecordDate = startDate
 
 	for (let date = new Date(startDate); date <= endDate; date = addDays(date, 1)) {
 		currentValue = currentValue
-			.mul(gain)
+			.mul(dailyAPY)
 			.add(deposits.get(formatDate(date)) ?? 0)
 			.sub(withdrawals.get(formatDate(date)) ?? 0)
 		if (date >= nextRecordDate) {

@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { SERIES_COLORS } from '$lib/colors'
 	import { getCSSVariableValue } from '$lib/css-vars'
-	import Chart, { type ChartDataset, type ChartOptions, type ChartType } from 'chart.js/auto'
+	import Chart, {
+		type ChartDataset,
+		type ChartOptions,
+		type ChartType,
+		type Plugin,
+	} from 'chart.js/auto'
 
 	type ChartDatasetWithColor = ChartDataset & {
 		colorIndex?: number
@@ -12,6 +17,7 @@
 		datasets: ChartDatasetWithColor[]
 		type: ChartType
 		options?: ChartOptions<ChartType>
+		plugins?: Plugin<ChartType>[]
 	}
 
 	Chart.defaults.font.family = getCSSVariableValue('--font-family-sans-serif')
@@ -23,7 +29,7 @@
 		responsive: false,
 	}
 
-	let { labels, datasets, type, options = {} }: Props = $props()
+	let { labels, datasets, type, options = {}, plugins = [] }: Props = $props()
 
 	let canvas: HTMLCanvasElement | null = $state(null)
 	let chart: Chart | null = $state(null)
@@ -48,6 +54,7 @@
 					...DEFAULT_OPTIONS,
 					...options,
 				},
+				plugins,
 			})
 			chart.resize()
 		}
