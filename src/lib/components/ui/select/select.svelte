@@ -255,12 +255,16 @@
 			}
 		}
 	}
+	input::selection {
+		background-color: transparent;
+	}
 	.select {
 		flex-grow: 1;
 		appearance: none;
 		cursor: pointer;
 		border-radius: var(--border-radius);
 		color: var(--colors-ultra-high);
+		caret-color: transparent;
 		&.outline {
 			border: 1px solid var(--colors-ultra-high);
 			background: transparent;
