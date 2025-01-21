@@ -257,8 +257,8 @@ export function getGraphDataForPortfolio(
 			endDate: i.baseData.endDate > acc.endDate ? i.baseData.endDate : acc.endDate,
 		}),
 		{
-			startDate: baseData[0]?.baseData.startDate ?? new Date(),
-			endDate: baseData[0]?.baseData.endDate ?? new Date(),
+			startDate: new Date(portfolio.start_date),
+			endDate: new Date(portfolio.end_date),
 		},
 	)
 
