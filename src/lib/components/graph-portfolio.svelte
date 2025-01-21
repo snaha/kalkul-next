@@ -13,6 +13,10 @@
 	import { Maximize } from 'carbon-icons-svelte'
 	import Checkbox from './ui/checkbox.svelte'
 
+	// Label and gridline frequency
+	const GRIDLINE_FREQUENCY = 2
+	const LABEL_FREQUENCY = GRIDLINE_FREQUENCY
+
 	interface Props {
 		portfolio: Portfolio
 		investments: Investment[]
@@ -138,6 +142,19 @@
 							stacked: true,
 							min: 0,
 						},
+						x: {
+							grid: {
+								offset: false,
+								color: ({ index }) =>
+									index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
+							},
+							ticks: {
+								autoSkip: false,
+								callback: function (_, index) {
+									return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
+								},
+							},
+						},
 					},
 					elements: {
 						point: {
@@ -213,9 +230,24 @@
 					scales: {
 						y: {
 							stacked: true,
+							border: {
+								display: false,
+							},
 						},
 						x: {
 							stacked: true,
+							grid: {
+								offset: false,
+								color: ({ index }) =>
+									index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
+							},
+							type: 'category',
+							ticks: {
+								autoSkip: false,
+								callback: function (_, index) {
+									return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
+								},
+							},
 						},
 					},
 					plugins: {
