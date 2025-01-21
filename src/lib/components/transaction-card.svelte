@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { differenceInMonths } from 'date-fns'
-
 	import type { Transaction } from '$lib/types'
 	import {
 		Copy,
@@ -18,6 +16,7 @@
 	import { notImplemented } from '$lib/not-implemented'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
+	import { calculateTotalAmount, numOccurrences } from '$lib/calc'
 
 	type Props = {
 		transaction: Transaction
@@ -28,12 +27,14 @@
 	let { transaction, currency, open }: Props = $props()
 
 	const numOccurences = $derived(
-		differenceInMonths(
-			new Date(transaction.end_date || transaction.date),
-			new Date(transaction.date),
+		numOccurrences(
+			transaction.date,
+			transaction.end_date ?? transaction.date,
+			transaction.repeat_unit ?? 'month',
+			transaction.repeat ?? 1,
 		),
 	)
-	const totalAmount = $derived(numOccurences * Number(transaction.amount))
+	const totalAmount = $derived(calculateTotalAmount([transaction], transaction.type))
 
 	function pluralize(word: string, count: number) {
 		if (count < 2) {

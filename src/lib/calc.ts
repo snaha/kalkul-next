@@ -16,6 +16,8 @@ import {
 	addWeeks,
 	addMonths,
 	addYears,
+	differenceInWeeks,
+	differenceInYears,
 } from 'date-fns'
 import type { TransactionStore } from './stores/transaction.svelte'
 
@@ -318,4 +320,41 @@ function getInvestmentValues(
 	}
 
 	return portfolioData
+}
+
+export function calculateTotalAmount(transactions: Transaction[], type: string) {
+	return transactions
+		.filter((transaction) => transaction.type === type)
+		.reduce((prev, transaction) => {
+			const periods = numOccurrences(
+				transaction.date,
+				transaction.end_date || transaction.date,
+				transaction.repeat_unit || 'month',
+				transaction.repeat || 1,
+			)
+
+			return prev + transaction.amount * periods
+		}, 0)
+}
+export function numOccurrences(
+	start: string,
+	end: string,
+	repeatUnit: string,
+	repeat: number,
+): number {
+	const startDate = new Date(start)
+	const endDate = new Date(end)
+
+	switch (repeatUnit) {
+		case 'day':
+			return (differenceInDays(endDate, startDate) + 1) / repeat
+		case 'week':
+			return (differenceInWeeks(endDate, startDate) + 1) / repeat
+		case 'month':
+			return (differenceInMonths(endDate, startDate) + 1) / repeat
+		case 'year':
+			return (differenceInYears(endDate, startDate) + 1) / repeat
+		default:
+			return 1
+	}
 }

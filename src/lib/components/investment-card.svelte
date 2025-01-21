@@ -27,6 +27,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import { calculateTotalAmount } from '$lib/calc'
 
 	type Props = {
 		investment: Investment
@@ -38,16 +39,8 @@
 	let { investment, portfolio, viewOnly = false, index }: Props = $props()
 
 	const transactions = $derived(transactionStore.filter(investment.id))
-	const totalDeposits = $derived(
-		transactions
-			.filter((transaction) => transaction.type === 'deposit')
-			.reduce((prev, curr) => prev + curr.amount, 0),
-	)
-	const totalWithdrawals = $derived(
-		transactions
-			.filter((transaction) => transaction.type === 'withdrawal')
-			.reduce((prev, curr) => prev + curr.amount, 0),
-	)
+	const totalDeposits = $derived(calculateTotalAmount(transactions, 'deposit'))
+	const totalWithdrawals = $derived(calculateTotalAmount(transactions, 'withdrawal'))
 
 	function cardOpenInvestment(e: MouseEvent) {
 		if (viewOnly) {
