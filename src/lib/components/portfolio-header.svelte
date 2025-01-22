@@ -3,7 +3,7 @@
 
 	import DeleteModal from './delete-modal.svelte'
 	import { goto } from '$app/navigation'
-	import { cascadeDeletePortfolio, cascadeDuplicatePortfolio } from '$lib/cascade'
+	import { cascadeDuplicatePortfolio } from '$lib/cascade'
 	import routes from '$lib/routes'
 	import {
 		Add,
@@ -21,6 +21,7 @@
 	import ListItem from './ui/list/list-item.svelte'
 	import Typography from './ui/typography.svelte'
 	import type { Client, Portfolio } from '$lib/types'
+	import adapters from '$lib/adapters'
 
 	type Props = {
 		client: Client
@@ -45,7 +46,7 @@
 	}
 
 	async function deletePortfolio() {
-		await cascadeDeletePortfolio(portfolio.id)
+		await adapters.deletePortfolio({ id: portfolio.id })
 		showConfirmModal = false
 		goto(routes.CLIENT(client.id))
 	}

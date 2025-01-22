@@ -26,9 +26,10 @@
 	import List from '$lib/components/ui/list/list.svelte'
 	import ListItem from '$lib/components/ui/list/list-item.svelte'
 	import DeleteModal from '$lib/components/delete-modal.svelte'
-	import { cascadeDeletePortfolio, cascadeDuplicatePortfolio } from '$lib/cascade'
+	import { cascadeDuplicatePortfolio } from '$lib/cascade'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
+	import adapters from '$lib/adapters'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -52,7 +53,7 @@
 			return
 		}
 
-		await cascadeDeletePortfolio(portfolioToBeDeleted)
+		await adapters.deletePortfolio({ id: portfolioToBeDeleted })
 		portfolioToBeDeleted = undefined
 		showConfirmModal = false
 	}

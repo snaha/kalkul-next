@@ -58,25 +58,3 @@ async function cascadeDuplicateTransaction(
 
 	await adapters.addTransaction(duplicatedTransaction)
 }
-
-export async function cascadeDeletePortfolio(portfolioId: number) {
-	const investments = investmentStore.filter(portfolioId)
-	for (const investment of investments) {
-		await cascadeDeleteInvestment(investment.id)
-	}
-
-	await adapters.deletePortfolio({ id: portfolioId })
-}
-
-export async function cascadeDeleteInvestment(investmentId: number) {
-	const transactions = transactionStore.filter(investmentId)
-	for (const transaction of transactions) {
-		await cascadeDeleteTransaction(transaction.id)
-	}
-
-	await adapters.deleteInvestment({ id: investmentId })
-}
-
-async function cascadeDeleteTransaction(transactionId: number) {
-	await adapters.deleteTransaction({ id: transactionId })
-}

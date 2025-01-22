@@ -1,8 +1,5 @@
 <script lang="ts">
 	import DeleteModal from './delete-modal.svelte'
-
-	import { cascadeDeleteInvestment } from '$lib/cascade'
-
 	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
@@ -105,7 +102,7 @@
 			return
 		}
 
-		await cascadeDeleteInvestment(investment.id)
+		await adapter.deleteInvestment({ id: investment.id })
 		close()
 	}
 

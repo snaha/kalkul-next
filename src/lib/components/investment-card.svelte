@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 
-	import { cascadeDeleteInvestment, cascadeDuplicateInvestment } from '$lib/cascade'
+	import { cascadeDuplicateInvestment } from '$lib/cascade'
 
 	import type { Investment, Portfolio } from '$lib/types'
 	import {
@@ -27,6 +27,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import adapters from '$lib/adapters'
 	import { calculateTotalAmount } from '$lib/calc'
 
 	type Props = {
@@ -59,6 +60,9 @@
 	function editInvestment() {
 		goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
 	}
+	async function deleteInvestment(investmentId: number) {
+		await adapters.deleteInvestment({ id: investmentId })
+	}
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -89,7 +93,7 @@
 					<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
 						><Copy size={24} />{$_('Duplicate investment')}</ListItem
 					>
-					<ListItem onclick={() => cascadeDeleteInvestment(investment.id)}
+					<ListItem onclick={() => deleteInvestment(investment.id)}
 						><TrashCan size={24} />{$_('Delete investment')}</ListItem
 					>
 				</List>
