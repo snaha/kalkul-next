@@ -29,6 +29,7 @@
 	const investments = $derived(investmentStore.filter(portfolioId))
 	const investmentId = parseInt($page.params.investment_id, 10)
 	const investment = $derived(investments.find((investment) => investment.id === investmentId))
+	const colorIndex = $derived(investments.findIndex((inv) => inv.id === investment?.id))
 	const deposits = $derived(
 		transactionStore.filter(investmentId).filter((transaction) => transaction.type === 'deposit'),
 	)
@@ -193,7 +194,7 @@
 					</section>
 				{/if}
 			</Sidebar>
-			<InvestmentGraph {investment} {portfolio} />
+			<InvestmentGraph {investment} {portfolio} {colorIndex} />
 		</section>
 	</main>
 {/if}

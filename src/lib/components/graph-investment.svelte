@@ -6,9 +6,15 @@
 	interface Props {
 		investment: Investment
 		portfolio: Portfolio
+		colorIndex: number
 	}
 
-	const { investment, portfolio }: Props = $props()
+	const { investment, portfolio, colorIndex }: Props = $props()
 </script>
 
-<PortfolioGraph title={$_('Investment value')} {portfolio} investments={[investment]} />
+<PortfolioGraph
+	title={$_('Investment value')}
+	{portfolio}
+	investments={[investment]}
+	{colorIndex}
+/>

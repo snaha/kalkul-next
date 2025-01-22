@@ -21,9 +21,10 @@
 		portfolio: Portfolio
 		investments: Investment[]
 		title?: string
+		colorIndex?: number
 	}
 
-	const { investments, portfolio, title = $_('Portfolio value') }: Props = $props()
+	const { investments, portfolio, title = $_('Portfolio value'), colorIndex }: Props = $props()
 
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
@@ -39,7 +40,7 @@
 						data: r.graphInflationDeposits,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: i,
+						colorIndex: colorIndex ?? i,
 					})),
 					{
 						data: total.graphDeposits.map((w, i) => w - total.graphInflationDeposits[i]),
@@ -53,7 +54,7 @@
 					data: r.graphDeposits,
 					label: r.label,
 					fill: 'origin',
-					colorIndex: i,
+					colorIndex: colorIndex ?? i,
 				})),
 	)
 	const withdrawals = $derived(
@@ -63,7 +64,7 @@
 						data: r.graphInflationWithdrawals,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: i,
+						colorIndex: colorIndex ?? i,
 					})),
 					{
 						data: total.graphWithdrawals.map((w, i) => w - total.graphInflationWithdrawals[i]),
@@ -77,18 +78,18 @@
 					data: r.graphWithdrawals,
 					label: r.label,
 					fill: 'origin',
-					colorIndex: i,
+					colorIndex: colorIndex ?? i,
 				})),
 	)
 
 	const investmentGraphData = $derived(
 		adjustWithInflation
 			? [
-					...data.map((r, i) => ({
+					...data.map((r) => ({
 						data: r.graphInflationInvestmentValue,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: i,
+						colorIndex: colorIndex,
 						stack: 'g1',
 					})),
 					{
@@ -106,6 +107,7 @@
 					label: r.label,
 					fill: 'origin',
 					stack: 'g1',
+					colorIndex: colorIndex,
 				})),
 	)
 </script>
