@@ -10,7 +10,6 @@
 		type Investment,
 		type Portfolio,
 		type Transaction,
-		type TransactionType,
 	} from '$lib/types'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
@@ -36,12 +35,13 @@
 		investment: Investment
 		portfolio: Portfolio
 		client: Client
-		transaction: Transaction | { type: TransactionType; id?: never }
+		transaction?: Transaction
 		close: () => void
 	}
 
 	let { investment, portfolio, client, transaction, close }: Props = $props()
 
+	let transactionType = $state(transaction?.type || 'deposit')
 	let label = $state('')
 	let amount = $state(0)
 	let date = $state(new Date())
@@ -56,21 +56,21 @@
 	const createDisabled = $derived(
 		label === '' || amount === 0 || (isRecurring && totalAmount === 0),
 	)
-	const formType = $derived(transaction.id ? 'edit' : 'create')
+	const formType = $derived(transaction ? 'edit' : 'create')
 
 	$effect(() => {
 		label =
-			transaction.id && transaction.label
+			transaction && transaction.label
 				? transaction.label
-				: capitalizeFirstLetter($_(transaction.type)) +
+				: capitalizeFirstLetter($_(transactionType)) +
 					' ' +
 					(investmentStore.filter(investment.id).length + 1).toString()
-		amount = transaction.id ? transaction.amount : 0
-		date = transaction.id ? new Date(transaction.date) : new Date()
-		isRecurring = transaction.id ? transaction.end_date !== null : false
-		repeat = transaction.id && transaction.repeat ? transaction.repeat : 1
+		amount = transaction ? transaction.amount : 0
+		date = transaction ? new Date(transaction.date) : new Date()
+		isRecurring = transaction ? transaction.end_date !== null : false
+		repeat = transaction && transaction.repeat ? transaction.repeat : 1
 		repeatUnit = transactionRepeatUnit(transaction)
-		endDate = transaction.id && transaction.end_date ? new Date(transaction.end_date) : new Date()
+		endDate = transaction && transaction.end_date ? new Date(transaction.end_date) : new Date()
 		period = transactionPeriod(transaction)
 		periodUnit = transactionPeriodUnit(transaction)
 	})
@@ -82,7 +82,7 @@
 		await adapter.addTransaction({
 			user_id: authStore.user?.id,
 			investment_id: investment.id,
-			type: transaction.type,
+			type: transactionType,
 			amount,
 			label,
 			date: date.toDateString(),
@@ -94,7 +94,7 @@
 	}
 
 	async function editTransaction() {
-		if (!transaction.id) {
+		if (!transaction) {
 			return
 		}
 		await adapter.updateTransaction({
@@ -113,7 +113,7 @@
 	}
 
 	async function deleteTransaction() {
-		if (!transaction.id) {
+		if (!transaction) {
 			return
 		}
 
@@ -156,11 +156,11 @@
 	}
 
 	function transactionRepeatUnit(t: typeof transaction): TimeUnit {
-		return t.id && t.repeat_unit ? (t.repeat_unit as TimeUnit) : 'month'
+		return t && t.id && t.repeat_unit ? (t.repeat_unit as TimeUnit) : 'month'
 	}
 
 	function transactionPeriod(t: typeof transaction) {
-		if (!t.id || !t.end_date) {
+		if (!t || !t.id || !t.end_date) {
 			return 30
 		}
 
@@ -168,7 +168,7 @@
 	}
 
 	function transactionPeriodUnit(t: typeof transaction): TimeUnit {
-		if (!t.id || !t.end_date) {
+		if (!t || !t.id || !t.end_date) {
 			return 'year'
 		}
 
@@ -209,18 +209,36 @@
 <main class="vertical">
 	<section class="horizontal">
 		<Typography variant="h5"
-			>{formType === 'create'
-				? transaction.type === 'deposit'
-					? $_('Add deposit')
-					: $_('Add withdrawal')
-				: transaction.type === 'deposit'
-					? $_('Edit deposit')
-					: $_('Edit withdrawal')}</Typography
+			>{formType === 'create' ? $_('Add') : $_('Edit')}{$_(' transaction')}</Typography
 		>
 		<FlexItem />
 		<Button dimension="compact" variant="ghost" onclick={cancel}><Close size={24} /></Button>
 	</section>
 	<div class="spacer"></div>
+	<div class="horizontal">
+		<Select variant="solid" dimension="compact" bind:value={transactionType} label={$_('Type')}>
+			<Option value="deposit">{capitalizeFirstLetter($_('deposit'))}</Option>
+			<Option value="withdrawal">{capitalizeFirstLetter($_('withdrawal'))}</Option>
+		</Select>
+		<Toggle
+			dimension="compact"
+			label={$_('Recurring')}
+			bind:checked={isRecurring}
+			onchange={toggleRecurring}
+		></Toggle>
+	</div>
+	<Input
+		type="number"
+		variant="solid"
+		dimension="compact"
+		placeholder={'0'}
+		label={$_('Amount')}
+		unit={portfolio.currency}
+		bind:value={amount}
+		min={0}
+		step={1}
+		class="grower"
+	></Input>
 	<Input
 		dimension="compact"
 		variant="solid"
@@ -228,28 +246,10 @@
 		label={$_('Label')}
 		bind:value={label}
 	></Input>
-	<Input
-		type="number"
-		variant="solid"
-		dimension="compact"
-		placeholder={'0'}
-		label={transaction.type == 'deposit' ? $_('Deposit amount') : $_('Withdrawal amount')}
-		unit={portfolio.currency}
-		bind:value={amount}
-		min={0}
-		step={1}
-		class="grower"
-	></Input>
-	<Toggle
-		dimension="compact"
-		label={transaction.type === 'deposit' ? $_('Recurring deposit') : $_('Recurring withdrawal')}
-		bind:checked={isRecurring}
-		onchange={toggleRecurring}
-	></Toggle>
 	<DateAge
 		dimension="compact"
-		dateInputLabel={transaction.type === 'deposit' ? $_('Deposit date') : $_('Withdrawal date')}
-		ageLabel={transaction.type === 'deposit' ? $_('Age at deposit') : $_('Age at withdrawal')}
+		dateInputLabel={$_('Start date')}
+		ageLabel={$_('Client´s age at start')}
 		agePlaceholder={'0'}
 		bind:date
 		birthDate={new Date(client.birth_date)}
@@ -303,7 +303,7 @@
 		<DateAge
 			dimension="compact"
 			dateInputLabel={$_('End date')}
-			ageLabel={$_('Age at end')}
+			ageLabel={$_('Client´s age at end')}
 			agePlaceholder={'0'}
 			bind:date={endDate}
 			birthDate={new Date(client.birth_date)}
@@ -313,7 +313,7 @@
 		<section class="summary vertical">
 			<Typography>{numOccurences} {$_('occurences')}</Typography>
 			<Typography
-				>{formatCurrency(totalAmount, portfolio.currency)} ({transaction.type === 'deposit'
+				>{formatCurrency(totalAmount, portfolio.currency)} ({transactionType === 'deposit'
 					? $_('total deposits')
 					: $_('total withdrawals')})</Typography
 			>
@@ -342,9 +342,7 @@
 	</menu>
 	{#if formType === 'edit'}
 		<Button variant="ghost" dimension="compact" onclick={deleteTransaction}
-			><TrashCan size={16} />{transaction.type === 'deposit'
-				? $_('Delete deposit')
-				: $_('Delete withdrawal')}</Button
+			><TrashCan size={16} />{$_('Delete transaction')}</Button
 		>
 	{/if}
 </main>

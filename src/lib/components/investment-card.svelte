@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { transactionStore } from '$lib/stores/transaction.svelte'
-
 	import { cascadeDuplicateInvestment } from '$lib/cascade'
-
-	import type { Investment, Portfolio } from '$lib/types'
+	import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
 	import {
-		ArrowRight,
+		Add,
+		CenterSquare,
+		ChevronRight,
 		Copy,
 		OverflowMenuVertical,
 		Settings,
@@ -16,10 +16,8 @@
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
-	import { formatCurrency } from '$lib/utils'
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
-	import { notImplemented } from '$lib/not-implemented'
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
@@ -27,55 +25,77 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import TransactionCard from './transaction-card.svelte'
+	import Divider from './ui/divider.svelte'
 	import adapters from '$lib/adapters'
-	import { calculateTotalAmount } from '$lib/calc'
 
 	type Props = {
-		investment: Investment
+		investment: InvestmentWithColorIndex
 		portfolio: Portfolio
 		viewOnly?: boolean
 		index: number
+		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
 	}
 
-	let { investment, portfolio, viewOnly = false, index }: Props = $props()
+	let { investment, portfolio, viewOnly = false, index, openTransaction }: Props = $props()
 
 	const transactions = $derived(transactionStore.filter(investment.id))
-	const totalDeposits = $derived(calculateTotalAmount(transactions, 'deposit'))
-	const totalWithdrawals = $derived(calculateTotalAmount(transactions, 'withdrawal'))
+	let openInvestment = $state(false)
+	let focus = $state(false)
+	let hidden = $state(false)
 
 	function cardOpenInvestment(e: MouseEvent) {
-		if (viewOnly) {
-			return
-		}
 		if (e.defaultPrevented) {
 			return
 		}
-		openInvestment()
+		toggleInvestment()
 	}
 
-	function openInvestment() {
-		goto(routes.INVESTMENT(portfolio.client, portfolio.id, investment.id))
+	function toggleInvestment() {
+		openInvestment = !openInvestment
 	}
 
 	function editInvestment() {
 		goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
 	}
+
 	async function deleteInvestment(investmentId: number) {
 		await adapters.deleteInvestment({ id: investmentId })
 	}
+
+	$effect(() => {
+		investment.colorIndex = index
+	})
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={cardOpenInvestment}>
+<div class="card" onclick={cardOpenInvestment} class:hidden class:openInvestment>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
+		<ChevronRight size={24} class="open-investment-icon" />
 		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
 		<FlexItem />
-		{#if viewOnly}
-			<Button variant="ghost" dimension="compact" onclick={notImplemented}
-				><ViewOff size={16} /></Button
+		{#if focus}
+			<Button
+				variant="ghost"
+				dimension="compact"
+				onclick={(e: Event) => {
+					e.preventDefault()
+					focus = !focus
+				}}><CenterSquare size={16} /></Button
+			>
+		{/if}
+		{#if hidden}
+			<Button
+				class="show-investment-button"
+				variant="ghost"
+				dimension="compact"
+				onclick={(e: Event) => {
+					e.preventDefault()
+					hidden = false
+				}}><ViewOff size={16} /></Button
 			>
 		{:else}
 			<Dropdown left buttonDimension="compact">
@@ -83,35 +103,65 @@
 					<OverflowMenuVertical size={16} />
 				{/snippet}
 				<List>
-					<ListItem onclick={openInvestment}
-						><ArrowRight size={24} />{$_('Open investment')}</ListItem
+					<ListItem onclick={() => (focus = !focus)}
+						><CenterSquare size={24} />{focus ? $_('Remove focus') : $_('Focus in chart')}</ListItem
 					>
-					<ListItem onclick={notImplemented}><ViewOff size={24} />{$_('Hide in charts')}</ListItem>
-					<ListItem onclick={editInvestment}
-						><Settings size={24} />{$_('Edit investment details')}</ListItem
+					<ListItem onclick={() => (hidden = true)}
+						><ViewOff size={24} />{$_('Hide in charts')}</ListItem
 					>
-					<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
-						><Copy size={24} />{$_('Duplicate investment')}</ListItem
-					>
-					<ListItem onclick={() => deleteInvestment(investment.id)}
-						><TrashCan size={24} />{$_('Delete investment')}</ListItem
-					>
+					{#if !viewOnly}
+						<ListItem onclick={editInvestment}
+							><Settings size={24} />{$_('Edit investment details')}</ListItem
+						>
+						<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
+							><Copy size={24} />{$_('Duplicate investment')}</ListItem
+						>
+						<ListItem onclick={() => deleteInvestment(investment.id)}
+							><TrashCan size={24} />{$_('Delete investment')}</ListItem
+						>
+					{/if}
 				</List>
 			</Dropdown>
 		{/if}
 	</Horizontal>
-	<Vertical --vertical-gap="var(--quarter-padding)">
+	{#if openInvestment && !hidden}
 		<Horizontal>
-			<Typography>{$_('Total deposits')}</Typography>
+			<Typography variant="h5">{$_('Transactions')}</Typography>
 			<FlexItem />
-			<Typography>{formatCurrency(totalDeposits, portfolio.currency)}</Typography>
+			{#if openTransaction && !viewOnly}
+				<Button
+					dimension="compact"
+					onclick={(e: Event) => {
+						e.preventDefault()
+						openTransaction(investment)
+					}}><Add size={24} />{$_('Add')}</Button
+				>
+			{/if}
 		</Horizontal>
-		<Horizontal>
-			<Typography>{$_('Total withdrawals')}</Typography>
-			<FlexItem />
-			<Typography>{formatCurrency(totalWithdrawals, portfolio.currency)}</Typography>
-		</Horizontal>
-	</Vertical>
+		{#if transactions.length === 0}
+			<section class="centered">
+				<img src="/images/no-transaction.svg" alt="No transaction yet" />
+				<Typography variant="h5">{$_('No transaction yet')}</Typography>
+				{#if !viewOnly}
+					<Typography variant="small">{$_('Use the button above to add one')}</Typography>
+				{/if}
+			</section>
+		{:else}
+			<Vertical --vertical-gap="var(--half-padding)">
+				{#each transactions as transaction}
+					<Divider --margin="0" />
+					<TransactionCard
+						{viewOnly}
+						editTransaction={openTransaction
+							? () => openTransaction(investment, transaction)
+							: undefined}
+						{transaction}
+						currency={portfolio.currency}
+					/>
+				{/each}
+			</Vertical>
+		{/if}
+	{/if}
 </div>
 
 <style type="postcss">
@@ -122,10 +172,14 @@
 		padding: var(--padding);
 		display: flex;
 		flex-direction: column;
-		gap: var(--half-padding);
+		gap: var(--padding);
 		cursor: pointer;
 		transition: border 0.2s;
 		transition-timing-function: ease-in;
+		:global(.open-investment-icon) {
+			transform: rotate(0deg);
+			transition: transform 0.2s ease-out;
+		}
 	}
 	.card:hover {
 		border: 1px solid var(--colors-ultra-high);
@@ -136,5 +190,37 @@
 		width: 36px;
 		height: 24px;
 		border-radius: var(--border-radius);
+	}
+	.hidden {
+		background-color: transparent;
+		pointer-events: none;
+		:global(.open-investment-icon) {
+			opacity: 0.25;
+		}
+		:global(.show-investment-button) {
+			pointer-events: all;
+		}
+		:global(.investment-name) {
+			text-decoration: line-through;
+		}
+		:global(.investment-badge) {
+			display: none;
+		}
+		&:hover {
+			border: 1px solid var(--colors-low);
+			transition: none;
+		}
+	}
+	.openInvestment {
+		:global(.open-investment-icon) {
+			transform: rotate(90deg);
+			transition: transform 0.2s ease-out;
+		}
+	}
+	.centered {
+		text-align: center;
+		img {
+			padding-bottom: var(--padding);
+		}
 	}
 </style>

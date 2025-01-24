@@ -2,11 +2,10 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Chart from '$lib/components/chart.svelte'
 	import { getGraphDataForPortfolio } from '$lib/calc'
-	import type { Portfolio, Investment } from '$lib/types'
+	import type { Portfolio, InvestmentWithColorIndex } from '$lib/types'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
-	import Toggle from './ui/toggle.svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
 	import { Maximize } from 'carbon-icons-svelte'
@@ -18,17 +17,20 @@
 
 	interface Props {
 		portfolio: Portfolio
-		investments: Investment[]
+		investments: InvestmentWithColorIndex[]
+		adjustWithInflation: boolean
 		title?: string
-		colorIndex?: number
 	}
 
-	const { investments, portfolio, title = $_('Portfolio value'), colorIndex }: Props = $props()
+	const {
+		investments,
+		portfolio,
+		title = $_('Portfolio value'),
+		adjustWithInflation,
+	}: Props = $props()
 
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
-	let adjustWithInflation = $state(false)
-
 	const { total, data } = $derived(
 		getGraphDataForPortfolio(transactionStore, investments, portfolio),
 	)
@@ -39,7 +41,7 @@
 						data: r.graphInflationDeposits,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: colorIndex ?? i,
+						colorIndex: investments[i].colorIndex ?? i,
 					})),
 					{
 						data: total.graphDeposits.map((w, i) => w - total.graphInflationDeposits[i]),
@@ -53,7 +55,7 @@
 					data: r.graphDeposits,
 					label: r.label,
 					fill: 'origin',
-					colorIndex: colorIndex ?? i,
+					colorIndex: investments[i].colorIndex ?? i,
 				})),
 	)
 	const withdrawals = $derived(
@@ -63,7 +65,7 @@
 						data: r.graphInflationWithdrawals,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: colorIndex ?? i,
+						colorIndex: investments[i].colorIndex ?? i,
 					})),
 					{
 						data: total.graphWithdrawals.map((w, i) => w - total.graphInflationWithdrawals[i]),
@@ -77,18 +79,18 @@
 					data: r.graphWithdrawals,
 					label: r.label,
 					fill: 'origin',
-					colorIndex: colorIndex ?? i,
+					colorIndex: investments[i].colorIndex ?? i,
 				})),
 	)
 
 	const investmentGraphData = $derived(
 		adjustWithInflation
 			? [
-					...data.map((r) => ({
+					...data.map((r, i) => ({
 						data: r.graphInflationInvestmentValue,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: colorIndex,
+						colorIndex: investments[i].colorIndex,
 						stack: 'g1',
 					})),
 					{
@@ -101,12 +103,12 @@
 						borderWidth: 1,
 					},
 				]
-			: data.map((r) => ({
+			: data.map((r, i) => ({
 					data: r.graphInvestmentValue,
 					label: r.label,
 					fill: 'origin',
 					stack: 'g1',
-					colorIndex: colorIndex,
+					colorIndex: investments[i].colorIndex,
 				})),
 	)
 </script>
@@ -121,11 +123,6 @@
 			<Horizontal --horizontal-gap="var(--half-padding)">
 				<Typography variant="h5">{title}</Typography>
 				<FlexItem />
-				<Toggle
-					label={$_('Adjust with inflation')}
-					dimension="small"
-					bind:checked={adjustWithInflation}
-				></Toggle>
 				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
 			</Horizontal>
 			<Chart

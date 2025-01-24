@@ -1,17 +1,10 @@
 <script lang="ts">
 	import type { Transaction } from '$lib/types'
-	import {
-		Copy,
-		OverflowMenuVertical,
-		SettingsEdit,
-		TrashCan,
-		ViewFilled,
-	} from 'carbon-icons-svelte'
+	import { ChevronRight, Edit, Copy, TrashCan, ViewOff } from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
-	import { formatCurrency, formatDate, formatNumber } from '$lib/utils'
-	import Dropdown from './ui/dropdown.svelte'
+	import { formatCurrency } from '$lib/utils'
 	import adapter from '$lib/adapters'
 	import { notImplemented } from '$lib/not-implemented'
 	import Horizontal from './ui/horizontal.svelte'
@@ -21,10 +14,13 @@
 	type Props = {
 		transaction: Transaction
 		currency: string
-		open: (Transaction: Transaction) => void
+		viewOnly: boolean
+		editTransaction?: (transaction: Transaction) => void
 	}
 
-	let { transaction, currency, open }: Props = $props()
+	let { transaction, currency, viewOnly, editTransaction }: Props = $props()
+
+	let openTransaction = $state(false)
 
 	const numOccurences = $derived(
 		numOccurrences(
@@ -35,21 +31,6 @@
 		),
 	)
 	const totalAmount = $derived(calculateTotalAmount([transaction], transaction.type))
-
-	function pluralize(word: string, count: number) {
-		if (count < 2) {
-			return word
-		}
-		// TODO localize for other languages
-		return word + 's'
-	}
-
-	function openTransaction(e: MouseEvent) {
-		if (e.defaultPrevented) {
-			return
-		}
-		open(transaction)
-	}
 
 	async function deleteTransaction(e: Event) {
 		e.stopPropagation()
@@ -80,95 +61,98 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={openTransaction}>
+<div
+	class="card"
+	onclick={(e: Event) => {
+		e.preventDefault()
+		openTransaction = !openTransaction
+	}}
+	class:openTransaction
+>
 	<Horizontal>
-		<Typography bold>
+		<ChevronRight size={24} class="open-transaction-icon" />
+		<Typography>{transaction.label}</Typography>
+		<FlexItem />
+		<Typography class={transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}>
 			{#if transaction.repeat}
-				{`${formatCurrency(transaction.amount, currency)}, every ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${pluralize(transaction.repeat_unit || '', transaction.repeat)}`}
+				{`${formatCurrency(transaction.amount, currency)} / ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${transaction.repeat_unit ? transaction.repeat_unit.substring(0, 1) : ''}`}
 			{:else}
 				{formatCurrency(transaction.amount, currency)}
 			{/if}
 		</Typography>
-		<FlexItem />
-		<Dropdown buttonDimension="compact" left>
-			{#snippet button()}
-				<OverflowMenuVertical size={16} />
-			{/snippet}
-			<ul class="dropdown-menu">
-				<Button variant="ghost" dimension="compact" leftAlign onclick={notImplemented}
-					><ViewFilled size={24} />{$_('Show in charts')}</Button
-				>
-				<Button variant="ghost" dimension="compact" leftAlign onclick={openTransaction}
-					><SettingsEdit size={24} />{transaction.type === 'deposit'
-						? $_('Edit deposit details')
-						: $_('Edit withdrawal details')}</Button
-				>
-				<Button variant="ghost" dimension="compact" leftAlign onclick={duplicateTransaction}
-					><Copy size={24} />{transaction.type === 'deposit'
-						? $_('Duplicate deposit')
-						: $_('Duplicate withdrawal')}</Button
-				>
-				<Button variant="ghost" dimension="compact" leftAlign onclick={deleteTransaction}
-					><TrashCan size={24} />{transaction.type === 'deposit'
-						? $_('Delete deposit')
-						: $_('Delete withdrawal')}</Button
-				>
-			</ul>
-		</Dropdown>
 	</Horizontal>
-	<div class="info">
-		<Typography>{transaction.label}</Typography>
-		<Typography
-			>{formatDate(new Date(transaction.date))}
-			{#if transaction.end_date}
-				{` → ` + formatDate(new Date(transaction.end_date))}
+	{#if openTransaction}
+		<section class="transaction-info">
+			<Typography
+				>{transaction.date.substring(
+					0,
+					10,
+				)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
+			>
+			{#if transaction.repeat}
+				<Typography>{numOccurences} occurrences</Typography>
 			{/if}
-		</Typography>
-		{#if transaction.end_date}
-			<Typography>
-				{formatNumber(numOccurences, { useGrouping: true })}
-				{$_('occurences')}
-			</Typography>
-			<Typography>
-				{formatCurrency(totalAmount, currency)}
-				{transaction.type === 'deposit' ? $_('total deposits') : $_('total withdrawals')}
-			</Typography>
+			<Typography
+				>{totalAmount}
+				{currency} total {transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}</Typography
+			>
+		</section>
+		{#if editTransaction && !viewOnly}
+			<section class="transaction-control">
+				<Button variant="solid" dimension="small" onclick={() => editTransaction(transaction)}
+					><Edit size={16} />Edit</Button
+				>
+				<Button variant="solid" dimension="small" onclick={duplicateTransaction}
+					><Copy size={16} />Duplicate</Button
+				>
+				<Button variant="solid" dimension="small" onclick={notImplemented}
+					><ViewOff size={16} /></Button
+				>
+				<Button variant="solid" dimension="small" onclick={deleteTransaction}
+					><TrashCan size={16} /></Button
+				>
+			</section>
 		{/if}
-	</div>
+	{/if}
 </div>
 
 <style type="postcss">
 	.card {
-		border: 1px solid var(--colors-low);
-		border-radius: var(--border-radius);
 		background-color: var(--colors-base);
-		padding: var(--padding);
 		display: flex;
 		flex-direction: column;
 		gap: var(--half-padding);
-		cursor: pointer;
-		transition: border 0.2s;
-		transition-timing-function: ease-in;
+		:global(.open-transaction-icon) {
+			transform: rotate(0deg);
+			transition: transform 0.2s ease-out;
+		}
 	}
-	.card:hover {
-		border: 1px solid var(--colors-ultra-high);
-		transition: border 0.2s;
-		transition-timing-function: ease-out;
+	.openTransaction {
+		:global(.open-transaction-icon) {
+			transform: rotate(90deg);
+			transition: transform 0.2s ease-out;
+		}
 	}
-	.info {
+	:global(.deposit) {
+		color: var(--colors-high) !important;
+		&::before {
+			content: '+';
+		}
+	}
+	:global(.withdrawal) {
+		color: red !important;
+		&::before {
+			content: '-';
+		}
+	}
+	.transaction-info {
 		display: flex;
 		flex-direction: column;
-		gap: 0;
+		padding-left: var(--double-padding);
 	}
-	.dropdown-menu {
+	.transaction-control {
 		display: flex;
-		flex-direction: column;
-		width: auto;
-		margin: 0;
-		padding: var(--padding);
-		gap: 0;
-		background-color: var(--colors-base);
-		border-radius: var(--quarter-padding);
-		border: solid 1px var(--colors-low);
+		padding: var(--half-padding) 0 var(--half-padding) var(--double-padding);
+		gap: var(--half-padding);
 	}
 </style>

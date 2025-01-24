@@ -37,6 +37,10 @@ export type Portfolio = Tables<'portfolio'>
 export type Investment = Tables<'investment'>
 export type Transaction = Tables<'transaction'>
 
+export type InvestmentWithColorIndex = Investment & {
+	colorIndex?: number
+}
+
 export type EntryFeeType = 'ongoing' | 'forty-sixty' | 'upfront'
 export type FeeType = 'percentage' | 'fixed'
 

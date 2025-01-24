@@ -3,7 +3,6 @@
 	import adapters from '$lib/adapters'
 	import InvestmentCard from '$lib/components/investment-card.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
-	import Typography from '$lib/components/ui/typography.svelte'
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import type { PortfolioView } from '$lib/types'
 	import { onMount } from 'svelte'
@@ -11,10 +10,12 @@
 	import ViewHeader from '$lib/components/view-header.svelte'
 	import Sidebar from '$lib/components/sidebar.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import PortfolioHeaderView from '$lib/components/portfolio-header-view.svelte'
 
 	const session_id = $page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
 	let notFound = $state(false)
+	let adjustWithInflation = $state(false)
 
 	onMount(async () => {
 		portfolioView = await adapters.portfolioView(session_id)
@@ -37,8 +38,12 @@
 {:else}
 	<ViewHeader />
 	<section class="topbar horizontal">
-		<Typography variant="h4" bold>{portfolioView.portfolio.name}</Typography>
-		<div class="grower"></div>
+		<PortfolioHeaderView
+			client={portfolioView.client}
+			portfolio={portfolioView.portfolio}
+			investments={portfolioView.investments}
+			bind:adjustWithInflation
+		/>
 	</section>
 	<main>
 		<section class="horizontal grower">
@@ -54,7 +59,11 @@
 					{/each}
 				</section>
 			</Sidebar>
-			<PortfolioGraph portfolio={portfolioView.portfolio} investments={portfolioView.investments} />
+			<PortfolioGraph
+				{adjustWithInflation}
+				portfolio={portfolioView.portfolio}
+				investments={portfolioView.investments}
+			/>
 		</section>
 	</main>
 {/if}
@@ -84,7 +93,6 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		align-items: center;
 		gap: var(--padding);
 	}
 	:global(.grower) {

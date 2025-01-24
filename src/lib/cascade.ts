@@ -2,7 +2,7 @@ import adapters from './adapters'
 import { investmentStore } from './stores/investment.svelte'
 import { portfolioStore } from './stores/portfolio.svelte'
 import { transactionStore } from './stores/transaction.svelte'
-import type { Investment, Transaction } from './types'
+import type { InvestmentWithColorIndex, Transaction } from './types'
 
 export async function cascadeDuplicatePortfolio(clientId: number, portfolioId: number) {
 	const portfolios = portfolioStore.filter(clientId)
@@ -29,7 +29,7 @@ export async function cascadeDuplicatePortfolio(clientId: number, portfolioId: n
 }
 
 export async function cascadeDuplicateInvestment(
-	investment: Investment,
+	investment: InvestmentWithColorIndex,
 	duplicatedPortfolioId: number,
 ) {
 	const duplicatedInvestment = {
@@ -37,6 +37,7 @@ export async function cascadeDuplicateInvestment(
 		id: undefined,
 		portfolio: duplicatedPortfolioId,
 	}
+	delete duplicatedInvestment.colorIndex
 
 	const duplicatedInvestmentId = await adapters.addInvestment(duplicatedInvestment)
 

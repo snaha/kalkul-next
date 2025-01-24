@@ -15,6 +15,9 @@
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import Sidebar from '$lib/components/sidebar.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
+	import type { Investment, InvestmentWithColorIndex, Transaction } from '$lib/types'
+	import EditTransaction from '$lib/components/edit-transaction.svelte'
+	import { transactionStore } from '$lib/stores/transaction.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -22,12 +25,39 @@
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investments = $derived(investmentStore.filter(portfolioId))
 
+	let isLoading = $derived(
+		clientStore.loading ||
+			portfolioStore.loading ||
+			investmentStore.loading ||
+			transactionStore.loading,
+	)
+
+	let adjustWithInflation = $state(false)
+
 	function addInvestment() {
 		goto(routes.NEW_INVESTMENT(clientId, portfolioId))
 	}
+
+	let dialog: HTMLDialogElement | undefined = $state()
+	let editedTransaction: Transaction | undefined = $state()
+	let selectedInvestment: Investment | undefined = $state()
+
+	function openTransaction(investment: InvestmentWithColorIndex, transaction?: Transaction) {
+		selectedInvestment = investment
+		if (transaction) editedTransaction = transaction
+
+		dialog?.show()
+	}
+
+	function closeDialog() {
+		editedTransaction = undefined
+		selectedInvestment = undefined
+
+		dialog?.close()
+	}
 </script>
 
-{#if portfolioStore.loading}
+{#if isLoading}
 	<Fullscreen>
 		<Loader />
 	</Fullscreen>
@@ -36,7 +66,13 @@
 		404 - {$_('Not found')}
 	</Fullscreen>
 {:else}
-	<PortfolioHeader {client} {portfolio} back={() => goto(routes.CLIENT(clientId))} />
+	<PortfolioHeader
+		{client}
+		{portfolio}
+		{investments}
+		back={() => goto(routes.CLIENT(clientId))}
+		bind:adjustWithInflation
+	/>
 	{#if investments.length === 0}
 		<section class="empty">
 			<img src="/images/no-investment.svg" alt="No investments yet" />
@@ -50,16 +86,33 @@
 		<main>
 			<section class="horizontal grower">
 				<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
-					<section class="investments">
+					<dialog bind:this={dialog}>
+						<div class="dialog-background">
+							<section class="vertical dialog">
+								{#if selectedInvestment !== undefined}
+									<EditTransaction
+										investment={selectedInvestment}
+										{portfolio}
+										{client}
+										transaction={editedTransaction}
+										close={closeDialog}
+									/>
+								{/if}
+							</section>
+						</div>
+					</dialog>
+					{#if selectedInvestment === undefined}
+						<section class="investments">
+							{#each investments as investment, i}
+								<InvestmentCard {investment} {portfolio} index={i} {openTransaction} />
+							{/each}
+						</section>
 						<Button dimension="compact" variant="solid" onclick={addInvestment}>
 							<Add size={24} /></Button
 						>
-						{#each investments as investment, i}
-							<InvestmentCard {investment} {portfolio} index={i} />
-						{/each}
-					</section>
+					{/if}
 				</Sidebar>
-				<PortfolioGraph {portfolio} {investments} />
+				<PortfolioGraph {portfolio} {investments} {adjustWithInflation} />
 			</section>
 		</main>
 	{/if}
@@ -100,5 +153,35 @@
 	}
 	.spacer {
 		margin-top: var(--half-padding);
+	}
+	.dialog {
+		padding: var(--padding);
+		border-radius: var(--border-radius);
+		background-color: var(--colors-ultra-low);
+		border: 1px solid var(--colors-low);
+	}
+	dialog {
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		position: relative;
+		border: 0;
+		margin: 0;
+		z-index: 1;
+		padding: 0;
+		width: 0;
+		height: 100%;
+	}
+	.dialog-background {
+		position: absolute;
+		width: var(--sidebar-width);
+		height: 100%;
+	}
+	.vertical {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
 	}
 </style>
