@@ -313,7 +313,7 @@
 								style="justify-content:center;"
 								variant="ghost"
 								onclick={() => {
-									type === 'current' && selectDate(date)
+									if (type === 'current') selectDate(date)
 									showDatePicker = false
 								}}
 							>

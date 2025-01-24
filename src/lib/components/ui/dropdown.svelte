@@ -32,7 +32,7 @@
 
 	let dropdownElement: HTMLElement
 	let dropdownMenu: HTMLElement
-	let dropdownId: string
+	const dropdownId: string = Math.random().toString(16).substring(10)
 
 	function close(ev: MouseEvent) {
 		const target = ev.target as unknown as Node

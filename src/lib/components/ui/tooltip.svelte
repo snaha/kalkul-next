@@ -18,8 +18,8 @@
 
 	$effect(() => {
 		// Update tooltip position when large or show changes
-		large
-		show
+		large // eslint-disable-line @typescript-eslint/no-unused-expressions
+		show // eslint-disable-line @typescript-eslint/no-unused-expressions
 
 		updateTooltipPosition()
 		window.addEventListener('resize', updateTooltipPosition)

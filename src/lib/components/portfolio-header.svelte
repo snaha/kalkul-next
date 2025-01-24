@@ -59,7 +59,8 @@
 			dimension="compact"
 			variant="ghost"
 			onclick={() => {
-				back ? back() : history.back()
+				if (back) back()
+				else history.back()
 			}}
 		>
 			<ArrowLeft size={24} /></Button
