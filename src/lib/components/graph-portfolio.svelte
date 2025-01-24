@@ -8,7 +8,6 @@
 	import FlexItem from './ui/flex-item.svelte'
 	import Toggle from './ui/toggle.svelte'
 	import { _ } from 'svelte-i18n'
-	import Select from './ui/select/select.svelte'
 	import Button from './ui/button.svelte'
 	import { Maximize } from 'carbon-icons-svelte'
 	import Checkbox from './ui/checkbox.svelte'
@@ -127,7 +126,6 @@
 					dimension="small"
 					bind:checked={adjustWithInflation}
 				></Toggle>
-				<Select dimension="small" variant="solid" label="View" layout="horizontal"></Select>
 				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
 			</Horizontal>
 			<Chart

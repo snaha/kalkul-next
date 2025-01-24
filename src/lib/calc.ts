@@ -121,30 +121,10 @@ function getInvestmentStartAndEndDates(transaction: Transaction[]) {
 }
 
 function getSamplingFrequencyAndCount(startDate: Date, endDate: Date): Arity {
-	const days = differenceInDays(endDate, startDate)
-	if (days < 100) return { frequency: 'day', count: 1 }
-	if (days < 200) return { frequency: 'day', count: 2 }
-	if (days < 300) return { frequency: 'day', count: 3 }
-	if (days < 400) return { frequency: 'day', count: 4 }
-	if (days < 500) return { frequency: 'day', count: 5 }
-	if (days < 600) return { frequency: 'day', count: 6 }
+	const years = differenceInYears(endDate, startDate)
+	if (years < 5) return { frequency: 'month', count: 1 }
 
-	// Weeks
-	if (days < 700) return { frequency: 'week', count: 1 }
-	if (days < 1400) return { frequency: 'week', count: 2 }
-	if (days < 2100) return { frequency: 'week', count: 3 }
-	if (days < 2800) return { frequency: 'week', count: 4 }
-
-	// Months
-	const months = differenceInMonths(endDate, startDate)
-	if (months < 100) return { frequency: 'month', count: 1 }
-	if (months < 200) return { frequency: 'month', count: 2 }
-	if (months < 300) return { frequency: 'month', count: 3 }
-	if (months < 600) return { frequency: 'month', count: 6 }
-
-	// Years
-	const years = endDate.getFullYear() - startDate.getFullYear()
-	return { frequency: 'year', count: Math.max(1, Math.floor(years / 100)) }
+	return { frequency: 'year', count: 1 }
 }
 
 export function getBaseData(transactions: Transaction[]): InvestmentData {
