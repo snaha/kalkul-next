@@ -31,6 +31,15 @@ services:
       - key: SUPABASE_SERVICE_ROLE_KEY
         scope: RUN_AND_BUILD_TIME
         value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: PORT
+        scope: RUN_TIME
+        value: 8080
+      - key: NODE_ENV
+        scope: RUN_TIME
+        value: production
+      - key: HOST
+        scope: RUN_TIME
+        value: 0.0.0.0
     github:
       branch: main
       deploy_on_push: true
@@ -39,5 +48,5 @@ services:
     instance_count: 1
     instance_size_slug: apps-s-1vcpu-0.5gb
     name: kalkul-app
-    run_command: pnpm preview --host 0.0.0.0 --port 8080
+    run_command: node build/index.js
     source_dir: /
