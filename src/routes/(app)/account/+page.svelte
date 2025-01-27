@@ -39,11 +39,7 @@
 				{/each}
 			</Select>
 		{/if}
-		<Input
-			label={$_('emailAddress')}
-			value={authStore.user?.new_email ?? authStore.user?.email}
-			disabled
-		/>
+		<Input label={$_('emailAddress')} value={authStore.user?.email} disabled />
 	</div>
 	<div class="control-buttons">
 		<Button dimension="compact" href="/account/change-email" variant="secondary"
