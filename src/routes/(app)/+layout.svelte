@@ -3,13 +3,12 @@
 	import { ArrowRight } from 'carbon-icons-svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import Registration from '$lib/components/registration.svelte'
-	import Login from '$lib/components/login.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { _ } from 'svelte-i18n'
+	import routes from '$lib/routes'
+	import { page } from '$app/stores'
+	import Login from '$lib/components/login.svelte'
 	let { children } = $props()
-
-	let screen: 'intro' | 'login' | 'registration' = $state('intro')
 </script>
 
 {#if authStore.loading}
@@ -20,7 +19,9 @@
 	{#if children}
 		{@render children()}
 	{/if}
-{:else if screen === 'intro'}
+{:else if $page.url.pathname !== routes.HOME}
+	<Login />
+{:else}
 	<div class="intro-screen">
 		<div class="intro-banner">
 			<div class="logo">
@@ -34,8 +35,8 @@
 				>
 			</div>
 			<div class="buttons">
-				<Button onclick={() => (screen = 'registration')}>{$_('signUp')}</Button>
-				<Button onclick={() => (screen = 'login')} variant="secondary"
+				<Button href={routes.SIGNUP}>{$_('signUp')}</Button>
+				<Button href={routes.LOGIN} variant="secondary"
 					>{$_('login')}<ArrowRight size={24} /></Button
 				>
 			</div>
@@ -44,21 +45,6 @@
 			<img src="/capa2.svg" alt="intro" width="100%" />
 		</div>
 	</div>
-{:else if screen === 'registration'}
-	<Registration
-		login={() => {
-			screen = 'login'
-		}}
-		cancel={() => (screen = 'intro')}
-	/>
-{:else if screen === 'login'}
-	<Login
-		signIn={() => (screen = 'intro')}
-		register={() => {
-			screen = 'registration'
-		}}
-		cancel={() => (screen = 'intro')}
-	/>
 {/if}
 
 <style lang="postcss">

@@ -1,23 +1,27 @@
 <script lang="ts">
-	import Button from './ui/button.svelte'
+	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { z, type ZodFormattedError } from 'zod'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import adapter from '$lib/adapters'
 	import { registerFormSchema } from '$lib/schemas'
-	import Divider from './ui/divider.svelte'
+	import Divider from '$lib/components/ui/divider.svelte'
 	import { _ } from 'svelte-i18n'
 	import { Close, Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
-	import Logo from './icons/logo.svelte'
+	import Logo from '$lib/components/icons/logo.svelte'
+	import routes from '$lib/routes'
+	import { authStore } from '$lib/stores/auth.svelte'
+	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
+
+	$effect(() => {
+		if (authStore.isLoggedIn) {
+			goto(routes.HOME)
+		}
+	})
 
 	type User = z.infer<typeof registerFormSchema>
 
-	interface Props {
-		login: () => void
-		cancel: () => void
-	}
-
-	let { login, cancel }: Props = $props()
 	let formErrors: ZodFormattedError<User> | undefined = $state()
 	let formValid = $state(false)
 	let error = $state('')
@@ -28,12 +32,7 @@
 	let emailTouched = $state(false)
 	let passwordTouched = $state(false)
 	let confirmPasswordTouched = $state(false)
-	const baseAddress =
-		window.location.hostname === 'localhost'
-			? 'http://localhost:64324'
-			: window.location.hostname === '127.0.0.1'
-				? 'http://127.0.0.1:64324'
-				: ''
+	const inbucketUrl = `${$page.url.protocol}//${$page.url.hostname}:64324`
 
 	function onEmailBlur() {
 		if (user.email?.trim() === '') {
@@ -105,7 +104,7 @@
 	{/if}
 {/snippet}
 
-<a href="/" class="logo" onclick={cancel}><Logo size={40} /></a>
+<a href={routes.HOME} class="logo"><Logo size={40} /></a>
 {#if !success}
 	<div class="regitration">
 		<Typography variant="h4">{$_('signUp')}</Typography>
@@ -148,13 +147,13 @@
 				<Button type="submit" disabled={!formValid} onclick={register}
 					><Checkmark size={24} />{$_('createAccount')}</Button
 				>
-				<Button variant="secondary" onclick={cancel}><Close size={24} /> {$_('cancel')}</Button>
+				<Button href={routes.HOME} variant="secondary"><Close size={24} /> {$_('cancel')}</Button>
 			</div>
 		</form>
 		<Divider --margin="0" />
 		<div class="signin">
 			<Typography>{$_('haveAccount')}</Typography>
-			<a href="/" onclick={login}>{$_('login')}</a>
+			<a href={routes.LOGIN}>{$_('login')}</a>
 		</div>
 	</div>
 {:else}
@@ -163,11 +162,11 @@
 		<div class="text">
 			<Typography variant="h4">{$_('checkEmail')}</Typography>
 			<Typography variant="large">
-				{#if window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'}
+				{#if $page.url.hostname === 'localhost' || $page.url.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html $_('verificationLinkLocal', {
 						values: {
-							email: `<a class='green' href="${baseAddress}/m/${user.email}" target="_blank">inbucket</a>`,
+							email: `<a class='green' href="${inbucketUrl}/m/${user.email}" target="_blank">inbucket</a>`,
 						},
 					})}
 				{:else}

@@ -4,49 +4,24 @@
 	import adapter from '$lib/adapters'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { z, type ZodFormattedError } from 'zod'
-	import { emailFormSchema, loginFormSchema } from '$lib/schemas'
+	import { loginFormSchema } from '$lib/schemas'
 	import { Close, Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
-	import Divider from './ui/divider.svelte'
-	import Logo from './icons/logo.svelte'
+	import Divider from '$lib/components/ui/divider.svelte'
+	import Logo from '$lib/components/icons/logo.svelte'
+	import routes from '$lib/routes'
+	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
 
 	type User = z.infer<typeof loginFormSchema>
-	type ResetPassword = z.infer<typeof emailFormSchema>
 
-	interface Props {
-		signIn: () => void
-		register: () => void
-		cancel: () => void
-	}
-
-	let { register, cancel, signIn }: Props = $props()
 	let email = $state('')
 	let password = $state('')
 	let error = $state('')
 	let loginFormErrors: ZodFormattedError<User> | undefined = $state(undefined)
-	let resetPasswordError: ZodFormattedError<ResetPassword> | undefined = $state(undefined)
 	let loginFormValid = $state(false)
-	let resetPasswordFormValid = $state(false)
 	let emailTouched = $state(false)
 	let passwordTouched = $state(false)
-	let forgotPassword = $state(false)
-	let success: boolean = $state(false)
-	const baseAddress =
-		window.location.hostname === 'localhost'
-			? 'http://localhost:64324'
-			: window.location.hostname === '127.0.0.1'
-				? 'http://127.0.0.1:64324'
-				: ''
-
-	async function resetPassword(email: string) {
-		try {
-			await adapter.sendResetPasswordLink(email)
-			error = ''
-			success = true
-		} catch (e) {
-			error = (e as Error).message
-		}
-	}
 
 	function onEmailBlur() {
 		if (email.trim() === '') {
@@ -65,11 +40,13 @@
 	}
 	async function login() {
 		try {
-			await adapter.start()
+			if (!loginFormValid) return
 			await adapter.signIn(email, password)
-			signIn()
 			email = ''
 			password = ''
+			if ($page.url.pathname === routes.LOGIN) {
+				goto(routes.HOME)
+			}
 		} catch (e) {
 			error = (e as Error).message
 		}
@@ -84,25 +61,7 @@
 			loginFormValid = false
 		}
 	})
-	$effect(() => {
-		const res = emailFormSchema.safeParse({ email })
-		if (res.success) {
-			resetPasswordError = undefined
-			resetPasswordFormValid = true
-		} else {
-			resetPasswordError = res.error.format()
-			resetPasswordFormValid = false
-		}
-	})
 </script>
-
-{#snippet resetPassError()}
-	{#if resetPasswordError?.email?._errors}
-		{#each resetPasswordError?.email?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
 
 {#snippet emailError()}
 	{#if loginFormErrors?.email?._errors}
@@ -120,114 +79,52 @@
 	{/if}
 {/snippet}
 
-<a href="/" class="logo" onclick={cancel}><Logo size={40} /></a>
-{#if !forgotPassword}
-	<div class="login">
-		<Typography variant="h4">{$_('login')}</Typography>
-		<form class="login-form" onsubmit={login}>
-			<Input
-				bind:value={email}
-				label="Email"
-				type="email"
-				error={emailTouched && email.trim() !== '' && loginFormErrors?.email?._errors
-					? emailError
-					: undefined}
-				onblur={onEmailBlur}
-				oninput={() => (error = '')}
-			></Input>
-			<Input
-				bind:value={password}
-				type="password"
-				label="Password"
-				error={passwordTouched && password.trim() !== '' && loginFormErrors?.password?._errors
-					? passwordError
-					: undefined}
-				onblur={onPasswordBlur}
-				oninput={() => (error = '')}
-			></Input>
-			{#if error}
-				<div class="error">
-					<WarningAltFilled size={24} />
-					{error}
-				</div>
-			{/if}
-			<div class="controls">
-				<div class="buttons">
-					<Button type="submit" disabled={!loginFormValid}
-						><Checkmark size={24} />{$_('login')}</Button
-					>
-					<Button variant="secondary" onclick={cancel}><Close size={24} /> {$_('cancel')}</Button>
-				</div>
-				<a href="/" onclick={() => (forgotPassword = true)}>{$_('forgotPassword')}</a>
+<a href={routes.HOME} class="logo"><Logo size={40} /></a>
+<div class="login">
+	<Typography variant="h4">{$_('login')}</Typography>
+	<form class="login-form" onsubmit={login}>
+		<Input
+			bind:value={email}
+			label="Email"
+			type="email"
+			error={emailTouched && email.trim() !== '' && loginFormErrors?.email?._errors
+				? emailError
+				: undefined}
+			onblur={onEmailBlur}
+			oninput={() => (error = '')}
+		></Input>
+		<Input
+			bind:value={password}
+			type="password"
+			label="Password"
+			error={passwordTouched && password.trim() !== '' && loginFormErrors?.password?._errors
+				? passwordError
+				: undefined}
+			onblur={onPasswordBlur}
+			oninput={() => (error = '')}
+		></Input>
+		{#if error}
+			<div class="error">
+				<WarningAltFilled size={24} />
+				{error}
 			</div>
-		</form>
-		<Divider --margin="0" />
-		<div class="register">
-			<Typography>{$_('noAccount')}</Typography>
-			<a href="/" onclick={register}>{$_('signUp')}</a>
+		{/if}
+		<div class="controls">
+			<div class="buttons">
+				<Button type="submit" disabled={!loginFormValid}
+					><Checkmark size={24} />{$_('login')}</Button
+				>
+				<Button variant="secondary" href={routes.HOME}><Close size={24} /> {$_('cancel')}</Button>
+			</div>
+			<a href={routes.FORGOT_PASSWORD}>{$_('forgotPassword')}</a>
 		</div>
+	</form>
+	<Divider --margin="0" />
+	<div class="register">
+		<Typography>{$_('noAccount')}</Typography>
+		<a href={routes.SIGNUP}>{$_('signUp')}</a>
 	</div>
-{:else if !success}
-	<div class="login">
-		<div class="header">
-			<Typography variant="h4">{$_('forgotPassword').replace('?', '')}</Typography>
-			<Typography variant="large">{$_('forgotPasswordText')}</Typography>
-		</div>
-		<form class="email">
-			<Input
-				bind:value={email}
-				label="Email"
-				type="email"
-				error={emailTouched && email.trim() !== '' && resetPasswordError?.email?._errors
-					? resetPassError
-					: undefined}
-				onblur={onEmailBlur}
-			></Input>
-		</form>
-		<div class="buttons">
-			<Button disabled={!resetPasswordFormValid} onclick={() => resetPassword(email)}
-				><Checkmark size={24} />{$_('resetLink')}</Button
-			>
-			<Button variant="secondary" onclick={cancel}><Close size={24} /> {$_('cancel')}</Button>
-		</div>
-		<Divider --margin="0" />
-		<div class="register">
-			<Typography
-				>{$_('goBack')}<a
-					href="/"
-					onclick={() => {
-						forgotPassword = false
-						email = ''
-						error = ''
-					}}>{$_('login')}</a
-				></Typography
-			>
-		</div>
-	</div>
-{:else}
-	<div class="login success">
-		<img src="/images/reset-password-link.svg" alt="Reset password link" />
-		<div class="text">
-			<Typography variant="h4">{$_('emailSent')}</Typography>
-			<Typography variant="large">
-				{#if window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'}
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('resetPasswordLocal', {
-						values: {
-							email: `<span class='green'>${email}</span>`,
-							link: `<a href="${baseAddress}/m/${email}" target="_blank">inbucket</a>`,
-						},
-					})}
-				{:else}
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('resetPasswordRemote', {
-						values: { email: `<span class='green'>${email}</span>` },
-					})}
-				{/if}
-			</Typography>
-		</div>
-	</div>
-{/if}
+</div>
 
 <style>
 	.logo {
@@ -288,19 +185,5 @@
 		font-size: var(--font-size);
 		line-height: var(--line-height);
 		letter-spacing: var(--letter-spacing);
-	}
-	.success {
-		align-items: center;
-	}
-	.header {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-	}
-	.text {
-		display: flex;
-		flex-direction: column;
-		text-align: center;
-		gap: var(--half-padding);
 	}
 </style>

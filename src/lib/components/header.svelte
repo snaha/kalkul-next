@@ -8,12 +8,13 @@
 	import routes from '$lib/routes'
 	import { _ } from 'svelte-i18n'
 	import FeedbackModal from './feedback-modal.svelte'
+	import { goto } from '$app/navigation'
 
 	let showFeedbackModal = $state(false)
 
 	async function logout() {
 		await adapter.signOut()
-		window.location.href = routes.HOME
+		goto(routes.HOME)
 	}
 
 	function notImplemented() {

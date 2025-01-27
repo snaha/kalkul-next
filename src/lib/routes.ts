@@ -1,5 +1,8 @@
 export default {
 	HOME: '/',
+	FORGOT_PASSWORD: '/forgot-password',
+	SIGNUP: '/signup',
+	LOGIN: '/login',
 	ACCOUNT: '/account',
 	DEPOSIT: (index?: number) => `/deposit${index === undefined ? '' : `/${index}`}`,
 	WITHDRAWAL: (index?: number) => `/withdrawal${index === undefined ? '' : `/${index}`}`,

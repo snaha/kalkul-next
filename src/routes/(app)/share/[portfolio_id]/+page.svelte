@@ -62,7 +62,7 @@
 	}
 
 	function createLink(random: string) {
-		return `${window.location.origin}/view/${random}`
+		return `${$page.url.origin}/view/${random}`
 	}
 </script>
 

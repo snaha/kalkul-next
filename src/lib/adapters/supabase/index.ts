@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { page } from '$app/stores'
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 import type { Adapter } from '..'
 import { authStore } from '$lib/stores/auth.svelte'
@@ -15,6 +16,7 @@ import { clientStore } from '$lib/stores/clients.svelte'
 import { portfolioStore } from '$lib/stores/portfolio.svelte'
 import { investmentStore } from '$lib/stores/investment.svelte'
 import { transactionStore } from '$lib/stores/transaction.svelte'
+import { get } from 'svelte/store'
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
 
@@ -194,7 +196,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async sendResetPasswordLink(email: string) {
-		const redirectTo = `${window.location.origin}/reset-password`
+		const redirectTo = `${get(page).url.origin}/reset-password`
 
 		const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
 
