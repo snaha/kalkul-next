@@ -5,12 +5,13 @@
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
 	import Textarea from './ui/textarea.svelte'
-	import Checkbox from './ui/checkbox.svelte'
 
 	type Props = {
 		confirm: () => void
 	}
 	let { oncancel, confirm, open = $bindable(false), ...restProps }: ModalProps & Props = $props()
+	let message = $state('')
+	const sendDisabled = $derived(message.trim() === '')
 </script>
 
 <Modal bind:open {oncancel} {...restProps}>
@@ -25,13 +26,9 @@
 		</header>
 
 		<Typography>{$_('feedback.text')}</Typography>
-		<Textarea placeholder={$_('feedback.textareaPlaceholder')}></Textarea>
-		<section class="share">
-			<Checkbox label={$_('feedback.checkboxLabel')} />
-			<Typography variant="small">{$_('feedback.checkboxHelperText')}</Typography>
-		</section>
+		<Textarea bind:value={message} placeholder={$_('feedback.textareaPlaceholder')}></Textarea>
 		<section class="buttons">
-			<Button variant="strong" dimension="compact" onclick={confirm}
+			<Button variant="strong" disabled={sendDisabled} dimension="compact" onclick={confirm}
 				><SendAlt size={24} />{$_('feedback.confirmButton')}</Button
 			>
 			<Button variant="secondary" dimension="compact" onclick={oncancel}
@@ -62,11 +59,6 @@
 	}
 	.title {
 		display: flex;
-		gap: var(--half-padding);
-	}
-	.share {
-		display: flex;
-		flex-direction: column;
 		gap: var(--half-padding);
 	}
 	.buttons {

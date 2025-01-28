@@ -20,7 +20,7 @@
 		label,
 		labelFor = Math.random().toString(16),
 		placeholder,
-		value,
+		value = $bindable(),
 		dimension = 'default',
 		hover,
 		active,
