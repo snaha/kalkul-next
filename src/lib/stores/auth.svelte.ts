@@ -3,13 +3,11 @@ interface AuthStore {
 	isLoggedIn: boolean
 	user?: User
 	loading: boolean
-	passwordRecovery: boolean
 }
 
 export function withAuthStore(): AuthStore {
 	let user = $state<User | undefined>()
 	let loading = $state(true)
-	let passwordRecovery = $state(false)
 	const isLoggedIn = $derived(user !== undefined)
 
 	return {
@@ -28,12 +26,6 @@ export function withAuthStore(): AuthStore {
 		set user(value: User | undefined) {
 			user = value
 			loading = false
-		},
-		get passwordRecovery() {
-			return passwordRecovery
-		},
-		set passwordRecovery(value: boolean) {
-			passwordRecovery = value
 		},
 	}
 }

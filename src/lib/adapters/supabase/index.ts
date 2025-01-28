@@ -93,7 +93,6 @@ export default class Supabase implements Adapter {
 
 	start() {
 		if (authStore.user) return
-
 		supabase.auth.startAutoRefresh()
 
 		const onAuthStateChangeRes = supabase.auth.onAuthStateChange((event) => {
@@ -146,17 +145,12 @@ export default class Supabase implements Adapter {
 
 						await transactionSubscription.queryPromise
 					}
-				} else if (event === 'PASSWORD_RECOVERY') {
-					authStore.passwordRecovery = true
 				} else if (event === 'INITIAL_SESSION') {
 					const { error } = await supabase.auth.refreshSession()
 					if (error) {
 						console.error('Failed to fetch session', error)
 						authStore.user = undefined
 					}
-				} else if (event === 'SIGNED_OUT') {
-					authStore.user = undefined
-					this.stop()
 				} else {
 					console.log('User status changed', event)
 				}
@@ -176,6 +170,7 @@ export default class Supabase implements Adapter {
 			console.error('Failed to register', error)
 			throw new Error(error.message)
 		}
+		this.start()
 	}
 
 	async signIn(email: string, password: string) {
@@ -185,14 +180,17 @@ export default class Supabase implements Adapter {
 			throw new Error(error.message)
 		}
 		authStore.loading = true
+		this.start()
 	}
 
 	async signOut() {
-		const { error } = await supabase.auth.signOut()
+		const { error } = await supabase.auth.signOut({ scope: 'local' })
 		if (error) {
 			console.error('Failed to sign out', error)
 			throw new Error(error.message)
 		}
+		this.stop()
+		authStore.user = undefined
 	}
 
 	async sendResetPasswordLink(email: string) {
