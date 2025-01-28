@@ -215,12 +215,13 @@
 		<Button dimension="compact" variant="ghost" onclick={cancel}><Close size={24} /></Button>
 	</section>
 	<div class="spacer"></div>
-	<div class="horizontal">
+	<div class="horizontal flex-end">
 		<Select variant="solid" dimension="compact" bind:value={transactionType} label={$_('Type')}>
 			<Option value="deposit">{capitalizeFirstLetter($_('deposit'))}</Option>
 			<Option value="withdrawal">{capitalizeFirstLetter($_('withdrawal'))}</Option>
 		</Select>
 		<Toggle
+			class="toggle"
 			dimension="compact"
 			label={$_('Recurring')}
 			bind:checked={isRecurring}
@@ -358,6 +359,12 @@
 		justify-content: stretch;
 		align-items: center;
 		gap: var(--half-padding);
+	}
+	.flex-end {
+		align-items: flex-end;
+		:global(.toggle) {
+			border: 1px solid transparent;
+		}
 	}
 	.vertical {
 		display: flex;
