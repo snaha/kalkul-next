@@ -81,39 +81,41 @@
 			{/if}
 		</Typography>
 	</Horizontal>
-	{#if openTransaction}
-		<section class="transaction-info">
-			<Typography
-				>{transaction.date.substring(
-					0,
-					10,
-				)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
-			>
-			{#if transaction.repeat}
-				<Typography>{numOccurences} occurrences</Typography>
-			{/if}
-			<Typography
-				>{totalAmount}
-				{currency} total {transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}</Typography
-			>
-		</section>
-		{#if editTransaction && !viewOnly}
-			<section class="transaction-control">
-				<Button variant="solid" dimension="small" onclick={() => editTransaction(transaction)}
-					><Edit size={16} />Edit</Button
-				>
-				<Button variant="solid" dimension="small" onclick={duplicateTransaction}
-					><Copy size={16} />Duplicate</Button
-				>
-				<Button variant="solid" dimension="small" onclick={notImplemented}
-					><ViewOff size={16} /></Button
-				>
-				<Button variant="solid" dimension="small" onclick={deleteTransaction}
-					><TrashCan size={16} /></Button
-				>
-			</section>
+	<section class="transaction-info" class:hidden={!openTransaction}>
+		<Typography
+			>{transaction.date.substring(
+				0,
+				10,
+			)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
+		>
+		{#if transaction.repeat}
+			<Typography>{numOccurences} occurrences</Typography>
 		{/if}
-	{/if}
+		<Typography
+			>{totalAmount}
+			{currency} total {transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}</Typography
+		>
+	</section>
+	<section class="transaction-control" class:hidden={!openTransaction && !viewOnly}>
+		<Button
+			variant="solid"
+			dimension="small"
+			onclick={(e: Event) => {
+				e.stopPropagation()
+				editTransaction?.(transaction)
+			}}
+		>
+			<Edit size={16} />Edit
+		</Button>
+		<Button variant="solid" dimension="small" onclick={duplicateTransaction}
+			><Copy size={16} />Duplicate</Button
+		>
+		<Button variant="solid" dimension="small" onclick={notImplemented}><ViewOff size={16} /></Button
+		>
+		<Button variant="solid" dimension="small" onclick={deleteTransaction}
+			><TrashCan size={16} /></Button
+		>
+	</section>
 </div>
 
 <style type="postcss">
@@ -154,5 +156,8 @@
 		display: flex;
 		padding: var(--half-padding) 0 var(--half-padding) var(--double-padding);
 		gap: var(--half-padding);
+	}
+	.hidden {
+		display: none;
 	}
 </style>

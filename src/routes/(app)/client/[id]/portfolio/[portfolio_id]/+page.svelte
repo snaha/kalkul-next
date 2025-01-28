@@ -101,16 +101,14 @@
 							</section>
 						</div>
 					</dialog>
-					{#if selectedInvestment === undefined}
-						<section class="investments">
-							{#each investments as investment, i}
-								<InvestmentCard {investment} {portfolio} index={i} {openTransaction} />
-							{/each}
-						</section>
-						<Button dimension="compact" variant="solid" onclick={addInvestment}>
-							<Add size={24} /></Button
-						>
-					{/if}
+					<section class="investments" class:hidden={selectedInvestment !== undefined}>
+						{#each investments as investment, i}
+							<InvestmentCard {investment} {portfolio} index={i} {openTransaction} />
+						{/each}
+					</section>
+					<Button dimension="compact" variant="solid" onclick={addInvestment}>
+						<Add size={24} /></Button
+					>
 				</Sidebar>
 				<PortfolioGraph {portfolio} {investments} {adjustWithInflation} />
 			</section>
@@ -142,6 +140,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--half-padding);
+		&.hidden {
+			display: none;
+		}
 	}
 	.empty {
 		display: flex;

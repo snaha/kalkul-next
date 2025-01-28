@@ -42,7 +42,7 @@
 	const transactions = $derived(transactionStore.filter(investment.id))
 	let openInvestment = $state(false)
 	let focus = $state(false)
-	let hidden = $state(false)
+	let hiddenOnChart = $state(false)
 
 	function cardOpenInvestment(e: MouseEvent) {
 		if (e.defaultPrevented) {
@@ -70,7 +70,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={cardOpenInvestment} class:hidden class:openInvestment>
+<div class="card" onclick={cardOpenInvestment} class:hiddenOnChart class:openInvestment>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
 		<ChevronRight size={24} class="open-investment-icon" />
 		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
@@ -87,14 +87,14 @@
 				}}><CenterSquare size={16} /></Button
 			>
 		{/if}
-		{#if hidden}
+		{#if hiddenOnChart}
 			<Button
 				class="show-investment-button"
 				variant="ghost"
 				dimension="compact"
 				onclick={(e: Event) => {
 					e.preventDefault()
-					hidden = false
+					hiddenOnChart = false
 				}}><ViewOff size={16} /></Button
 			>
 		{:else}
@@ -106,7 +106,7 @@
 					<ListItem onclick={() => (focus = !focus)}
 						><CenterSquare size={24} />{focus ? $_('Remove focus') : $_('Focus in chart')}</ListItem
 					>
-					<ListItem onclick={() => (hidden = true)}
+					<ListItem onclick={() => (hiddenOnChart = true)}
 						><ViewOff size={24} />{$_('Hide in charts')}</ListItem
 					>
 					{#if !viewOnly}
@@ -124,7 +124,7 @@
 			</Dropdown>
 		{/if}
 	</Horizontal>
-	{#if openInvestment && !hidden}
+	<div class="trasaction-container" class:hidden={!openInvestment || hiddenOnChart}>
 		<Horizontal>
 			<Typography variant="h5">{$_('Transactions')}</Typography>
 			<FlexItem />
@@ -161,7 +161,7 @@
 				{/each}
 			</Vertical>
 		{/if}
-	{/if}
+	</div>
 </div>
 
 <style type="postcss">
@@ -191,7 +191,7 @@
 		height: 24px;
 		border-radius: var(--border-radius);
 	}
-	.hidden {
+	.hiddenOnChart {
 		background-color: transparent;
 		pointer-events: none;
 		:global(.open-investment-icon) {
@@ -221,6 +221,14 @@
 		text-align: center;
 		img {
 			padding-bottom: var(--padding);
+		}
+	}
+	.trasaction-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+		&.hidden {
+			display: none;
 		}
 	}
 </style>
