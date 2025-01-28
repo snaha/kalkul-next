@@ -7,9 +7,10 @@
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Avatar from '$lib/components/avatar.svelte'
-	import type { Client, ClientNoId } from '$lib/types'
+	import type { ClientNoId, Client } from '$lib/types'
 	import DeleteModal from './delete-modal.svelte'
 	import CustomHeader from './custom-header.svelte'
+	import ErrorComp from './error.svelte'
 
 	type Props = {
 		close: () => void
@@ -27,6 +28,7 @@
 	let createDisabled = $derived(name === '' || !birthDate || birthDate > date)
 	let formType: 'edit' | 'create' = $derived(client ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
+	let error: string | undefined = $state()
 
 	$effect(() => {
 		if (client) {
@@ -36,19 +38,24 @@
 	})
 
 	async function create() {
+		error = undefined
 		if (!birthDate) {
+			error = $_('birthDateUndefined')
 			return
 		}
-
-		const client: ClientNoId = {
-			name,
-			birth_date: birthDate.toDateString(),
+		try {
+			const client: ClientNoId = {
+				name,
+				birth_date: birthDate.toDateString(),
+			}
+			await adapter.addClient(client)
+			name = ''
+			birthDate = undefined
+			imageURI = undefined
+			close()
+		} catch (e) {
+			error = (e as Error).message
 		}
-		name = ''
-		birthDate = undefined
-		imageURI = undefined
-		await adapter.addClient(client)
-		close()
 	}
 
 	function cancel(event: Event) {
@@ -143,7 +150,11 @@
 			</section>
 		</section>
 	</section>
-	<div class="spacer"></div>
+	{#if error}
+		<ErrorComp>{error}</ErrorComp>
+	{:else}
+		<div class="spacer"></div>
+	{/if}
 	<section class="buttons horizontal">
 		{#if formType === 'create'}
 			<Button variant="strong" dimension="compact" onclick={create} disabled={createDisabled}
@@ -211,7 +222,6 @@
 		align-items: flex-start;
 	}
 	.buttons {
-		margin-top: var(--padding);
 		gap: var(--half-padding);
 	}
 	.spacer {

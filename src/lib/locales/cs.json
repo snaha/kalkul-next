@@ -3,6 +3,7 @@
 	"name": "Jméno",
 	"birthDate": "Datum narození",
 	"birthDateError": "Datum narození nemůže být v budoucnosti.",
+	"birthDateUndefined": "Nastav správné datum narození",
 	"age": "Věk",
 	"portfolios": "Portfolia",
 	"investments": "Investice",
