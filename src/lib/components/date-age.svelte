@@ -70,7 +70,12 @@
 </script>
 
 <section class="horizontal">
-	<DatePicker {dimension} label={dateInputLabel} bind:value={date} style="max-width: 100%"
+	<DatePicker
+		{dimension}
+		label={dateInputLabel}
+		bind:value={date}
+		style="max-width: 100%"
+		{onchange}
 	></DatePicker>
 	<Input
 		type="number"

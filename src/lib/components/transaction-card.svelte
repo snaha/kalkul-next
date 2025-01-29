@@ -9,7 +9,7 @@
 	import { notImplemented } from '$lib/not-implemented'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
-	import { calculateTotalAmount, numOccurrences } from '$lib/calc'
+	import { calculateTotalAmount, calculateNumOccurrences } from '$lib/calc'
 
 	type Props = {
 		transaction: Transaction
@@ -22,8 +22,8 @@
 
 	let openTransaction = $state(false)
 
-	const numOccurences = $derived(
-		numOccurrences(
+	const numOccurrences = $derived(
+		calculateNumOccurrences(
 			transaction.date,
 			transaction.end_date ?? transaction.date,
 			transaction.repeat_unit ?? 'month',
@@ -89,7 +89,7 @@
 			)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
 		>
 		{#if transaction.repeat}
-			<Typography>{numOccurences} occurrences</Typography>
+			<Typography>{numOccurrences} occurrences</Typography>
 		{/if}
 		<Typography
 			>{totalAmount}

@@ -306,7 +306,7 @@ export function calculateTotalAmount(transactions: Transaction[], type: string) 
 	return transactions
 		.filter((transaction) => transaction.type === type)
 		.reduce((prev, transaction) => {
-			const periods = numOccurrences(
+			const periods = calculateNumOccurrences(
 				transaction.date,
 				transaction.end_date || transaction.date,
 				transaction.repeat_unit || 'month',
@@ -316,7 +316,7 @@ export function calculateTotalAmount(transactions: Transaction[], type: string) 
 			return prev + transaction.amount * periods
 		}, 0)
 }
-export function numOccurrences(
+export function calculateNumOccurrences(
 	start: string,
 	end: string,
 	repeatUnit: string,

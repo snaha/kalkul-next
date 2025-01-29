@@ -14,7 +14,7 @@
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Option from '$lib/components/ui/select/option.svelte'
-	import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
+	import { capitalizeFirstLetter, formatCurrency, formatDate } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import Toggle from './ui/toggle.svelte'
@@ -30,6 +30,7 @@
 		differenceInYears,
 	} from 'date-fns'
 	import FlexItem from './ui/flex-item.svelte'
+	import { calculateNumOccurrences } from '$lib/calc'
 
 	type Props = {
 		investment: Investment
@@ -51,8 +52,15 @@
 	let endDate = $state(new Date())
 	let period = $state(30)
 	let periodUnit: TimeUnit = $state('year')
-	const numOccurences = $derived(dateDifferenceFunction(repeatUnit)(endDate, date))
-	const totalAmount = $derived(numOccurences * Number(amount))
+	const numOccurrences = $derived(
+		calculateNumOccurrences(
+			formatDate(date),
+			formatDate(endDate) ?? formatDate(date),
+			repeatUnit ?? 'month',
+			repeat ?? 1,
+		),
+	)
+	const totalAmount = $derived(numOccurrences * Number(amount))
 	const createDisabled = $derived(
 		label === '' || amount === 0 || (isRecurring && totalAmount === 0),
 	)
@@ -66,11 +74,13 @@
 					' ' +
 					(investmentStore.filter(investment.id).length + 1).toString()
 		amount = transaction ? transaction.amount : 0
-		date = transaction ? new Date(transaction.date) : new Date()
+		date = new Date(formatDate(transaction ? new Date(transaction.date) : new Date()))
 		isRecurring = transaction ? transaction.end_date !== null : false
 		repeat = transaction && transaction.repeat ? transaction.repeat : 1
 		repeatUnit = transactionRepeatUnit(transaction)
-		endDate = transaction && transaction.end_date ? new Date(transaction.end_date) : new Date()
+		endDate = new Date(
+			formatDate(transaction && transaction.end_date ? new Date(transaction.end_date) : new Date()),
+		)
 		period = transactionPeriod(transaction)
 		periodUnit = transactionPeriodUnit(transaction)
 	})
@@ -188,17 +198,17 @@
 	}
 
 	function onPeriodUnitChange() {
-		recalculatePeriod()
+		recalculateEndDate()
 	}
 
 	function recalculatePeriod() {
 		const dateDiff = dateDifferenceFunction(periodUnit)
-		period = dateDiff(endDate, date)
+		period = dateDiff(new Date(formatDate(endDate)), new Date(formatDate(date))) + 1
 	}
 
 	function recalculateEndDate() {
 		const addDate = addDateFunction(periodUnit)
-		endDate = addDate(date, period)
+		endDate = addDays(addDate(date, period), -1)
 	}
 
 	function toggleRecurring() {
@@ -236,7 +246,7 @@
 		label={$_('Amount')}
 		unit={portfolio.currency}
 		bind:value={amount}
-		min={0}
+		min={1}
 		step={1}
 		class="grower"
 	></Input>
@@ -312,7 +322,7 @@
 		></DateAge>
 		<div class="spacer"></div>
 		<section class="summary vertical">
-			<Typography>{numOccurences} {$_('occurences')}</Typography>
+			<Typography>{numOccurrences} {$_('occurences')}</Typography>
 			<Typography
 				>{formatCurrency(totalAmount, portfolio.currency)} ({transactionType === 'deposit'
 					? $_('total deposits')

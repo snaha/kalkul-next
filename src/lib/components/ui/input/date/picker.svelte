@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte'
+	import { untrack, type Snippet } from 'svelte'
 	import type { Dimension } from '../../button.svelte'
 	import Typography from '../../typography.svelte'
 	import Calendar from './calendar.svelte'
+	import { formatDate } from '$lib/utils'
 
 	type Props = {
 		label?: string
@@ -12,6 +13,7 @@
 		helperText?: Snippet | string
 		value: Date | undefined
 		style?: string
+		onchange?: () => void
 	}
 
 	let {
@@ -22,12 +24,20 @@
 		helperText,
 		value = $bindable(),
 		style,
+		onchange,
 	}: Props = $props()
 
 	let showDatePicker = $state(false)
 
 	const labelVariant = $derived(dimension === 'small' ? 'small' : 'default')
-	const dateString = $derived(value ? value.toISOString().slice(0, 10) : '')
+	const dateString = $derived(value ? formatDate(value) : '')
+
+	$effect(() => {
+		value //eslint-disable-line @typescript-eslint/no-unused-expressions
+		untrack(() => {
+			if (onchange) onchange()
+		})
+	})
 </script>
 
 <div class="vertical">
