@@ -4,11 +4,22 @@
 	import { authStore } from '$lib/stores/auth.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale, locales } from 'svelte-i18n'
 	import routes from '$lib/routes'
 	import { page } from '$app/stores'
 	import Login from '$lib/components/login.svelte'
+	import { get } from 'svelte/store'
 	let { children } = $props()
+
+	$effect(() => {
+		const availableLocales = get(locales)
+		if (
+			authStore.user?.user_metadata.prefer_language &&
+			availableLocales.includes(authStore.user.user_metadata.prefer_language)
+		) {
+			locale.set(authStore.user.user_metadata.prefer_language)
+		}
+	})
 </script>
 
 {#if authStore.loading}

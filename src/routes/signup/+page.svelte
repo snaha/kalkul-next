@@ -13,6 +13,7 @@
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
+	import { locale } from 'svelte-i18n'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -60,8 +61,8 @@
 
 	async function register() {
 		try {
-			if (user.email && user.password) {
-				await adapter.signUp(user.email, user.password)
+			if (user.email && user.password && $locale) {
+				await adapter.signUp(user.email, user.password, $locale.split('-')[0])
 				success = true
 			}
 		} catch (e) {

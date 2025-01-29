@@ -151,5 +151,6 @@
 		"smallText": "Pokud později znovu aktivujete sdílení odkazu, bude vygenerován nový odkaz.",
 		"confirmButton": "Vypnout sdílení odkazu",
 		"cancelButton": "Nechat sdílení odkazu zapnuté"
-	}
+	},
+	"updateLanguageError": "Chyba: nelze aktualizovat preference jazyka"
 }

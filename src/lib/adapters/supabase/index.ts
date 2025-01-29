@@ -164,8 +164,12 @@ export default class Supabase implements Adapter {
 		this.subscriptions.forEach((subscription) => subscription.unsubscribe())
 	}
 
-	async signUp(email: string, password: string) {
-		const { error } = await supabase.auth.signUp({ email, password })
+	async signUp(email: string, password: string, language: string) {
+		const { error } = await supabase.auth.signUp({
+			email,
+			password,
+			options: { data: { prefer_language: language } },
+		})
 		if (error) {
 			console.error('Failed to register', error)
 			throw new Error(error.message)
@@ -215,6 +219,15 @@ export default class Supabase implements Adapter {
 		const { error } = await supabase.auth.updateUser({ email: newEmail })
 		if (error) {
 			console.error('Failed to update email', error)
+			throw new Error(error.message)
+		}
+	}
+	async updateLanguage(newLanguage: string) {
+		const { error } = await supabase.auth.updateUser({
+			data: { prefer_language: newLanguage },
+		})
+		if (error) {
+			console.error('Failed to update language', error)
 			throw new Error(error.message)
 		}
 	}

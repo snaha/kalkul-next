@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
+	import adapters from '$lib/adapters'
+	import Error from '$lib/components/error.svelte'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Option from '$lib/components/ui/select/option.svelte'
@@ -7,24 +9,22 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { Checkmark } from 'carbon-icons-svelte'
-	import { locale, locales, _ } from 'svelte-i18n'
+	import { locale, _, locales } from 'svelte-i18n'
+
+	let error: string | undefined = $state()
 
 	const languageName: Record<string, string> = {
 		en: 'English',
 		cs: 'Čeština',
 	}
 
-	$effect(() => {
-		if ($locale && !$locales.includes($locale)) {
-			$locale = $locale.split('-')[0]
-			if (!$locales.includes($locale)) {
-				$locale = $locales[0]
-			}
-		}
-	})
-	$effect(() => {
-		if (browser && $locale) {
-			localStorage.setItem('user-lang', $locale)
+	locale.subscribe((newLocale) => {
+		if (browser && newLocale) {
+			error = undefined
+			adapters.updateLanguage(newLocale).catch((error) => {
+				error = $_('updateLanguageError')
+				console.error('Failed to update language', error)
+			})
 		}
 	})
 </script>
@@ -32,13 +32,18 @@
 <main>
 	<Typography variant="h4">{$_('accountSettings')}</Typography>
 	<div class="info">
-		{#if $locale}
-			<Select bind:value={$locale} label={$_('language')} dimension="compact">
-				{#each $locales as locale}
-					<Option value={locale}>{languageName[locale]}</Option>
-				{/each}
-			</Select>
-		{/if}
+		<div class="language">
+			{#if $locale}
+				<Select bind:value={$locale} label={$_('language')} dimension="compact">
+					{#each $locales as locale}
+						<Option value={locale}>{languageName[locale]}</Option>
+					{/each}
+				</Select>
+				{#if error}
+					<Error>{error}</Error>
+				{/if}
+			{/if}
+		</div>
 		<Input label={$_('emailAddress')} value={authStore.user?.email} disabled />
 	</div>
 	<div class="control-buttons">
@@ -71,6 +76,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--padding);
+	}
+	.language {
+		display: flex;
+		flex-direction: column;
+		gap: var(--quarter-padding);
 	}
 	.control-buttons {
 		display: flex;

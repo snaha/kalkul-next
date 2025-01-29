@@ -195,5 +195,6 @@
 		"smallText": "If you re-activate link sharing later on, a new link will be generated.",
 		"confirmButton": "Turn off link sharing",
 		"cancelButton": "Keep link sharing on"
-	}
+	},
+	"updateLanguageError": "Error: could not update language preference"
 }
