@@ -10,6 +10,7 @@
 	import Button from './ui/button.svelte'
 	import { Maximize } from 'carbon-icons-svelte'
 	import Checkbox from './ui/checkbox.svelte'
+	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -20,6 +21,7 @@
 		investments: InvestmentWithColorIndex[]
 		adjustWithInflation: boolean
 		title?: string
+		investmentsViewStore: InvestmentsViewStore
 	}
 
 	const {
@@ -27,8 +29,8 @@
 		portfolio,
 		title = $_('Portfolio value'),
 		adjustWithInflation,
+		investmentsViewStore,
 	}: Props = $props()
-
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
 	const { total, data } = $derived(
@@ -42,6 +44,7 @@
 						label: r.label,
 						fill: 'origin',
 						colorIndex: investments[i].colorIndex ?? i,
+						hidden: investmentsViewStore.isHidden(investments[i].id),
 					})),
 					{
 						data: total.graphDeposits.map((w, i) => w - total.graphInflationDeposits[i]),
@@ -56,6 +59,7 @@
 					label: r.label,
 					fill: 'origin',
 					colorIndex: investments[i].colorIndex ?? i,
+					hidden: investmentsViewStore.isHidden(investments[i].id),
 				})),
 	)
 	const withdrawals = $derived(
@@ -66,6 +70,7 @@
 						label: r.label,
 						fill: 'origin',
 						colorIndex: investments[i].colorIndex ?? i,
+						hidden: investmentsViewStore.isHidden(investments[i].id),
 					})),
 					{
 						data: total.graphWithdrawals.map((w, i) => w - total.graphInflationWithdrawals[i]),
@@ -80,6 +85,7 @@
 					label: r.label,
 					fill: 'origin',
 					colorIndex: investments[i].colorIndex ?? i,
+					hidden: investmentsViewStore.isHidden(investments[i].id),
 				})),
 	)
 
@@ -92,6 +98,7 @@
 						fill: 'origin',
 						colorIndex: investments[i].colorIndex,
 						stack: 'g1',
+						hidden: investmentsViewStore.isHidden(investments[i].id),
 					})),
 					{
 						data: total.graphInvestmentValue,
@@ -109,6 +116,7 @@
 					fill: 'origin',
 					stack: 'g1',
 					colorIndex: investments[i].colorIndex,
+					hidden: investmentsViewStore.isHidden(investments[i].id),
 				})),
 	)
 </script>

@@ -34,15 +34,27 @@
 		portfolio: Portfolio
 		viewOnly?: boolean
 		index: number
+		hidden: boolean
+		focused: boolean
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+		toggleHide: () => void
+		toggleFocus: () => void
 	}
 
-	let { investment, portfolio, viewOnly = false, index, openTransaction }: Props = $props()
+	let {
+		investment,
+		portfolio,
+		viewOnly = false,
+		index,
+		hidden,
+		focused,
+		openTransaction,
+		toggleHide,
+		toggleFocus,
+	}: Props = $props()
 
 	const transactions = $derived(transactionStore.filter(investment.id))
 	let openInvestment = $state(false)
-	let focus = $state(false)
-	let hiddenOnChart = $state(false)
 
 	function cardOpenInvestment(e: MouseEvent) {
 		if (e.defaultPrevented) {
@@ -70,31 +82,31 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={cardOpenInvestment} class:hiddenOnChart class:openInvestment>
+<div class="card" onclick={cardOpenInvestment} class:hidden class:openInvestment>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
 		<ChevronRight size={24} class="open-investment-icon" />
 		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
 		<FlexItem />
-		{#if focus}
+		{#if focused}
 			<Button
 				variant="ghost"
 				dimension="compact"
 				onclick={(e: Event) => {
 					e.preventDefault()
-					focus = !focus
+					toggleFocus()
 				}}><CenterSquare size={16} /></Button
 			>
 		{/if}
-		{#if hiddenOnChart}
+		{#if hidden}
 			<Button
 				class="show-investment-button"
 				variant="ghost"
 				dimension="compact"
 				onclick={(e: Event) => {
 					e.preventDefault()
-					hiddenOnChart = false
+					toggleHide()
 				}}><ViewOff size={16} /></Button
 			>
 		{:else}
@@ -103,12 +115,12 @@
 					<OverflowMenuVertical size={16} />
 				{/snippet}
 				<List>
-					<ListItem onclick={() => (focus = !focus)}
-						><CenterSquare size={24} />{focus ? $_('Remove focus') : $_('Focus in chart')}</ListItem
+					<ListItem onclick={toggleFocus}
+						><CenterSquare size={24} />{focused
+							? $_('Remove focus')
+							: $_('Focus in chart')}</ListItem
 					>
-					<ListItem onclick={() => (hiddenOnChart = true)}
-						><ViewOff size={24} />{$_('Hide in charts')}</ListItem
-					>
+					<ListItem onclick={toggleHide}><ViewOff size={24} />{$_('Hide in charts')}</ListItem>
 					{#if !viewOnly}
 						<ListItem onclick={editInvestment}
 							><Settings size={24} />{$_('Edit investment details')}</ListItem
@@ -124,7 +136,7 @@
 			</Dropdown>
 		{/if}
 	</Horizontal>
-	<div class="trasaction-container" class:hidden={!openInvestment || hiddenOnChart}>
+	<div class="trasaction-container" class:modalShow={!openInvestment || hidden}>
 		<Horizontal>
 			<Typography variant="h5">{$_('Transactions')}</Typography>
 			<FlexItem />
@@ -191,7 +203,7 @@
 		height: 24px;
 		border-radius: var(--border-radius);
 	}
-	.hiddenOnChart {
+	.hidden {
 		background-color: transparent;
 		pointer-events: none;
 		:global(.open-investment-icon) {
@@ -227,7 +239,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--padding);
-		&.hidden {
+		&.modalShow {
 			display: none;
 		}
 	}

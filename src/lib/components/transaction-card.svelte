@@ -96,7 +96,7 @@
 			{currency} total {transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}</Typography
 		>
 	</section>
-	<section class="transaction-control" class:hidden={!openTransaction && !viewOnly}>
+	<section class="transaction-control" class:hidden={!openTransaction || viewOnly}>
 		<Button
 			variant="solid"
 			dimension="small"

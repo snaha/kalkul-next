@@ -18,12 +18,15 @@
 	import type { Investment, InvestmentWithColorIndex, Transaction } from '$lib/types'
 	import EditTransaction from '$lib/components/edit-transaction.svelte'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
+	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolioId = parseInt($page.params.portfolio_id, 10)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investments = $derived(investmentStore.filter(portfolioId))
+
+	const investmentsViewStore = withInvestmentsViewStore(investmentStore.filter(portfolioId))
 
 	let isLoading = $derived(
 		clientStore.loading ||
@@ -55,6 +58,9 @@
 
 		dialog?.close()
 	}
+	$effect(() => {
+		investmentsViewStore.allInvestments = investments
+	})
 </script>
 
 {#if isLoading}
@@ -103,14 +109,27 @@
 					</dialog>
 					<section class="investments" class:hidden={selectedInvestment !== undefined}>
 						{#each investments as investment, i}
-							<InvestmentCard {investment} {portfolio} index={i} {openTransaction} />
+							<InvestmentCard
+								{investment}
+								{portfolio}
+								index={i}
+								hidden={investmentsViewStore.isHidden(investment.id)}
+								focused={investmentsViewStore.isFocused(investment.id)}
+								{openTransaction}
+								toggleHide={() => {
+									investmentsViewStore.toggleHide(investment.id)
+								}}
+								toggleFocus={() => {
+									investmentsViewStore.toggleFocus(investment.id)
+								}}
+							/>
 						{/each}
 					</section>
 					<Button dimension="compact" variant="solid" onclick={addInvestment}>
 						<Add size={24} /></Button
 					>
 				</Sidebar>
-				<PortfolioGraph {portfolio} {investments} {adjustWithInflation} />
+				<PortfolioGraph {portfolio} {investments} {adjustWithInflation} {investmentsViewStore} />
 			</section>
 		</main>
 	{/if}

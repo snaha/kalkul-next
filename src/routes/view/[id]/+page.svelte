@@ -11,6 +11,7 @@
 	import Sidebar from '$lib/components/sidebar.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import PortfolioHeaderView from '$lib/components/portfolio-header-view.svelte'
+	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 
 	const session_id = $page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
@@ -21,6 +22,13 @@
 		portfolioView = await adapters.portfolioView(session_id)
 		if (!portfolioView) {
 			notFound = true
+		}
+	})
+	let investmentsViewStore = withInvestmentsViewStore([])
+	$effect(() => {
+		const investments = portfolioView?.investments
+		if (investments) {
+			investmentsViewStore.allInvestments = investments
 		}
 	})
 </script>
@@ -55,6 +63,14 @@
 							{investment}
 							portfolio={portfolioView.portfolio}
 							index={i}
+							hidden={investmentsViewStore.isHidden(investment.id)}
+							focused={investmentsViewStore.isFocused(investment.id)}
+							toggleHide={() => {
+								investmentsViewStore.toggleHide(investment.id)
+							}}
+							toggleFocus={() => {
+								investmentsViewStore.toggleFocus(investment.id)
+							}}
 						/>
 					{/each}
 				</section>
@@ -63,6 +79,7 @@
 				{adjustWithInflation}
 				portfolio={portfolioView.portfolio}
 				investments={portfolioView.investments}
+				{investmentsViewStore}
 			/>
 		</section>
 	</main>
