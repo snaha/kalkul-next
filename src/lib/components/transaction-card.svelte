@@ -25,13 +25,13 @@
 	const numOccurrences = $derived(
 		calculateNumOccurrences(
 			transaction.date,
-			transaction.end_date ?? transaction.date,
-			transaction.repeat_unit ?? 'month',
-			transaction.repeat ?? 1,
+			transaction.end_date,
+			transaction.repeat_unit,
+			transaction.repeat,
 		),
 	)
-	const totalAmount = $derived(calculateTotalAmount([transaction], transaction.type))
 
+	const totalAmount = $derived(calculateTotalAmount([transaction], transaction.type))
 	async function deleteTransaction(e: Event) {
 		e.stopPropagation()
 

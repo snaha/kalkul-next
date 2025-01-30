@@ -28,6 +28,7 @@
 		differenceInWeeks,
 		differenceInMonths,
 		differenceInYears,
+		subDays,
 	} from 'date-fns'
 	import FlexItem from './ui/flex-item.svelte'
 	import { calculateNumOccurrences } from '$lib/calc'
@@ -53,12 +54,7 @@
 	let period = $state(30)
 	let periodUnit: TimeUnit = $state('year')
 	const numOccurrences = $derived(
-		calculateNumOccurrences(
-			formatDate(date),
-			formatDate(endDate) ?? formatDate(date),
-			repeatUnit ?? 'month',
-			repeat ?? 1,
-		),
+		calculateNumOccurrences(formatDate(date), formatDate(endDate), repeatUnit, repeat),
 	)
 	const totalAmount = $derived(numOccurrences * Number(amount))
 	const createDisabled = $derived(
@@ -166,7 +162,7 @@
 	}
 
 	function transactionRepeatUnit(t: typeof transaction): TimeUnit {
-		return t && t.id && t.repeat_unit ? (t.repeat_unit as TimeUnit) : 'month'
+		return t && t.repeat_unit ? (t.repeat_unit as TimeUnit) : 'month'
 	}
 
 	function transactionPeriod(t: typeof transaction) {
@@ -174,7 +170,7 @@
 			return 30
 		}
 
-		return dateDifferenceFunction(transactionRepeatUnit(t))(t.end_date, t.date)
+		return dateDifferenceFunction(transactionRepeatUnit(t))(t.end_date, t.date) + 1
 	}
 
 	function transactionPeriodUnit(t: typeof transaction): TimeUnit {
@@ -208,7 +204,7 @@
 
 	function recalculateEndDate() {
 		const addDate = addDateFunction(periodUnit)
-		endDate = addDays(addDate(date, period), -1)
+		endDate = subDays(addDate(date, period), 1)
 	}
 
 	function toggleRecurring() {

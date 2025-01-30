@@ -308,9 +308,9 @@ export function calculateTotalAmount(transactions: Transaction[], type: string) 
 		.reduce((prev, transaction) => {
 			const periods = calculateNumOccurrences(
 				transaction.date,
-				transaction.end_date || transaction.date,
-				transaction.repeat_unit || 'month',
-				transaction.repeat || 1,
+				transaction.end_date,
+				transaction.repeat_unit,
+				transaction.repeat,
 			)
 
 			return prev + transaction.amount * periods
@@ -318,10 +318,15 @@ export function calculateTotalAmount(transactions: Transaction[], type: string) 
 }
 export function calculateNumOccurrences(
 	start: string,
-	end: string,
-	repeatUnit: string,
-	repeat: number,
+	end?: string | null,
+	repeatUnit?: string | null,
+	repeat?: number | null,
 ): number {
+	if (!end) return 1
+	if (!repeatUnit || !repeat) {
+		throw new Error('invalidTransactionInput')
+	}
+
 	const startDate = new Date(start)
 	const endDate = new Date(end)
 
@@ -335,6 +340,6 @@ export function calculateNumOccurrences(
 		case 'year':
 			return (differenceInYears(endDate, startDate) + 1) / repeat
 		default:
-			return 1
+			throw new Error('invalidTransactionRepeatUnit')
 	}
 }
