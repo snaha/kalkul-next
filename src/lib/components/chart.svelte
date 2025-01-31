@@ -38,6 +38,10 @@
 		return datasets.map((d, i) => ({
 			borderColor: SERIES_COLORS[d.colorIndex ?? i % SERIES_COLORS.length],
 			backgroundColor: SERIES_COLORS[d.colorIndex ?? i % SERIES_COLORS.length],
+			pointHoverRadius: 6,
+			pointBorderWidth: 2,
+			pointHoverBorderWidth: 1,
+			pointHoverBorderColor: Chart.defaults.borderColor,
 			...d,
 		}))
 	}
