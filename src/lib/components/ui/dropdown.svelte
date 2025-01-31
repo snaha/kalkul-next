@@ -66,6 +66,7 @@
 	function onClick(e: MouseEvent) {
 		if (!disabled) open = !open
 		e.preventDefault()
+		e.stopPropagation()
 	}
 
 	function onKeyPress() {

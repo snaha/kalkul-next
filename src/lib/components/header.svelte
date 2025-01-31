@@ -9,16 +9,13 @@
 	import { _ } from 'svelte-i18n'
 	import FeedbackModal from './feedback-modal.svelte'
 	import { goto } from '$app/navigation'
+	import { notImplemented } from '$lib/not-implemented'
 
 	let showFeedbackModal = $state(false)
 
 	async function logout() {
 		await adapter.signOut()
 		goto(routes.HOME)
-	}
-
-	function notImplemented() {
-		alert('Not implemented!')
 	}
 </script>
 

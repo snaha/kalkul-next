@@ -159,7 +159,7 @@
 				{/if}
 			</section>
 		{:else}
-			<Vertical --vertical-gap="var(--half-padding)">
+			<Vertical --vertical-gap="0">
 				{#each transactions as transaction}
 					<Divider --margin="0" />
 					<TransactionCard
