@@ -162,6 +162,9 @@
 </div>
 
 <style type="postcss">
+	:root {
+		--card-control-opacity: 0.25;
+	}
 	.card {
 		background-color: var(--colors-base);
 		display: flex;
@@ -176,7 +179,9 @@
 			background-color: var(--colors-ultra-low);
 			transition: background-color 0.2s ease-out;
 			.control-buttons {
-				display: flex;
+				opacity: 1;
+				content-visibility: visible;
+				animation: fadeInFromNone 0.2s ease-in;
 			}
 			:global(.transaction-label) {
 				display: none;
@@ -207,8 +212,10 @@
 		}
 	}
 	.control-buttons {
-		display: none;
+		display: flex;
 		gap: var(--quarter-padding);
+		opacity: var(--card-control-opacity);
+		content-visibility: hidden;
 	}
 	.hidden {
 		background-color: transparent;
@@ -233,6 +240,14 @@
 		padding-left: 42px;
 		&.modalShow {
 			display: none;
+		}
+	}
+	@keyframes fadeInFromNone {
+		0% {
+			opacity: var(--card-control-opacity);
+		}
+		100% {
+			opacity: 1;
 		}
 	}
 </style>
