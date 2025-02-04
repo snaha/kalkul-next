@@ -314,6 +314,7 @@
 		flex-direction: column;
 		min-height: 100%;
 		width: 100%;
+		max-width: calc(100% - calc(var(--sidebar-width) + var(--padding)));
 		gap: var(--padding);
 
 		.graph-main {
