@@ -168,6 +168,10 @@
 					},
 					plugins: {
 						legend: {
+							onClick: (e, item) => {
+								const index = item.datasetIndex
+								if (index !== undefined) investmentsViewStore.toggleHide(investments[index].id)
+							},
 							position: 'bottom',
 							labels: {
 								filter: (legendItem) => !legendItem.text.endsWith('_hidden'),

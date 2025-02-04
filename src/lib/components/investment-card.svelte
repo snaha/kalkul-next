@@ -84,7 +84,9 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="card" onclick={cardOpenInvestment} class:hidden class:openInvestment>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
-		<ChevronRight size={24} class="open-investment-icon" />
+		<div class="chevron">
+			<ChevronRight size={24} class="open-investment-icon" />
+		</div>
 		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
@@ -110,30 +112,32 @@
 				}}><ViewOff size={16} /></Button
 			>
 		{:else}
-			<Dropdown left buttonDimension="compact">
-				{#snippet button()}
-					<OverflowMenuVertical size={16} />
-				{/snippet}
-				<List>
-					<ListItem onclick={toggleFocus}
-						><CenterSquare size={24} />{focused
-							? $_('Remove focus')
-							: $_('Focus in chart')}</ListItem
-					>
-					<ListItem onclick={toggleHide}><ViewOff size={24} />{$_('Hide in charts')}</ListItem>
-					{#if !viewOnly}
-						<ListItem onclick={editInvestment}
-							><Settings size={24} />{$_('Edit investment details')}</ListItem
+			<div class="dropdown">
+				<Dropdown left buttonDimension="compact">
+					{#snippet button()}
+						<OverflowMenuVertical size={16} />
+					{/snippet}
+					<List>
+						<ListItem onclick={toggleFocus}
+							><CenterSquare size={24} />{focused
+								? $_('Remove focus')
+								: $_('Focus in chart')}</ListItem
 						>
-						<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
-							><Copy size={24} />{$_('Duplicate investment')}</ListItem
-						>
-						<ListItem onclick={() => deleteInvestment(investment.id)}
-							><TrashCan size={24} />{$_('Delete investment')}</ListItem
-						>
-					{/if}
-				</List>
-			</Dropdown>
+						<ListItem onclick={toggleHide}><ViewOff size={24} />{$_('Hide in charts')}</ListItem>
+						{#if !viewOnly}
+							<ListItem onclick={editInvestment}
+								><Settings size={24} />{$_('Edit investment details')}</ListItem
+							>
+							<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
+								><Copy size={24} />{$_('Duplicate investment')}</ListItem
+							>
+							<ListItem onclick={() => deleteInvestment(investment.id)}
+								><TrashCan size={24} />{$_('Delete investment')}</ListItem
+							>
+						{/if}
+					</List>
+				</Dropdown>
+			</div>
 		{/if}
 	</Horizontal>
 	<div class="trasaction-container" class:modalShow={!openInvestment || hidden}>
@@ -193,10 +197,25 @@
 			transition: transform 0.2s ease-out;
 		}
 	}
+	.dropdown {
+		opacity: 0;
+		transition: opacity 0.2s ease-in;
+		visibility: hidden;
+	}
 	.card:hover {
 		border: 1px solid var(--colors-ultra-high);
 		transition: border 0.2s;
 		transition-timing-function: ease-out;
+		.dropdown {
+			opacity: 1;
+			transition: opacity 0.2s ease-out;
+			visibility: visible;
+		}
+	}
+	.chevron {
+		padding: var(--half-padding);
+		border: 1px solid transparent;
+		display: flex;
 	}
 	.color-box {
 		width: 36px;
