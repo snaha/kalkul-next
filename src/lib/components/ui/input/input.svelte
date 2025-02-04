@@ -479,7 +479,6 @@
 		letter-spacing: var(--letter-spacing);
 	}
 	.helper-text {
-		font-style: italic;
 		font-size: var(--font-size-small);
 		line-height: var(--line-height-small);
 		letter-spacing: var(--letter-spacing-small);

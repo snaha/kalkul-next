@@ -196,5 +196,6 @@
 		"confirmButton": "Turn off link sharing",
 		"cancelButton": "Keep link sharing on"
 	},
-	"updateLanguageError": "Error: could not update language preference"
+	"updateLanguageError": "Error: could not update language preference",
+	"invalidEmailAddress": "Invalid email address"
 }

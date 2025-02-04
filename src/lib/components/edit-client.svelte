@@ -11,6 +11,8 @@
 	import DeleteModal from './delete-modal.svelte'
 	import CustomHeader from './custom-header.svelte'
 	import ErrorComp from './error.svelte'
+	import type { z, ZodFormattedError } from 'zod'
+	import { emailFormSchema } from '$lib/schemas'
 
 	type Props = {
 		close: () => void
@@ -24,16 +26,20 @@
 	let name = $state('')
 	let birthDate: Date | undefined = $state()
 	let imageURI: string | undefined = $state()
-
-	let createDisabled = $derived(name === '' || !birthDate || birthDate > date)
+	let email = $state('')
 	let formType: 'edit' | 'create' = $derived(client ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
 	let error: string | undefined = $state()
+	let emailError: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state()
+	let emailValid = $state(false)
+	let emailTouched = $state(false)
+	let createDisabled = $derived(name === '' || !birthDate || birthDate > date || !emailValid)
 
 	$effect(() => {
 		if (client) {
 			name = client.name
 			birthDate = new Date(client.birth_date)
+			email = client.email
 		}
 	})
 
@@ -47,6 +53,7 @@
 			const client: ClientNoId = {
 				name,
 				birth_date: birthDate.toDateString(),
+				email,
 			}
 			await adapter.addClient(client)
 			name = ''
@@ -89,6 +96,18 @@
 	function confirmDeleteClient() {
 		showConfirmModal = true
 	}
+
+	$effect(() => {
+		const res = emailFormSchema.safeParse({ email })
+		if (res.success) {
+			emailError = undefined
+			emailValid = true
+			emailTouched = false
+		} else {
+			emailError = res.error.format()
+			emailValid = false
+		}
+	})
 </script>
 
 <CustomHeader />
@@ -135,6 +154,21 @@
 			invalidDate: $_('Invalid date'),
 		}}
 	></DateInput>
+	{#snippet emailErrorSnippet()}
+		{$_('invalidEmailAddress')}
+	{/snippet}
+	<Input
+		variant="solid"
+		dimension="compact"
+		placeholder={$_('Email')}
+		label={$_('Email')}
+		bind:value={email}
+		error={emailTouched && email.trim() !== '' && emailError?.email?._errors
+			? emailErrorSnippet
+			: undefined}
+		oninput={() => (emailTouched = true)}
+		>This will be used for sharing portfolio with your client.</Input
+	>
 	<section class="profile-picture">
 		<Typography>{$_('profilePicture')}</Typography>
 		<section class="horizontal">
