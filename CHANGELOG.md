@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.2.0](https://github.com/snaha/kalkul/compare/v0.1.0...v0.2.0) (2025-02-06)
+
+
+### Features
+
+* add client email ([#440](https://github.com/snaha/kalkul/issues/440)) ([f25b0ce](https://github.com/snaha/kalkul/commit/f25b0ce1412c9ac42bcf894de00bbc39eaa66d77))
+* adjusted ui of feedback modal ([#420](https://github.com/snaha/kalkul/issues/420)) ([c954a76](https://github.com/snaha/kalkul/commit/c954a76e44b1bc2caa279accf7bc0aef2eaff342))
+* animate transaction buttons ([#452](https://github.com/snaha/kalkul/issues/452)) ([b46bdaf](https://github.com/snaha/kalkul/commit/b46bdafa0e3bef2dd0fdb8dbe8c3b50e69198542))
+* hover point on portfolio value chart ([#445](https://github.com/snaha/kalkul/issues/445)) ([91ef233](https://github.com/snaha/kalkul/commit/91ef2335d6b6c8d2061a2b698c5318a3a80337c5))
+* new design of investment card ([#444](https://github.com/snaha/kalkul/issues/444)) ([a89c559](https://github.com/snaha/kalkul/commit/a89c559db0ecc953fb167f63b13f9404c22c9b69))
+* new design of transaction card ([#443](https://github.com/snaha/kalkul/issues/443)) ([752b9bc](https://github.com/snaha/kalkul/commit/752b9bcb9e1292bd7797aecb4ff4954256c6f8b9))
+* show hide investment feature ([#437](https://github.com/snaha/kalkul/issues/437)) ([cd31076](https://github.com/snaha/kalkul/commit/cd310762750f4119cf217d02e305b8af99059333))
+* splitting login flow into the pages ([#369](https://github.com/snaha/kalkul/issues/369)) ([7489acb](https://github.com/snaha/kalkul/commit/7489acb9024167960e0ca0dde0555d5d90afb4b9))
+* store language preference in DB ([#430](https://github.com/snaha/kalkul/issues/430)) ([9512a6f](https://github.com/snaha/kalkul/commit/9512a6fcf631004aa21efda542e006dfbd9b15c1))
+
+
+### Bug Fixes
+
+* app state when user signs out ([#427](https://github.com/snaha/kalkul/issues/427)) ([2655dd1](https://github.com/snaha/kalkul/commit/2655dd13be5c7a4f3fdc50870eb3f1ad0d771a16))
+* centered recurring toggle vertically ([#424](https://github.com/snaha/kalkul/issues/424)) ([82fa922](https://github.com/snaha/kalkul/commit/82fa9225582dd354ffa7572bb1768fe6543c169d))
+* displayed email on account page ([#426](https://github.com/snaha/kalkul/issues/426)) ([943e3f8](https://github.com/snaha/kalkul/commit/943e3f85600d969635a8e7eccc95546b6335b8bd))
+* email migration to autofill email when migrating ([#461](https://github.com/snaha/kalkul/issues/461)) ([4bfef5f](https://github.com/snaha/kalkul/commit/4bfef5fa8de64ab6accce746e0e312144dac8e08))
+* graph resize ([#455](https://github.com/snaha/kalkul/issues/455)) ([9fed73a](https://github.com/snaha/kalkul/commit/9fed73a562b1efa220460d16cfad0b4bef84c9aa))
+* number of occurrences in edit-transaction component ([#421](https://github.com/snaha/kalkul/issues/421)) ([4c50e1b](https://github.com/snaha/kalkul/commit/4c50e1b5f2fe5dcf519f91933f65cb4127d79f4d))
+* remeber open investment and transaction ([#428](https://github.com/snaha/kalkul/issues/428)) ([9edf5a4](https://github.com/snaha/kalkul/commit/9edf5a438c66215b967d3d9b4fbeaefc893d3dd3))
+* show error state when client creation fails ([#413](https://github.com/snaha/kalkul/issues/413)) ([3fc9566](https://github.com/snaha/kalkul/commit/3fc9566377b37e5341d10492ac6ed152f3c97776))
+* udpate red and green colors in app.pcss ([#442](https://github.com/snaha/kalkul/issues/442)) ([980eee5](https://github.com/snaha/kalkul/commit/980eee58366f92576e8195d39edc9c9009cc4c01))
+
 ## 0.1.0 (2025-01-27)
 
 
