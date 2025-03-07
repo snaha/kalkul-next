@@ -9,6 +9,7 @@
 	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
 	import routes from '$lib/routes'
+	import { base } from '$app/paths'
 
 	let formErrors: ZodFormattedError<z.infer<typeof resetPasswordFormSchema>> | undefined =
 		$state(undefined)
@@ -91,7 +92,7 @@
 		<div class="logo">
 			<a href={routes.HOME}><img src="/logo.svg" alt="Logo" /></a>
 		</div>
-		<img class="main-image" src="/images/change-password.svg" alt="Change password" />
+		<img class="main-image" src={`${base}/change-password.svg`} alt="Change password" />
 		<Typography variant="h4" class="center-align">{$_('successChangePassword')}</Typography>
 		<Button
 			class="fit-content center-align"

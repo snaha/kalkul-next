@@ -11,6 +11,7 @@
 	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { page } from '$app/stores'
+	import { base } from '$app/paths'
 
 	let formErrors: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state(undefined)
 	let formValid = $state(false)
@@ -80,7 +81,7 @@
 		<div class="logo">
 			<a href={routes.HOME}><img src="/logo.svg" alt="Logo" /></a>
 		</div>
-		<img class="main-image" src="/images/change-email.svg" alt="Change email" />
+		<img class="main-image" src={`${base}/change-email.svg`} alt="Change email" />
 		<div class="confirm-information">
 			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
 			<Typography variant="large">

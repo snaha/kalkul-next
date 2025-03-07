@@ -30,6 +30,7 @@
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import adapters from '$lib/adapters'
+	import { base } from '$app/paths'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -144,7 +145,7 @@
 				<Typography>Loading...</Typography><Loader />
 			{:else if portfolios.length === 0}
 				<section class="empty">
-					<img src="/images/no-portfolio.svg" alt="No portfolio yet" />
+					<img src={`${base}/no-portfolio.svg`} alt="No portfolio yet" />
 					<div class="spacer"></div>
 					<Typography variant="h4">{$_('noPortfoliosYet')}</Typography>
 					<Typography>{$_('createYourFirstPortfolio')}</Typography>

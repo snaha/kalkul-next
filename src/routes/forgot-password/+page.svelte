@@ -13,6 +13,7 @@
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
+	import { base } from '$app/paths'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -106,7 +107,7 @@
 	</div>
 {:else}
 	<div class="login success">
-		<img src="/images/reset-password-link.svg" alt="Reset password link" />
+		<img src={`${base}/reset-password-link.svg`} alt="Reset password link" />
 		<div class="text">
 			<Typography variant="h4">{$_('emailSent')}</Typography>
 			<Typography variant="large">

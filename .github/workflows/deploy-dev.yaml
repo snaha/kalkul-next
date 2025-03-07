@@ -1,17 +1,22 @@
-name: Check
+name: Deploy dev preview
 
 on:
   push:
-    branches:
-      - 'main'
-  pull_request:
-    branches:
-      - '**'
+    branches: ['main']
+
+env:
+  PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+  PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+  ADAPTER: static
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  check:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -40,11 +45,15 @@ jobs:
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
 
-      - name: Check the build
-        run: pnpm run check
+      - name: Build
+        run: pnpm build
 
-      - name: Code linting
-        run: pnpm run lint
+      - name: Disable Jekyll
+        run: touch ./build/.nojekyll
 
-      - name: Run tests
-        run: pnpm test:unit
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./build
+          branch: gh-pages
+          clean-exclude: preview
+          force: false

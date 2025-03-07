@@ -28,6 +28,7 @@
 	import TransactionCard from './transaction-card.svelte'
 	import Divider from './ui/divider.svelte'
 	import adapters from '$lib/adapters'
+	import { base } from '$app/paths'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
@@ -156,7 +157,7 @@
 		</Horizontal>
 		{#if transactions.length === 0}
 			<section class="centered">
-				<img src="/images/no-transaction.svg" alt="No transaction yet" />
+				<img src={`${base}/no-transaction.svg`} alt="No transaction yet" />
 				<Typography variant="h5">{$_('No transaction yet')}</Typography>
 				{#if !viewOnly}
 					<Typography variant="small">{$_('Use the button above to add one')}</Typography>

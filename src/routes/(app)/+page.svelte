@@ -23,6 +23,7 @@
 	import ListItem from '$lib/components/ui/list/list-item.svelte'
 	import adapter from '$lib/adapters'
 	import DeleteModal from '$lib/components/delete-modal.svelte'
+	import { base } from '$app/paths'
 
 	let showConfirmModal = $state(false)
 	let clientToBeDeleted: number | undefined = $state()
@@ -90,7 +91,7 @@
 		<Typography>Loading...</Typography><Loader />
 	{:else if clientStore.data.length === 0}
 		<section class="empty">
-			<img src="/images/no-client.svg" alt="No client yet" />
+			<img src={`${base}/no-client.svg`} alt="No client yet" />
 			<Typography variant="h4">{$_('noClientsYet')}</Typography>
 			<Typography>{$_('createYourFirstClient')}</Typography>
 			<div class="spacer"></div>

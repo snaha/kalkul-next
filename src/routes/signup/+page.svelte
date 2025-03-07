@@ -14,6 +14,7 @@
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { locale } from 'svelte-i18n'
+	import { base } from '$app/paths'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -159,7 +160,7 @@
 	</div>
 {:else}
 	<div class="regitration success">
-		<img src="/images/registration-link.svg" alt="Verification link sent" />
+		<img src={`${base}/registration-link.svg`} alt="Verification link sent" />
 		<div class="text">
 			<Typography variant="h4">{$_('checkEmail')}</Typography>
 			<Typography variant="large">

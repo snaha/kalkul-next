@@ -19,6 +19,7 @@
 	import EditTransaction from '$lib/components/edit-transaction.svelte'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
+	import { base } from '$app/paths'
 
 	const clientId = parseInt($page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -81,7 +82,7 @@
 	/>
 	{#if investments.length === 0}
 		<section class="empty">
-			<img src="/images/no-investment.svg" alt="No investments yet" />
+			<img src={`${base}/no-investment.svg`} alt="No investments yet" />
 			<div class="spacer"></div>
 			<Typography variant="h4">{$_('noInvestmentYet')}</Typography>
 			<Typography>{$_('createYourFirstInvestment')}</Typography>
