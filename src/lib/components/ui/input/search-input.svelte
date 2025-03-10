@@ -37,7 +37,7 @@
 		<Button
 			{dimension}
 			{disabled}
-			variant="secondary"
+			variant={variant === 'outline' ? 'secondary' : 'solid'}
 			onclick={() => {
 				value = ''
 				input.focus()
