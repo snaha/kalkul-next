@@ -11,7 +11,7 @@
 	import Logo from '$lib/components/icons/logo.svelte'
 	import routes from '$lib/routes'
 	import { goto } from '$app/navigation'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 
 	type User = z.infer<typeof loginFormSchema>
 
@@ -44,7 +44,7 @@
 			await adapter.signIn(email, password)
 			email = ''
 			password = ''
-			if ($page.url.pathname === routes.LOGIN) {
+			if (page.url.pathname === routes.LOGIN) {
 				goto(routes.HOME)
 			}
 		} catch (e) {

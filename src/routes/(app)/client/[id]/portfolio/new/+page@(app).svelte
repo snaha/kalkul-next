@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import EditPortfolio from '$lib/components/edit-portfolio.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { clientStore } from '$lib/stores/clients.svelte'
 
-	const clientId = parseInt($page.params.id, 10)
+	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 
 	function close() {

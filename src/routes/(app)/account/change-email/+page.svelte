@@ -10,7 +10,7 @@
 	import adapter from '$lib/adapters'
 	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { base } from '$app/paths'
 
 	let formErrors: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state(undefined)
@@ -23,7 +23,7 @@
 	let success = $state(false)
 	let error: string | undefined = $state(undefined)
 
-	const inbucketUrl = `${$page.url.protocol}//${$page.url.hostname}:64324`
+	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	async function updateUserEmail() {
 		try {
@@ -85,7 +85,7 @@
 		<div class="confirm-information">
 			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
 			<Typography variant="large">
-				{#if $page.url.hostname === 'localhost' || $page.url.hostname === '127.0.0.1'}
+				{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html $_('checkNewEmail.bodyLocal', {
 						values: {

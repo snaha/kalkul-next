@@ -6,7 +6,7 @@
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { _, locale, locales } from 'svelte-i18n'
 	import routes from '$lib/routes'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Login from '$lib/components/login.svelte'
 	import { get } from 'svelte/store'
 	let { children } = $props()
@@ -30,7 +30,7 @@
 	{#if children}
 		{@render children()}
 	{/if}
-{:else if $page.url.pathname !== routes.HOME}
+{:else if page.url.pathname !== routes.HOME}
 	<Login />
 {:else}
 	<div class="intro-screen">

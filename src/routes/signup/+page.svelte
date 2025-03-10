@@ -12,7 +12,7 @@
 	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { goto } from '$app/navigation'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { locale } from 'svelte-i18n'
 	import { base } from '$app/paths'
 
@@ -34,7 +34,7 @@
 	let emailTouched = $state(false)
 	let passwordTouched = $state(false)
 	let confirmPasswordTouched = $state(false)
-	const inbucketUrl = `${$page.url.protocol}//${$page.url.hostname}:64324`
+	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	function onEmailBlur() {
 		if (user.email?.trim() === '') {
@@ -164,7 +164,7 @@
 		<div class="text">
 			<Typography variant="h4">{$_('checkEmail')}</Typography>
 			<Typography variant="large">
-				{#if $page.url.hostname === 'localhost' || $page.url.hostname === '127.0.0.1'}
+				{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html $_('verificationLinkLocal', {
 						values: {

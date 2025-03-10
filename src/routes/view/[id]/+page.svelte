@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import adapters from '$lib/adapters'
 	import InvestmentCard from '$lib/components/investment-card.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
@@ -13,7 +13,7 @@
 	import PortfolioHeaderView from '$lib/components/portfolio-header-view.svelte'
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 
-	const session_id = $page.params.id
+	const session_id = page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
 	let notFound = $state(false)
 	let adjustWithInflation = $state(false)

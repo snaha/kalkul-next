@@ -4,7 +4,7 @@
 	import { _ } from 'svelte-i18n'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import routes from '$lib/routes'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { goto } from '$app/navigation'
 	import { investmentStore } from '$lib/stores/investment.svelte'
@@ -21,9 +21,9 @@
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import { base } from '$app/paths'
 
-	const clientId = parseInt($page.params.id, 10)
+	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
-	const portfolioId = parseInt($page.params.portfolio_id, 10)
+	const portfolioId = parseInt(page.params.portfolio_id, 10)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investments = $derived(investmentStore.filter(portfolioId))
 

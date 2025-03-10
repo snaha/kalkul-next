@@ -12,7 +12,7 @@
 	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { goto } from '$app/navigation'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { base } from '$app/paths'
 
 	$effect(() => {
@@ -29,7 +29,7 @@
 	let resetPasswordFormValid = $state(false)
 	let emailTouched = $state(false)
 	let success: boolean = $state(false)
-	const inbucketUrl = `${$page.url.protocol}//${$page.url.hostname}:64324`
+	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	async function resetPassword(email: string) {
 		try {
@@ -111,7 +111,7 @@
 		<div class="text">
 			<Typography variant="h4">{$_('emailSent')}</Typography>
 			<Typography variant="large">
-				{#if $page.url.hostname === 'localhost' || $page.url.hostname === '127.0.0.1'}
+				{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html $_('resetPasswordLocal', {
 						values: {
