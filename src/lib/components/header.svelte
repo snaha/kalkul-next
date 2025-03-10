@@ -20,7 +20,7 @@
 </script>
 
 <header>
-	<a class="logo-link" href="/">
+	<a class="logo-link" href={routes.HOME}>
 		<Logo size={32} />
 	</a>
 	<div class="user-info">

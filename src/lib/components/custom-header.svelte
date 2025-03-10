@@ -2,10 +2,11 @@
 	import { Close } from 'carbon-icons-svelte'
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
+	import routes from '$lib/routes'
 </script>
 
 <header>
-	<a class="logo-link" href="/">
+	<a class="logo-link" href={routes.HOME}>
 		<Logo size={40} />
 	</a>
 	<Button dimension="compact" variant="ghost" onclick={() => history.back()}>

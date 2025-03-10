@@ -1,41 +1,20 @@
-# create-svelte
+# Kalkul
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Deployments
 
-## Creating a project
+- [`kalkul.app`](https://kalkul.app) - production hosted as nodejs app on DigitalOcean
+- [`dev.kalkul.app`](https://dev.kalkul.app) - dev version hosted as static SPA on DigitalOcean
+- `dev.kalkul.app/preview/pr-{num}` - pr preview hosted as static SPAs with hash router on DigitalOcean
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Environment vars
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+| Variable                   | Default value            | Description                                                                         |
+| -------------------------- | ------------------------ | ----------------------------------------------------------------------------------- |
+| `PUBLIC_SUPABASE_URL`      | `http://127.0.0.1:64321` | Supabase public connection URL                                                      |
+| `PUBLIC_SUPABASE_ANON_KEY` | `ey...J9`                | Supabase connection key                                                             |
+| `VITE_ROUTER`              |                          | Sveltekit router to use (`hash` or `pathname`)                                      |
+| `VITE_BASE_URL`            |                          | Base path to which the app is deployed (no value means root `/`)                    |
+| `VITE_ADAPTER`             |                          | Sveltekit adapter to use (`static` uses the adapter-static, otherwise adapter-node) |
 
 # Supabase Commands and Operations
 

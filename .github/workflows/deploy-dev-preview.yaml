@@ -13,7 +13,8 @@ concurrency: preview-${{ github.ref }}
 env:
   PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
   PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-  ADAPTER: static
+  VITE_ROUTER: 'hash'
+  VITE_ADAPTER: static
 
 permissions:
   contents: write
@@ -55,7 +56,7 @@ jobs:
 
       - name: Build
         if: github.event.action != 'closed'
-        run: BASE_URL="/preview/pr-${{ github.event.number }}" pnpm build
+        run: VITE_BASE_URL="/preview/pr-${{ github.event.number }}" pnpm build
 
       - name: Deploy PR preview
         uses: rossjrw/pr-preview-action@v1

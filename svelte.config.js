@@ -7,11 +7,16 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
+		router: {
+			type: process.env.VITE_ROUTER,
+		},
 		paths: {
-			base: process.env.BASE_URL ?? '',
+			base: process.env.VITE_BASE_URL ?? '',
 		},
 		adapter:
-			process.env.ADAPTER === 'static' ? staticAdapter({ fallback: 'index.html' }) : nodeAdapter(),
+			process.env.VITE_ADAPTER === 'static'
+				? staticAdapter({ fallback: 'index.html' })
+				: nodeAdapter(),
 	},
 }
 

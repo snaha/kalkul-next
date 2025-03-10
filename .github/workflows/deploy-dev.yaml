@@ -7,7 +7,7 @@ on:
 env:
   PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
   PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-  ADAPTER: static
+  VITE_ADAPTER: static
 
 permissions:
   contents: write

@@ -5,15 +5,16 @@
 	import { _ } from 'svelte-i18n'
 	import Typography from './ui/typography.svelte'
 	import { notImplemented } from '$lib/not-implemented'
+	import routes from '$lib/routes'
 </script>
 
 <header>
-	<a class="logo-link" href="/">
+	<a class="logo-link" href={routes.HOME}>
 		<Logo size={32} />
 	</a>
 	<div class="user-info">
 		<Typography variant="small" --colors-ultra-high="var(--colors-ultra-low)"
-			>{$_('Made with ')}<a href="/">kalkul.app</a></Typography
+			>{$_('Made with ')}<a href={routes.HOME}>kalkul.app</a></Typography
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
 			><ChatBot size={16} /></Button

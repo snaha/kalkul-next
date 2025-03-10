@@ -7,6 +7,7 @@
 	import Option from '$lib/components/ui/select/option.svelte'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
+	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { Checkmark } from 'carbon-icons-svelte'
 	import { locale, _, locales } from 'svelte-i18n'
@@ -47,15 +48,15 @@
 		<Input label={$_('emailAddress')} value={authStore.user?.email} disabled />
 	</div>
 	<div class="control-buttons">
-		<Button dimension="compact" href="/account/change-email" variant="secondary"
+		<Button dimension="compact" href={routes.ACCOUNT_CHANGE_EMAIL} variant="secondary"
 			>{$_('changeEmailAddress')}</Button
 		>
-		<Button dimension="compact" href="/account/change-password" variant="secondary"
+		<Button dimension="compact" href={routes.ACCOUNT_CHANGE_PASSWORD} variant="secondary"
 			>{$_('changePassword')}</Button
 		>
 	</div>
-	<Button href="/" class="fit-content" dimension="compact"
-		><Checkmark size={24} />{$_('done')}</Button
+	<Button href={routes.HOME}>
+		class="fit-content" dimension="compact" ><Checkmark size={24} />{$_('done')}</Button
 	>
 </main>
 

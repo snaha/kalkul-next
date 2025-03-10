@@ -73,7 +73,7 @@
 {/snippet}
 
 <main>
-	<a href="/" class="logo"><Logo size={40} /></a>
+	<a href={routes.HOME} class="logo"><Logo size={40} /></a>
 	<div class="reset-password">
 		<Typography variant="h4">{$_('resetPassword')}</Typography>
 		<form>
