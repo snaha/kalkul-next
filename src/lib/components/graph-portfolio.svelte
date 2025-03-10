@@ -11,6 +11,8 @@
 	import { Maximize } from 'carbon-icons-svelte'
 	import Checkbox from './ui/checkbox.svelte'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
+	import Slider from './ui/slider.svelte'
+	import ChartDoughnut from './chart-doughnut.svelte'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -33,6 +35,7 @@
 	}: Props = $props()
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
+	let selectedIndex = $state(0)
 	const { total, data } = $derived(
 		getGraphDataForPortfolio(transactionStore, investments, portfolio),
 	)
@@ -119,6 +122,22 @@
 					hidden: investmentsViewStore.isHidden(investments[i].id),
 				})),
 	)
+
+	function getDateFromGraphLabels(graphLabels: string) {
+		const month = graphLabels.includes('-') ? graphLabels : undefined
+		if (month) {
+			const [year, monthNum] = month.split('-').map(Number)
+			return new Date(year, monthNum - 1).toLocaleDateString('en-US', {
+				year: 'numeric',
+				month: 'short',
+			})
+		} else {
+			return new Date(Number(graphLabels), 11).toLocaleDateString('en-US', {
+				year: 'numeric',
+				month: 'short',
+			})
+		}
+	}
 </script>
 
 {#if investments.length === 0 || data.length === 0}
@@ -305,10 +324,68 @@
 				]}
 			/>
 		</div>
+		<div class="graph-breakdown-overtime">
+			<Horizontal --horizontal-gap="var(--half-padding)">
+				<Typography variant="h5">{$_('Breakdown')}</Typography>
+				<FlexItem />
+				<Button
+					dimension="small"
+					variant="solid"
+					onclick={() => {
+						const today = new Date().toISOString()
+						let [year, month] = today.split('T')[0].split('-')
+						month = month.replace('0', '')
+
+						const hasMonth = data[0].graphLabels.every((l) => l.includes('-'))
+
+						const targetLabel = hasMonth ? `${year}-${month}` : year
+						const index = data[0].graphLabels.indexOf(targetLabel)
+
+						if (index > 0 && index < data[0].graphLabels.length - 1) {
+							selectedIndex = index
+						} else {
+							console.error('Out of range')
+						}
+					}}>{$_('Show today')}</Button
+				>
+				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
+			</Horizontal>
+			<div class="doughnut">
+				<ChartDoughnut
+					data={data.map((d) => d.graphInvestmentValue[selectedIndex])}
+					labels={data.map((d) => d.label)}
+					{investments}
+					{investmentsViewStore}
+				/>
+			</div>
+			<div class="slider">
+				<Slider
+					withoutShowValue
+					dimension="compact"
+					alwaysShowValue
+					min={0}
+					max={data[0]?.graphLabels.length - 1}
+					bind:value={selectedIndex}
+				></Slider>
+				<div class="date">
+					<Typography class="selected-date"
+						>{getDateFromGraphLabels(data[0].graphLabels[selectedIndex])}</Typography
+					>
+				</div>
+			</div>
+		</div>
 	</section>
 {/if}
 
 <style>
+	:global(.selected-date) {
+		white-space: nowrap;
+	}
+	.date {
+		display: flex;
+		justify-content: end;
+		width: 85px;
+	}
 	.graph {
 		display: flex;
 		flex-direction: column;
@@ -319,7 +396,7 @@
 
 		.graph-main {
 			width: 100%;
-			aspect-ratio: 1000 / 350;
+			aspect-ratio: 1000 / 252;
 			background-color: var(--colors-base);
 			display: flex;
 			flex-direction: column;
@@ -331,7 +408,7 @@
 
 		.graph-main-sub {
 			width: 100%;
-			aspect-ratio: 1000 / 250;
+			aspect-ratio: 1000 / 192;
 			background-color: var(--colors-base);
 			display: flex;
 			flex-direction: column;
@@ -339,6 +416,25 @@
 			border-radius: var(--border-radius);
 			border: 1px solid var(--colors-low);
 			gap: var(--half-padding);
+		}
+
+		.graph-breakdown-overtime {
+			width: 100%;
+			background-color: var(--colors-base);
+			display: flex;
+			flex-direction: column;
+			padding: var(--padding);
+			border-radius: var(--border-radius);
+			border: 1px solid var(--colors-low);
+			gap: var(--half-padding);
+		}
+		.doughnut {
+			width: 120px;
+			height: 120px;
+		}
+		.slider {
+			display: flex;
+			align-items: center;
 		}
 	}
 </style>
