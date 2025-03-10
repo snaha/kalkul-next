@@ -9,6 +9,7 @@
 	import { page } from '$app/state'
 	import Login from '$lib/components/login.svelte'
 	import { get } from 'svelte/store'
+	import { base } from '$app/paths'
 	let { children } = $props()
 
 	$effect(() => {
@@ -36,7 +37,7 @@
 	<div class="intro-screen">
 		<div class="intro-banner">
 			<div class="logo">
-				<img src="/logo.svg" alt="Logo" />
+				<img src={`${base}/logo.svg`} alt="Logo" />
 			</div>
 			<div class="info">
 				<Typography variant="h1">Envision financial freedom</Typography>
@@ -53,7 +54,7 @@
 			</div>
 		</div>
 		<div class="image">
-			<img src="/capa2.svg" alt="intro" width="100%" />
+			<img src={`${base}/capa2.svg`} alt="intro" width="100%" />
 		</div>
 	</div>
 {/if}

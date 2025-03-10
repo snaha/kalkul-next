@@ -107,7 +107,7 @@
 	</div>
 {:else}
 	<div class="login success">
-		<img src={`${base}/reset-password-link.svg`} alt="Reset password link" />
+		<img src={`${base}/iamges/reset-password-link.svg`} alt="Reset password link" />
 		<div class="text">
 			<Typography variant="h4">{$_('emailSent')}</Typography>
 			<Typography variant="large">

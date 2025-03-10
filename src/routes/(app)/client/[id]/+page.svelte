@@ -145,7 +145,7 @@
 				<Typography>Loading...</Typography><Loader />
 			{:else if portfolios.length === 0}
 				<section class="empty">
-					<img src={`${base}/no-portfolio.svg`} alt="No portfolio yet" />
+					<img src={`${base}/images/no-portfolio.svg`} alt="No portfolio yet" />
 					<div class="spacer"></div>
 					<Typography variant="h4">{$_('noPortfoliosYet')}</Typography>
 					<Typography>{$_('createYourFirstPortfolio')}</Typography>

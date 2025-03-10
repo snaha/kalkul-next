@@ -79,9 +79,9 @@
 <main>
 	{#if success}
 		<div class="logo">
-			<a href={routes.HOME}><img src="/logo.svg" alt="Logo" /></a>
+			<a href={routes.HOME}><img src={`${base}/logo.svg`} alt="Logo" /></a>
 		</div>
-		<img class="main-image" src={`${base}/change-email.svg`} alt="Change email" />
+		<img class="main-image" src={`${base}/images/change-email.svg`} alt="Change email" />
 		<div class="confirm-information">
 			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
 			<Typography variant="large">
