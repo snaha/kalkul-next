@@ -5,7 +5,7 @@
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import {
-		type TimeUnit,
+		type Frequency,
 		type Client,
 		type Investment,
 		type Portfolio,
@@ -49,10 +49,10 @@
 	let date = $state(new Date())
 	let isRecurring = $state(false)
 	let repeat = $state(1)
-	let repeatUnit: TimeUnit = $state('month')
+	let repeatUnit: Frequency = $state('month')
 	let endDate = $state(new Date())
 	let period = $state(30)
-	let periodUnit: TimeUnit = $state('year')
+	let periodUnit: Frequency = $state('year')
 	const numOccurrences = $derived(
 		calculateNumOccurrences(formatDate(date), formatDate(endDate), repeatUnit, repeat),
 	)
@@ -135,7 +135,7 @@
 		close()
 	}
 
-	function addDateFunction(unit: TimeUnit) {
+	function addDateFunction(unit: Frequency) {
 		switch (unit) {
 			case 'day':
 				return addDays
@@ -148,7 +148,7 @@
 		}
 	}
 
-	function dateDifferenceFunction(unit: TimeUnit) {
+	function dateDifferenceFunction(unit: Frequency) {
 		switch (unit) {
 			case 'day':
 				return differenceInDays
@@ -161,8 +161,8 @@
 		}
 	}
 
-	function transactionRepeatUnit(t: typeof transaction): TimeUnit {
-		return t && t.repeat_unit ? (t.repeat_unit as TimeUnit) : 'month'
+	function transactionRepeatUnit(t: typeof transaction): Frequency {
+		return t && t.repeat_unit ? t.repeat_unit : 'month'
 	}
 
 	function transactionPeriod(t: typeof transaction) {
@@ -173,7 +173,7 @@
 		return dateDifferenceFunction(transactionRepeatUnit(t))(t.end_date, t.date) + 1
 	}
 
-	function transactionPeriodUnit(t: typeof transaction): TimeUnit {
+	function transactionPeriodUnit(t: typeof transaction): Frequency {
 		if (!t || !t.id || !t.end_date) {
 			return 'year'
 		}

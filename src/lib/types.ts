@@ -35,7 +35,7 @@ export type ClientNoId = Omit<Client, 'id' | 'created_at' | 'advisor'>
 export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
 export type Portfolio = Tables<'portfolio'>
 export type Investment = Tables<'investment'>
-export type Transaction = Tables<'transaction'>
+export type Transaction = Tables<'transaction'> & { repeat_unit: Frequency | null }
 
 export type InvestmentWithColorIndex = Investment & {
 	colorIndex?: number
@@ -44,7 +44,6 @@ export type InvestmentWithColorIndex = Investment & {
 export type EntryFeeType = 'ongoing' | 'forty-sixty' | 'upfront'
 export type FeeType = 'percentage' | 'fixed'
 
-export type TimeUnit = 'day' | 'week' | 'month' | 'year'
 export type TransactionType = 'deposit' | 'withdrawal'
 
 export interface PortfolioView {

@@ -57,7 +57,7 @@ function processTransactionToMap(transaction: Transaction, map: Map<string, numb
 		for (
 			let date = new Date(transaction.date);
 			date <= new Date(transaction.end_date);
-			date = incrementDate(date, transaction.repeat_unit as Frequency, transaction.repeat)
+			date = incrementDate(date, transaction.repeat_unit, transaction.repeat)
 		) {
 			addTransactionToMap(formatDate(date), transaction.amount, map)
 		}
