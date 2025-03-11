@@ -134,6 +134,8 @@
 	"backToSettings": "Zpět na nastavení účtu",
 	"noInvestmentYet": "Zatím žádná investice",
 	"createYourFirstInvestment": "Vytvoř první investici v tomto portfoliu",
+	"noPortfoliosYet": "Zatím žádné porfolio",
+	"createYourFirstPortfolio": "Vytvoř své první portfolio",
 
 	"errors": {
 		"too_small": "Zadejte větší hodnotu"

@@ -178,6 +178,8 @@
 	"Edit client details": "Edit client details",
 	"noInvestmentYet": "No investment yet",
 	"createYourFirstInvestment": "Create a first investment in this portfolio",
+	"noPortfoliosYet": "No portfolio yet",
+	"createYourFirstPortfolio": "Create your first portfolio",
 
 	"errors": {
 		"too_small": "Please enter larger value"
