@@ -55,8 +55,8 @@
 			>{$_('changePassword')}</Button
 		>
 	</div>
-	<Button href={routes.HOME}>
-		class="fit-content" dimension="compact" ><Checkmark size={24} />{$_('done')}</Button
+	<Button href={routes.HOME} class="fit-content" dimension="compact"
+		><Checkmark size={24} />{$_('done')}</Button
 	>
 </main>
 
