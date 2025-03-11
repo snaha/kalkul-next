@@ -29,7 +29,7 @@
 	const {
 		investments,
 		portfolio,
-		title = $_('Portfolio value'),
+		title = $_('Value'),
 		adjustWithInflation,
 		investmentsViewStore,
 	}: Props = $props()
@@ -239,7 +239,7 @@
 		</div>
 		<div class="graph-main-sub">
 			<Horizontal --horizontal-gap="var(--half-padding)">
-				<Typography variant="h5">{$_('Deposits & withdrawals')}</Typography>
+				<Typography variant="h5">{$_('Transactions')}</Typography>
 				<FlexItem />
 				<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}></Checkbox>
 				<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
