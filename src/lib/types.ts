@@ -36,6 +36,7 @@ export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
 export type Portfolio = Tables<'portfolio'>
 export type Investment = Tables<'investment'>
 export type Transaction = Tables<'transaction'> & { repeat_unit: Frequency | null }
+export type Feedback = Tables<'feedback'>
 
 export type InvestmentWithColorIndex = Investment & {
 	colorIndex?: number

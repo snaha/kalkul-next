@@ -5,13 +5,36 @@
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
 	import Textarea from './ui/textarea.svelte'
+	import { authStore } from '$lib/stores/auth.svelte'
+	import { browser } from '$app/environment'
+	import Error from './error.svelte'
+	import adapter from '$lib/adapters'
+	import type { Feedback, MetaFields } from '$lib/types'
+	import { page } from '$app/state'
 
-	type Props = {
-		confirm: () => void
-	}
-	let { oncancel, confirm, open = $bindable(false), ...restProps }: ModalProps & Props = $props()
+	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
 	let message = $state('')
 	const sendDisabled = $derived(message.trim() === '')
+	let error: string | undefined = $state()
+
+	async function sendFeedback() {
+		error = undefined
+		try {
+			const email = authStore.user?.email || null
+			const pathname = browser ? page.url.pathname : null
+			const data = null
+
+			const feedback: Omit<Feedback, MetaFields> = { email, pathname, message, data }
+
+			await adapter.addFeedback(feedback)
+
+			message = ''
+			open = false
+		} catch (e) {
+			console.error(e)
+			error = $_('feedbackError')
+		}
+	}
 </script>
 
 <Modal bind:open {oncancel} {...restProps}>
@@ -26,9 +49,13 @@
 		</header>
 
 		<Typography>{$_('feedback.text')}</Typography>
-		<Textarea bind:value={message} placeholder={$_('feedback.textareaPlaceholder')}></Textarea>
+		<Textarea rows={6} bind:value={message} placeholder={$_('feedback.textareaPlaceholder')}
+		></Textarea>
+		{#if error}
+			<Error>{error}</Error>
+		{/if}
 		<section class="buttons">
-			<Button variant="strong" disabled={sendDisabled} dimension="compact" onclick={confirm}
+			<Button variant="strong" disabled={sendDisabled} dimension="compact" onclick={sendFeedback}
 				><SendAlt size={24} />{$_('feedback.confirmButton')}</Button
 			>
 			<Button variant="secondary" dimension="compact" onclick={oncancel}

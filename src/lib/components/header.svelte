@@ -47,11 +47,7 @@
 		>
 	</div>
 </header>
-<FeedbackModal
-	bind:open={showFeedbackModal}
-	oncancel={() => (showFeedbackModal = false)}
-	confirm={notImplemented}
-/>
+<FeedbackModal bind:open={showFeedbackModal} oncancel={() => (showFeedbackModal = false)} />
 
 <style lang="postcss">
 	header {

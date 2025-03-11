@@ -11,6 +11,7 @@ import {
 	type MetaFields,
 	type Portfolio,
 	type Store,
+	type Feedback,
 } from '$lib/types'
 import { clientStore } from '$lib/stores/clients.svelte'
 import { portfolioStore } from '$lib/stores/portfolio.svelte'
@@ -387,6 +388,14 @@ export default class Supabase implements Adapter {
 			client,
 			investments,
 			transactions,
+		}
+	}
+
+	async addFeedback(feedback: Omit<Feedback, MetaFields>) {
+		const { error } = await supabase.from('feedback').insert(feedback)
+		if (error) {
+			console.error('Failed to add feedback', error)
+			throw new Error(error.message)
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import type {
 	Client,
 	ClientNoId,
+	Feedback,
 	Investment,
 	MetaFields,
 	Portfolio,
@@ -40,6 +41,8 @@ export interface Adapter {
 	deleteTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
 
 	portfolioView: (id: string) => Promise<PortfolioView | undefined>
+
+	addFeedback: (feedback: Omit<Feedback, MetaFields>) => Promise<void>
 }
 
 export default new SupabaseAdapter() as Adapter

@@ -199,5 +199,6 @@
 		"cancelButton": "Keep link sharing on"
 	},
 	"updateLanguageError": "Error: could not update language preference",
+	"feedbackError": "Failed to send feedback",
 	"invalidEmailAddress": "Invalid email address"
 }

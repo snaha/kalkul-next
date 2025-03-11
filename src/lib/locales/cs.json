@@ -155,5 +155,6 @@
 		"cancelButton": "Nechat sdílení odkazu zapnuté"
 	},
 	"updateLanguageError": "Chyba: nelze aktualizovat preference jazyka",
+	"feedbackError": "Zpětnou vazbu se nepodařilo odeslat",
 	"invalidEmailAddress": "Neplatná emailová adresa"
 }
