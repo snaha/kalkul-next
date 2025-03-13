@@ -7,7 +7,7 @@ export interface TransactionStore extends Store<Transaction> {
 	filter: (investmentId: number) => Transaction[]
 }
 
-export function withTransactionStore(): TransactionStore {
+function withTransactionStore(): TransactionStore {
 	let data = $state<Transaction[]>([])
 	let loading = $state(true)
 

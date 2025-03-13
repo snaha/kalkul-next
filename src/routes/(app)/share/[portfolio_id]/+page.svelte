@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import adapters from '$lib/adapters'
 	import CopyButton from '$lib/components/copy-button.svelte'
 	import LinkSharingModal from '$lib/components/link-sharing-modal.svelte'
@@ -14,7 +14,7 @@
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
 
-	const portfolioId = parseInt($page.params.portfolio_id, 10)
+	const portfolioId = parseInt(page.params.portfolio_id, 10)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	let linkSharing = $state(false)
 	let linkValue = $derived(portfolio?.link ? createLink(portfolio?.link) : undefined)
@@ -62,7 +62,7 @@
 	}
 
 	function createLink(random: string) {
-		return `${$page.url.origin}/view/${random}`
+		return `${page.url.origin}/view/${random}`
 	}
 </script>
 

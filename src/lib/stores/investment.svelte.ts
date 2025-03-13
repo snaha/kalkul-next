@@ -1,13 +1,13 @@
 import type { Investment, Store } from '$lib/types'
 
-export interface InvestmentStore extends Store<Investment> {
+interface InvestmentStore extends Store<Investment> {
 	data: Investment[]
 	loading: boolean
 	reset: () => void
 	filter: (portfolioId: number) => Investment[]
 }
 
-export function withInvestmentStore(): InvestmentStore {
+function withInvestmentStore(): InvestmentStore {
 	let data = $state<Investment[]>([])
 	let loading = $state(true)
 

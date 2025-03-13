@@ -46,5 +46,8 @@ jobs:
       - name: Code linting
         run: pnpm run lint
 
+      - name: Check dependencies and unused files
+        run: pnpm knip
+
       - name: Run tests
         run: pnpm test:unit

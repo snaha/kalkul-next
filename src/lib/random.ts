@@ -1,4 +1,4 @@
-export const DEFAULT_RANDOM_BASE = 36
+const DEFAULT_RANDOM_BASE = 36
 
 function defaultGetRandomValues(bytes: Uint8Array) {
 	return crypto.getRandomValues<Uint8Array>(bytes)

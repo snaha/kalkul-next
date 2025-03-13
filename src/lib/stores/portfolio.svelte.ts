@@ -1,13 +1,13 @@
 import type { Portfolio, Store } from '$lib/types'
 
-export interface PortfolioStore extends Store<Portfolio> {
+interface PortfolioStore extends Store<Portfolio> {
 	data: Portfolio[]
 	loading: boolean
 	reset: () => void
 	filter: (clientId: number) => Portfolio[]
 }
 
-export function withPortfolioStore(): PortfolioStore {
+function withPortfolioStore(): PortfolioStore {
 	let data = $state<Portfolio[]>([])
 	let loading = $state(true)
 

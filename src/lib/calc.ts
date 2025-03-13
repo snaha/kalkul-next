@@ -127,7 +127,7 @@ function getSamplingFrequencyAndCount(startDate: Date, endDate: Date): Arity {
 	return { frequency: 'year', count: 1 }
 }
 
-export function getBaseData(transactions: Transaction[]): InvestmentData {
+function getBaseData(transactions: Transaction[]): InvestmentData {
 	const { startDate, endDate } = getInvestmentStartAndEndDates(transactions)
 	const deposits = transactionsToMap(
 		transactions.filter((transaction) => transaction.type === 'deposit'),
@@ -144,7 +144,7 @@ export function getBaseData(transactions: Transaction[]): InvestmentData {
 	}
 }
 
-export function getGraphData(
+function getGraphData(
 	{ deposits, withdrawals, startDate, endDate }: InvestmentData,
 	investment: Investment,
 	portfolio: Portfolio,
@@ -194,7 +194,7 @@ export function getGraphData(
 	}
 }
 
-export function getInflationAdjustment(
+function getInflationAdjustment(
 	inflationRate: number,
 	frequency: Frequency,
 	count: number,

@@ -1,12 +1,12 @@
 import type { Client, Store } from '$lib/types'
 
-export interface ClientStore extends Store<Client> {
+interface ClientStore extends Store<Client> {
 	data: Client[]
 	loading: boolean
 	reset: () => void
 }
 
-export function withClientStore(): ClientStore {
+function withClientStore(): ClientStore {
 	let data = $state<Client[]>([])
 	let loading = $state(true)
 

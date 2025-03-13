@@ -5,7 +5,7 @@ interface AuthStore {
 	loading: boolean
 }
 
-export function withAuthStore(): AuthStore {
+function withAuthStore(): AuthStore {
 	let user = $state<User | undefined>()
 	let loading = $state(true)
 	const isLoggedIn = $derived(user !== undefined)

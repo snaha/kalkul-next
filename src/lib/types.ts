@@ -8,16 +8,15 @@ import type {
 	supportedCurrenciesSchema,
 } from './schemas'
 
-export type DepositForm = z.infer<typeof depositWithdrawalFormSchema>
-export type WithdrawalForm = z.infer<typeof depositWithdrawalFormSchema>
-export type Deposit = z.infer<typeof depositWithdrawalSchema>
-export type Withdrawal = z.infer<typeof depositWithdrawalSchema>
-export type Currency = z.infer<typeof supportedCurrenciesSchema>
+type DepositForm = z.infer<typeof depositWithdrawalFormSchema>
+type WithdrawalForm = z.infer<typeof depositWithdrawalFormSchema>
+type Deposit = z.infer<typeof depositWithdrawalSchema>
+type Withdrawal = z.infer<typeof depositWithdrawalSchema>
+type Currency = z.infer<typeof supportedCurrenciesSchema>
 export type Frequency = z.infer<typeof frequencySchema>
+type CurrencyWithLabel = Record<Currency, string>
 
-export type CurrencyWithLabel = Record<Currency, string>
-
-export const supportedCurrenciesWithLabels: CurrencyWithLabel = {
+const supportedCurrenciesWithLabels: CurrencyWithLabel = {
 	CZK: 'Kč',
 	EUR: '€',
 	USD: '$',
@@ -45,7 +44,7 @@ export type InvestmentWithColorIndex = Investment & {
 export type EntryFeeType = 'ongoing' | 'forty-sixty' | 'upfront'
 export type FeeType = 'percentage' | 'fixed'
 
-export type TransactionType = 'deposit' | 'withdrawal'
+type TransactionType = 'deposit' | 'withdrawal'
 
 export interface PortfolioView {
 	portfolio: Portfolio
