@@ -230,7 +230,7 @@
 		flex-direction: row;
 		align-items: center;
 		gap: var(--half-padding);
-		white-space: nowrap;
+		overflow-wrap: anywhere;
 	}
 	.portfolios {
 		display: grid;
@@ -262,6 +262,7 @@
 	.right-aligned {
 		display: flex;
 		justify-content: flex-end;
+		text-align: right;
 	}
 	.empty {
 		display: flex;

@@ -175,6 +175,7 @@
 		flex-direction: row;
 		align-items: center;
 		gap: var(--half-padding);
+		overflow-wrap: anywhere;
 	}
 	.clients {
 		display: grid;
@@ -206,6 +207,7 @@
 	.right-aligned {
 		display: flex;
 		justify-content: flex-end;
+		text-align: right;
 	}
 	.empty {
 		display: flex;
