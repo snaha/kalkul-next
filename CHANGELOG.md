@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0](https://github.com/snaha/kalkul/compare/v0.2.0...v0.3.0) (2025-03-13)
+
+
+### Features
+
+* demo account seed ([#258](https://github.com/snaha/kalkul/issues/258)) ([64307d1](https://github.com/snaha/kalkul/commit/64307d1360c66dbc710d62206ea2ede76f7db2b8))
+* doughnut chart ([#463](https://github.com/snaha/kalkul/issues/463)) ([480f261](https://github.com/snaha/kalkul/commit/480f261d837ed33c9d8a60892de7d479924186df))
+* rename graphs ([#491](https://github.com/snaha/kalkul/issues/491)) ([6ca5b97](https://github.com/snaha/kalkul/commit/6ca5b978af9b0b712851371a3fbcb012d7048ae3))
+* store feedback in DB ([#449](https://github.com/snaha/kalkul/issues/449)) ([e323b8e](https://github.com/snaha/kalkul/commit/e323b8efe914c4652d44f87272a6ab937b394eb2))
+
+
+### Bug Fixes
+
+* account setting button ([#488](https://github.com/snaha/kalkul/issues/488)) ([f90aff6](https://github.com/snaha/kalkul/commit/f90aff6b7902b9e1b18a2555d2b21d0cbdf9d77b))
+* add knip in CI ([#493](https://github.com/snaha/kalkul/issues/493)) ([360b915](https://github.com/snaha/kalkul/commit/360b915fe5dd1559acb18f551eb8d0ded09b79d8))
+* cascade duplicate rollback if fails ([#495](https://github.com/snaha/kalkul/issues/495)) ([d97cd6e](https://github.com/snaha/kalkul/commit/d97cd6e57148a228b59f4362e47ef2b90fef1733))
+* manifest path ([#476](https://github.com/snaha/kalkul/issues/476)) ([588eb55](https://github.com/snaha/kalkul/commit/588eb55a741101e70e8015c29c2ac6ade09fc1ec))
+* no portfolio text ([#490](https://github.com/snaha/kalkul/issues/490)) ([66e1ded](https://github.com/snaha/kalkul/commit/66e1dedaf325fd3822ec67aaefe9101fe9a7f488))
+* path to images ([#483](https://github.com/snaha/kalkul/issues/483)) ([816e399](https://github.com/snaha/kalkul/commit/816e399b50e72d9889f0c29e38ded677484438ba))
+* table columns alignment ([#494](https://github.com/snaha/kalkul/issues/494)) ([5da8ab1](https://github.com/snaha/kalkul/commit/5da8ab1c2e2b3f6854a668749a2d62587cd3d33f))
+* visual design of the solid search delete button ([#468](https://github.com/snaha/kalkul/issues/468)) ([2f299b0](https://github.com/snaha/kalkul/commit/2f299b0def1e81fd3327eaf8f883ed63d48a177f))
+
 ## [0.2.0](https://github.com/snaha/kalkul/compare/v0.1.0...v0.2.0) (2025-02-06)
 
 
