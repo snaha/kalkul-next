@@ -193,7 +193,7 @@
 		display: grid;
 		grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr;
 		align-items: center;
-		gap: var(--double-padding);
+		gap: var(--half-padding);
 		border-bottom: 1px solid var(--colors-low);
 		background-color: var(--colors-ultra-low);
 		padding-top: var(--half-padding);

@@ -137,6 +137,7 @@
 	"createYourFirstInvestment": "Vytvoř první investici v tomto portfoliu",
 	"noPortfoliosYet": "Zatím žádné porfolio",
 	"createYourFirstPortfolio": "Vytvoř své první portfolio",
+	"currentValue": "Aktuální hodnota",
 
 	"errors": {
 		"too_small": "Zadejte větší hodnotu"

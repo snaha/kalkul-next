@@ -29,4 +29,5 @@ export default {
 	EDIT_INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/edit-investment/${investmentId}`,
 	SHARE: (portfolioId: number) => `${routePrefix}/share/${portfolioId}`,
+	VIEW: (id: string) => `${routePrefix}/view/${id}`,
 }

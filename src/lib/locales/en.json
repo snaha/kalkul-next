@@ -181,6 +181,7 @@
 	"createYourFirstInvestment": "Create a first investment in this portfolio",
 	"noPortfoliosYet": "No portfolio yet",
 	"createYourFirstPortfolio": "Create your first portfolio",
+	"currentValue": "Current value",
 
 	"errors": {
 		"too_small": "Please enter larger value"

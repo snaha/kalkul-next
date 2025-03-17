@@ -7,6 +7,7 @@
 		Copy,
 		Folder,
 		FolderDetails,
+		Launch,
 		OverflowMenuVertical,
 		Share,
 		TrashCan,
@@ -14,7 +15,7 @@
 		UserProfile,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
-	import { formatDate } from '$lib/utils'
+	import { formatCurrency, formatDate } from '$lib/utils'
 	import Avatar from '$lib/components/avatar.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'
@@ -31,6 +32,7 @@
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
+	import { calculateNumOccurrences } from '$lib/calc'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -59,32 +61,33 @@
 		showConfirmModal = false
 	}
 
-	function numInvestments(portfolioId: number) {
-		return investmentStore.filter(portfolioId).length
-	}
+	function portfolioValue(portfolioId: number): number {
+		return investmentStore.filter(portfolioId).reduce((total, investment) => {
+			const transactions = transactionStore.filter(investment.id)
 
-	function totalPortfolioDeposits(portfolioId: number) {
-		return investmentStore
-			.filter(portfolioId)
-			.reduce((prev, curr) => prev + totalInvestmentDeposits(curr.id), 0)
-	}
+			let deposits = 0
+			let withdrawals = 0
 
-	function totalInvestmentDeposits(investmentId: number) {
-		return transactionStore
-			.filter(investmentId)
-			.reduce((prev, curr) => (curr.type === 'deposit' ? prev + curr.amount : prev), 0)
-	}
+			for (const transaction of transactions) {
+				const amount = transaction.end_date
+					? transaction.amount *
+						calculateNumOccurrences(
+							transaction.date,
+							transaction.end_date,
+							transaction.repeat_unit,
+							transaction.repeat,
+						)
+					: transaction.amount
 
-	function totalPortfolioWithdrawals(portfolioId: number) {
-		return investmentStore
-			.filter(portfolioId)
-			.reduce((prev, curr) => prev + totalInvestmentWithdrawals(curr.id), 0)
-	}
+				if (transaction.type === 'deposit') {
+					deposits += amount
+				} else if (transaction.type === 'withdrawal') {
+					withdrawals += amount
+				}
+			}
 
-	function totalInvestmentWithdrawals(investmentId: number) {
-		return transactionStore
-			.filter(investmentId)
-			.reduce((prev, curr) => (curr.type === 'withdrawal' ? prev + curr.amount : prev), 0)
+			return total + (deposits - withdrawals)
+		}, 0)
 	}
 </script>
 
@@ -111,6 +114,27 @@
 			>
 		</List>
 	</Dropdown>
+{/snippet}
+
+{#snippet viewButton(link: string | null, portfolioId: number)}
+	{#if link}
+		<Button
+			variant="ghost"
+			dimension="compact"
+			href={routes.VIEW(link)}
+			onclick={(e: Event) => e.stopPropagation()}
+			target="_blank"><Launch size={24} /></Button
+		>
+	{:else}
+		<Button
+			variant="ghost"
+			dimension="compact"
+			onclick={(e: Event) => {
+				e.preventDefault()
+				goto(routes.SHARE(portfolioId))
+			}}><Share size={24} /></Button
+		>
+	{/if}
 {/snippet}
 
 {#if !client}
@@ -158,11 +182,13 @@
 					<li class="portfolios title">
 						<span>{$_('portfolioName')}</span>
 						<span>{$_('currency')}</span>
-						<span>{$_('lastEdit')}</span>
-						<span class="right-aligned">{$_('investments')}</span>
-						<span class="right-aligned">{$_('totalDeposits')}</span>
-						<span class="right-aligned">{$_('totalWithdrawals')}</span>
-						<span class="right-aligned"></span>
+						<span>{$_('startDate')}</span>
+						<span>{$_('endDate')}</span>
+						<span class="right-aligned">{$_('inflation')}</span>
+						<span class="right-aligned">{$_('currentValue')}</span>
+						<span class="right-aligned">{$_('ROI')}</span>
+						<span></span>
+						<span></span>
 					</li>
 					{#each portfolios as portfolio}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -177,10 +203,14 @@
 						>
 							<span>{portfolio.name}</span>
 							<span>{portfolio.currency}</span>
-							<span>{formatDate(new Date(portfolio.last_edited_at))}</span>
-							<span class="right-aligned">{numInvestments(portfolio.id)}</span>
-							<span class="right-aligned">{totalPortfolioDeposits(portfolio.id)}</span>
-							<span class="right-aligned">{totalPortfolioWithdrawals(portfolio.id)}</span>
+							<span>{formatDate(new Date(portfolio.start_date))}</span>
+							<span>{formatDate(new Date(portfolio.end_date))}</span>
+							<span class="right-aligned">{portfolio.inflation_rate * 100}%</span>
+							<span class="right-aligned"
+								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency)}</span
+							>
+							<span class="right-aligned">ROI</span>
+							<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span>
 							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
 						</li>
 					{/each}
@@ -234,9 +264,9 @@
 	}
 	.portfolios {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 42px 42px;
 		align-items: center;
-		gap: var(--double-padding);
+		gap: var(--half-padding);
 		border-bottom: 1px solid var(--colors-low);
 		background-color: var(--colors-ultra-low);
 		padding-top: var(--half-padding);

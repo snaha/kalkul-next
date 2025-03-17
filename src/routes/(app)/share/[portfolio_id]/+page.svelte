@@ -9,6 +9,7 @@
 	import Toggle from '$lib/components/ui/toggle.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { generateRandomString } from '$lib/random'
+	import routes from '$lib/routes'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { Checkmark, Close } from 'carbon-icons-svelte'
 	import { onMount } from 'svelte'
@@ -17,7 +18,9 @@
 	const portfolioId = parseInt(page.params.portfolio_id, 10)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	let linkSharing = $state(false)
-	let linkValue = $derived(portfolio?.link ? createLink(portfolio?.link) : undefined)
+	let linkValue = $derived(
+		portfolio?.link ? `${page.url.origin}${routes.VIEW(portfolio.link)}` : undefined,
+	)
 	let showSharingOffModal = $state(false)
 
 	onMount(() => {
@@ -59,10 +62,6 @@
 			await adapters.updatePortfolio({ id: portfolio.id, link: null })
 		}
 		linkSharing = enable
-	}
-
-	function createLink(random: string) {
-		return `${page.url.origin}/view/${random}`
 	}
 </script>
 

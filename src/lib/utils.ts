@@ -33,10 +33,8 @@ export function formatCurrency(value: number | bigint, currency: string) {
 	// detect locale automatically
 	const locale = undefined
 	const intl = new Intl.NumberFormat(locale, {
-		style: 'currency',
-		currency,
 		currencyDisplay: 'code',
-		maximumFractionDigits: 0,
+		maximumFractionDigits: 2,
 	})
-	return intl.format(value)
+	return `${intl.format(value)} ${currency}`
 }
