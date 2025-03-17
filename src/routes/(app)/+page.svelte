@@ -79,10 +79,17 @@
 <Header />
 <main>
 	<section class="top-bar horizontal">
-		<Typography variant="h4">{$_('allClients')}</Typography>
+		<div class="left">
+			<Typography variant="h4">{$_('allClients')}</Typography>
+			<SearchInput bind:value={searchQuery} dimension="compact" variant="solid" placeholder="Search"
+			></SearchInput>
+			{#if searchQuery.length > 0}
+				<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
+					>{$_('clearSearch')}</Button
+				>
+			{/if}
+		</div>
 		<div class="grower"></div>
-		<SearchInput bind:value={searchQuery} dimension="compact" variant="solid" placeholder="Search"
-		></SearchInput>
 		<Button dimension="compact" variant="strong" onclick={addClient}
 			><UserFollow />{$_('addClient')}</Button
 		>
@@ -163,6 +170,11 @@
 		justify-content: flex-start;
 		align-items: center;
 		gap: var(--half-padding);
+	}
+	.left {
+		display: flex;
+		align-items: center;
+		gap: var(--padding);
 	}
 	.grower {
 		flex: 1;

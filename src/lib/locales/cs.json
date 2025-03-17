@@ -1,5 +1,6 @@
 {
 	"allClients": "Klienti",
+	"clearSearch": "Vymazat hledání",
 	"name": "Jméno",
 	"birthDate": "Datum narození",
 	"birthDateError": "Datum narození nemůže být v budoucnosti.",

@@ -1,5 +1,6 @@
 {
 	"allClients": "All clients",
+	"clearSearch": "Clear search",
 	"name": "Name",
 	"birthDate": "Birthdate",
 	"birthDateError": "Birthdate cannot be in the future.",
