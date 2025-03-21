@@ -1,7 +1,7 @@
 import { stripe } from '$lib/payments/stripe'
 import { json } from '@sveltejs/kit'
 
-export async function POST({ params }) {
+export async function GET({ params }) {
 	try {
 		const { session_id } = params
 		if (!session_id) {

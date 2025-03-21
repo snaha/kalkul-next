@@ -37,7 +37,42 @@
 
 	onMount(async () => {
 		subscription = subscriptionStore.getActiveSubscription()
+		if (subscription) {
+			return
+		}
+
+		// There is a race condition where Stripe returns successfully after payment
+		// but the customer is not yet indexed by their email address, therefore the
+		// subscriptionStore is not loaded yet.
+		// In this case we load the subscriptionStore by querying the data
+		// based on the sessionId
+		await loadSubscriptionStoreBySession()
 	})
+
+	async function loadSubscriptionStoreBySession() {
+		const response = await authorizedFetch(`/api/payments/success/${sessionId}`)
+		if (!response.ok) {
+			throw new Error('subscription cannot be loaded', { cause: response })
+		}
+
+		const subscriptionResponse = await response.json()
+		subscription = subscriptionResponse.subscription
+
+		if (!subscription) {
+			throw new Error('subscription not found', { cause: subscriptionResponse })
+		}
+
+		const customer = subscription?.customer
+		if (!customer) {
+			subscription = undefined
+			throw new Error('customer not found', { cause: subscriptionResponse })
+		}
+
+		const customerId = typeof customer === 'string' ? customer : customer.id
+
+		subscriptionStore.data = [subscription]
+		subscriptionStore.customer = customerId
+	}
 </script>
 
 <Vertical class="max560" --vertical-gap="var(--double-padding)">

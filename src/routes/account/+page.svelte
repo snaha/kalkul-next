@@ -65,7 +65,7 @@
 	})
 
 	async function manageSubscriptions() {
-		const customer = subscriptionStore.customer?.id
+		const customer = subscriptionStore.customer
 		if (!customer) {
 			throw new Error('invalid customer id', { cause: customer })
 		}

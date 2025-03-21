@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 
 export interface SubscriptionStore extends Store<Stripe.Subscription> {
 	data: Stripe.Subscription[]
-	customer: Stripe.Customer | undefined
+	customer: string | undefined
 	loading: boolean
 	error: string | undefined
 	reset: () => void
@@ -12,7 +12,7 @@ export interface SubscriptionStore extends Store<Stripe.Subscription> {
 
 export function withSubscriptionStore(): SubscriptionStore {
 	let data = $state<Stripe.Subscription[]>([])
-	let customer = $state<Stripe.Customer>()
+	let customer = $state<string>()
 	let loading = $state(true)
 	let error = $state(undefined)
 

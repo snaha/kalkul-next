@@ -23,7 +23,7 @@ export async function loadSubscriptions() {
 
 		const customer = (await response.json()) as Stripe.Customer
 
-		subscriptionStore.customer = customer
+		subscriptionStore.customer = customer.id
 	} catch (e) {
 		subscriptionStore.reset()
 		subscriptionStore.error = String(e)
