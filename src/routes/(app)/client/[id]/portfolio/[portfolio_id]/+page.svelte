@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
-	import { Add, UserFollow } from 'carbon-icons-svelte'
+	import { Add, SidePanelCloseFilled, SidePanelOpenFilled, UserFollow } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import routes from '$lib/routes'
@@ -62,6 +62,13 @@
 	$effect(() => {
 		investmentsViewStore.allInvestments = investments
 	})
+
+	let isGraphFullscreened = $state(false)
+	let isSidebarOpen = $state(true)
+
+	$effect(() => {
+		if (!isGraphFullscreened) isSidebarOpen = true
+	})
 </script>
 
 {#if isLoading}
@@ -73,13 +80,15 @@
 		404 - {$_('Not found')}
 	</Fullscreen>
 {:else}
-	<PortfolioHeader
-		{client}
-		{portfolio}
-		{investments}
-		back={() => goto(routes.CLIENT(clientId))}
-		bind:adjustWithInflation
-	/>
+	{#if !isGraphFullscreened}
+		<PortfolioHeader
+			{client}
+			{portfolio}
+			{investments}
+			back={() => goto(routes.CLIENT(clientId))}
+			bind:adjustWithInflation
+		/>
+	{/if}
 	{#if investments.length === 0}
 		<section class="empty">
 			<img src={`${base}/images/no-investment.svg`} alt="No investments yet" />
@@ -90,9 +99,26 @@
 			<Button variant="strong" onclick={addInvestment}><UserFollow />{$_('addInvestment')}</Button>
 		</section>
 	{:else}
-		<main>
+		<main
+			class:fullscreen-graph={isGraphFullscreened}
+			class:sidebar-open={isSidebarOpen && isGraphFullscreened}
+		>
+			<div class="sidebar-toggle-button">
+				<Button variant="ghost" dimension="small" onclick={() => (isSidebarOpen = !isSidebarOpen)}>
+					{#if isSidebarOpen}
+						<SidePanelCloseFilled size={16} />
+					{:else}
+						<SidePanelOpenFilled size={16} />
+					{/if}
+				</Button>
+			</div>
 			<section class="horizontal grower">
-				<Sidebar --sidebar-gap="var(--padding)" --sidebar-padding="0">
+				<Sidebar
+					--sidebar-gap="var(--padding)"
+					--sidebar-padding="0"
+					{isGraphFullscreened}
+					{isSidebarOpen}
+				>
 					<dialog bind:this={dialog}>
 						<div class="dialog-background">
 							<section class="vertical dialog">
@@ -130,31 +156,73 @@
 						<Add size={24} /></Button
 					>
 				</Sidebar>
-				<PortfolioGraph {portfolio} {investments} {adjustWithInflation} {investmentsViewStore} />
+				<PortfolioGraph
+					{isSidebarOpen}
+					{isGraphFullscreened}
+					fullscreen={() => {
+						isGraphFullscreened = !isGraphFullscreened
+					}}
+					{portfolio}
+					{investments}
+					bind:adjustWithInflation
+					{investmentsViewStore}
+				/>
 			</section>
 		</main>
 	{/if}
 {/if}
 
 <style>
+	.sidebar-toggle-button {
+		position: absolute;
+		top: var(--padding);
+		left: var(--padding);
+		z-index: 1;
+		opacity: 0;
+		visibility: hidden;
+	}
 	:root {
 		--max-width: 1370px;
 	}
 	main {
-		height: 100vh;
+		position: relative;
+		min-height: calc(100vh - 180px);
 		display: flex;
 		flex-direction: column;
 		padding: var(--double-padding);
+		gap: var(--double-padding);
+		transition: padding 0.3s ease-in;
+		overflow: hidden;
 	}
+
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		align-items: center;
+		align-items: stretch;
 		gap: var(--padding);
+		transition: gap 0.3s ease-in;
 	}
 	:global(.grower) {
 		flex: 1;
+	}
+	.fullscreen-graph {
+		min-height: calc(100vh - 50px);
+		padding: 0;
+		.horizontal {
+			gap: 0;
+		}
+		.sidebar-toggle-button {
+			opacity: 1;
+			transition: opacity 0.3s ease-in 0.3s;
+			visibility: visible;
+		}
+	}
+	.sidebar-open {
+		padding: 0 0 0 var(--padding);
+		.horizontal {
+			gap: var(--padding);
+		}
 	}
 	.investments {
 		display: flex;

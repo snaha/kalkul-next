@@ -79,7 +79,7 @@
 				prevChartWidth = actChartWidth
 				chart.resize()
 			}
-		}, 500)
+		})
 		return () => {
 			clearInterval(interval)
 		}

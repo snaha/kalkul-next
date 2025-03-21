@@ -8,11 +8,15 @@
 	import FlexItem from './ui/flex-item.svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
-	import { Maximize } from 'carbon-icons-svelte'
+	import { ArrowRight, Maximize } from 'carbon-icons-svelte'
 	import Checkbox from './ui/checkbox.svelte'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import Slider from './ui/slider.svelte'
 	import ChartDoughnut from './chart-doughnut.svelte'
+	import Toggle from './ui/toggle.svelte'
+	import Badge from './ui/badge.svelte'
+	import FullscreenGraph from './graph-fullscreen.svelte'
+	import type { Snippet } from 'svelte'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -24,14 +28,24 @@
 		adjustWithInflation: boolean
 		title?: string
 		investmentsViewStore: InvestmentsViewStore
+		fullscreen: () => void
+		isGraphFullscreened: boolean
+		isSidebarOpen: boolean
+		view?: boolean
+		sidebarButton?: Snippet
 	}
 
-	const {
+	let {
 		investments,
 		portfolio,
 		title = $_('Value'),
-		adjustWithInflation,
+		adjustWithInflation = $bindable(),
 		investmentsViewStore,
+		fullscreen,
+		isGraphFullscreened,
+		isSidebarOpen,
+		view = false,
+		sidebarButton,
 	}: Props = $props()
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
@@ -138,242 +152,420 @@
 			})
 		}
 	}
+	let fullscreenGraph: undefined | 'value' | 'transactions' | 'breakdown' = $state(undefined)
 </script>
+
+{#snippet valueChart()}
+	<Chart
+		type="line"
+		labels={data[0]?.graphLabels}
+		datasets={investmentGraphData}
+		options={{
+			interaction: {
+				intersect: false,
+				mode: 'index',
+			},
+			scales: {
+				y: {
+					stacked: true,
+					min: 0,
+				},
+				x: {
+					grid: {
+						offset: false,
+						color: ({ index }) =>
+							index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
+					},
+					ticks: {
+						autoSkip: false,
+						callback: function (_, index) {
+							return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
+						},
+					},
+				},
+			},
+			elements: {
+				point: {
+					radius: 0,
+				},
+			},
+			plugins: {
+				legend: {
+					onClick: (e, item) => {
+						const index = item.datasetIndex
+						if (index !== undefined) investmentsViewStore.toggleHide(investments[index].id)
+					},
+					position: 'bottom',
+					labels: {
+						filter: (legendItem) => !legendItem.text.endsWith('_hidden'),
+						useBorderRadius: true,
+						borderRadius: 1,
+					},
+				},
+				tooltip: {
+					caretPadding: 20,
+					filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
+					callbacks: {
+						footer: (tooltipItems) => {
+							const index = tooltipItems[0].dataIndex
+							const val = adjustWithInflation
+								? total.graphInflationInvestmentValue
+								: total.graphInvestmentValue
+
+							return 'Total: ' + val[index].toLocaleString()
+						},
+					},
+				},
+			},
+			animation: false,
+		}}
+		plugins={[
+			{
+				id: 'verticalLine',
+				afterDraw(chart) {
+					if (chart?.tooltip && chart.tooltip.opacity > 0) {
+						const ctx = chart.ctx
+						const x = chart.tooltip.caretX
+						const yAxis = chart.scales.y
+
+						ctx.save()
+						ctx.beginPath()
+						ctx.moveTo(x, yAxis.top)
+						ctx.lineTo(x, yAxis.bottom)
+						ctx.lineWidth = 1
+						ctx.strokeStyle = 'gray'
+						ctx.stroke()
+						ctx.restore()
+					}
+				},
+			},
+		]}
+	/>
+{/snippet}
+{#snippet transactionsChart()}
+	<Chart
+		type="bar"
+		labels={data[0]?.graphLabels}
+		datasets={[...(showDeposits ? deposits : []), ...(showWithdrawals ? withdrawals : [])]}
+		options={{
+			interaction: {
+				intersect: false,
+				mode: 'index',
+			},
+			scales: {
+				y: {
+					stacked: true,
+					border: {
+						display: false,
+					},
+				},
+				x: {
+					stacked: true,
+					grid: {
+						offset: false,
+						color: ({ index }) =>
+							index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
+					},
+					type: 'category',
+					ticks: {
+						autoSkip: false,
+						callback: function (_, index) {
+							return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
+						},
+					},
+				},
+			},
+			plugins: {
+				legend: {
+					display: false,
+				},
+				tooltip: {
+					caretPadding: 20,
+					filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
+					callbacks: {
+						footer: (tooltipItems) => {
+							const index = tooltipItems[0].dataIndex
+							const withdrawals = adjustWithInflation
+								? total.graphInflationWithdrawals
+								: total.graphWithdrawals
+							const deposits = adjustWithInflation
+								? total.graphInflationDeposits
+								: total.graphDeposits
+
+							return `Total: ${(deposits[index] + withdrawals[index]).toLocaleString()}`
+						},
+					},
+				},
+			},
+			animation: false,
+		}}
+		plugins={[
+			{
+				id: 'verticalLine',
+				afterDraw(chart) {
+					if (chart?.tooltip && chart.tooltip.opacity > 0) {
+						const ctx = chart.ctx
+						const x = chart.tooltip.caretX
+						const yAxis = chart.scales.y
+
+						ctx.save()
+						ctx.beginPath()
+						ctx.moveTo(x, yAxis.top)
+						ctx.lineTo(x, yAxis.bottom)
+						ctx.lineWidth = 1
+						ctx.strokeStyle = 'gray'
+						ctx.stroke()
+						ctx.restore()
+					}
+				},
+			},
+		]}
+	/>
+{/snippet}
+{#snippet breakdownChart()}
+	<div class="doughnut">
+		<ChartDoughnut
+			data={data.map((d) => d.graphInvestmentValue[selectedIndex])}
+			labels={data.map((d) => d.label)}
+			{investments}
+			{investmentsViewStore}
+		/>
+	</div>
+	<div class="slider">
+		<Slider
+			withoutShowValue
+			dimension="compact"
+			alwaysShowValue
+			min={0}
+			max={data[0]?.graphLabels.length - 1}
+			bind:value={selectedIndex}
+		></Slider>
+		<div class="date">
+			<Typography class="selected-date"
+				>{getDateFromGraphLabels(data[0].graphLabels[selectedIndex])}</Typography
+			>
+		</div>
+	</div>
+{/snippet}
 
 {#if investments.length === 0 || data.length === 0}
 	<section class="graph">
 		<Typography variant="h1">No data</Typography>
 	</section>
 {:else}
-	<section class="graph">
-		<div class="graph-main">
-			<Horizontal --horizontal-gap="var(--half-padding)">
-				<Typography variant="h5">{title}</Typography>
-				<FlexItem />
-				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
-			</Horizontal>
-			<Chart
-				type="line"
-				labels={data[0]?.graphLabels}
-				datasets={investmentGraphData}
-				options={{
-					interaction: {
-						intersect: false,
-						mode: 'index',
-					},
-					scales: {
-						y: {
-							stacked: true,
-							min: 0,
-						},
-						x: {
-							grid: {
-								offset: false,
-								color: ({ index }) =>
-									index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
-							},
-							ticks: {
-								autoSkip: false,
-								callback: function (_, index) {
-									return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
-								},
-							},
-						},
-					},
-					elements: {
-						point: {
-							radius: 0,
-						},
-					},
-					plugins: {
-						legend: {
-							onClick: (e, item) => {
-								const index = item.datasetIndex
-								if (index !== undefined) investmentsViewStore.toggleHide(investments[index].id)
-							},
-							position: 'bottom',
-							labels: {
-								filter: (legendItem) => !legendItem.text.endsWith('_hidden'),
-								useBorderRadius: true,
-								borderRadius: 1,
-							},
-						},
-						tooltip: {
-							caretPadding: 20,
-							filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
-							callbacks: {
-								footer: (tooltipItems) => {
-									const index = tooltipItems[0].dataIndex
-									const val = adjustWithInflation
-										? total.graphInflationInvestmentValue
-										: total.graphInvestmentValue
-
-									return 'Total: ' + val[index].toLocaleString()
-								},
-							},
-						},
-					},
+	<section
+		class="graph"
+		class:fullscreen-graph={isGraphFullscreened}
+		class:sidebar-open={isSidebarOpen}
+		class:view
+	>
+		{#if isGraphFullscreened}
+			<FullscreenGraph
+				{view}
+				{sidebarButton}
+				bind:adjustWithInflation
+				graphName="Value"
+				fullscreen={() => {
+					fullscreenGraph = undefined
+					fullscreen()
 				}}
-				plugins={[
-					{
-						id: 'verticalLine',
-						afterDraw(chart) {
-							if (chart?.tooltip && chart.tooltip.opacity > 0) {
-								const ctx = chart.ctx
-								const x = chart.tooltip.caretX
-								const yAxis = chart.scales.y
-
-								ctx.save()
-								ctx.beginPath()
-								ctx.moveTo(x, yAxis.top)
-								ctx.lineTo(x, yAxis.bottom)
-								ctx.lineWidth = 1
-								ctx.strokeStyle = 'gray'
-								ctx.stroke()
-								ctx.restore()
-							}
-						},
-					},
-				]}
-			/>
-		</div>
-		<div class="graph-main-sub">
-			<Horizontal --horizontal-gap="var(--half-padding)">
-				<Typography variant="h5">{$_('Transactions')}</Typography>
-				<FlexItem />
-				<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}></Checkbox>
-				<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
-				></Checkbox>
-				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
-			</Horizontal>
-			<Chart
-				type="bar"
-				labels={data[0]?.graphLabels}
-				datasets={[...(showDeposits ? deposits : []), ...(showWithdrawals ? withdrawals : [])]}
-				options={{
-					interaction: {
-						intersect: false,
-						mode: 'index',
-					},
-					scales: {
-						y: {
-							stacked: true,
-							border: {
-								display: false,
-							},
-						},
-						x: {
-							stacked: true,
-							grid: {
-								offset: false,
-								color: ({ index }) =>
-									index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
-							},
-							type: 'category',
-							ticks: {
-								autoSkip: false,
-								callback: function (_, index) {
-									return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
-								},
-							},
-						},
-					},
-					plugins: {
-						legend: {
-							display: false,
-						},
-						tooltip: {
-							caretPadding: 20,
-							filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
-							callbacks: {
-								footer: (tooltipItems) => {
-									const index = tooltipItems[0].dataIndex
-									const withdrawals = adjustWithInflation
-										? total.graphInflationWithdrawals
-										: total.graphWithdrawals
-									const deposits = adjustWithInflation
-										? total.graphInflationDeposits
-										: total.graphDeposits
-
-									return `Total: ${(deposits[index] + withdrawals[index]).toLocaleString()}`
-								},
-							},
-						},
-					},
+				infaltion={portfolio.inflation_rate}
+				hidden={fullscreenGraph !== 'value'}
+			>
+				{@render valueChart()}
+			</FullscreenGraph>
+		{:else}
+			<div class="graph-main">
+				<Horizontal --horizontal-gap="var(--half-padding)" --padding-left="0">
+					<Typography variant="h5">{title}</Typography>
+					<FlexItem />
+					{#if view}
+						<Button
+							dimension="small"
+							variant="ghost"
+							onclick={() => {
+								fullscreenGraph = 'transactions'
+								fullscreen()
+							}}><ArrowRight size={16} /></Button
+						>
+					{:else}
+						<Button
+							dimension="small"
+							variant="ghost"
+							onclick={() => {
+								fullscreenGraph = 'value'
+								fullscreen()
+							}}><Maximize size={16} /></Button
+						>
+					{/if}
+				</Horizontal>
+				{@render valueChart()}
+			</div>
+		{/if}
+		{#if isGraphFullscreened}
+			<FullscreenGraph
+				{view}
+				{sidebarButton}
+				bind:adjustWithInflation
+				graphName="Transactions"
+				fullscreen={() => {
+					fullscreenGraph = undefined
+					fullscreen()
 				}}
-				plugins={[
-					{
-						id: 'verticalLine',
-						afterDraw(chart) {
-							if (chart?.tooltip && chart.tooltip.opacity > 0) {
-								const ctx = chart.ctx
-								const x = chart.tooltip.caretX
-								const yAxis = chart.scales.y
-
-								ctx.save()
-								ctx.beginPath()
-								ctx.moveTo(x, yAxis.top)
-								ctx.lineTo(x, yAxis.bottom)
-								ctx.lineWidth = 1
-								ctx.strokeStyle = 'gray'
-								ctx.stroke()
-								ctx.restore()
-							}
-						},
-					},
-				]}
-			/>
-		</div>
-		<div class="graph-breakdown-overtime">
-			<Horizontal --horizontal-gap="var(--half-padding)">
-				<Typography variant="h5">{$_('Breakdown')}</Typography>
-				<FlexItem />
-				<Button
-					dimension="small"
-					variant="solid"
-					onclick={() => {
-						const today = new Date().toISOString()
-						let [year, month] = today.split('T')[0].split('-')
-						month = month.replace('0', '')
-
-						const hasMonth = data[0].graphLabels.every((l) => l.includes('-'))
-
-						const targetLabel = hasMonth ? `${year}-${month}` : year
-						const index = data[0].graphLabels.indexOf(targetLabel)
-
-						if (index > 0 && index < data[0].graphLabels.length - 1) {
-							selectedIndex = index
-						} else {
-							console.error('Out of range')
-						}
-					}}>{$_('Show today')}</Button
+				infaltion={portfolio.inflation_rate}
+				hidden={fullscreenGraph !== 'transactions'}
+			>
+				{#snippet controls()}
+					<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}></Checkbox>
+					<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
+					></Checkbox>
+				{/snippet}
+				{@render transactionsChart()}
+			</FullscreenGraph>
+		{:else}
+			<div class="graph-main-sub">
+				<Horizontal
+					--horizontal-gap="var(--half-padding)"
+					--padding-left={isGraphFullscreened && !isSidebarOpen ? '42px' : '0'}
 				>
-				<Button dimension="small" variant="ghost"><Maximize size={16} /></Button>
-			</Horizontal>
-			<div class="doughnut">
-				<ChartDoughnut
-					data={data.map((d) => d.graphInvestmentValue[selectedIndex])}
-					labels={data.map((d) => d.label)}
-					{investments}
-					{investmentsViewStore}
-				/>
+					<Typography variant="h5">{$_('Transactions')}</Typography>
+					{#if isGraphFullscreened}
+						<Toggle
+							label={$_('Show inflation')}
+							dimension="small"
+							bind:checked={adjustWithInflation}
+						></Toggle>
+						{#if adjustWithInflation}
+							<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
+						{/if}
+					{/if}
+					<FlexItem />
+					{#if view}
+						<Button
+							dimension="small"
+							variant="ghost"
+							onclick={() => {
+								fullscreenGraph = 'transactions'
+								fullscreen()
+							}}><ArrowRight size={16} /></Button
+						>
+					{:else}
+						<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}
+						></Checkbox>
+						<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
+						></Checkbox>
+						<Button
+							dimension="small"
+							variant="ghost"
+							onclick={() => {
+								fullscreenGraph = 'transactions'
+								fullscreen()
+							}}><Maximize size={16} /></Button
+						>
+					{/if}
+				</Horizontal>
+				{@render transactionsChart()}
 			</div>
-			<div class="slider">
-				<Slider
-					withoutShowValue
-					dimension="compact"
-					alwaysShowValue
-					min={0}
-					max={data[0]?.graphLabels.length - 1}
-					bind:value={selectedIndex}
-				></Slider>
-				<div class="date">
-					<Typography class="selected-date"
-						>{getDateFromGraphLabels(data[0].graphLabels[selectedIndex])}</Typography
+		{/if}
+		{#if isGraphFullscreened}
+			<FullscreenGraph
+				{view}
+				{sidebarButton}
+				bind:adjustWithInflation
+				graphName="Breakdown"
+				fullscreen={() => {
+					fullscreenGraph = undefined
+					fullscreen()
+				}}
+				infaltion={portfolio.inflation_rate}
+				hidden={fullscreenGraph !== 'breakdown'}
+			>
+				{#snippet controls()}
+					<Button
+						dimension="small"
+						variant="solid"
+						onclick={() => {
+							const today = new Date().toISOString()
+							let [year, month] = today.split('T')[0].split('-')
+							month = month.replace('0', '')
+
+							const hasMonth = data[0].graphLabels.every((l) => l.includes('-'))
+
+							const targetLabel = hasMonth ? `${year}-${month}` : year
+							const index = data[0].graphLabels.indexOf(targetLabel)
+
+							if (index > 0 && index < data[0].graphLabels.length - 1) {
+								selectedIndex = index
+							} else {
+								console.error('Out of range')
+							}
+						}}>{$_('Show today')}</Button
 					>
-				</div>
+				{/snippet}
+				{@render breakdownChart()}
+			</FullscreenGraph>
+		{:else}
+			<div class="graph-breakdown-overtime">
+				<Horizontal
+					--horizontal-gap="var(--half-padding)"
+					--padding-left={isGraphFullscreened && !isSidebarOpen ? '42px' : '0'}
+				>
+					<Typography variant="h5">{$_('Breakdown')}</Typography>
+					{#if isGraphFullscreened}
+						<Toggle
+							label={$_('Show inflation')}
+							dimension="small"
+							bind:checked={adjustWithInflation}
+						></Toggle>
+						{#if adjustWithInflation}
+							<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
+						{/if}
+					{/if}
+					<FlexItem />
+					{#if view}
+						<Button
+							dimension="small"
+							variant="ghost"
+							onclick={() => {
+								fullscreenGraph = 'breakdown'
+								fullscreen()
+							}}><ArrowRight size={16} /></Button
+						>
+					{:else}
+						<!-- else content here -->
+						<Button
+							dimension="small"
+							variant="solid"
+							onclick={() => {
+								const today = new Date().toISOString()
+								let [year, month] = today.split('T')[0].split('-')
+								month = month.replace('0', '')
+
+								const hasMonth = data[0].graphLabels.every((l) => l.includes('-'))
+
+								const targetLabel = hasMonth ? `${year}-${month}` : year
+								const index = data[0].graphLabels.indexOf(targetLabel)
+
+								if (index > 0 && index < data[0].graphLabels.length - 1) {
+									selectedIndex = index
+								} else {
+									console.error('Out of range')
+								}
+							}}>{$_('Show today')}</Button
+						>
+						<Button
+							dimension="small"
+							variant="ghost"
+							onclick={() => {
+								fullscreenGraph = 'breakdown'
+								fullscreen()
+							}}><Maximize size={16} /></Button
+						>
+					{/if}
+				</Horizontal>
+				{@render breakdownChart()}
 			</div>
-		</div>
+		{/if}
 	</section>
 {/if}
 
@@ -434,7 +626,21 @@
 		}
 		.slider {
 			display: flex;
-			align-items: center;
+			align-items: center right;
 		}
+	}
+	.fullscreen-graph {
+		max-width: 100%;
+		&.sidebar-open {
+			max-width: calc(100% - calc(var(--sidebar-width) + var(--padding)));
+		}
+		.doughnut {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.view {
+		max-width: 100%;
+		min-height: 100%;
 	}
 </style>

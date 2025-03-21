@@ -24,6 +24,7 @@
 		--horizontal-gap: var(--padding);
 		--horizontal-justify-content: flex-start;
 		--horizontal-align-items: center;
+		--padding-left: 0;
 	}
 	.horizontal {
 		display: flex;
@@ -31,5 +32,6 @@
 		justify-content: var(--horizontal-justify-content);
 		align-items: var(--horizontal-align-items);
 		gap: var(--horizontal-gap);
+		padding-left: var(--padding-left);
 	}
 </style>

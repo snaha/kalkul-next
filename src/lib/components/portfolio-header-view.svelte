@@ -9,19 +9,26 @@
 	type Props = {
 		client: Client
 		portfolio: Portfolio
-		investments: Investment[]
-		adjustWithInflation: boolean
+		investments?: Investment[]
+		adjustWithInflation?: boolean
+		avatarSize?: number
 	}
 
-	let { client, portfolio, investments, adjustWithInflation = $bindable() }: Props = $props()
+	let {
+		client,
+		portfolio,
+		investments,
+		adjustWithInflation = $bindable(),
+		avatarSize = 64,
+	}: Props = $props()
 </script>
 
-<Avatar size={64} name={client.name} birthDate={new Date(client.birth_date)} />
+<Avatar size={avatarSize} name={client.name} birthDate={new Date(client.birth_date)} />
 <div class="vertical">
 	<Typography variant="h4" bold>{portfolio.name}</Typography>
 	<div class="horizontal">
 		<Typography>{`${portfolio.start_date} → ${portfolio.end_date}`}</Typography>
-		{#if investments.length > 0}
+		{#if investments && investments.length > 0}
 			<Toggle label={$_('Show inflation')} dimension="small" bind:checked={adjustWithInflation}
 			></Toggle>
 			{#if adjustWithInflation}
