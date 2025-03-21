@@ -7,6 +7,7 @@
 		TooltipProps & {
 			copyText: string
 			iconSize?: 16 | 20 | 24 | 32
+			showIcon?: boolean
 			onCopy?: () => void
 		}
 </script>
@@ -15,6 +16,7 @@
 	let {
 		copyText,
 		iconSize = 24,
+		showIcon = true,
 		position = 'bottom',
 		onCopy,
 		children,
@@ -40,10 +42,12 @@
 		{#if children}
 			{@render children()}
 		{/if}
-		{#if icon === 'copy'}
-			<Copy size={iconSize} />
-		{:else}
-			<Checkmark size={iconSize} />
+		{#if showIcon}
+			{#if icon === 'copy'}
+				<Copy size={iconSize} />
+			{:else}
+				<Checkmark size={iconSize} />
+			{/if}
 		{/if}
 	</Button>
 </Tooltip>

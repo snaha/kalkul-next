@@ -1,13 +1,19 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
+	import type { HTMLAttributes } from 'svelte/elements'
 
 	type Props = {
 		children: Snippet
+		class?: string
 	}
-	let { children }: Props = $props()
+	let {
+		children,
+		class: className = '',
+		...restProps
+	}: Props & HTMLAttributes<HTMLDivElement> = $props()
 </script>
 
-<div class="vertical">
+<div class="vertical {className}" {...restProps}>
 	{@render children()}
 </div>
 

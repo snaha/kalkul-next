@@ -20,11 +20,11 @@ import { transactionStore } from '$lib/stores/transaction.svelte'
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
 
-interface Subscription {
+interface SupabaseSubscription {
 	unsubscribe: () => void
 }
 
-interface StoreSubscription extends Subscription {
+interface StoreSubscription extends SupabaseSubscription {
 	queryPromise: PromiseLike<void>
 }
 
@@ -89,7 +89,7 @@ function subscribe<T extends { id: string | number }>(
 }
 
 export default class Supabase implements Adapter {
-	private subscriptions: Subscription[] = []
+	private subscriptions: SupabaseSubscription[] = []
 
 	start() {
 		if (authStore.user) return
@@ -103,9 +103,19 @@ export default class Supabase implements Adapter {
 						console.error('Failed to fetch user', error)
 						throw new Error('Failed to fetch user')
 					}
+					const {
+						data: { session },
+						error: sessionError,
+					} = await supabase.auth.getSession()
+					if (sessionError || !session) {
+						console.error('Failed to fetch session', sessionError)
+						throw new Error('Failed to fetch session')
+					}
 					// New user or different user is signed in
 					if (authStore.user?.id !== data?.user?.id) {
 						authStore.user = data.user
+						authStore.session = session
+
 						this.stop()
 
 						const clientsSubscription = subscribe<Client>(clientStore, 'client', 'advisor', [
@@ -150,6 +160,7 @@ export default class Supabase implements Adapter {
 					if (error) {
 						console.error('Failed to fetch session', error)
 						authStore.user = undefined
+						authStore.session = undefined
 					}
 				} else {
 					console.log('User status changed', event)
@@ -195,6 +206,7 @@ export default class Supabase implements Adapter {
 		}
 		this.stop()
 		authStore.user = undefined
+		authStore.session = undefined
 	}
 
 	async sendResetPasswordLink(email: string) {

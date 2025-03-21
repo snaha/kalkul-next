@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { browser } from '$app/environment'
 	import { onDestroy, onMount } from 'svelte'
 	import type { HTMLDialogAttributes } from 'svelte/elements'
 
@@ -31,7 +32,9 @@
 
 	function showModal() {
 		setTimeout(() => {
-			window.addEventListener('click', handleClickOutside)
+			if (browser) {
+				window.addEventListener('click', handleClickOutside)
+			}
 		})
 		open = true
 		dialog?.showModal()
@@ -39,7 +42,9 @@
 	}
 
 	function closeModal() {
-		window.removeEventListener('click', handleClickOutside)
+		if (browser) {
+			window.removeEventListener('click', handleClickOutside)
+		}
 		open = false
 		dialog?.close()
 		oncancel()
@@ -61,7 +66,9 @@
 		}
 	})
 	onDestroy(() => {
-		window.removeEventListener('click', handleClickOutside)
+		if (browser) {
+			window.removeEventListener('click', handleClickOutside)
+		}
 	})
 </script>
 

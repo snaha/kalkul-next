@@ -38,3 +38,13 @@ export function formatCurrency(value: number | bigint, currency: string) {
 	})
 	return `${intl.format(value)} ${currency}`
 }
+
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions) {
+	// detect locale automatically
+	const locale = undefined
+	const intl = new Intl.NumberFormat(locale, {
+		style: 'decimal',
+		...options,
+	})
+	return intl.format(value)
+}

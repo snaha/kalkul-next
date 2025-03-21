@@ -10,6 +10,11 @@
 	import Login from '$lib/components/login.svelte'
 	import { get } from 'svelte/store'
 	import { base } from '$app/paths'
+	import { subscriptionStore } from '$lib/stores/subscription.svelte'
+	import { goto } from '$app/navigation'
+	import { loadSubscriptions } from '$lib/payments/load'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+
 	let { children } = $props()
 
 	$effect(() => {
@@ -21,15 +26,39 @@
 			locale.set(authStore.user.user_metadata.prefer_language)
 		}
 	})
+
+	$effect(() => {
+		if (
+			authStore.isLoggedIn &&
+			!subscriptionStore.loading &&
+			!subscriptionStore.data.some(
+				(subscription) => subscription.status === 'active' || subscription.status === 'trialing',
+			)
+		) {
+			goto(routes.PAYMENTS)
+		}
+	})
+
+	$effect(() => {
+		if (authStore.isLoggedIn && subscriptionStore.loading) {
+			loadSubscriptions()
+		}
+	})
 </script>
 
 {#if authStore.loading}
-	<div class="center">
+	<ContentLayout>
 		<Loader />
-	</div>
+	</ContentLayout>
 {:else if authStore.isLoggedIn}
-	{#if children}
-		{@render children()}
+	{#if subscriptionStore.loading}
+		<ContentLayout>
+			<Loader />
+		</ContentLayout>
+	{:else if subscriptionStore.getActiveSubscription()}
+		{#if children}
+			{@render children()}
+		{/if}
 	{/if}
 {:else if page.url.pathname !== routes.HOME}
 	<Login />
@@ -60,12 +89,6 @@
 {/if}
 
 <style lang="postcss">
-	.center {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 100vh;
-	}
 	.intro-screen {
 		display: flex;
 		justify-content: center;

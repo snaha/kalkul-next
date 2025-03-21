@@ -55,7 +55,7 @@ export type Database = {
           advisor?: string
           birth_date?: string
           created_at?: string
-          email?: string
+          email: string
           id?: number
           name?: string
         }

@@ -13,8 +13,9 @@ concurrency: preview-${{ github.ref }}
 env:
   PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
   PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-  VITE_ROUTER: 'hash'
   VITE_ADAPTER: static
+  STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+  PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN_DEV }}
 
 permissions:
   contents: write

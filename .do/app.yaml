@@ -25,12 +25,18 @@ services:
       - key: PUBLIC_SUPABASE_URL
         scope: RUN_AND_BUILD_TIME
         value: ${PUBLIC_SUPABASE_URL}
+      - key: PUBLIC_ORIGIN
+        scope: RUN_AND_BUILD_TIME
+        value: ${PUBLIC_ORIGIN}
       - key: SUPABASE_JWT_SECRET
         scope: RUN_AND_BUILD_TIME
         value: ${SUPABASE_JWT_SECRET}
       - key: SUPABASE_SERVICE_ROLE_KEY
         scope: RUN_AND_BUILD_TIME
         value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: STRIPE_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${STRIPE_API_KEY}
       - key: PORT
         scope: RUN_TIME
         value: 8080
