@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/snaha/kalkul/compare/v0.3.0...v0.4.0) (2025-03-21)
+
+
+### Features
+
+* stripe payments ([#466](https://github.com/snaha/kalkul/issues/466)) ([d5775e7](https://github.com/snaha/kalkul/commit/d5775e70e1841a0721e9f009e281859c7072b2f0))
+
+
+### Bug Fixes
+
+* bold fonts in Safari ([#504](https://github.com/snaha/kalkul/issues/504)) ([bdc19c0](https://github.com/snaha/kalkul/commit/bdc19c0854bc726742328736c0d5f770dbc0f23e))
+* buttons in search is optional ([#489](https://github.com/snaha/kalkul/issues/489)) ([6f192cf](https://github.com/snaha/kalkul/commit/6f192cf72989ec4c7f6e5fe8d8b4e6e64f79fa7c))
+* payment success race condition ([#519](https://github.com/snaha/kalkul/issues/519)) ([cdd993c](https://github.com/snaha/kalkul/commit/cdd993c6885309f0edab6190b70a7acfb80fea59))
+* the portfolio table is modified according figma ([#496](https://github.com/snaha/kalkul/issues/496)) ([74b2596](https://github.com/snaha/kalkul/commit/74b25968fae3b11603b98e3bb5871ba8cda4604c))
+* use correct variable font ([#501](https://github.com/snaha/kalkul/issues/501)) ([7ce2039](https://github.com/snaha/kalkul/commit/7ce2039f2e4a88dab4a2d723f12a79aa2b100fbb))
+
 ## [0.3.0](https://github.com/snaha/kalkul/compare/v0.2.0...v0.3.0) (2025-03-13)
 
 
