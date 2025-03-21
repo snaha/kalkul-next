@@ -57,7 +57,7 @@
 
 	async function createInvestment() {
 		await adapter.addInvestment({
-			portfolio: portfolio.id,
+			portfolio_id: portfolio.id,
 			name,
 			apy: Number(apy),
 			entry_fee: Number(entryFee),
@@ -77,7 +77,7 @@
 		}
 		await adapter.updateInvestment({
 			id: investment.id,
-			portfolio: portfolio.id,
+			portfolio_id: portfolio.id,
 			name,
 			apy: Number(apy),
 			entry_fee: Number(entryFee),

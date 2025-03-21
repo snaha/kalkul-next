@@ -129,7 +129,8 @@
 							<ListItem onclick={editInvestment}
 								><Settings size={24} />{$_('Edit investment details')}</ListItem
 							>
-							<ListItem onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio)}
+							<ListItem
+								onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
 								><Copy size={24} />{$_('Duplicate investment')}</ListItem
 							>
 							<ListItem onclick={() => deleteInvestment(investment.id)}

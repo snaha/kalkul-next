@@ -109,7 +109,7 @@ INSERT INTO
     "id",
     "created_at",
     "last_edited_at",
-    "portfolio",
+    "portfolio_id",
     "apy",
     "entry_fee",
     "exit_fee",

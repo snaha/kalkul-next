@@ -27,7 +27,7 @@ function withInvestmentStore(): InvestmentStore {
 			loading = true
 		},
 		filter(portfolioId: number) {
-			return data.filter((investment) => investment.portfolio === portfolioId)
+			return data.filter((investment) => investment.portfolio_id === portfolioId)
 		},
 	}
 }

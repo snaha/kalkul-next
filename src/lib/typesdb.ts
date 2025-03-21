@@ -101,7 +101,7 @@ export type Database = {
           management_fee: number | null
           management_fee_type: string | null
           name: string
-          portfolio: number
+          portfolio_id: number
           success_fee: number | null
         }
         Insert: {
@@ -116,7 +116,7 @@ export type Database = {
           management_fee?: number | null
           management_fee_type?: string | null
           name: string
-          portfolio: number
+          portfolio_id: number
           success_fee?: number | null
         }
         Update: {
@@ -131,13 +131,13 @@ export type Database = {
           management_fee?: number | null
           management_fee_type?: string | null
           name?: string
-          portfolio?: number
+          portfolio_id?: number
           success_fee?: number | null
         }
         Relationships: [
           {
             foreignKeyName: "investment_portfolio_fkey"
-            columns: ["portfolio"]
+            columns: ["portfolio_id"]
             isOneToOne: false
             referencedRelation: "portfolio"
             referencedColumns: ["id"]

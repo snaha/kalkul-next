@@ -138,7 +138,7 @@ export default class Supabase implements Adapter {
 						const investmentSubscription = subscribe<Investment>(
 							investmentStore,
 							'investment',
-							'portfolio',
+							'portfolio_id',
 							portfolioStore.data.map((portfolio) => portfolio.id),
 						)
 						this.subscriptions.push(investmentSubscription)
