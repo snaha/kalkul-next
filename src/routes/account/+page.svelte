@@ -47,7 +47,7 @@
 	)
 	const yearlyFee = $derived((subscription?.items.data[0].price.unit_amount ?? 0) / 100)
 	const trialRemainingDays = $derived(
-		isTrial ? differenceInDays(new Date((subscription?.trial_end ?? 0) * 1000), new Date()) + 1 : 0,
+		isTrial ? differenceInDays(new Date((subscription?.trial_end ?? 0) * 1000), new Date()) - 1 : 0,
 	)
 
 	const languageName: Record<string, string> = {
@@ -198,12 +198,18 @@
 								<Typography variant="h4" --colors-ultra-high="var(--colors-high)"
 									>{$_('Free trial')}</Typography
 								>
-								<Typography --colors-ultra-high="var(--colors-high)"
-									><Typography bold>{trialRemainingDays}</Typography>
-									{$_('{days} remaining', {
-										values: { days: trialRemainingDays > 1 ? $_('days') : $_('day') },
-									})}</Typography
-								>
+								{#if trialRemainingDays === 0}
+									<Typography --colors-ultra-high="var(--colors-high)" bold
+										>{$_('Expiring today')}</Typography
+									>
+								{:else}
+									<Typography --colors-ultra-high="var(--colors-high)"
+										><Typography bold>{trialRemainingDays}</Typography>
+										{$_('{days} remaining', {
+											values: { days: trialRemainingDays > 1 ? $_('days') : $_('day') },
+										})}</Typography
+									>
+								{/if}
 							</Horizontal>
 							<Vertical --vertical-gap="var(--padding)">
 								<Vertical --vertical-gap="0">
