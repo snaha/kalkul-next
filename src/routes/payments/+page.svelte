@@ -14,7 +14,7 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import { loadSubscriptions } from '$lib/payments/load'
-	import routes from '$lib/routes'
+	import routes, { apiRoutes } from '$lib/routes'
 	import { subscriptionStore } from '$lib/stores/subscription.svelte'
 	import { ArrowRight, CheckmarkFilled, Rocket, WatsonHealthRotate_360 } from 'carbon-icons-svelte'
 	import { addDays } from 'date-fns'
@@ -51,7 +51,7 @@
 	async function onClickPay() {
 		payButtonDisabled = true
 
-		const response = await authorizedFetch('/api/payments/checkout', {
+		const response = await authorizedFetch(apiRoutes.CHECKOUT, {
 			method: 'POST',
 			body: JSON.stringify({
 				locale,
@@ -90,7 +90,7 @@
 	}
 
 	async function fetchPrice(price_id: string) {
-		const response = await authorizedFetch(`/api/payments/price/${price_id}`)
+		const response = await authorizedFetch(apiRoutes.PRICE(price_id))
 		if (!response.ok) {
 			throw new Error($_('Error while fetching price'))
 		}

@@ -10,7 +10,7 @@
 	import { _ } from 'svelte-i18n'
 	import Stripe from 'stripe'
 	import { goto } from '$app/navigation'
-	import routes from '$lib/routes'
+	import routes, { apiRoutes } from '$lib/routes'
 	import { authorizedFetch } from '$lib/auth'
 	import { base } from '$app/paths'
 
@@ -25,7 +25,7 @@
 	}
 
 	async function openStripeSessionPortal() {
-		const response = await authorizedFetch(`/api/payments/portal/${sessionId}`)
+		const response = await authorizedFetch(apiRoutes.PORTAL(sessionId))
 		if (!response.ok) {
 			throw new Error('invalid response', { cause: response })
 		}
@@ -50,7 +50,7 @@
 	})
 
 	async function loadSubscriptionStoreBySession() {
-		const response = await authorizedFetch(`/api/payments/success/${sessionId}`)
+		const response = await authorizedFetch(apiRoutes.SUCCESS(sessionId))
 		if (!response.ok) {
 			throw new Error('subscription cannot be loaded', { cause: response })
 		}

@@ -1,9 +1,10 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+import { apiRoutes } from '$lib/routes'
 import { createServerClient } from '@supabase/ssr'
 import { json, type Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (!event.url.pathname.startsWith('/api')) {
+	if (!event.url.pathname.startsWith(apiRoutes.ROOT)) {
 		const response = await resolve(event)
 		return response
 	}

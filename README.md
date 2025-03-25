@@ -14,6 +14,7 @@
 | `PUBLIC_SUPABASE_ANON_KEY` | `ey...J9`                | Supabase connection key                                                             |
 | `VITE_ROUTER`              |                          | Sveltekit router to use (`hash` or `pathname`)                                      |
 | `VITE_BASE_URL`            |                          | Base path to which the app is deployed (no value means root `/`)                    |
+| `VITE_API_URL`             |                          | URL on which API endpoints are (no value makes it )                                 |
 | `VITE_ADAPTER`             |                          | Sveltekit adapter to use (`static` uses the adapter-static, otherwise adapter-node) |
 
 # Supabase Commands and Operations

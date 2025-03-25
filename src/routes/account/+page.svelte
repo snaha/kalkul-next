@@ -16,7 +16,7 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import { notImplemented } from '$lib/not-implemented'
-	import routes from '$lib/routes'
+	import routes, { apiRoutes } from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { subscriptionStore } from '$lib/stores/subscription.svelte'
 	import { formatNumber } from '$lib/utils'
@@ -70,7 +70,7 @@
 			throw new Error('invalid customer id', { cause: customer })
 		}
 
-		const response = await authorizedFetch(`/api/payments/portal/customer/${customer}`)
+		const response = await authorizedFetch(apiRoutes.PORTAL_CUSTOMER(customer))
 		if (!response.ok) {
 			throw new Error('customer portal call failed', { cause: response })
 		}

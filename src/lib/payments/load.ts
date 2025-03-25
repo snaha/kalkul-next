@@ -1,4 +1,5 @@
 import { authorizedFetch } from '$lib/auth'
+import { apiRoutes } from '$lib/routes'
 import { subscriptionStore } from '$lib/stores/subscription.svelte'
 import type Stripe from 'stripe'
 
@@ -6,7 +7,7 @@ export async function loadSubscriptions() {
 	try {
 		subscriptionStore.reset()
 
-		const subscriptionsResponse = await authorizedFetch('/api/payments/subscriptions')
+		const subscriptionsResponse = await authorizedFetch(apiRoutes.SUBSCRIPTIONS)
 		if (!subscriptionsResponse.ok) {
 			subscriptionStore.data = []
 			return
@@ -15,7 +16,7 @@ export async function loadSubscriptions() {
 		const subscriptions = (await subscriptionsResponse.json()) as Stripe.Subscription[]
 		subscriptionStore.data = subscriptions
 
-		const response = await authorizedFetch('/api/payments/customer')
+		const response = await authorizedFetch(apiRoutes.CUSTOMER)
 
 		if (!response.ok) {
 			return
