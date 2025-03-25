@@ -199,6 +199,9 @@
 			transition: transform 0.2s ease-out;
 		}
 	}
+	:global(.transaction) {
+		overflow-wrap: anywhere;
+	}
 	:global(.deposit) {
 		color: var(--colors-high) !important;
 		&::before {
