@@ -31,7 +31,6 @@
 	let { transaction, currency, viewOnly, editTransaction }: Props = $props()
 
 	let openTransaction = $state(false)
-	let hidden = $state(false)
 
 	const numOccurrences = $derived(
 		calculateNumOccurrences(
@@ -79,7 +78,6 @@
 		openTransaction = !openTransaction
 	}}
 	class:openTransaction
-	class:hidden
 >
 	<Horizontal --horizontal-gap="var(--half-padding)">
 		<div class="chevron">
@@ -93,58 +91,43 @@
 			{/if}
 		</Typography>
 		<FlexItem />
-		{#if hidden}
+		<div class="control-buttons">
 			<Button
-				class="show-transaction-button"
 				variant="solid"
 				dimension="small"
 				onclick={(e: Event) => {
 					e.stopPropagation()
-					hidden = !hidden
+					notImplemented(e, $_('comingSoon'))
 				}}
 			>
 				<ViewOff size={16} />
 			</Button>
-		{:else}
-			<div class="control-buttons">
-				<Button
-					variant="solid"
-					dimension="small"
-					onclick={(e: Event) => {
-						e.stopPropagation()
-						hidden = !hidden
-						notImplemented(e)
-					}}
-				>
-					<ViewOff size={16} />
-				</Button>
-				<div class="dropdown" class:hidden={viewOnly}>
-					<Dropdown left buttonDimension="small" buttonVariant="solid">
-						{#snippet button()}
-							<OverflowMenuVertical size={16} />
-						{/snippet}
-						<List>
-							<ListItem
-								dimension="small"
-								onclick={(e: Event) => {
-									e.stopPropagation()
-									editTransaction?.(transaction)
-								}}><Edit size={16} />Edit transaction</ListItem
-							>
-							<ListItem dimension="small" onclick={duplicateTransaction}
-								><Copy size={16} />Duplicate transaction</ListItem
-							>
-							<ListItem dimension="small" onclick={deleteTransaction}
-								><TrashCan size={16} />Delete transaction</ListItem
-							>
-						</List>
-					</Dropdown>
-				</div>
+			<div class="dropdown" class:hidden={viewOnly}>
+				<Dropdown left buttonDimension="small" buttonVariant="solid">
+					{#snippet button()}
+						<OverflowMenuVertical size={16} />
+					{/snippet}
+					<List>
+						<ListItem
+							dimension="small"
+							onclick={(e: Event) => {
+								e.stopPropagation()
+								editTransaction?.(transaction)
+							}}><Edit size={16} />Edit transaction</ListItem
+						>
+						<ListItem dimension="small" onclick={duplicateTransaction}
+							><Copy size={16} />Duplicate transaction</ListItem
+						>
+						<ListItem dimension="small" onclick={deleteTransaction}
+							><TrashCan size={16} />Delete transaction</ListItem
+						>
+					</List>
+				</Dropdown>
 			</div>
-			<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
-		{/if}
+		</div>
+		<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
 	</Horizontal>
-	<section class="transaction-info" class:modalShow={!openTransaction || hidden}>
+	<section class="transaction-info" class:modalShow={!openTransaction}>
 		<Typography variant="small"
 			>{transaction.date.substring(
 				0,
@@ -219,23 +202,6 @@
 		gap: var(--quarter-padding);
 		opacity: var(--card-control-opacity);
 		content-visibility: hidden;
-	}
-	.hidden {
-		background-color: transparent;
-		pointer-events: none;
-		:global(.open-transaction-icon) {
-			opacity: 0.25;
-		}
-		:global(.show-transaction-button) {
-			pointer-events: all;
-		}
-		:global(.transaction) {
-			text-decoration: line-through;
-		}
-		&:hover {
-			background-color: transparent;
-			transition: none;
-		}
 	}
 	.transaction-info {
 		display: flex;
