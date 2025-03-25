@@ -202,5 +202,6 @@
 	},
 	"updateLanguageError": "Error: could not update language preference",
 	"feedbackError": "Failed to send feedback",
-	"invalidEmailAddress": "Invalid email address"
+	"invalidEmailAddress": "Invalid email address",
+	"comingSoon": "Coming soon!"
 }

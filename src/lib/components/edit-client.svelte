@@ -13,6 +13,7 @@
 	import ErrorComp from './error.svelte'
 	import type { z, ZodFormattedError } from 'zod'
 	import { emailFormSchema } from '$lib/schemas'
+	import { notImplemented } from '$lib/not-implemented'
 
 	type Props = {
 		close: () => void
@@ -180,7 +181,12 @@
 			/>
 			<section class="profile-helper">
 				<Typography variant="small">{$_('profileImageHelper')}</Typography>
-				<Button variant="solid" dimension="small"><Image size={16} />{$_('uploadImage')}</Button>
+				<Button
+					variant="solid"
+					dimension="small"
+					onclick={() => notImplemented(undefined, $_('comingSoon'))}
+					><Image size={16} />{$_('uploadImage')}</Button
+				>
 			</section>
 		</section>
 	</section>
