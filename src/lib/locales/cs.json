@@ -146,8 +146,10 @@
 		"title": "Rádi slyšíme zpětnou vazbu",
 		"text": "Máte nápad, jak vylepšit Kalkul? Něco nefungovalo, jak by mělo? Něco se vám opravdu líbilo? Cokoliv jiného?... nasloucháme. Vaše zpětná vazba nám pomáhá zlepšovat Kalkul, děkujeme!",
 		"textareaPlaceholder": "Řekněte cokoliv...",
-		"confirmButton": "Odeslat zpětnou vazbu",
-		"cancelButton": "Neodesílat"
+		"confirmButton": "Odeslat",
+		"cancelButton": "Neodesílat",
+		"needHelp": "Potřebujete pomoc?",
+		"communityPage": "Navštivte naši komunitní stránku"
 	},
 	"linkSharingConfirmation": {
 		"title": "Vypnout sdílení odkazu?",
@@ -159,5 +161,6 @@
 	"updateLanguageError": "Chyba: nelze aktualizovat preference jazyka",
 	"feedbackError": "Zpětnou vazbu se nepodařilo odeslat",
 	"invalidEmailAddress": "Neplatná emailová adresa",
-	"comingSoon": "Již brzy!"
+	"comingSoon": "Již brzy!",
+	"feedbackButton": "Pomoc a zpětná vazba"
 }

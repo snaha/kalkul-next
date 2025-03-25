@@ -24,7 +24,7 @@
 			>{$_('Made with ')}<a href={routes.HOME}>kalkul.app</a></Typography
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
-			><ChatBot size={16} /></Button
+			><ChatBot size={16} />{$_('feedbackButton')}</Button
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
 			><Moon size={16} /></Button

@@ -191,7 +191,9 @@
 		"text": "Have an idea how to improve Kalkul? Something didn’t work as expected? Something you really loved? Anything else?... we’re listening. Your feedback help us make Kalkul better, thank you!",
 		"textareaPlaceholder": "Say anything...",
 		"confirmButton": "Send feedback",
-		"cancelButton": "Don't send"
+		"cancelButton": "Don't send",
+		"needHelp": "Need help?",
+		"communityPage": "Visit our community page"
 	},
 	"linkSharingConfirmation": {
 		"title": "Turn link sharing off?",
@@ -203,5 +205,6 @@
 	"updateLanguageError": "Error: could not update language preference",
 	"feedbackError": "Failed to send feedback",
 	"invalidEmailAddress": "Invalid email address",
-	"comingSoon": "Coming soon!"
+	"comingSoon": "Coming soon!",
+	"feedbackButton": "Help & Feedback"
 }

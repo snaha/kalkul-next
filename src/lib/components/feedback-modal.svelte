@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChatBot, Close, SendAlt } from 'carbon-icons-svelte'
+	import { ArrowRight, ChatBot, Close, SendAlt } from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Modal, { type ModalProps } from './ui/modal.svelte'
 	import Typography from './ui/typography.svelte'
@@ -11,6 +11,7 @@
 	import adapter from '$lib/adapters'
 	import type { Feedback, MetaFields } from '$lib/types'
 	import { page } from '$app/state'
+	import { notImplemented } from '$lib/not-implemented'
 
 	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
 	let message = $state('')
@@ -58,10 +59,13 @@
 			<Button variant="strong" disabled={sendDisabled} dimension="compact" onclick={sendFeedback}
 				><SendAlt size={24} />{$_('feedback.confirmButton')}</Button
 			>
-			<Button variant="secondary" dimension="compact" onclick={oncancel}
-				><Close size={24} />{$_('feedback.cancelButton')}</Button
-			>
 			<div class="grower"></div>
+			<div class="right">
+				<Typography>{$_('feedback.needHelp')}</Typography>
+				<Button variant="secondary" dimension="compact" onclick={notImplemented}
+					>{$_('feedback.communityPage')}<ArrowRight size={24} /></Button
+				>
+			</div>
 		</section>
 	</section>
 </Modal>
@@ -94,13 +98,23 @@
 		align-items: center;
 		gap: var(--half-padding);
 	}
+	.grower {
+		flex-grow: 1;
+	}
+	.right {
+		display: flex;
+		align-items: center;
+		gap: var(--half-padding);
+	}
 	@media screen and (max-width: 624px) {
 		.buttons {
 			flex-direction: column-reverse;
 			align-items: stretch;
 		}
-	}
-	.grower {
-		flex-grow: 1;
+		.right {
+			flex-direction: column;
+			text-align: start;
+			align-items: stretch;
+		}
 	}
 </style>
