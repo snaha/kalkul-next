@@ -10,6 +10,7 @@
 	import FeedbackModal from './feedback-modal.svelte'
 	import { goto } from '$app/navigation'
 	import { notImplemented } from '$lib/not-implemented'
+	import BetaBadge from './beta-badge.svelte'
 
 	let showFeedbackModal = $state(false)
 
@@ -20,9 +21,12 @@
 </script>
 
 <header>
-	<a class="logo-link" href={routes.HOME}>
-		<Logo size={32} />
-	</a>
+	<div class="left">
+		<a class="logo-link" href={routes.HOME}>
+			<Logo size={32} />
+		</a>
+		<BetaBadge>BETA</BetaBadge>
+	</div>
 	<div class="user-info">
 		<Dropdown buttonDimension="small" mode="dark">
 			{#snippet button()}
@@ -57,6 +61,11 @@
 		align-items: center;
 		background-color: var(--colors-dark-ultra-low);
 		color: var(--colors-dark-ultra-high);
+	}
+	.left {
+		display: flex;
+		align-items: center;
+		gap: var(--quarter-padding);
 	}
 	.logo-link {
 		display: flex;
