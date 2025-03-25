@@ -16,6 +16,7 @@ env:
   VITE_ADAPTER: static
   STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
   PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN_DEV }}
+  PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
 
 permissions:
   contents: write

@@ -37,6 +37,9 @@ services:
       - key: STRIPE_API_KEY
         scope: RUN_AND_BUILD_TIME
         value: ${STRIPE_API_KEY}
+      - key: PUBLIC_DISABLE_PAYWALL
+        scope: RUN_AND_BUILD_TIME
+        value: ${PUBLIC_DISABLE_PAYWALL}
       - key: PORT
         scope: RUN_TIME
         value: 8080

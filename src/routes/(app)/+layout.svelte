@@ -14,6 +14,7 @@
 	import { goto } from '$app/navigation'
 	import { loadSubscriptions } from '$lib/payments/load'
 	import ContentLayout from '$lib/components/content-layout.svelte'
+	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 
 	let { children } = $props()
 
@@ -29,6 +30,7 @@
 
 	$effect(() => {
 		if (
+			PUBLIC_DISABLE_PAYWALL !== 'yes' &&
 			authStore.isLoggedIn &&
 			!subscriptionStore.loading &&
 			!subscriptionStore.data.some(
@@ -55,7 +57,7 @@
 		<ContentLayout>
 			<Loader />
 		</ContentLayout>
-	{:else if subscriptionStore.getActiveSubscription()}
+	{:else if PUBLIC_DISABLE_PAYWALL === 'yes' || subscriptionStore.getActiveSubscription()}
 		{#if children}
 			{@render children()}
 		{/if}

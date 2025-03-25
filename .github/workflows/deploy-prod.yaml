@@ -9,6 +9,7 @@ env:
   PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
   STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
   PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN_PROD }}
+  PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
 
 jobs:
   deploy-app:

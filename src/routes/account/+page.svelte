@@ -32,6 +32,7 @@
 	import { locale, _, locales } from 'svelte-i18n'
 	import Stripe from 'stripe'
 	import { authorizedFetch } from '$lib/auth'
+	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 
 	let error: string | undefined = $state()
 	const subscription: Stripe.Subscription | undefined = $derived(subscriptionStore.data[0])
@@ -81,6 +82,10 @@
 		}
 
 		window.open(url)
+	}
+
+	function isPaymentEnabled() {
+		return PUBLIC_DISABLE_PAYWALL !== 'yes'
 	}
 </script>
 
@@ -216,7 +221,7 @@
 							</Vertical>
 						</Vertical>
 						{@render nextPayment()}
-					{:else}
+					{:else if isPaymentEnabled()}
 						<Vertical class="rounded-box trans-red-10" --vertical-gap="var(--padding)">
 							<Typography
 								variant="h4"
@@ -234,6 +239,17 @@
 								>{$_('Subscribe now')}<ArrowRight size={24} /></Button
 							>
 						</Horizontal>
+					{:else}
+						<Vertical class="rounded-box trans-neutral-10" --vertical-gap="var(--padding)">
+							<Typography
+								variant="h4"
+								--colors-ultra-high="var(--colors-high-neutral)"
+								style="display: flex; gap: var(--half-padding)"
+							>
+								<CheckmarkFilled size={32} />
+								{$_('Free Beta')}</Typography
+							>
+						</Vertical>
 					{/if}
 				</Vertical>
 			</TabContent>
@@ -279,5 +295,8 @@
 	}
 	:global(.trans-red-10) {
 		background-color: rgb(from var(--colors-red) r g b / 0.1) !important;
+	}
+	:global(.trans-neutral-10) {
+		background-color: rgb(from var(--colors-high-neutral) r g b / 0.1) !important;
 	}
 </style>
