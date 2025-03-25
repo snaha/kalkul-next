@@ -17,6 +17,7 @@ env:
   STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
   PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN_DEV }}
   PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
+  VITE_API_URL: ${{ vars.PREVIEW_VITE_API_URL }}
 
 permissions:
   contents: write
@@ -50,11 +51,11 @@ jobs:
 
       - name: Build
         if: github.event.action != 'closed'
-        run: VITE_BASE_URL="/preview/pr-${{ github.event.number }}" pnpm build
+        run: VITE_BASE_URL="/pr-${{ github.event.number }}" pnpm build
 
       - name: Deploy PR preview
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: ./build
-          umbrella-dir: /preview
-          pages-base-url: dev.kalkul.app
+          umbrella-dir: /
+          pages-base-url: preview.kalkul.app

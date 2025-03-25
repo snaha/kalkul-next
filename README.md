@@ -16,6 +16,7 @@
 | `VITE_BASE_URL`            |                          | Base path to which the app is deployed (no value means root `/`)                    |
 | `VITE_API_URL`             |                          | URL on which API endpoints are (no value makes it )                                 |
 | `VITE_ADAPTER`             |                          | Sveltekit adapter to use (`static` uses the adapter-static, otherwise adapter-node) |
+| `CORS_ALLOWED_ORIGIN`      |                          | Access-Control-Allow-Origin value                                                   |
 
 # Supabase Commands and Operations
 
