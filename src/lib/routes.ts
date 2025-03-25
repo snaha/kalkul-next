@@ -10,7 +10,7 @@ export default {
 	LOGIN: `${routePrefix}/login`,
 	ACCOUNT: `${routePrefix}/account`,
 	ACCOUNT_CHANGE_EMAIL: `${routePrefix}/account/change-email`,
-	ACCOUNT_CHANGE_PASSWORD: `${routePrefix}/accountchange-password`,
+	ACCOUNT_CHANGE_PASSWORD: `${routePrefix}/account/change-password`,
 	DEPOSIT: (index?: number) => `${routePrefix}/deposit${index === undefined ? '' : `/${index}`}`,
 	WITHDRAWAL: (index?: number) =>
 		`${routePrefix}/withdrawal${index === undefined ? '' : `/${index}`}`,
