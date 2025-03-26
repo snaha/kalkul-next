@@ -161,6 +161,6 @@
 	"updateLanguageError": "Chyba: nelze aktualizovat preference jazyka",
 	"feedbackError": "Zpětnou vazbu se nepodařilo odeslat",
 	"invalidEmailAddress": "Neplatná emailová adresa",
-	"comingSoon": "Již brzy!",
+	"comingSoon": "Tahle funkce ještě nefunguje, ale už na tom makáme!",
 	"feedbackButton": "Pomoc a zpětná vazba"
 }
