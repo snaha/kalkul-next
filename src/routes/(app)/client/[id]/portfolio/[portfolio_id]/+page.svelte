@@ -141,7 +141,7 @@
 								{portfolio}
 								index={i}
 								hidden={investmentsViewStore.isHidden(investment.id)}
-								focused={investmentsViewStore.isFocused(investment.id)}
+								focused={investmentsViewStore.isFocused(investment.id) && investments.length > 1}
 								{openTransaction}
 								toggleHide={() => {
 									investmentsViewStore.toggleHide(investment.id)
