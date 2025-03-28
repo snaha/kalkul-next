@@ -7,6 +7,7 @@ import type {
 	frequencySchema,
 	supportedCurrenciesSchema,
 } from './schemas'
+import type { ChartDataset, ChartType, ChartTypeRegistry } from 'chart.js'
 
 type DepositForm = z.infer<typeof depositWithdrawalFormSchema>
 type WithdrawalForm = z.infer<typeof depositWithdrawalFormSchema>
@@ -74,4 +75,17 @@ export interface GraphData {
 	graphInflationDeposits: number[]
 	graphInflationWithdrawals: number[]
 	graphInflationInvestmentValue: number[]
+}
+
+export type TooltipData = {
+	dataIndex: number
+	value: number
+	colorIndex: number
+	name: string
+	type?: string
+}
+
+export type CustomDataset<T extends keyof ChartTypeRegistry> = ChartDataset<T> & {
+	colorIndex: number
+	label: string
 }

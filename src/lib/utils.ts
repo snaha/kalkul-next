@@ -29,12 +29,17 @@ export function formatAge(birthDate: Date, currentDate = new Date()): string {
 	return age.toFixed()
 }
 
-export function formatCurrency(value: number | bigint, currency: string) {
+export function formatCurrency(
+	value: number | bigint,
+	currency: string,
+	options?: Intl.NumberFormatOptions,
+) {
 	// detect locale automatically
 	const locale = undefined
 	const intl = new Intl.NumberFormat(locale, {
 		currencyDisplay: 'code',
 		maximumFractionDigits: 2,
+		...options,
 	})
 	return `${intl.format(value)} ${currency}`
 }

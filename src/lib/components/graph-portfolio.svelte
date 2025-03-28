@@ -2,7 +2,7 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Chart from '$lib/components/chart.svelte'
 	import { getGraphDataForPortfolio } from '$lib/calc'
-	import type { Portfolio, InvestmentWithColorIndex } from '$lib/types'
+	import type { Portfolio, InvestmentWithColorIndex, TooltipData, CustomDataset } from '$lib/types'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
@@ -17,6 +17,8 @@
 	import Badge from './ui/badge.svelte'
 	import FullscreenGraph from './graph-fullscreen.svelte'
 	import type { Snippet } from 'svelte'
+	import TooltipInvestment from './tooltip-investment.svelte'
+	import TooltipTransaction from './tooltip-transaction.svelte'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -137,6 +139,72 @@
 				})),
 	)
 
+	function getTotalValue() {
+		const filteredInvestments = data.filter(
+			(r, i) => !investmentsViewStore.isHidden(investments[i].id),
+		)
+		const totalValue: number[] = new Array(total.graphLabels.length)
+		const totalWithInflation: number[] = new Array(total.graphLabels.length)
+		if (filteredInvestments.length > 0) {
+			for (let i = 0; i < filteredInvestments[0].graphInvestmentValue.length; i++) {
+				let sum = 0
+				let sumWithInflation = 0
+				for (let j = 0; j < filteredInvestments.length; j++) {
+					sum += filteredInvestments[j].graphInvestmentValue[i]
+					sumWithInflation += filteredInvestments[j].graphInflationInvestmentValue[i]
+				}
+				totalValue[i] = sum
+				totalWithInflation[i] = sumWithInflation
+			}
+		}
+		return { totalValue, totalWithInflation }
+	}
+
+	function getTotalDeposits() {
+		const filteredInvestments = data.filter(
+			(r, i) => !investmentsViewStore.isHidden(investments[i].id),
+		)
+		const totalDeposits: number[] = new Array(total.graphLabels.length)
+		const totalDepositsWithInflation: number[] = new Array(total.graphLabels.length)
+		if (filteredInvestments.length > 0) {
+			for (let i = 0; i < filteredInvestments[0].graphDeposits.length; i++) {
+				let sum = 0
+				let sumWithInflation = 0
+				for (let j = 0; j < filteredInvestments.length; j++) {
+					sum += filteredInvestments[j].graphDeposits[i]
+					sumWithInflation += filteredInvestments[j].graphInflationDeposits[i]
+				}
+				totalDeposits[i] = sum
+				totalDepositsWithInflation[i] = sumWithInflation
+			}
+		}
+		return { totalDeposits, totalDepositsWithInflation }
+	}
+	function getTotalWithdrawals() {
+		const filteredInvestments = data.filter(
+			(r, i) => !investmentsViewStore.isHidden(investments[i].id),
+		)
+		const totalWithdrawals: number[] = new Array(total.graphLabels.length)
+		const totalWithdrawalsWithInflation: number[] = new Array(total.graphLabels.length)
+		if (filteredInvestments.length > 0) {
+			for (let i = 0; i < filteredInvestments[0].graphWithdrawals.length; i++) {
+				let sum = 0
+				let sumWithInflation = 0
+				for (let j = 0; j < filteredInvestments.length; j++) {
+					sum += filteredInvestments[j].graphWithdrawals[i]
+					sumWithInflation += filteredInvestments[j].graphInflationWithdrawals[i]
+				}
+				totalWithdrawals[i] = sum
+				totalWithdrawalsWithInflation[i] = sumWithInflation
+			}
+		}
+		return { totalWithdrawals, totalWithdrawalsWithInflation }
+	}
+
+	const { totalValue, totalWithInflation } = $derived(getTotalValue())
+	const { totalDeposits, totalDepositsWithInflation } = $derived(getTotalDeposits())
+	const { totalWithdrawals, totalWithdrawalsWithInflation } = $derived(getTotalWithdrawals())
+
 	function getDateFromGraphLabels(graphLabels: string) {
 		const month = graphLabels.includes('-') ? graphLabels : undefined
 		if (month) {
@@ -153,6 +221,10 @@
 		}
 	}
 	let fullscreenGraph: undefined | 'value' | 'transactions' | 'breakdown' = $state(undefined)
+	let investmentsTooltipData: TooltipData[] = $state([])
+	let transactionTooltipData: TooltipData[] = $state([])
+
+	let tooltipPosition = $state({ x: 0, y: 0 })
 </script>
 
 {#snippet valueChart()}
@@ -203,17 +275,39 @@
 					},
 				},
 				tooltip: {
-					caretPadding: 20,
-					filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
-					callbacks: {
-						footer: (tooltipItems) => {
-							const index = tooltipItems[0].dataIndex
-							const val = adjustWithInflation
-								? total.graphInflationInvestmentValue
-								: total.graphInvestmentValue
+					enabled: false,
+					external: (context) => {
+						const { tooltip } = context
 
-							return 'Total: ' + val[index].toLocaleString()
-						},
+						if (tooltip.opacity === 0) {
+							investmentsTooltipData = []
+						} else {
+							tooltipPosition = {
+								x: tooltip.caretX,
+								y: tooltip.caretY,
+							}
+							investmentsTooltipData = tooltip.dataPoints
+								.filter((d) => d.raw !== 0)
+								.map((d) => {
+									const dataset = d.dataset as CustomDataset<'line'>
+									return {
+										dataIndex: d.dataIndex,
+										value: d.raw as number,
+										colorIndex: dataset.colorIndex,
+										name: dataset.label,
+									}
+								})
+						}
+						const graphWidth = context.chart.width
+						const tooltipWidth = 321
+
+						tooltipPosition.y += 32
+
+						if (tooltipPosition.x < graphWidth / 2) {
+							tooltipPosition.x += tooltipWidth + 16
+						} else {
+							tooltipPosition.x -= 16
+						}
 					},
 				},
 			},
@@ -240,6 +334,15 @@
 				},
 			},
 		]}
+	/>
+	<TooltipInvestment
+		{tooltipPosition}
+		tooltipData={investmentsTooltipData}
+		{totalValue}
+		{totalWithInflation}
+		{adjustWithInflation}
+		currency={portfolio.currency}
+		labels={data[0]?.graphLabels}
 	/>
 {/snippet}
 {#snippet transactionsChart()}
@@ -280,20 +383,40 @@
 					display: false,
 				},
 				tooltip: {
-					caretPadding: 20,
-					filter: (d) => !d.dataset?.label?.endsWith('_hidden'),
-					callbacks: {
-						footer: (tooltipItems) => {
-							const index = tooltipItems[0].dataIndex
-							const withdrawals = adjustWithInflation
-								? total.graphInflationWithdrawals
-								: total.graphWithdrawals
-							const deposits = adjustWithInflation
-								? total.graphInflationDeposits
-								: total.graphDeposits
+					enabled: false,
+					external: (context) => {
+						const { tooltip } = context
 
-							return `Total: ${(deposits[index] + withdrawals[index]).toLocaleString()}`
-						},
+						if (tooltip.opacity === 0) {
+							transactionTooltipData = []
+						} else {
+							tooltipPosition = {
+								x: tooltip.caretX,
+								y: tooltip.caretY,
+							}
+
+							transactionTooltipData = tooltip.dataPoints
+								.filter((d) => d.raw !== 0)
+								.map((d) => {
+									const dataset = d.dataset as CustomDataset<'bar'>
+									return {
+										dataIndex: d.dataIndex,
+										value: d.raw as number,
+										colorIndex: dataset.colorIndex,
+										name: dataset.label,
+									}
+								})
+						}
+						const graphWidth = context.chart.width
+						const tooltipWidth = 321
+
+						tooltipPosition.y += 32
+
+						if (tooltipPosition.x < graphWidth / 2) {
+							tooltipPosition.x += tooltipWidth + 16
+						} else {
+							tooltipPosition.x -= 16
+						}
 					},
 				},
 			},
@@ -320,6 +443,17 @@
 				},
 			},
 		]}
+	/>
+	<TooltipTransaction
+		{tooltipPosition}
+		tooltipData={transactionTooltipData}
+		{totalDeposits}
+		{totalDepositsWithInflation}
+		{totalWithdrawals}
+		{totalWithdrawalsWithInflation}
+		{adjustWithInflation}
+		currency={portfolio.currency}
+		labels={data[0]?.graphLabels}
 	/>
 {/snippet}
 {#snippet breakdownChart()}
