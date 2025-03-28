@@ -206,9 +206,17 @@
 	"feedbackError": "Failed to send feedback",
 	"invalidEmailAddress": "Invalid email address",
 	"comingSoon": "Coming soon!",
+	"feedbackButton": "Help & Feedback",
+	"landingPage": {
+		"getStarted": "Get Started",
+		"title": "Make {colorHigh} Financial Plans",
+		"titleHigh": "Outstanding",
+		"subtitle": "Kalkul helps professional advisors create, visualise and share financial plans with their clients.",
+		"footer": "Kalkul is currently available as a free beta, for testing purposes only",
+		"warning": "Beta is not available on mobile, sorry!"
+	},
 	"details": "Details",
 	"fees": "Fees",
 	"advanceSetup": "Advance setup",
-	"ter": "TER (Total Expense Ratio)",
-	"feedbackButton": "Help & Feedback"
+	"ter": "TER (Total Expense Ratio)"
 }

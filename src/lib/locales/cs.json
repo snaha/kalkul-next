@@ -166,5 +166,13 @@
 	"advanceSetup": "Pokročilé nastavení",
 	"ter": "TER (Celkový nákladový poměr)",
 	"comingSoon": "Tahle funkce ještě nefunguje, ale už na tom makáme!",
-	"feedbackButton": "Pomoc a zpětná vazba"
+	"feedbackButton": "Pomoc a zpětná vazba",
+	"landingPage": {
+		"getStarted": "Začít",
+		"title": "Vytvářejte {colorHigh} finanční plány",
+		"titleHigh": "výjimečné",
+		"subtitle": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
+		"footer": "Kalkul je momentálně k dispozici jako bezplatná beta verze pouze pro účely testování.",
+		"warning": "Beta verze není dostupná na mobilech, omlouváme se!"
+	}
 }

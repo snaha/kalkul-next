@@ -8,7 +8,7 @@
 
 <style>
 	:root {
-		--color: var(--colors-dark-red);
+		--color: var(--colors-high);
 	}
 	.beta-badge {
 		border: 1px solid var(--color);
@@ -21,5 +21,6 @@
 		line-height: 12px;
 		letter-spacing: 1px;
 		user-select: none;
+		text-transform: uppercase;
 	}
 </style>

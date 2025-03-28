@@ -1,20 +1,18 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button.svelte'
-	import { ArrowRight } from 'carbon-icons-svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
-	import Typography from '$lib/components/ui/typography.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
-	import { _, locale, locales } from 'svelte-i18n'
+	import { locale, locales } from 'svelte-i18n'
 	import routes from '$lib/routes'
 	import { page } from '$app/state'
 	import Login from '$lib/components/login.svelte'
 	import { get } from 'svelte/store'
-	import { base } from '$app/paths'
 	import { subscriptionStore } from '$lib/stores/subscription.svelte'
 	import { goto } from '$app/navigation'
 	import { loadSubscriptions } from '$lib/payments/load'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
+	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	let { children } = $props()
 
@@ -52,7 +50,7 @@
 	<ContentLayout>
 		<Loader />
 	</ContentLayout>
-{:else if authStore.isLoggedIn}
+{:else if authStore.isLoggedIn && !layoutStore.mobile}
 	{#if subscriptionStore.loading}
 		<ContentLayout>
 			<Loader />
@@ -62,66 +60,8 @@
 			{@render children()}
 		{/if}
 	{/if}
-{:else if page.url.pathname !== routes.HOME}
+{:else if page.url.pathname !== routes.HOME && !layoutStore.mobile}
 	<Login />
 {:else}
-	<div class="intro-screen">
-		<div class="intro-banner">
-			<div class="logo">
-				<img src={`${base}/logo.svg`} alt="Logo" />
-			</div>
-			<div class="info">
-				<Typography variant="h1">Envision financial freedom</Typography>
-				<Typography variant="large"
-					>Kalkul helps financial advisors create, visualise and share beautifully clear investment
-					plans with their clients.</Typography
-				>
-			</div>
-			<div class="buttons">
-				<Button href={routes.SIGNUP}>{$_('signUp')}</Button>
-				<Button href={routes.LOGIN} variant="secondary"
-					>{$_('login')}<ArrowRight size={24} /></Button
-				>
-			</div>
-		</div>
-		<div class="image">
-			<img src={`${base}/capa2.svg`} alt="intro" width="100%" />
-		</div>
-	</div>
+	<BetaLandingPage isMobile={layoutStore.mobile} />
 {/if}
-
-<style lang="postcss">
-	.intro-screen {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: var(--padding);
-		height: 100vh;
-		padding: var(--padding);
-		flex-wrap: wrap;
-	}
-	.intro-banner {
-		display: flex;
-		flex-direction: column;
-		gap: var(--double-padding);
-		width: 560px;
-	}
-	.logo {
-		width: 80px;
-		height: 96px;
-	}
-	.info {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-	}
-	.image {
-		display: flex;
-		justify-content: center;
-		width: 560px;
-	}
-	.buttons {
-		display: flex;
-		gap: var(--half-padding);
-	}
-</style>
