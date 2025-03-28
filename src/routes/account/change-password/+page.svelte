@@ -89,14 +89,11 @@
 
 <main>
 	{#if success}
-		<div class="logo">
-			<a href={routes.HOME}><img src={`${base}/logo.svg`} alt="Logo" /></a>
-		</div>
-		<img class="main-image" src={`${base}/images/change-password.svg`} alt="Change password" />
+		<img class="main-image" src={`${base}/images/hand-success.svg`} alt="Change password" />
 		<Typography variant="h4" class="center-align">{$_('successChangePassword')}</Typography>
 		<Button
 			class="fit-content center-align"
-			variant="solid"
+			variant="strong"
 			dimension="compact"
 			href={routes.ACCOUNT}>{$_('backToSettings')}</Button
 		>
@@ -168,18 +165,6 @@
 	}
 	.main-image {
 		margin: 0 auto;
-	}
-	.logo {
-		position: fixed;
-		top: var(--padding);
-		left: var(--padding);
-		width: 40px;
-		height: 40px;
-	}
-	.logo img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
 	}
 	.error {
 		display: inline-flex;

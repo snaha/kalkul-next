@@ -78,10 +78,7 @@
 
 <main>
 	{#if success}
-		<div class="logo">
-			<a href={routes.HOME}><img src={`${base}/logo.svg`} alt="Logo" /></a>
-		</div>
-		<img class="main-image" src={`${base}/images/change-email.svg`} alt="Change email" />
+		<img class="main-image" src={`${base}/images/email-link.svg`} alt="Change email" />
 		<div class="confirm-information">
 			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
 			<Typography variant="large">
@@ -158,18 +155,6 @@
 	}
 	.main-image {
 		margin: 0 auto;
-	}
-	.logo {
-		position: fixed;
-		top: var(--padding);
-		left: var(--padding);
-		width: 40px;
-		height: 40px;
-	}
-	.logo img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
 	}
 	.error {
 		display: inline-flex;

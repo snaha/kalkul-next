@@ -119,7 +119,7 @@
 {:else if error}
 	<ContentLayout>
 		<Vertical --vertical-gap="var(--double-padding)" --vertical-align-items="center">
-			<img src={`${base}/capa3.svg`} alt="error" width="142" height="200" />
+			<img src={`${base}/images/payment-error.svg`} alt="error" width="142" height="200" />
 			<Vertical --vertical-gap="var(--half-padding)">
 				<Typography variant="large" bold
 					>{$_('There was an error while loading the page')}</Typography
