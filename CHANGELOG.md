@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.5.0](https://github.com/snaha/kalkul/compare/v0.4.0...v0.5.0) (2025-03-28)
+
+
+### Features
+
+* ```TER``` fee on investment ([#537](https://github.com/snaha/kalkul/issues/537)) ([7d06a0d](https://github.com/snaha/kalkul/commit/7d06a0da4db1556a079ff291a790c42eada65a5d))
+* added ```BETA``` badge ([#531](https://github.com/snaha/kalkul/issues/531)) ([50812d7](https://github.com/snaha/kalkul/commit/50812d7f45b3659c045f3785cabc3603c5de7a1b))
+* allow cors on API endpoints ([#541](https://github.com/snaha/kalkul/issues/541)) ([fc639ec](https://github.com/snaha/kalkul/commit/fc639ecf82c35ca31d09f3f1ed86b2ec2366b097))
+* beta landing page ([#553](https://github.com/snaha/kalkul/issues/553)) ([b49993d](https://github.com/snaha/kalkul/commit/b49993d2ee3c45f8065c9f61f6a315f03bd30ef0))
+* check-locales script ([#543](https://github.com/snaha/kalkul/issues/543)) ([7c16ee4](https://github.com/snaha/kalkul/commit/7c16ee49cbd808eaf279825a0d2dbb863724f635))
+* custom tooltip of charts ([#542](https://github.com/snaha/kalkul/issues/542)) ([b86ce90](https://github.com/snaha/kalkul/commit/b86ce90a64be6fdebb14442e45fea4dddd8bb9ee))
+* disable paywall ([#528](https://github.com/snaha/kalkul/issues/528)) ([28248b5](https://github.com/snaha/kalkul/commit/28248b55d40d2f2838578866c7c16e08b53acc16))
+* feedback improvements according to the figma ([#557](https://github.com/snaha/kalkul/issues/557)) ([e919019](https://github.com/snaha/kalkul/commit/e919019ffa2000893539dd43fde9be63cdf42878))
+* graph fullscreen view ([#492](https://github.com/snaha/kalkul/issues/492)) ([079addb](https://github.com/snaha/kalkul/commit/079addb882f39c6bcf56bddf4dba190fce098003))
+* modified feedback button and modal ([#536](https://github.com/snaha/kalkul/issues/536)) ([2057486](https://github.com/snaha/kalkul/commit/2057486b31562d4d34018f9eab5b0ddcad539d91))
+* new ilustrations ([#554](https://github.com/snaha/kalkul/issues/554)) ([0b15062](https://github.com/snaha/kalkul/commit/0b1506242ed88b145bbafff8bc27b298a0211653))
+
+
+### Bug Fixes
+
+* ```ACCOUNT_CHANGE_PASSWORD``` path in routes.ts ([#538](https://github.com/snaha/kalkul/issues/538)) ([b3a077e](https://github.com/snaha/kalkul/commit/b3a077e631a9ab5a53630d0c771e48c89065770e))
+* changing language ([#559](https://github.com/snaha/kalkul/issues/559)) ([083550f](https://github.com/snaha/kalkul/commit/083550f8dd5d9695ccf2b65902df1dc3170243f6))
+* display ```coming soon``` message on profile picture upload butt… ([#535](https://github.com/snaha/kalkul/issues/535)) ([48ba084](https://github.com/snaha/kalkul/commit/48ba084e72cf547c4b3ba8756707bcb1330f8ac9))
+* explain a bit better what comming soon means in czech ([#549](https://github.com/snaha/kalkul/issues/549)) ([16f0a2a](https://github.com/snaha/kalkul/commit/16f0a2ac20c5b86afa517548f6f51e5f00df5ae7))
+* focus icon at investment card ([#558](https://github.com/snaha/kalkul/issues/558)) ([9eeeebe](https://github.com/snaha/kalkul/commit/9eeeebe672b785a25657d1c9e5afc8052b261ea3))
+* hiding individual transaction - displayed message ```Coming soon``` ([#529](https://github.com/snaha/kalkul/issues/529)) ([a2bef69](https://github.com/snaha/kalkul/commit/a2bef690623c034068a478231ba56da46b9dd26a))
+* incorrect investment.portfolio column ([#548](https://github.com/snaha/kalkul/issues/548)) ([c3feee2](https://github.com/snaha/kalkul/commit/c3feee2049966b848fd7b777a47f5d0a4edc660b))
+* investment table portfolio reference field name ([#499](https://github.com/snaha/kalkul/issues/499)) ([5e1e19b](https://github.com/snaha/kalkul/commit/5e1e19b6c87a4b36e00565ef4a54dca53382b4a0))
+* remove non-breaking spaces from currency formatting ([#505](https://github.com/snaha/kalkul/issues/505)) ([c26ff66](https://github.com/snaha/kalkul/commit/c26ff668aef92f64763e1c9de80910af7c20787b))
+* trial period remaining days ([#508](https://github.com/snaha/kalkul/issues/508)) ([d53ea21](https://github.com/snaha/kalkul/commit/d53ea21d08b0f212430b96b553031456ba182549))
+
 ## [0.4.0](https://github.com/snaha/kalkul/compare/v0.3.0...v0.4.0) (2025-03-21)
 
 
