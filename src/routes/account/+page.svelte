@@ -62,6 +62,7 @@
 				error = $_('updateLanguageError')
 				console.error('Failed to update language', error)
 			})
+			if (authStore.user) authStore.user.user_metadata.prefer_language = newLocale
 		}
 	})
 
