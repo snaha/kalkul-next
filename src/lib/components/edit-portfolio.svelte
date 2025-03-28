@@ -13,7 +13,6 @@
 	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import DeleteModal from './delete-modal.svelte'
-	import CustomHeader from './custom-header.svelte'
 
 	type Props = {
 		client: Client
@@ -142,8 +141,7 @@
 	}
 </script>
 
-<CustomHeader />
-<main class="vertical">
+<form class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}
 			<Typography variant="h4">{$_('addPortfolio')}</Typography>
@@ -244,7 +242,7 @@
 			>
 		{/if}
 	</section>
-</main>
+</form>
 
 <DeleteModal
 	confirm={deletePortfolio}
@@ -257,7 +255,7 @@
 />
 
 <style>
-	main {
+	form {
 		max-width: 560px;
 		flex: 1;
 	}
@@ -265,7 +263,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		align-items: center;
+		align-items: flex-end;
 		gap: var(--padding);
 	}
 	.vertical {

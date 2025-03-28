@@ -294,11 +294,11 @@ export default class Supabase implements Adapter {
 		return this.addData('investment', investment)
 	}
 
-	async updateInvestment(investment: Partial<Transaction> & Pick<Transaction, 'id'>) {
+	async updateInvestment(investment: Partial<Investment> & Pick<Investment, 'id'>) {
 		return this.updateData('investment', investment)
 	}
 
-	async deleteInvestment(investment: Partial<Transaction> & Pick<Transaction, 'id'>) {
+	async deleteInvestment(investment: Partial<Investment> & Pick<Investment, 'id'>) {
 		return this.deleteData('investment', investment)
 	}
 

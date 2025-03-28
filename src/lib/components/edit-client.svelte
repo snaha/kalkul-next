@@ -9,7 +9,6 @@
 	import Avatar from '$lib/components/avatar.svelte'
 	import type { ClientNoId, Client } from '$lib/types'
 	import DeleteModal from './delete-modal.svelte'
-	import CustomHeader from './custom-header.svelte'
 	import ErrorComp from './error.svelte'
 	import type { z, ZodFormattedError } from 'zod'
 	import { emailFormSchema } from '$lib/schemas'
@@ -111,8 +110,7 @@
 	})
 </script>
 
-<CustomHeader />
-<main class="vertical">
+<form class="vertical">
 	<section class="horizontal">
 		{#if formType === 'create'}
 			<Typography variant="h4">{$_('addClient')}</Typography>
@@ -217,7 +215,7 @@
 			>
 		{/if}
 	</section>
-</main>
+</form>
 
 <DeleteModal
 	confirm={deleteClient}
@@ -230,8 +228,9 @@
 />
 
 <style>
-	main {
+	form {
 		max-width: 560px;
+		flex: 1;
 	}
 	.horizontal {
 		display: flex;

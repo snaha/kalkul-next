@@ -161,6 +161,10 @@
 	"updateLanguageError": "Chyba: nelze aktualizovat preference jazyka",
 	"feedbackError": "Zpětnou vazbu se nepodařilo odeslat",
 	"invalidEmailAddress": "Neplatná emailová adresa",
+	"details": "Detaily",
+	"fees": "Poplatky",
+	"advanceSetup": "Pokročilé nastavení",
+	"ter": "TER (Celkový nákladový poměr)",
 	"comingSoon": "Tahle funkce ještě nefunguje, ale už na tom makáme!",
 	"feedbackButton": "Pomoc a zpětná vazba"
 }

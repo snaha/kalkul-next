@@ -206,5 +206,9 @@
 	"feedbackError": "Failed to send feedback",
 	"invalidEmailAddress": "Invalid email address",
 	"comingSoon": "Coming soon!",
+	"details": "Details",
+	"fees": "Fees",
+	"advanceSetup": "Advance setup",
+	"ter": "TER (Total Expense Ratio)",
 	"feedbackButton": "Help & Feedback"
 }

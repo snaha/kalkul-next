@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
+	import CustomHeader from './custom-header.svelte'
 	let { children }: { children: Snippet } = $props()
 </script>
 
+<CustomHeader />
 <main>
 	{@render children()}
 </main>
@@ -12,6 +14,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: 100vh;
+		min-height: calc(100% - 106px);
+		padding: var(--padding);
+		padding-bottom: var(--double-padding);
 	}
 </style>

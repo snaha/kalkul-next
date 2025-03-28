@@ -212,7 +212,7 @@
 	}
 </script>
 
-<main class="vertical">
+<form class="vertical">
 	<section class="horizontal">
 		<Typography variant="h5"
 			>{formType === 'create' ? $_('Add') : $_('Edit')}{$_(' transaction')}</Typography
@@ -352,10 +352,10 @@
 			><TrashCan size={16} />{$_('Delete transaction')}</Button
 		>
 	{/if}
-</main>
+</form>
 
 <style type="postcss">
-	main {
+	form {
 		max-width: 560px;
 		flex: 1;
 	}

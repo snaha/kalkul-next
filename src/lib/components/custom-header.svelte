@@ -21,8 +21,10 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		position: fixed;
+		position: sticky;
 		top: 0;
+		background-color: var(--colors-ultra-low);
+		z-index: 1;
 	}
 	.logo-link {
 		display: flex;

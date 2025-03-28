@@ -55,7 +55,7 @@ export type Database = {
           advisor?: string
           birth_date?: string
           created_at?: string
-          email: string
+          email?: string
           id?: number
           name?: string
         }
@@ -90,6 +90,7 @@ export type Database = {
       }
       investment: {
         Row: {
+          advanced_fees: boolean | null
           apy: number | null
           created_at: string
           entry_fee: number | null
@@ -103,8 +104,11 @@ export type Database = {
           name: string
           portfolio_id: number
           success_fee: number | null
+          ter: number | null
+          type: string | null
         }
         Insert: {
+          advanced_fees?: boolean | null
           apy?: number | null
           created_at?: string
           entry_fee?: number | null
@@ -118,8 +122,11 @@ export type Database = {
           name: string
           portfolio_id: number
           success_fee?: number | null
+          ter?: number | null
+          type?: string | null
         }
         Update: {
+          advanced_fees?: boolean | null
           apy?: number | null
           created_at?: string
           entry_fee?: number | null
@@ -133,6 +140,8 @@ export type Database = {
           name?: string
           portfolio_id?: number
           success_fee?: number | null
+          ter?: number | null
+          type?: string | null
         }
         Relationships: [
           {
