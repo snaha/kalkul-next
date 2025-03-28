@@ -149,7 +149,13 @@
 		"confirmButton": "Odeslat",
 		"cancelButton": "Neodesílat",
 		"needHelp": "Potřebujete pomoc?",
-		"communityPage": "Navštivte naši komunitní stránku"
+		"communityPage": "Navštivte naši komunitní stránku",
+		"success": "Děkujeme!",
+		"successText": "Vážíme si, že jste si našli čas na sdílení zpětné vazby! Brzy ji přezkoumáme, děkujeme!",
+		"done": "Hotovo",
+		"error": "Ajaj...",
+		"errorText": "Něco se pokazilo, zkuste to prosím znovu!",
+		"tryAgain": "Zkusit znovu"
 	},
 	"linkSharingConfirmation": {
 		"title": "Vypnout sdílení odkazu?",

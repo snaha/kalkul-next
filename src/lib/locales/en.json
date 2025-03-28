@@ -193,7 +193,13 @@
 		"confirmButton": "Send feedback",
 		"cancelButton": "Don't send",
 		"needHelp": "Need help?",
-		"communityPage": "Visit our community page"
+		"communityPage": "Visit our community page",
+		"success": "Thank you!",
+		"successText": " We appreciate you taking the time to share feedback with us! We’ll be reviewing your feedback soon, thanks!",
+		"done": "Done",
+		"error": "Uh oh...",
+		"errorText": "Something went wrong, please try again!",
+		"tryAgain": "Try again"
 	},
 	"linkSharingConfirmation": {
 		"title": "Turn link sharing off?",

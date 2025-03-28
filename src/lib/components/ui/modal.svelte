@@ -86,6 +86,7 @@
 		background-color: var(--colors-ultra-low);
 		padding: 0;
 		max-width: 624px;
+		width: 100%;
 		color: var(--colors-ultra-high);
 	}
 	@media screen and (max-width: 560px) {
