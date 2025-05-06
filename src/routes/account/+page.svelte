@@ -165,7 +165,11 @@
 							>{$_('changePassword')}</Button
 						>
 						<FlexItem />
-						<Button dimension="compact" variant="ghost" onclick={notImplemented}
+						<Button
+							dimension="compact"
+							variant="ghost"
+							onclick={(e: Event) =>
+								notImplemented(e, $_('Contact support to delete your account with all its data'))}
 							>{$_('Delete account')}</Button
 						>
 					</Horizontal>
