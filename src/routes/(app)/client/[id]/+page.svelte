@@ -186,7 +186,6 @@
 						<span>{$_('endDate')}</span>
 						<span class="right-aligned">{$_('inflation')}</span>
 						<span class="right-aligned">{$_('currentValue')}</span>
-						<span class="right-aligned">{$_('ROI')}</span>
 						<span></span>
 						<span></span>
 					</li>
@@ -209,7 +208,6 @@
 							<span class="right-aligned"
 								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency)}</span
 							>
-							<span class="right-aligned">ROI</span>
 							<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span>
 							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
 						</li>
@@ -264,7 +262,7 @@
 	}
 	.portfolios {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 42px 42px;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 42px 42px;
 		align-items: center;
 		gap: var(--half-padding);
 		border-bottom: 1px solid var(--colors-low);
