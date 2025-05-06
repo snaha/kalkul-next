@@ -46,8 +46,11 @@
 		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
 			><ChatBot size={16} />{$_('feedbackButton')}</Button
 		>
-		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
-			><Moon size={16} /></Button
+		<Button
+			mode="dark"
+			dimension="small"
+			variant="ghost"
+			onclick={(e: Event) => notImplemented(e, $_('comingSoon'))}><Moon size={16} /></Button
 		>
 	</div>
 </header>
