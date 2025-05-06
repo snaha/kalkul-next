@@ -10,8 +10,8 @@
 	import adapter from '$lib/adapters'
 	import type { Feedback, MetaFields } from '$lib/types'
 	import { page } from '$app/state'
-	import { notImplemented } from '$lib/not-implemented'
 	import { base } from '$app/paths'
+	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 
 	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
 	let message = $state('')
@@ -97,7 +97,7 @@
 				<div class="grower"></div>
 				<div class="right">
 					<Typography>{$_('feedback.needHelp')}</Typography>
-					<Button variant="secondary" dimension="compact" onclick={notImplemented}
+					<Button variant="secondary" dimension="compact" href={PUBLIC_DISCORD_LINK} target="_blank"
 						>{$_('feedback.communityPage')}<ArrowRight size={24} /></Button
 					>
 				</div>

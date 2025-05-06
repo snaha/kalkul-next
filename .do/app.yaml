@@ -40,6 +40,9 @@ services:
       - key: PUBLIC_DISABLE_PAYWALL
         scope: RUN_AND_BUILD_TIME
         value: ${PUBLIC_DISABLE_PAYWALL}
+      - key: PUBLIC_DISCORD_LINK
+        scope: RUN_AND_BUILD_TIME
+        value: PUBLIC_DISCORD_LINK
       - key: PORT
         scope: RUN_TIME
         value: 8080

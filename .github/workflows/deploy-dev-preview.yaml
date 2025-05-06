@@ -18,6 +18,7 @@ env:
   PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN_DEV }}
   PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
   VITE_API_URL: ${{ vars.PREVIEW_VITE_API_URL }}
+  PUBLIC_DISCORD_LINK: ${{ vars.PUBLIC_DISCORD_LINK }}
 
 permissions:
   contents: write
