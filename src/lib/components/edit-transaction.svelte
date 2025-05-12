@@ -32,6 +32,7 @@
 	} from 'date-fns'
 	import FlexItem from './ui/flex-item.svelte'
 	import { calculateNumOccurrences } from '$lib/calc'
+	import Vertical from './ui/vertical.svelte'
 
 	type Props = {
 		investment: Investment
@@ -212,7 +213,7 @@
 	}
 </script>
 
-<form class="vertical">
+<Vertical --gap="var(--half-padding)">
 	<section class="horizontal">
 		<Typography variant="h5"
 			>{formType === 'create' ? $_('Add') : $_('Edit')}{$_(' transaction')}</Typography
@@ -317,14 +318,14 @@
 			onchange={onEndDateChange}
 		></DateAge>
 		<div class="spacer"></div>
-		<section class="summary vertical">
+		<Vertical --vertical-gap="var(--quarter-padding)">
 			<Typography>{numOccurrences} {$_('occurences')}</Typography>
 			<Typography
 				>{formatCurrency(totalAmount, portfolio.currency)} ({transactionType === 'deposit'
 					? $_('total deposits')
 					: $_('total withdrawals')})</Typography
 			>
-		</section>
+		</Vertical>
 	{/if}
 	<div class="spacer"></div>
 	<menu class="buttons horizontal">
@@ -352,13 +353,9 @@
 			><TrashCan size={16} />{$_('Delete transaction')}</Button
 		>
 	{/if}
-</form>
+</Vertical>
 
 <style type="postcss">
-	form {
-		max-width: 560px;
-		flex: 1;
-	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
@@ -371,12 +368,6 @@
 		:global(.toggle) {
 			border: 1px solid transparent;
 		}
-	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		gap: var(--half-padding);
 	}
 	.horizontal :global(.grower) {
 		flex: 1;
@@ -400,8 +391,5 @@
 		flex-grow: 1 !important;
 	}
 	.spacer {
-	}
-	.summary {
-		gap: var(--quarter-padding);
 	}
 </style>

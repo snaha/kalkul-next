@@ -14,6 +14,8 @@
 	import Toggle from './ui/toggle.svelte'
 	import { notImplemented } from '$lib/not-implemented'
 	import Dropdown from './ui/dropdown.svelte'
+	import ContentLayout from './content-layout.svelte'
+	import Vertical from './ui/vertical.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -145,199 +147,201 @@
 	}
 </script>
 
-<form class="vertical">
-	<section class="horizontal">
-		{#if formType === 'create'}
-			<Typography variant="h4">{$_('addInvestment')}</Typography>
-		{:else}
-			<Typography variant="h4">{$_('Edit investment')}</Typography>
-		{/if}
-		<div class="grower"></div>
-		<Typography>{$_('in')} {portfolio.name}</Typography>
-	</section>
-	<div class="spacer"></div>
-	<Typography variant="h5">{$_('details')}</Typography>
-	<section class="horizontal half-gap">
-		<Input
-			dimension="compact"
-			variant="solid"
-			bind:value={name}
-			placeholder={defaultName}
-			label={$_('investmentName')}
-			class="grower"
-		></Input>
-		<Dropdown buttonDimension="compact" buttonVariant="solid" left autoClose={false}>
-			{#snippet button()}
-				<DocumentImport size={24} />
-			{/snippet}
-			<div class="dropdown">
-				<Typography variant="h5">{$_('Import data for this investment')}</Typography>
-				<div class="horizontal half-gap">
-					<Input
-						dimension="compact"
-						variant="solid"
-						bind:value={isinNumber}
-						label={$_('ISIN number')}
-					></Input>
-					<Button variant="strong" dimension="compact" onclick={notImplemented}
-						><Checkmark size={24} />{$_('Import data')}</Button
-					>
-				</div>
-			</div>
-		</Dropdown>
-	</section>
-	<Input
-		dimension="compact"
-		variant="solid"
-		bind:value={type}
-		placeholder={$_('E.g. "Equity"')}
-		label={$_('Type (optional)')}
-	></Input>
-	<Input
-		dimension="compact"
-		variant="solid"
-		bind:value={apy}
-		placeholder={'0'}
-		label={$_('APY')}
-		unit="%"
-		type="number"
-		step={0.001}
-		min={0}
-	></Input>
-	<section class="horizontal">
-		<Typography variant="h5">{$_('fees')}</Typography>
-		<div class="grower"></div>
-		<Toggle label={$_('advanceSetup')} bind:checked={advancedFees} dimension="compact"></Toggle>
-	</section>
-	{#if advancedFees}
+<ContentLayout>
+	<Vertical>
 		<section class="horizontal">
-			<Input
-				type="number"
-				variant="solid"
-				dimension="compact"
-				bind:value={entryFee}
-				placeholder={'0'}
-				label={$_('entryFee')}
-				unit="%"
-				step={'.001'}
-				min={0}
-				class="grower"
-			></Input>
-			<Select
-				variant="solid"
-				dimension="compact"
-				bind:value={entryFeeType}
-				label={$_('entryFeePayment')}
-				class="grower"
-			>
-				<Option value="ongoing">{$_('ongoing')}</Option>
-				<Option value="forty-sixty">40/60</Option>
-				<Option value="upfront">{$_('upfront')}</Option>
-			</Select>
-		</section>
-
-		<section class="horizontal">
-			<Select
-				variant="solid"
-				dimension="compact"
-				bind:value={exitFeeType}
-				label={$_('exitFee')}
-				class="grower"
-			>
-				<Option value="percentage">{$_('percentage')}</Option>
-				<Option value="fixed">{$_('fixedFee')}</Option>
-			</Select>
-			<Input
-				type="number"
-				variant="solid"
-				dimension="compact"
-				placeholder={'0'}
-				unit={exitFeeType === 'percentage' ? '%' : portfolio.currency}
-				bind:value={exitFee}
-				step={'.001'}
-				min={0}
-				class="grower"
-			></Input>
-		</section>
-
-		<Input
-			variant="solid"
-			dimension="compact"
-			placeholder={'0'}
-			label={$_('successFee')}
-			unit="%"
-			min={0}
-			step={0.001}
-			bind:value={successFee}
-		></Input>
-
-		<section class="horizontal">
-			<Select
-				variant="solid"
-				dimension="compact"
-				bind:value={managementFeeType}
-				label={$_('managementFee')}
-				class="grower"
-			>
-				<Option value="percentage">{$_('percentage')}</Option>
-				<Option value="fixed">{$_('fixedFee')}</Option>
-			</Select>
-			<Input
-				type="number"
-				variant="solid"
-				dimension="compact"
-				placeholder={'0'}
-				unit={managementFeeType === 'percentage' ? '%' : portfolio.currency}
-				bind:value={managementFee}
-				step={'.001'}
-				min={0}
-				class="grower"
-			></Input>
-		</section>
-	{:else}
-		<Input
-			type="number"
-			variant="solid"
-			dimension="compact"
-			placeholder={'0'}
-			label={$_('ter')}
-			unit="%"
-			min={0}
-			step={'0.001'}
-			bind:value={ter}
-		></Input>
-	{/if}
-
-	<section class="buttons horizontal">
-		{#if formType === 'create'}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={createInvestment}
-				disabled={createDisabled}><Checkmark size={24} />{$_('createInvestment')}</Button
-			>
-		{:else}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={updateInvestment}
-				disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
-			>
-		{/if}
-		<Button variant="secondary" dimension="compact" onclick={cancel}
-			><Close size={24} />{$_('cancel')}</Button
-		>
-		{#if formType === 'edit'}
+			{#if formType === 'create'}
+				<Typography variant="h4">{$_('addInvestment')}</Typography>
+			{:else}
+				<Typography variant="h4">{$_('Edit investment')}</Typography>
+			{/if}
 			<div class="grower"></div>
-			<Button
-				variant="ghost"
+			<Typography>{$_('in')} {portfolio.name}</Typography>
+		</section>
+		<div class="spacer"></div>
+		<Typography variant="h5">{$_('details')}</Typography>
+		<section class="horizontal half-gap">
+			<Input
 				dimension="compact"
-				onclick={confirmDeleteInvestment}
-				disabled={createDisabled}><TrashCan size={24} />{$_('Delete investment')}</Button
-			>
+				variant="solid"
+				bind:value={name}
+				placeholder={defaultName}
+				label={$_('investmentName')}
+				class="grower"
+			></Input>
+			<Dropdown buttonDimension="compact" buttonVariant="solid" left autoClose={false}>
+				{#snippet button()}
+					<DocumentImport size={24} />
+				{/snippet}
+				<div class="dropdown">
+					<Typography variant="h5">{$_('Import data for this investment')}</Typography>
+					<div class="horizontal half-gap">
+						<Input
+							dimension="compact"
+							variant="solid"
+							bind:value={isinNumber}
+							label={$_('ISIN number')}
+						></Input>
+						<Button variant="strong" dimension="compact" onclick={notImplemented}
+							><Checkmark size={24} />{$_('Import data')}</Button
+						>
+					</div>
+				</div>
+			</Dropdown>
+		</section>
+		<Input
+			dimension="compact"
+			variant="solid"
+			bind:value={type}
+			placeholder={$_('E.g. "Equity"')}
+			label={$_('Type (optional)')}
+		></Input>
+		<Input
+			dimension="compact"
+			variant="solid"
+			bind:value={apy}
+			placeholder={'0'}
+			label={$_('APY')}
+			unit="%"
+			type="number"
+			step={0.001}
+			min={0}
+		></Input>
+		<section class="horizontal">
+			<Typography variant="h5">{$_('fees')}</Typography>
+			<div class="grower"></div>
+			<Toggle label={$_('advanceSetup')} bind:checked={advancedFees} dimension="compact"></Toggle>
+		</section>
+		{#if advancedFees}
+			<section class="horizontal">
+				<Input
+					type="number"
+					variant="solid"
+					dimension="compact"
+					bind:value={entryFee}
+					placeholder={'0'}
+					label={$_('entryFee')}
+					unit="%"
+					step={'.001'}
+					min={0}
+					class="grower"
+				></Input>
+				<Select
+					variant="solid"
+					dimension="compact"
+					bind:value={entryFeeType}
+					label={$_('entryFeePayment')}
+					class="grower"
+				>
+					<Option value="ongoing">{$_('ongoing')}</Option>
+					<Option value="forty-sixty">40/60</Option>
+					<Option value="upfront">{$_('upfront')}</Option>
+				</Select>
+			</section>
+
+			<section class="horizontal">
+				<Select
+					variant="solid"
+					dimension="compact"
+					bind:value={exitFeeType}
+					label={$_('exitFee')}
+					class="grower"
+				>
+					<Option value="percentage">{$_('percentage')}</Option>
+					<Option value="fixed">{$_('fixedFee')}</Option>
+				</Select>
+				<Input
+					type="number"
+					variant="solid"
+					dimension="compact"
+					placeholder={'0'}
+					unit={exitFeeType === 'percentage' ? '%' : portfolio.currency}
+					bind:value={exitFee}
+					step={'.001'}
+					min={0}
+					class="grower"
+				></Input>
+			</section>
+
+			<Input
+				variant="solid"
+				dimension="compact"
+				placeholder={'0'}
+				label={$_('successFee')}
+				unit="%"
+				min={0}
+				step={0.001}
+				bind:value={successFee}
+			></Input>
+
+			<section class="horizontal">
+				<Select
+					variant="solid"
+					dimension="compact"
+					bind:value={managementFeeType}
+					label={$_('managementFee')}
+					class="grower"
+				>
+					<Option value="percentage">{$_('percentage')}</Option>
+					<Option value="fixed">{$_('fixedFee')}</Option>
+				</Select>
+				<Input
+					type="number"
+					variant="solid"
+					dimension="compact"
+					placeholder={'0'}
+					unit={managementFeeType === 'percentage' ? '%' : portfolio.currency}
+					bind:value={managementFee}
+					step={'.001'}
+					min={0}
+					class="grower"
+				></Input>
+			</section>
+		{:else}
+			<Input
+				type="number"
+				variant="solid"
+				dimension="compact"
+				placeholder={'0'}
+				label={$_('ter')}
+				unit="%"
+				min={0}
+				step={'0.001'}
+				bind:value={ter}
+			></Input>
 		{/if}
-	</section>
-</form>
+
+		<section class="buttons horizontal">
+			{#if formType === 'create'}
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={createInvestment}
+					disabled={createDisabled}><Checkmark size={24} />{$_('createInvestment')}</Button
+				>
+			{:else}
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={updateInvestment}
+					disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
+				>
+			{/if}
+			<Button variant="secondary" dimension="compact" onclick={cancel}
+				><Close size={24} />{$_('cancel')}</Button
+			>
+			{#if formType === 'edit'}
+				<div class="grower"></div>
+				<Button
+					variant="ghost"
+					dimension="compact"
+					onclick={confirmDeleteInvestment}
+					disabled={createDisabled}><TrashCan size={24} />{$_('Delete investment')}</Button
+				>
+			{/if}
+		</section>
+	</Vertical>
+</ContentLayout>
 
 <DeleteModal
 	confirm={deleteInvestment}
@@ -348,21 +352,11 @@
 />
 
 <style>
-	form {
-		max-width: 560px;
-		flex: 1;
-	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-end;
-		gap: var(--padding);
-	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
 		gap: var(--padding);
 	}
 	.horizontal :global(.grower) {

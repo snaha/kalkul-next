@@ -13,6 +13,8 @@
 	import type { z, ZodFormattedError } from 'zod'
 	import { emailFormSchema } from '$lib/schemas'
 	import { notImplemented } from '$lib/not-implemented'
+	import ContentLayout from './content-layout.svelte'
+	import Vertical from './ui/vertical.svelte'
 
 	type Props = {
 		close: () => void
@@ -110,112 +112,120 @@
 	})
 </script>
 
-<form class="vertical">
-	<section class="horizontal">
-		{#if formType === 'create'}
-			<Typography variant="h4">{$_('addClient')}</Typography>
-		{:else}
-			<Typography variant="h4">{$_('Edit client')}</Typography>
-		{/if}
-		<div class="grower"></div>
-		{#if hasClose}
-			<Button variant="ghost" onclick={close}><Close size={24} /></Button>
-		{/if}
-	</section>
-	<div class="spacer"></div>
-	<Input
-		autofocus
-		variant="solid"
-		dimension="compact"
-		placeholder={$_('clientName')}
-		label={$_('name')}
-		bind:value={name}
-	></Input>
-	{#snippet birthDateError()}
-		{$_('birthDateError')}
-	{/snippet}
-	<DateInput
-		variant="solid"
-		dimension="compact"
-		yearLabel={$_('Year')}
-		yearPlaceholder="1990"
-		monthLabel={$_('Month')}
-		monthPlaceholder="01"
-		dayLabel={$_('Day')}
-		dayPlaceholder="01"
-		label={$_('birthDate')}
-		bind:value={birthDate}
-		error={birthDate && birthDate > date ? birthDateError : undefined}
-		errorMessages={{
-			invalidYear: $_('Invalid year'),
-			invalidMonth: $_('Invalid month'),
-			invalidDay: $_('Invalid day'),
-			invalidDate: $_('Invalid date'),
-		}}
-	></DateInput>
-	{#snippet emailErrorSnippet()}
-		{$_('invalidEmailAddress')}
-	{/snippet}
-	<Input
-		variant="solid"
-		dimension="compact"
-		placeholder={$_('Email')}
-		label={$_('Email')}
-		bind:value={email}
-		error={emailTouched && email.trim() !== '' && emailError?.email?._errors
-			? emailErrorSnippet
-			: undefined}
-		oninput={() => (emailTouched = true)}
-		>This will be used for sharing portfolio with your client.</Input
-	>
-	<section class="profile-picture">
-		<Typography>{$_('profilePicture')}</Typography>
+{#snippet birthDateError()}
+	{$_('birthDateError')}
+{/snippet}
+
+{#snippet emailErrorSnippet()}
+	{$_('invalidEmailAddress')}
+{/snippet}
+
+<ContentLayout>
+	<Vertical>
 		<section class="horizontal">
-			<Avatar
-				{name}
-				birthDate={birthDate ? new Date(birthDate) : new Date()}
-				{imageURI}
-				size={80}
-			/>
-			<section class="profile-helper">
-				<Typography variant="small">{$_('profileImageHelper')}</Typography>
-				<Button
-					variant="solid"
-					dimension="small"
-					onclick={() => notImplemented(undefined, $_('comingSoon'))}
-					><Image size={16} />{$_('uploadImage')}</Button
-				>
+			{#if formType === 'create'}
+				<Typography variant="h4">{$_('addClient')}</Typography>
+			{:else}
+				<Typography variant="h4">{$_('Edit client')}</Typography>
+			{/if}
+			<div class="grower"></div>
+			{#if hasClose}
+				<Button variant="ghost" onclick={close}><Close size={24} /></Button>
+			{/if}
+		</section>
+		<div class="spacer"></div>
+		<Input
+			autofocus
+			variant="solid"
+			dimension="compact"
+			placeholder={$_('clientName')}
+			label={$_('name')}
+			bind:value={name}
+		></Input>
+		<DateInput
+			variant="solid"
+			dimension="compact"
+			yearLabel={$_('Year')}
+			yearPlaceholder="1990"
+			monthLabel={$_('Month')}
+			monthPlaceholder="01"
+			dayLabel={$_('Day')}
+			dayPlaceholder="01"
+			label={$_('birthDate')}
+			bind:value={birthDate}
+			error={birthDate && birthDate > date ? birthDateError : undefined}
+			errorMessages={{
+				invalidYear: $_('Invalid year'),
+				invalidMonth: $_('Invalid month'),
+				invalidDay: $_('Invalid day'),
+				invalidDate: $_('Invalid date'),
+			}}
+		></DateInput>
+		<Input
+			variant="solid"
+			dimension="compact"
+			placeholder={$_('Email')}
+			label={$_('Email')}
+			bind:value={email}
+			error={emailTouched && email.trim() !== '' && emailError?.email?._errors
+				? emailErrorSnippet
+				: undefined}
+			oninput={() => (emailTouched = true)}
+			>This will be used for sharing portfolio with your client.</Input
+		>
+		<section class="profile-picture">
+			<Typography>{$_('profilePicture')}</Typography>
+			<section class="horizontal">
+				<Avatar
+					{name}
+					birthDate={birthDate ? new Date(birthDate) : new Date()}
+					{imageURI}
+					size={80}
+				/>
+				<section class="profile-helper">
+					<Typography variant="small">{$_('profileImageHelper')}</Typography>
+					<Button
+						variant="solid"
+						dimension="small"
+						onclick={() => notImplemented(undefined, $_('comingSoon'))}
+						><Image size={16} />{$_('uploadImage')}</Button
+					>
+				</section>
 			</section>
 		</section>
-	</section>
-	{#if error}
-		<ErrorComp>{error}</ErrorComp>
-	{:else}
-		<div class="spacer"></div>
-	{/if}
-	<section class="buttons horizontal">
-		{#if formType === 'create'}
-			<Button variant="strong" dimension="compact" onclick={create} disabled={createDisabled}
-				><Checkmark size={24} />
-				{$_('createClient')}
-			</Button>
+		{#if error}
+			<ErrorComp>{error}</ErrorComp>
 		{:else}
-			<Button variant="strong" dimension="compact" onclick={updateClient} disabled={createDisabled}
-				><Checkmark size={24} />
-				{$_('Done')}
-			</Button>
+			<div class="spacer"></div>
 		{/if}
-		<Button variant="secondary" dimension="compact" onclick={cancel}
-			><Close size={24} />{$_('cancel')}</Button
-		>
-		{#if formType === 'edit'}
-			<div class="grower"></div>
-			<Button variant="ghost" dimension="compact" onclick={confirmDeleteClient}
-				><TrashCan size={24} />{$_('Delete client')}</Button
+		<section class="buttons horizontal">
+			{#if formType === 'create'}
+				<Button variant="strong" dimension="compact" onclick={create} disabled={createDisabled}
+					><Checkmark size={24} />
+					{$_('createClient')}
+				</Button>
+			{:else}
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={updateClient}
+					disabled={createDisabled}
+					><Checkmark size={24} />
+					{$_('Done')}
+				</Button>
+			{/if}
+			<Button variant="secondary" dimension="compact" onclick={cancel}
+				><Close size={24} />{$_('cancel')}</Button
 			>
-		{/if}
-	</section>
-</form>
+			{#if formType === 'edit'}
+				<div class="grower"></div>
+				<Button variant="ghost" dimension="compact" onclick={confirmDeleteClient}
+					><TrashCan size={24} />{$_('Delete client')}</Button
+				>
+			{/if}
+		</section>
+	</Vertical>
+</ContentLayout>
 
 <DeleteModal
 	confirm={deleteClient}
@@ -228,21 +238,11 @@
 />
 
 <style>
-	form {
-		max-width: 560px;
-		flex: 1;
-	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
-		gap: var(--padding);
-	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
 		gap: var(--padding);
 	}
 	.grower {

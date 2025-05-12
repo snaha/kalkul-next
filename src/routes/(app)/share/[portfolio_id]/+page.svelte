@@ -2,12 +2,14 @@
 	import { browser } from '$app/environment'
 	import { page } from '$app/state'
 	import adapters from '$lib/adapters'
+	import ContentLayout from '$lib/components/content-layout.svelte'
 	import CopyButton from '$lib/components/copy-button.svelte'
 	import LinkSharingModal from '$lib/components/link-sharing-modal.svelte'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Toggle from '$lib/components/ui/toggle.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
+	import Vertical from '$lib/components/ui/vertical.svelte'
 	import { generateRandomString } from '$lib/random'
 	import routes from '$lib/routes'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
@@ -66,56 +68,52 @@
 </script>
 
 <main>
-	<form>
-		<Typography variant="h3">{$_('Share portfolio')}</Typography>
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		<Toggle
-			label={$_('Link sharing (view only)')}
-			checked={linkSharing}
-			onclick={(e) => handleToggleClick(e)}
-		></Toggle>
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		{#if linkValue}
-			<section class="horizontal">
-				<Input value={linkValue} inert class="stretch max560" label={$_('Portfolio link')} />
-				<CopyButton
-					variant="ghost"
-					position="bottom"
-					helperText={$_('Link copied')}
-					copyText={linkValue}
-				/>
-			</section>
-		{:else}
-			<Typography
-				>{$_(
-					'Activate link sharing to easily share this portfolio page with your client.',
-				)}</Typography
-			>
-			<div class="spacer"></div>
-			<Typography variant="small"
-				>{$_(
-					'The client will not be able to edit or make any changes to the portfolio data.',
-				)}</Typography
-			>
-		{/if}
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		<div class="spacer"></div>
-		{#if portfolio?.link}
-			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Checkmark size={24} />{$_('Done')}</Button
-			>
-		{:else}
-			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_(`Don't share`)}</Button
-			>
-		{/if}
-	</form>
+	<ContentLayout>
+		<Vertical --vertical-align-items="flex-start" --vertical-gap="var(--double-padding)">
+			<Typography variant="h3">{$_('Share portfolio')}</Typography>
+
+			<Vertical --vertical-gap="var(--padding)">
+				<Toggle
+					label={$_('Link sharing (view only)')}
+					checked={linkSharing}
+					onclick={(e) => handleToggleClick(e)}
+				></Toggle>
+				{#if linkValue}
+					<section class="horizontal">
+						<Input value={linkValue} inert class="stretch max560" label={$_('Portfolio link')} />
+						<CopyButton
+							variant="ghost"
+							position="bottom"
+							helperText={$_('Link copied')}
+							copyText={linkValue}
+						/>
+					</section>
+				{:else}
+					<Vertical --vertical-gap="var(--half-padding)">
+						<Typography
+							>{$_(
+								'Activate link sharing to easily share this portfolio page with your client.',
+							)}</Typography
+						>
+						<Typography variant="small"
+							>{$_(
+								'The client will not be able to edit or make any changes to the portfolio data.',
+							)}</Typography
+						>
+					</Vertical>
+				{/if}
+			</Vertical>
+			{#if portfolio?.link}
+				<Button variant="secondary" dimension="compact" onclick={cancel}
+					><Checkmark size={24} />{$_('Done')}</Button
+				>
+			{:else}
+				<Button variant="secondary" dimension="compact" onclick={cancel}
+					><Close size={24} />{$_(`Don't share`)}</Button
+				>
+			{/if}
+		</Vertical>
+	</ContentLayout>
 </main>
 <LinkSharingModal bind:open={showSharingOffModal} confirm={confirmModal} oncancel={cancelModal} />
 
@@ -125,16 +123,6 @@
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
-	}
-	form {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		max-width: 560px;
-		width: 100%;
-	}
-	.spacer {
-		margin-top: var(--half-padding);
 	}
 	.horizontal {
 		display: flex;

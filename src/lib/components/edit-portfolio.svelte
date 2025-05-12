@@ -13,6 +13,8 @@
 	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import DeleteModal from './delete-modal.svelte'
+	import ContentLayout from './content-layout.svelte'
+	import Vertical from './ui/vertical.svelte'
 
 	type Props = {
 		client: Client
@@ -141,108 +143,110 @@
 	}
 </script>
 
-<form class="vertical">
-	<section class="horizontal">
-		{#if formType === 'create'}
-			<Typography variant="h4">{$_('addPortfolio')}</Typography>
-		{:else}
-			<Typography variant="h4">{$_('Edit portfolio')}</Typography>
-		{/if}
-		<div class="grower"></div>
-		<Typography>{client.name}</Typography>
-	</section>
-	<div class="spacer"></div>
-	<Input
-		autofocus
-		dimension="compact"
-		variant="solid"
-		placeholder={$_('portfolioName')}
-		label={$_('portfolioName')}
-		bind:value={name}
-	></Input>
-	<section class="horizontal">
-		<Select
-			variant="solid"
-			dimension="compact"
-			bind:value={currency}
-			placeholder={$_('currency')}
-			label={$_('currency')}
-			class="grower"
-		>
-			<Option value="EUR">EUR</Option>
-			<Option value="USD">USD</Option>
-			<Option value="CZK">CZK</Option>
-		</Select>
-		<Input
-			type="number"
-			variant="solid"
-			dimension="compact"
-			placeholder={$_('inflation')}
-			label={$_('inflation')}
-			unit="%"
-			bind:value={inflation}
-			step={'.01'}
-			class="grower"
-		></Input>
-	</section>
-	<Divider />
-
-	<DateAge
-		dimension="compact"
-		dateInputLabel={$_('startDate')}
-		bind:date={startDate}
-		ageLabel={$_('clientAge') + ' ' + $_('atPortfolioStart')}
-		agePlaceholder={$_('clientAge')}
-		birthDate={new Date(client.birth_date)}
-	/>
-
-	<Input
-		variant="solid"
-		dimension="compact"
-		placeholder={$_('horizon')}
-		label={$_('horizon')}
-		unit={$_('years')}
-		bind:value={horizon}
-		oninput={onHorizonInput}
-		onblur={checkHorizonInput}
-	></Input>
-
-	<DateAge
-		dimension="compact"
-		dateInputLabel={$_('endDate')}
-		bind:date={endDate}
-		ageLabel={$_('clientAge') + ' ' + $_('atPortfolioEnd')}
-		agePlaceholder={$_('clientAge')}
-		birthDate={new Date(client.birth_date)}
-	/>
-
-	<section class="buttons horizontal">
-		{#if formType === 'create'}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={createPortfolio}
-				disabled={createDisabled}><Checkmark size={24} />{$_('createPortfolio')}</Button
-			>
-		{:else}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={updatePortfolio}
-				disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
-			>
-		{/if}
-		<Button variant="secondary" dimension="compact" onclick={cancel}
-			><Close size={24} />{$_('cancel')}</Button
-		>
-		{#if formType === 'edit'}
+<ContentLayout>
+	<Vertical>
+		<section class="horizontal">
+			{#if formType === 'create'}
+				<Typography variant="h4">{$_('addPortfolio')}</Typography>
+			{:else}
+				<Typography variant="h4">{$_('Edit portfolio')}</Typography>
+			{/if}
 			<div class="grower"></div>
-			<Button variant="ghost" dimension="compact" onclick={confirmDeletePortfolio}
-				><TrashCan size={24} />{$_('Delete portfolio')}</Button
+			<Typography>{client.name}</Typography>
+		</section>
+		<div class="spacer"></div>
+		<Input
+			autofocus
+			dimension="compact"
+			variant="solid"
+			placeholder={$_('portfolioName')}
+			label={$_('portfolioName')}
+			bind:value={name}
+		></Input>
+		<section class="horizontal">
+			<Select
+				variant="solid"
+				dimension="compact"
+				bind:value={currency}
+				placeholder={$_('currency')}
+				label={$_('currency')}
+				class="grower"
 			>
-		{/if}
-	</section>
-</form>
+				<Option value="EUR">EUR</Option>
+				<Option value="USD">USD</Option>
+				<Option value="CZK">CZK</Option>
+			</Select>
+			<Input
+				type="number"
+				variant="solid"
+				dimension="compact"
+				placeholder={$_('inflation')}
+				label={$_('inflation')}
+				unit="%"
+				bind:value={inflation}
+				step={'.01'}
+				class="grower"
+			></Input>
+		</section>
+		<Divider />
+
+		<DateAge
+			dimension="compact"
+			dateInputLabel={$_('startDate')}
+			bind:date={startDate}
+			ageLabel={$_('clientAge') + ' ' + $_('atPortfolioStart')}
+			agePlaceholder={$_('clientAge')}
+			birthDate={new Date(client.birth_date)}
+		/>
+
+		<Input
+			variant="solid"
+			dimension="compact"
+			placeholder={$_('horizon')}
+			label={$_('horizon')}
+			unit={$_('years')}
+			bind:value={horizon}
+			oninput={onHorizonInput}
+			onblur={checkHorizonInput}
+		></Input>
+
+		<DateAge
+			dimension="compact"
+			dateInputLabel={$_('endDate')}
+			bind:date={endDate}
+			ageLabel={$_('clientAge') + ' ' + $_('atPortfolioEnd')}
+			agePlaceholder={$_('clientAge')}
+			birthDate={new Date(client.birth_date)}
+		/>
+
+		<section class="buttons horizontal">
+			{#if formType === 'create'}
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={createPortfolio}
+					disabled={createDisabled}><Checkmark size={24} />{$_('createPortfolio')}</Button
+				>
+			{:else}
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={updatePortfolio}
+					disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
+				>
+			{/if}
+			<Button variant="secondary" dimension="compact" onclick={cancel}
+				><Close size={24} />{$_('cancel')}</Button
+			>
+			{#if formType === 'edit'}
+				<div class="grower"></div>
+				<Button variant="ghost" dimension="compact" onclick={confirmDeletePortfolio}
+					><TrashCan size={24} />{$_('Delete portfolio')}</Button
+				>
+			{/if}
+		</section>
+	</Vertical>
+</ContentLayout>
 
 <DeleteModal
 	confirm={deletePortfolio}
@@ -255,21 +259,11 @@
 />
 
 <style>
-	form {
-		max-width: 560px;
-		flex: 1;
-	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-end;
-		gap: var(--padding);
-	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
 		gap: var(--padding);
 	}
 	.horizontal :global(.grower) {
