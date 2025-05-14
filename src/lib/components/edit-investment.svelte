@@ -6,7 +6,12 @@
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { type Investment, type Portfolio } from '$lib/types'
-	import { DEFAULT_ENTRY_FEE_TYPE, type EntryFeeType, type FeeType } from '$lib/@snaha/kalkul-maths'
+	import {
+		DEFAULT_ENTRY_FEE_TYPE,
+		DEFAULT_FEE_TYPE,
+		type EntryFeeType,
+		type FeeType,
+	} from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Option from '$lib/components/ui/select/option.svelte'
@@ -60,10 +65,10 @@
 		entryFee = investment.entry_fee || 0
 		entryFeeType = stringToEntryFeeType(investment.entry_fee_type || DEFAULT_ENTRY_FEE_TYPE)
 		exitFee = investment.exit_fee || 0
-		exitFeeType = stringToFeeType(investment.exit_fee_type || 'percentage')
+		exitFeeType = stringToFeeType(investment.exit_fee_type || DEFAULT_FEE_TYPE)
 		successFee = investment.success_fee || 0
 		managementFee = investment.management_fee || 0
-		managementFeeType = stringToFeeType(investment.management_fee_type || 'percentage')
+		managementFeeType = stringToFeeType(investment.management_fee_type || DEFAULT_FEE_TYPE)
 		advancedFees = investment.advanced_fees || false
 		ter = investment.ter || 0
 		type = investment.type || ''
@@ -78,11 +83,11 @@
 			entry_fee_type: entryFeeType,
 			exit_fee: Number(exitFee),
 			exit_fee_type: exitFeeType,
-			success_fee: advancedFees ? 0 : Number(successFee),
-			management_fee: advancedFees ? 0 : Number(managementFee),
+			success_fee: advancedFees ? Number(successFee) : 0,
+			management_fee: advancedFees ? Number(managementFee) : 0,
 			management_fee_type: managementFeeType,
 			advanced_fees: advancedFees,
-			ter: advancedFees ? Number(ter) : 0,
+			ter: advancedFees ? 0 : Number(ter),
 			type,
 		})
 		close()
@@ -101,11 +106,11 @@
 			entry_fee_type: entryFeeType,
 			exit_fee: Number(exitFee),
 			exit_fee_type: exitFeeType,
-			success_fee: advancedFees ? 0 : Number(successFee),
-			management_fee: advancedFees ? 0 : Number(managementFee),
+			success_fee: advancedFees ? Number(successFee) : 0,
+			management_fee: advancedFees ? Number(managementFee) : 0,
 			management_fee_type: managementFeeType,
 			advanced_fees: advancedFees,
-			ter: advancedFees ? Number(ter) : 0,
+			ter: advancedFees ? 0 : Number(ter),
 			type,
 		})
 		close()
