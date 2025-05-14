@@ -5,7 +5,8 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import type { EntryFeeType, FeeType, Investment, Portfolio } from '$lib/types'
+	import { type Investment, type Portfolio } from '$lib/types'
+	import { DEFAULT_ENTRY_FEE_TYPE, type EntryFeeType, type FeeType } from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Option from '$lib/components/ui/select/option.svelte'
@@ -16,6 +17,7 @@
 	import Dropdown from './ui/dropdown.svelte'
 	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import Horizontal from './ui/horizontal.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -35,7 +37,7 @@
 	let apy = $state('0')
 	let ter = $state(0)
 	let entryFee = $state(0)
-	let entryFeeType: EntryFeeType = $state('ongoing')
+	let entryFeeType: EntryFeeType = $state(DEFAULT_ENTRY_FEE_TYPE)
 	let exitFee = $state(0)
 	let exitFeeType: FeeType = $state('percentage')
 	let successFee = $state(0)
@@ -56,7 +58,7 @@
 		name = investment.name
 		apy = (investment.apy || 0).toString()
 		entryFee = investment.entry_fee || 0
-		entryFeeType = stringToEntryFeeType(investment.entry_fee_type || 'ongoing')
+		entryFeeType = stringToEntryFeeType(investment.entry_fee_type || DEFAULT_ENTRY_FEE_TYPE)
 		exitFee = investment.exit_fee || 0
 		exitFeeType = stringToFeeType(investment.exit_fee_type || 'percentage')
 		successFee = investment.success_fee || 0
@@ -76,11 +78,11 @@
 			entry_fee_type: entryFeeType,
 			exit_fee: Number(exitFee),
 			exit_fee_type: exitFeeType,
-			success_fee: Number(successFee),
-			management_fee: Number(managementFee),
+			success_fee: advancedFees ? 0 : Number(successFee),
+			management_fee: advancedFees ? 0 : Number(managementFee),
 			management_fee_type: managementFeeType,
 			advanced_fees: advancedFees,
-			ter: Number(ter),
+			ter: advancedFees ? Number(ter) : 0,
 			type,
 		})
 		close()
@@ -99,11 +101,11 @@
 			entry_fee_type: entryFeeType,
 			exit_fee: Number(exitFee),
 			exit_fee_type: exitFeeType,
-			success_fee: Number(successFee),
-			management_fee: Number(managementFee),
+			success_fee: advancedFees ? 0 : Number(successFee),
+			management_fee: advancedFees ? 0 : Number(managementFee),
 			management_fee_type: managementFeeType,
 			advanced_fees: advancedFees,
-			ter: Number(ter),
+			ter: advancedFees ? Number(ter) : 0,
 			type,
 		})
 		close()
@@ -130,11 +132,11 @@
 
 	function stringToEntryFeeType(entryFeeType: string): EntryFeeType {
 		if (entryFeeType === 'forty-sixty') {
-			return 'forty-sixty'
+			return entryFeeType
 		} else if (entryFeeType === 'upfront') {
-			return 'upfront'
+			return entryFeeType
 		} else {
-			return 'ongoing'
+			return DEFAULT_ENTRY_FEE_TYPE
 		}
 	}
 
@@ -148,7 +150,7 @@
 </script>
 
 <ContentLayout>
-	<Vertical>
+	<Vertical class="max-width-560">
 		<section class="horizontal">
 			{#if formType === 'create'}
 				<Typography variant="h4">{$_('addInvestment')}</Typography>
@@ -207,62 +209,12 @@
 			step={0.001}
 			min={0}
 		></Input>
-		<section class="horizontal">
+		<Horizontal>
 			<Typography variant="h5">{$_('fees')}</Typography>
 			<div class="grower"></div>
-			<Toggle label={$_('advanceSetup')} bind:checked={advancedFees} dimension="compact"></Toggle>
-		</section>
+			<Toggle label={$_('advancedSetup')} bind:checked={advancedFees} dimension="compact"></Toggle>
+		</Horizontal>
 		{#if advancedFees}
-			<section class="horizontal">
-				<Input
-					type="number"
-					variant="solid"
-					dimension="compact"
-					bind:value={entryFee}
-					placeholder={'0'}
-					label={$_('entryFee')}
-					unit="%"
-					step={'.001'}
-					min={0}
-					class="grower"
-				></Input>
-				<Select
-					variant="solid"
-					dimension="compact"
-					bind:value={entryFeeType}
-					label={$_('entryFeePayment')}
-					class="grower"
-				>
-					<Option value="ongoing">{$_('ongoing')}</Option>
-					<Option value="forty-sixty">40/60</Option>
-					<Option value="upfront">{$_('upfront')}</Option>
-				</Select>
-			</section>
-
-			<section class="horizontal">
-				<Select
-					variant="solid"
-					dimension="compact"
-					bind:value={exitFeeType}
-					label={$_('exitFee')}
-					class="grower"
-				>
-					<Option value="percentage">{$_('percentage')}</Option>
-					<Option value="fixed">{$_('fixedFee')}</Option>
-				</Select>
-				<Input
-					type="number"
-					variant="solid"
-					dimension="compact"
-					placeholder={'0'}
-					unit={exitFeeType === 'percentage' ? '%' : portfolio.currency}
-					bind:value={exitFee}
-					step={'.001'}
-					min={0}
-					class="grower"
-				></Input>
-			</section>
-
 			<Input
 				variant="solid"
 				dimension="compact"
@@ -310,6 +262,55 @@
 				bind:value={ter}
 			></Input>
 		{/if}
+		<section class="horizontal">
+			<Input
+				type="number"
+				variant="solid"
+				dimension="compact"
+				bind:value={entryFee}
+				placeholder={'0'}
+				label={$_('entryFee')}
+				unit="%"
+				step={'.001'}
+				min={0}
+				class="grower"
+			></Input>
+			<Select
+				variant="solid"
+				dimension="compact"
+				bind:value={entryFeeType}
+				label={$_('entryFeePayment')}
+				class="grower"
+			>
+				<Option value="ongoing">{$_('ongoing')}</Option>
+				<Option value="forty-sixty">40/60</Option>
+				<Option value="upfront">{$_('upfront')}</Option>
+			</Select>
+		</section>
+
+		<section class="horizontal">
+			<Select
+				variant="solid"
+				dimension="compact"
+				bind:value={exitFeeType}
+				label={$_('exitFee')}
+				class="grower"
+			>
+				<Option value="percentage">{$_('percentage')}</Option>
+				<Option value="fixed">{$_('fixedFee')}</Option>
+			</Select>
+			<Input
+				type="number"
+				variant="solid"
+				dimension="compact"
+				placeholder={'0'}
+				unit={exitFeeType === 'percentage' ? '%' : portfolio.currency}
+				bind:value={exitFee}
+				step={'.001'}
+				min={0}
+				class="grower"
+			></Input>
+		</section>
 
 		<section class="buttons horizontal">
 			{#if formType === 'create'}
@@ -380,5 +381,9 @@
 		border: 1px solid var(--colors-low);
 		border-radius: 0.25rem;
 		background: var(--colors-base);
+	}
+	:global(.max-width-560) {
+		max-width: 560px;
+		width: 100%;
 	}
 </style>

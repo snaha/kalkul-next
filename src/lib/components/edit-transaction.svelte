@@ -4,13 +4,8 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import {
-		type Frequency,
-		type Client,
-		type Investment,
-		type Portfolio,
-		type Transaction,
-	} from '$lib/types'
+	import { type Client, type Investment, type Portfolio, type Transaction } from '$lib/types'
+	import { type Period } from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Option from '$lib/components/ui/select/option.svelte'
@@ -31,8 +26,8 @@
 		subDays,
 	} from 'date-fns'
 	import FlexItem from './ui/flex-item.svelte'
-	import { calculateNumOccurrences } from '$lib/calc'
 	import Vertical from './ui/vertical.svelte'
+	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
 
 	type Props = {
 		investment: Investment
@@ -50,12 +45,17 @@
 	let date = $state(new Date())
 	let isRecurring = $state(false)
 	let repeat = $state(1)
-	let repeatUnit: Frequency = $state('month')
+	let repeatUnit: Period = $state('month')
 	let endDate = $state(new Date())
 	let period = $state(30)
-	let periodUnit: Frequency = $state('year')
+	let periodUnit: Period = $state('year')
 	const numOccurrences = $derived(
-		calculateNumOccurrences(formatDate(date), formatDate(endDate), repeatUnit, repeat),
+		calculateNumOccurrences({
+			date: formatDate(date),
+			end_date: formatDate(endDate),
+			repeat_unit: repeatUnit,
+			repeat,
+		}),
 	)
 	const totalAmount = $derived(numOccurrences * Number(amount))
 	const createDisabled = $derived(
@@ -136,7 +136,7 @@
 		close()
 	}
 
-	function addDateFunction(unit: Frequency) {
+	function addDateFunction(unit: Period) {
 		switch (unit) {
 			case 'day':
 				return addDays
@@ -149,7 +149,7 @@
 		}
 	}
 
-	function dateDifferenceFunction(unit: Frequency) {
+	function dateDifferenceFunction(unit: Period) {
 		switch (unit) {
 			case 'day':
 				return differenceInDays
@@ -162,7 +162,7 @@
 		}
 	}
 
-	function transactionRepeatUnit(t: typeof transaction): Frequency {
+	function transactionRepeatUnit(t: typeof transaction): Period {
 		return t && t.repeat_unit ? t.repeat_unit : 'month'
 	}
 
@@ -174,7 +174,7 @@
 		return dateDifferenceFunction(transactionRepeatUnit(t))(t.end_date, t.date) + 1
 	}
 
-	function transactionPeriodUnit(t: typeof transaction): Frequency {
+	function transactionPeriodUnit(t: typeof transaction): Period {
 		if (!t || !t.id || !t.end_date) {
 			return 'year'
 		}

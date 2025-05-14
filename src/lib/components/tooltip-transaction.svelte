@@ -8,25 +8,31 @@
 	import { _ } from 'svelte-i18n'
 	interface Props extends TooltipGraphProps {
 		adjustWithInflation: boolean
+		showFees: boolean
 		currency: string
 		totalDeposits: number[]
 		totalDepositsWithInflation: number[]
 		totalWithdrawals: number[]
 		totalWithdrawalsWithInflation: number[]
+		totalFees: number[]
+		totalFeesWithInflation: number[]
 	}
 	const {
 		tooltipData,
 		adjustWithInflation,
+		showFees,
 		currency,
 		totalDeposits,
 		totalDepositsWithInflation,
 		totalWithdrawals,
 		totalWithdrawalsWithInflation,
+		totalFees,
+		totalFeesWithInflation,
 		...restProps
 	}: Props = $props()
 
-	const deposits = $derived(tooltipData.filter((t) => t.value > 0))
-	const withdrawals = $derived(tooltipData.filter((t) => t.value < 0))
+	const deposits = $derived(tooltipData.filter((t) => t.type === 'transaction' && t.value > 0))
+	const withdrawals = $derived(tooltipData.filter((t) => t.type === 'transaction' && t.value < 0))
 </script>
 
 <TooltipBase {tooltipData} {...restProps}>
@@ -81,7 +87,7 @@
 		{/if}
 	{/if}
 	{#if deposits.length > 0 && withdrawals.length > 0}
-		<Divider --margin="0" />
+		<Divider --margin="0" --divider-color="var(--colors-light-base)" style="opacity: 0.25" />
 	{/if}
 	{#if withdrawals.length > 0}
 		<Typography variant="h6" class="color-light">{$_('withdrawals')}</Typography>
@@ -132,6 +138,23 @@
 				>
 			</div>
 		{/if}
+	{/if}
+	{#if (deposits.length > 0 || withdrawals.length > 0) && showFees && totalFees[tooltipData[0].dataIndex] !== 0}
+		<Divider --margin="0" --divider-color="var(--colors-light-base)" style="opacity: 0.25" />
+	{/if}
+	{#if showFees && totalFees[tooltipData[0].dataIndex] !== 0}
+		<div class="total">
+			<Typography class="color-light" variant="h6">{$_('Total fees')}</Typography>
+			<Typography variant="h6" class="color-light"
+				>{formatCurrency(
+					(adjustWithInflation ? totalFeesWithInflation : totalFees)[tooltipData[0].dataIndex],
+					currency,
+					{
+						maximumFractionDigits: 0,
+					},
+				)}</Typography
+			>
+		</div>
 	{/if}
 </TooltipBase>
 

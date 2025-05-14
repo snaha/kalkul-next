@@ -27,6 +27,6 @@
 		appearance: none;
 		border-width: 1px 1px 0 0;
 		border-style: solid;
-		color: var(--colors-low);
+		color: var(--divider-color, var(--colors-low));
 	}
 </style>

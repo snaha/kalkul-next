@@ -15,7 +15,7 @@
 	import adapter from '$lib/adapters'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
-	import { calculateTotalAmount, calculateNumOccurrences } from '$lib/calc'
+	import { calculateTotalAmount, calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
@@ -32,14 +32,7 @@
 
 	let openTransaction = $state(false)
 
-	const numOccurrences = $derived(
-		calculateNumOccurrences(
-			transaction.date,
-			transaction.end_date,
-			transaction.repeat_unit,
-			transaction.repeat,
-		),
-	)
+	const numOccurrences = $derived(calculateNumOccurrences(transaction))
 
 	const totalAmount = $derived(calculateTotalAmount([transaction], transaction.type))
 	async function deleteTransaction(e: Event) {

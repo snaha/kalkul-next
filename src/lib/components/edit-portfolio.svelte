@@ -144,7 +144,7 @@
 </script>
 
 <ContentLayout>
-	<Vertical>
+	<Vertical class="max-width-560">
 		<section class="horizontal">
 			{#if formType === 'create'}
 				<Typography variant="h4">{$_('addPortfolio')}</Typography>
@@ -278,5 +278,9 @@
 	}
 	.grower {
 		flex: 1;
+	}
+	:global(.max-width-560) {
+		max-width: 560px;
+		width: 100%;
 	}
 </style>

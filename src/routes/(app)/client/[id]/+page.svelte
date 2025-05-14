@@ -32,7 +32,7 @@
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
-	import { calculateNumOccurrences } from '$lib/calc'
+	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -70,13 +70,7 @@
 
 			for (const transaction of transactions) {
 				const amount = transaction.end_date
-					? transaction.amount *
-						calculateNumOccurrences(
-							transaction.date,
-							transaction.end_date,
-							transaction.repeat_unit,
-							transaction.repeat,
-						)
+					? transaction.amount * calculateNumOccurrences(transaction)
 					: transaction.amount
 
 				if (transaction.type === 'deposit') {

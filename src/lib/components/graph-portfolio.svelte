@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Chart from '$lib/components/chart.svelte'
-	import { getGraphDataForPortfolio } from '$lib/calc'
 	import type { Portfolio, InvestmentWithColorIndex, TooltipData, CustomDataset } from '$lib/types'
+	import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
@@ -19,6 +19,7 @@
 	import type { Snippet } from 'svelte'
 	import TooltipInvestment from './tooltip-investment.svelte'
 	import TooltipTransaction from './tooltip-transaction.svelte'
+	import { getCSSVariableValue } from '$lib/css-vars'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -51,10 +52,12 @@
 	}: Props = $props()
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
+	let showFees = $state(true)
 	let selectedIndex = $state(0)
 	const { total, data } = $derived(
 		getGraphDataForPortfolio(transactionStore, investments, portfolio),
 	)
+	const lowColor = getCSSVariableValue('--colors-low')
 	const deposits = $derived(
 		adjustWithInflation
 			? [
@@ -81,38 +84,59 @@
 					hidden: investmentsViewStore.isHidden(investments[i].id),
 				})),
 	)
-	const withdrawals = $derived(
+	const withdrawals = $derived([
+		...data.map((r, i) => ({
+			data: r.graphInflationWithdrawals,
+			label: r.label,
+			fill: 'origin',
+			colorIndex: investments[i].colorIndex ?? i,
+			hidden: investmentsViewStore.isHidden(investments[i].id),
+		})),
+	])
+	const withdrawalsWithInflation = $derived([
+		{
+			data: total.graphWithdrawals.map((w, i) => w - total.graphInflationWithdrawals[i]),
+			label: '_hidden',
+			borderColor: lowColor,
+			borderWidth: 1,
+			backgroundColor: 'transparent',
+		},
+	])
+
+	const fees = $derived(
 		adjustWithInflation
 			? [
 					...data.map((r, i) => ({
-						data: r.graphInflationWithdrawals,
+						data: r.graphFeeValues,
 						label: r.label,
 						fill: 'origin',
-						colorIndex: investments[i].colorIndex ?? i,
+						backgroundColor: lowColor,
 						hidden: investmentsViewStore.isHidden(investments[i].id),
 					})),
 					{
-						data: total.graphWithdrawals.map((w, i) => w - total.graphInflationWithdrawals[i]),
+						data: total.graphFeeValues.map((w, i) => w - total.graphFeeValues[i]),
 						label: '_hidden',
 						borderColor: '#303030',
 						borderWidth: 1,
 						backgroundColor: 'transparent',
 					},
 				]
-			: data.map((r, i) => ({
-					data: r.graphWithdrawals,
-					label: r.label,
-					fill: 'origin',
-					colorIndex: investments[i].colorIndex ?? i,
-					hidden: investmentsViewStore.isHidden(investments[i].id),
-				})),
+			: [
+					...data.map((r, i) => ({
+						data: r.graphFeeValues,
+						label: r.label,
+						fill: 'origin',
+						backgroundColor: lowColor,
+						hidden: investmentsViewStore.isHidden(investments[i].id),
+					})),
+				],
 	)
 
 	const investmentGraphData = $derived(
 		adjustWithInflation
 			? [
 					...data.map((r, i) => ({
-						data: r.graphInflationInvestmentValue,
+						data: r.graphInflationInvestmentValues,
 						label: r.label,
 						fill: 'origin',
 						colorIndex: investments[i].colorIndex,
@@ -120,7 +144,7 @@
 						hidden: investmentsViewStore.isHidden(investments[i].id),
 					})),
 					{
-						data: total.graphInvestmentValue,
+						data: total.graphInvestmentValues,
 						label: '_hidden',
 						fill: 'origin',
 						stack: 'g2',
@@ -130,7 +154,7 @@
 					},
 				]
 			: data.map((r, i) => ({
-					data: r.graphInvestmentValue,
+					data: r.graphInvestmentValues,
 					label: r.label,
 					fill: 'origin',
 					stack: 'g1',
@@ -146,12 +170,12 @@
 		const totalValue: number[] = new Array(total.graphLabels.length)
 		const totalWithInflation: number[] = new Array(total.graphLabels.length)
 		if (filteredInvestments.length > 0) {
-			for (let i = 0; i < filteredInvestments[0].graphInvestmentValue.length; i++) {
+			for (let i = 0; i < filteredInvestments[0].graphInvestmentValues.length; i++) {
 				let sum = 0
 				let sumWithInflation = 0
 				for (let j = 0; j < filteredInvestments.length; j++) {
-					sum += filteredInvestments[j].graphInvestmentValue[i]
-					sumWithInflation += filteredInvestments[j].graphInflationInvestmentValue[i]
+					sum += filteredInvestments[j].graphInvestmentValues[i]
+					sumWithInflation += filteredInvestments[j].graphInflationInvestmentValues[i]
 				}
 				totalValue[i] = sum
 				totalWithInflation[i] = sumWithInflation
@@ -201,9 +225,31 @@
 		return { totalWithdrawals, totalWithdrawalsWithInflation }
 	}
 
+	function getTotalFees() {
+		const filteredInvestments = data.filter(
+			(r, i) => !investmentsViewStore.isHidden(investments[i].id),
+		)
+		const totalFees: number[] = new Array(total.graphLabels.length)
+		const totalFeesWithInflation: number[] = new Array(total.graphLabels.length)
+		if (filteredInvestments.length > 0) {
+			for (let i = 0; i < filteredInvestments[0].graphFeeValues.length; i++) {
+				let sum = 0
+				let sumWithInflation = 0
+				for (let j = 0; j < filteredInvestments.length; j++) {
+					sum += filteredInvestments[j].graphFeeValues[i]
+					sumWithInflation += filteredInvestments[j].graphFeeValues[i]
+				}
+				totalFees[i] = sum
+				totalFeesWithInflation[i] = sumWithInflation
+			}
+		}
+		return { totalFees, totalFeesWithInflation }
+	}
+
 	const { totalValue, totalWithInflation } = $derived(getTotalValue())
 	const { totalDeposits, totalDepositsWithInflation } = $derived(getTotalDeposits())
 	const { totalWithdrawals, totalWithdrawalsWithInflation } = $derived(getTotalWithdrawals())
+	const { totalFees, totalFeesWithInflation } = $derived(getTotalFees())
 
 	function getDateFromGraphLabels(graphLabels: string) {
 		const month = graphLabels.includes('-') ? graphLabels : undefined
@@ -287,7 +333,7 @@
 								y: tooltip.caretY,
 							}
 							investmentsTooltipData = tooltip.dataPoints
-								.filter((d) => d.raw !== 0)
+								.filter((d) => d.raw !== 0 && !d?.dataset?.label?.startsWith('_hidden'))
 								.map((d) => {
 									const dataset = d.dataset as CustomDataset<'line'>
 									return {
@@ -349,7 +395,12 @@
 	<Chart
 		type="bar"
 		labels={data[0]?.graphLabels}
-		datasets={[...(showDeposits ? deposits : []), ...(showWithdrawals ? withdrawals : [])]}
+		datasets={[
+			...(showDeposits ? deposits : []),
+			...(showWithdrawals ? withdrawals : []),
+			...(showFees ? fees : []),
+			...(showWithdrawals && adjustWithInflation ? withdrawalsWithInflation : []),
+		]}
 		options={{
 			interaction: {
 				intersect: false,
@@ -404,6 +455,7 @@
 										value: d.raw as number,
 										colorIndex: dataset.colorIndex,
 										name: dataset.label,
+										type: dataset.colorIndex !== undefined ? 'transaction' : 'fee',
 									}
 								})
 						}
@@ -451,7 +503,10 @@
 		{totalDepositsWithInflation}
 		{totalWithdrawals}
 		{totalWithdrawalsWithInflation}
+		{totalFees}
+		{totalFeesWithInflation}
 		{adjustWithInflation}
+		{showFees}
 		currency={portfolio.currency}
 		labels={data[0]?.graphLabels}
 	/>
@@ -459,7 +514,7 @@
 {#snippet breakdownChart()}
 	<div class="doughnut">
 		<ChartDoughnut
-			data={data.map((d) => d.graphInvestmentValue[selectedIndex])}
+			data={data.map((d) => d.graphInvestmentValues[selectedIndex])}
 			labels={data.map((d) => d.label)}
 			{investments}
 			{investmentsViewStore}
@@ -553,6 +608,7 @@
 					<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}></Checkbox>
 					<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
 					></Checkbox>
+					<Checkbox dimension="small" label={$_('Fees')} bind:checked={showFees}></Checkbox>
 				{/snippet}
 				{@render transactionsChart()}
 			</FullscreenGraph>
@@ -588,6 +644,8 @@
 						></Checkbox>
 						<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
 						></Checkbox>
+						<Checkbox dimension="small" label={$_('Fees')} bind:checked={showFees}></Checkbox>
+
 						<Button
 							dimension="small"
 							variant="ghost"
