@@ -1,11 +1,15 @@
 <script lang="ts">
-	const { children } = $props()
+	import type { Snippet } from 'svelte'
+	import type { HTMLAttributes } from 'svelte/elements'
+
+	const { children, ...restProps }: HTMLAttributes<HTMLDivElement> & { children: Snippet } =
+		$props()
 </script>
 
 {#if children}
-	<section class="error">
+	<div class="error" {...restProps}>
 		{@render children()}
-	</section>
+	</div>
 {/if}
 
 <style>

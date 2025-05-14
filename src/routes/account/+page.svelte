@@ -62,6 +62,7 @@
 				error = $_('updateLanguageError')
 				console.error('Failed to update language', error)
 			})
+			// FIXME: handle the case when the user is not logged in
 			if (authStore.user) authStore.user.user_metadata.prefer_language = newLocale
 		}
 	})

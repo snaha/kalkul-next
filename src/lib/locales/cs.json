@@ -1,4 +1,23 @@
 {
+	"login": "Přihlásit",
+	"forgotPassword": "Zapomněli jste heslo?",
+	"noAccount": "Ještě nemáte účet?",
+	"signUp": "Zaregistrovat se",
+	"logout": "Odhlásit se",
+	"createAccount": "Vytvořit účet",
+	"resetLink": "Pošlete mi odkaz na obnovení hesla",
+	"haveAccount": "Už máte účet?",
+	"landingPage": {
+		"title": "Vytvářejte {colorHigh} finanční plány",
+		"titleHigh": "výjimečné",
+		"subtitle": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
+		"betaDisclaimer": "Kalkul je momentálně dostupný jako omezená bezplatná beta verze. Chcete se připojit k naší rané komunitě? Zadejte svůj e-mail níže a brzy se vám ozveme!",
+		"ctaEmailPlaceholder": "Firemní e-mail",
+		"ctaEmailSubmit": "Odebírat novinky",
+		"ctaEmailSubmitLoading": "Zpracovávám..",
+		"ctaDisclaimer": "Přihlášením k odběru souhlasíte s tím, že vám Kalkul bude zasílat e-maily s informacemi o spuštění produktu, novinkách a aktualizacích. Nebudeme vás zahlcovat spamem. Odhlásit se můžete kdykoliv.",
+		"subscribedText": "Děkujeme za odběr! Jakmile budeme mít zajímavé novinky, pošleme vám e-mail na adresu {colorHigh}."
+	},
 	"allClients": "Klienti",
 	"clearSearch": "Vymazat hledání",
 	"name": "Jméno",
@@ -90,14 +109,6 @@
 	"upfront": "Předem",
 	"percentage": "Procetuální",
 	"fixedFee": "Fixní",
-	"login": "Přihlásit se",
-	"forgotPassword": "Zapomenuté heslo?",
-	"noAccount": "Nemáte účet?",
-	"signUp": "Registrace",
-	"logout": "Odhlášení",
-	"createAccount": "Vytvořit účet",
-	"haveAccount": "Už máte účet?",
-	"resetLink": "Poslat odkaz na resetování hesla",
 	"goBack": "Vrátit se na ",
 	"resetPassword": "Resetovat heslo",
 	"forgotPasswordText": "Zadejte e-mail spojený s vaším účtem a obdržíte odkaz pro obnovení hesla.",
@@ -138,7 +149,6 @@
 	"noPortfoliosYet": "Zatím žádné porfolio",
 	"createYourFirstPortfolio": "Vytvoř své první portfolio",
 	"currentValue": "Aktuální hodnota",
-
 	"errors": {
 		"too_small": "Zadejte větší hodnotu"
 	},
@@ -173,12 +183,5 @@
 	"ter": "TER (Celkový nákladový poměr)",
 	"comingSoon": "Tahle funkce ještě nefunguje, ale už na tom makáme!",
 	"feedbackButton": "Pomoc a zpětná vazba",
-	"landingPage": {
-		"getStarted": "Začít",
-		"title": "Vytvářejte {colorHigh} finanční plány",
-		"titleHigh": "výjimečné",
-		"subtitle": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
-		"footer": "Kalkul je momentálně k dispozici jako bezplatná beta verze pouze pro účely testování.",
-		"warning": "Beta verze není dostupná na mobilech, omlouváme se!"
-	}
+	"breakdown": ""
 }

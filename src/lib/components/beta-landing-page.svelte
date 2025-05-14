@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowRight, UserAvatar, WarningFilled } from 'carbon-icons-svelte'
+	import { CheckmarkFilled, UserAvatar } from 'carbon-icons-svelte'
 	import BetaBadge from './beta-badge.svelte'
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
@@ -7,72 +7,151 @@
 	import routes from '$lib/routes'
 	import { base } from '$app/paths'
 	import Typography from './ui/typography.svelte'
+	import Input from './ui/input/input.svelte'
+	import { notImplemented } from '$lib/not-implemented'
+	import { z } from 'zod'
+	import ErrorComponent from './error.svelte'
+	import Vertical from './ui/vertical.svelte'
+
 	type Props = {
 		isMobile: boolean
 	}
 
+	function sleep(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms))
+	}
+
 	const { isMobile }: Props = $props()
+	let email = $state('')
+	let emailValid = $state(true)
+	let isSubscribing = $state(false)
+	let subscribed = $state(false)
+
+	async function onSubscribe() {
+		isSubscribing = true
+		// TODO: handle errors, subscribe etc
+		await sleep(1000)
+		notImplemented()
+
+		if (emailValid && email !== '') {
+			subscribed = true
+			isSubscribing = false
+		}
+	}
+
+	function validateEmail() {
+		return z.string().email().safeParse(email).success || email === ''
+	}
 </script>
+
+{#snippet emailError()}
+	{$_('invalidEmailAddress')}
+{/snippet}
 
 <header class:mobile={isMobile}>
 	<div class="left">
 		<Logo size={48} />
 		<BetaBadge>beta</BetaBadge>
 	</div>
-	{#if !isMobile}
-		<div class="right">
-			<Button variant="ghost" onclick={() => ($locale = $locale === 'en' ? 'cs' : 'en')}>
-				{#if $locale === 'en'}
-					CZ
-				{:else}
-					EN
-				{/if}
-			</Button>
-			<Button variant="secondary" href={routes.LOGIN}><UserAvatar size={24} />{$_('login')}</Button>
-			<Button variant="strong" href={routes.SIGNUP}
-				>{$_('landingPage.getStarted')}<ArrowRight size={24} /></Button
-			>
-		</div>
-	{/if}
+	<div class="right">
+		<Button variant="ghost" onclick={() => ($locale = $locale === 'en' ? 'cs' : 'en')}>
+			{#if $locale === 'en'}
+				CZ
+			{:else}
+				EN
+			{/if}
+		</Button>
+		<Button variant="secondary" href={routes.LOGIN}><UserAvatar size={24} />{$_('login')}</Button>
+	</div>
 </header>
 <main class:mobile={isMobile}>
-	<div class="container">
-		<section class="max-width560">
-			<img src={`${base}/images/beta-landing-page.svg`} alt="Intro img" />
-			{#if isMobile}
-				<Typography variant="h2">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('landingPage.title', {
-						values: { colorHigh: `<span class='color-high'>${$_('landingPage.titleHigh')}</span>` },
-					})}</Typography
-				>
-			{:else}
-				<span class="headline">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('landingPage.title', {
-						values: { colorHigh: `<span class='color-high'>${$_('landingPage.titleHigh')}</span>` },
-					})}
-				</span>
-			{/if}
-			<Typography variant="large">{$_('landingPage.subtitle')}</Typography>
-		</section>
-		{#if !isMobile}
-			<section>
-				<Button variant="strong" dimension="large" href={routes.SIGNUP}
-					>{$_('landingPage.getStarted')}<ArrowRight size={24} /></Button
-				>
-				<div class="footer">
-					<BetaBadge>beta</BetaBadge>
-					<Typography variant="small" class="color-high">{$_('landingPage.footer')}</Typography>
-				</div>
-			</section>
+	<Vertical
+		class="max-width560"
+		--vertical-gap="var(--double-padding)"
+		--vertical-justify-content="center"
+		--vertical-align-items="center"
+	>
+		<img src={`${base}/images/beta-landing-page.svg`} alt="Intro img" />
+		{#if isMobile}
+			<Typography variant="h2">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html $_('landingPage.title', {
+					values: { colorHigh: `<span class='color-high'>${$_('landingPage.titleHigh')}</span>` },
+				})}</Typography
+			>
 		{:else}
-			<div class="warning">
-				<WarningFilled class="color-red" size={24} />
-				<Typography class="color-red">{$_('landingPage.warning')}</Typography>
-			</div>
+			<span class="headline">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html $_('landingPage.title', {
+					values: { colorHigh: `<span class='color-high'>${$_('landingPage.titleHigh')}</span>` },
+				})}
+			</span>
 		{/if}
-	</div>
+		<Typography variant="large">{$_('landingPage.subtitle')}</Typography>
+
+		<Vertical --vertical-gap="var(--half-padding)">
+			<BetaBadge>beta</BetaBadge>
+			<Typography class="color-high">{$_('landingPage.betaDisclaimer')}</Typography>
+		</Vertical>
+
+		{#if subscribed}
+			<Vertical class="rounded-box trans-green-10" --vertical-gap="var(--padding)">
+				<Typography style="display: flex; gap: var(--half-padding); text-align: start;">
+					<!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
+					<div style="color: var(--colors-high)"><CheckmarkFilled size={48 as any} /></div>
+					<span>
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html $_('landingPage.subscribedText', {
+							values: { colorHigh: `<span class='color-high'>${email}</span>` },
+						})}</span
+					></Typography
+				>
+			</Vertical>
+		{:else}
+			<Vertical
+				--vertical-gap="var(--padding)"
+				--vertical-align-items="stretch"
+				--vertical-justify-content="stretch"
+			>
+				<Vertical
+					--vertical-gap="var(--half-padding)"
+					--vertical-align-items="stretch"
+					--vertical-justify-content="stretch"
+				>
+					<div class="cta" class:vertical={isMobile}>
+						<Input
+							placeholder={$_('landingPage.ctaEmailPlaceholder')}
+							type="email"
+							variant="solid"
+							class="email-input"
+							bind:value={email}
+							error={!emailValid && isMobile ? emailError : undefined}
+							disabled={isSubscribing}
+							onblur={() => {
+								emailValid = validateEmail()
+							}}
+							oninput={() => {
+								emailValid = emailValid || validateEmail()
+							}}
+						/><Button
+							variant="strong"
+							onclick={onSubscribe}
+							disabled={!emailValid || email === '' || isSubscribing}
+							>{$_(
+								isSubscribing ? 'landingPage.ctaEmailSubmitLoading' : 'landingPage.ctaEmailSubmit',
+							)}</Button
+						>
+					</div>
+					{#if !emailValid && !isMobile}
+						<ErrorComponent>{@render emailError()}</ErrorComponent>
+					{/if}
+				</Vertical>
+				<Typography variant="small" style="text-align: start">
+					{$_('landingPage.ctaDisclaimer')}
+				</Typography>
+			</Vertical>
+		{/if}
+	</Vertical>
 </main>
 
 <style>
@@ -102,24 +181,16 @@
 		justify-content: center;
 		padding: var(--double-padding);
 	}
-	.container {
-		display: flex;
-		flex-direction: column;
-		max-width: 1136px;
-		width: 100%;
-		gap: calc(var(--double-padding) * 2);
-		align-items: center;
-	}
-	section {
-		display: flex;
-		flex-direction: column;
-		gap: var(--padding);
-		width: 100%;
-		align-items: center;
+	:global(.max-width560) {
+		max-width: 560px;
 		text-align: center;
 	}
-	.max-width560 {
-		max-width: 560px;
+	:global(.rounded-box) {
+		border-radius: var(--quarter-padding);
+		padding: var(--padding);
+	}
+	:global(.trans-green-10) {
+		background-color: rgb(from var(--colors-high) r g b / 0.1) !important;
 	}
 	img {
 		width: 256px;
@@ -133,20 +204,25 @@
 		font-variant-numeric: lining-nums;
 		font-variant-numeric: tabular-nums;
 	}
-	.footer {
-		display: flex;
-		align-items: center;
-		gap: var(--half-padding);
-	}
-	.warning {
-		display: flex;
-		gap: var(--padding);
-		align-items: center;
-		border: 1px solid var(--colors-red);
-		border-radius: var(--half-padding);
-		padding: var(--half-padding);
-	}
 	.mobile {
 		padding: var(--padding);
+	}
+	.cta {
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+		gap: var(--half-padding);
+		align-items: center;
+		justify-content: stretch;
+
+		:global(.email-input) {
+			flex-grow: 1;
+		}
+
+		&.vertical {
+			flex-direction: column;
+			align-items: stretch;
+			justify-content: stretch;
+		}
 	}
 </style>
