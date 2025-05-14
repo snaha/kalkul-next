@@ -335,7 +335,7 @@ export function getInvestmentValues(
 
 		const exitFeeType = stringToFeeType(investment.exit_fee_type || DEFAULT_FEE_TYPE)
 		const withdrawalFee = calculateExitFee(
-			currentValue.toNumber(),
+			withdrawalsOnDate,
 			exitFeeType,
 			withdrawalsOnDate > 0 ? feeValue(exitFeeType, investment.exit_fee || 0) : 0,
 		)

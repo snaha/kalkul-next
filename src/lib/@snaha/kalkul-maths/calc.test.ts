@@ -142,8 +142,8 @@ describe('#getInvestmentValues', () => {
 			NUM_DAYS_PER_YEAR,
 		)
 
-		expect(investmentValues[NUM_DAYS_PER_YEAR]).toBeCloseTo(89)
-		expect(feeValues[NUM_DAYS_PER_YEAR - 1].exitFee).toBeCloseTo(11)
+		expect(investmentValues[NUM_DAYS_PER_YEAR]).toEqual(99)
+		expect(feeValues[NUM_DAYS_PER_YEAR - 1].exitFee).toEqual(1)
 	})
 
 	it('should calculate simple investment with TER fee', () => {
