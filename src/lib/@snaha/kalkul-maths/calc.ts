@@ -328,7 +328,7 @@ export function getInvestmentValues(
 			stringToEntryFeeType(investment.entry_fee_type || DEFAULT_ENTRY_FEE_TYPE),
 			toPercentage(investment.entry_fee || 0),
 			totalDepositAmount,
-			currentValue.toNumber(),
+			currentFeeBreakdown.entryFee.toNumber(),
 		)
 
 		deposit = deposit.add(depositsOnDate)
