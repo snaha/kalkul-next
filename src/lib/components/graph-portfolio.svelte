@@ -86,7 +86,7 @@
 	)
 	const withdrawals = $derived([
 		...data.map((r, i) => ({
-			data: r.graphInflationWithdrawals,
+			data: r.graphWithdrawals,
 			label: r.label,
 			fill: 'origin',
 			colorIndex: investments[i].colorIndex ?? i,
