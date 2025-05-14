@@ -8,7 +8,6 @@
 	import { type Period } from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
-	import Option from '$lib/components/ui/select/option.svelte'
 	import { capitalizeFirstLetter, formatCurrency, formatDate } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
@@ -223,10 +222,16 @@
 	</section>
 	<div class="spacer"></div>
 	<div class="horizontal flex-end">
-		<Select variant="solid" dimension="compact" bind:value={transactionType} label={$_('Type')}>
-			<Option value="deposit">{capitalizeFirstLetter($_('deposit'))}</Option>
-			<Option value="withdrawal">{capitalizeFirstLetter($_('withdrawal'))}</Option>
-		</Select>
+		<Select
+			variant="solid"
+			dimension="compact"
+			bind:value={transactionType}
+			label={$_('Type')}
+			items={[
+				{ value: 'deposit', label: capitalizeFirstLetter($_('deposit')) },
+				{ value: 'withdrawal', label: capitalizeFirstLetter($_('withdrawal')) },
+			]}
+		></Select>
 		<Toggle
 			class="toggle"
 			dimension="compact"
@@ -276,12 +281,17 @@
 				bind:value={repeat}
 				style="max-width: 100%"
 			></Input>
-			<Select variant="solid" dimension="compact" bind:value={repeatUnit}>
-				<Option value="day">{$_('day')}</Option>
-				<Option value="week">{$_('week')}</Option>
-				<Option value="month">{$_('month')}</Option>
-				<Option value="year">{$_('year')}</Option>
-			</Select>
+			<Select
+				variant="solid"
+				dimension="compact"
+				bind:value={repeatUnit}
+				items={[
+					{ value: 'day', label: $_('day') },
+					{ value: 'week', label: $_('week') },
+					{ value: 'month', label: $_('month') },
+					{ value: 'year', label: $_('year') },
+				]}
+			></Select>
 		</section>
 		<section class="horizontal inputs">
 			<Input
@@ -301,12 +311,13 @@
 				dimension="compact"
 				bind:value={periodUnit}
 				onchange={onPeriodUnitChange}
-			>
-				<Option value="day">{$_('day')}</Option>
-				<Option value="week">{$_('week')}</Option>
-				<Option value="month">{$_('month')}</Option>
-				<Option value="year">{$_('year')}</Option>
-			</Select>
+				items={[
+					{ value: 'day', label: $_('day') },
+					{ value: 'week', label: $_('week') },
+					{ value: 'month', label: $_('month') },
+					{ value: 'year', label: $_('year') },
+				]}
+			></Select>
 		</section>
 		<DateAge
 			dimension="compact"

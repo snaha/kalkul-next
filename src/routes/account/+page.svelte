@@ -9,7 +9,6 @@
 	import FlexItem from '$lib/components/ui/flex-item.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
-	import Option from '$lib/components/ui/select/option.svelte'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import TabBar from '$lib/components/ui/tab-bar/tab-bar.svelte'
 	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
@@ -147,11 +146,8 @@
 								label={$_('language')}
 								dimension="compact"
 								layout="vertical"
-							>
-								{#each $locales as locale}
-									<Option value={locale}>{languageName[locale]}</Option>
-								{/each}
-							</Select>
+								items={$locales.map((locale) => ({ value: locale, label: languageName[locale] }))}
+							></Select>
 							{#if error}
 								<ErrorComponent>{error}</ErrorComponent>
 							{/if}

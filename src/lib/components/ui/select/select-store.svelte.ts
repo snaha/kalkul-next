@@ -4,6 +4,7 @@ export interface SelectStore {
 	open: boolean
 	size: Size
 	marked?: string
+	changed: boolean
 	registerValue(value: string, label?: string): void
 }
 type Size = 'default' | 'large' | 'compact' | 'small'
@@ -12,7 +13,8 @@ export function withSelectStore(dimension: Size, initialValue?: string): SelectS
 	let size = $state<Size>(dimension)
 	let labels = $state<Record<string, string>>({})
 	let open = $state(false)
-	let marked = $state<string | undefined>(value)
+	let marked = $state<string | undefined>(initialValue)
+	let changed = $state(false)
 
 	function registerValue(newValue: string, newLabel?: string) {
 		if (labels[newValue]) return
@@ -50,6 +52,12 @@ export function withSelectStore(dimension: Size, initialValue?: string): SelectS
 		},
 		set marked(newValue) {
 			marked = newValue
+		},
+		get changed() {
+			return changed
+		},
+		set changed(newValue) {
+			changed = newValue
 		},
 		registerValue,
 	}

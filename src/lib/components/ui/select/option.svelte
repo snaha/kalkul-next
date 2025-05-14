@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { Checkmark } from 'carbon-icons-svelte'
 	import type { SelectStore } from './select-store.svelte'
-	import { getContext } from 'svelte'
 	import type { HTMLButtonAttributes } from 'svelte/elements'
 
 	interface Props extends HTMLButtonAttributes {
 		value: string
+		store: SelectStore
 	}
-	let { value, children, class: className = '', ...restProps }: Props = $props()
-
-	const store = getContext<SelectStore>('select-store')
+	let { value, store, children, class: className = '', ...restProps }: Props = $props()
 
 	let button = $state<HTMLButtonElement | undefined>()
 
@@ -27,6 +25,7 @@
 		if (!store.open) return
 		store.marked = value
 		store.value = value
+		store.changed = true
 	}}
 	onmouseenter={() => {
 		store.marked = value

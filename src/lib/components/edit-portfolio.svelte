@@ -7,7 +7,6 @@
 	import type { Client, Portfolio } from '$lib/types'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
-	import Option from '$lib/components/ui/select/option.svelte'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
@@ -171,11 +170,12 @@
 				placeholder={$_('currency')}
 				label={$_('currency')}
 				class="grower"
-			>
-				<Option value="EUR">EUR</Option>
-				<Option value="USD">USD</Option>
-				<Option value="CZK">CZK</Option>
-			</Select>
+				items={[
+					{ value: 'EUR', label: 'EUR' },
+					{ value: 'USD', label: 'USD' },
+					{ value: 'CZK', label: 'CZK' },
+				]}
+			></Select>
 			<Input
 				type="number"
 				variant="solid"

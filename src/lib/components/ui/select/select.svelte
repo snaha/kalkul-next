@@ -1,13 +1,17 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	import { CaretDown, CaretUp } from 'carbon-icons-svelte'
-	import { setContext, type Snippet } from 'svelte'
+	import { type Snippet } from 'svelte'
 	import { withSelectStore } from './select-store.svelte'
 	import Option from './option.svelte'
 
 	type Layout = 'vertical' | 'horizontal'
 	type Dimension = 'default' | 'large' | 'compact' | 'small'
 	type Variant = 'outline' | 'solid'
+	type Item = {
+		value: string
+		label: string
+	}
 	interface Props extends HTMLInputAttributes {
 		helperText?: Snippet
 		label?: string
@@ -19,6 +23,7 @@
 		active?: boolean
 		focus?: boolean
 		variant?: Variant
+		items: Item[]
 	}
 	let {
 		helperText,
@@ -32,9 +37,9 @@
 		active,
 		focus,
 		class: className = '',
-		children,
 		variant = 'outline',
 		onchange = $bindable(),
+		items,
 		...restProps
 	}: Props = $props()
 
@@ -42,7 +47,6 @@
 	let focused = $state(false)
 
 	const store = withSelectStore(dimension, value ?? (placeholder ? '' : undefined))
-	setContext('select-store', store)
 
 	// Focused input when user clicks on caret,Unfocused input when user clicks outside input or caret
 	// Close the select when user clicks outside, when user clicks on the tab button
@@ -72,9 +76,14 @@
 	// Bind store value to the value prop
 	$effect(() => {
 		if (value !== store.value) {
-			value = store.value
-			if (onchange && input) {
-				onchange({ ...new Event('onchange'), currentTarget: input })
+			if (store.changed) {
+				value = store.value
+				store.changed = false
+				if (onchange && input) {
+					onchange({ ...new Event('onchange'), currentTarget: input })
+				}
+			} else {
+				store.value = value
 			}
 		}
 	})
@@ -202,16 +211,16 @@
 					{/if}
 				</div>
 			</button>
-			{#if children}
-				<div class="options" class:hidden={!store.open}>
-					<div>
-						{#if placeholder}
-							<Option class="placeholder" value="">{placeholder}</Option>
-						{/if}
-						{@render children()}
-					</div>
+			<div class="options" class:hidden={!store.open}>
+				<div>
+					{#if placeholder}
+						<Option class="placeholder" value="" {store}>{placeholder}</Option>
+					{/if}
+					{#each items as item}
+						<Option value={item.value} {store}>{item.label}</Option>
+					{/each}
 				</div>
-			{/if}
+			</div>
 		</div>
 	</div>
 	{#if helperText && layout === 'vertical'}
@@ -265,6 +274,7 @@
 		border-radius: var(--border-radius);
 		color: var(--colors-ultra-high);
 		caret-color: transparent;
+		font-family: inherit;
 		&.outline {
 			border: 1px solid var(--colors-ultra-high);
 			background: transparent;

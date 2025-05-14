@@ -14,7 +14,6 @@
 	} from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
-	import Option from '$lib/components/ui/select/option.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import { capitalizeFirstLetter } from '$lib/utils'
 	import Toggle from './ui/toggle.svelte'
@@ -238,10 +237,11 @@
 					bind:value={managementFeeType}
 					label={$_('managementFee')}
 					class="grower"
-				>
-					<Option value="percentage">{$_('percentage')}</Option>
-					<Option value="fixed">{$_('fixedFee')}</Option>
-				</Select>
+					items={[
+						{ value: 'percentage', label: $_('percentage') },
+						{ value: 'fixed', label: $_('fixedFee') },
+					]}
+				></Select>
 				<Input
 					type="number"
 					variant="solid"
@@ -286,11 +286,12 @@
 				bind:value={entryFeeType}
 				label={$_('entryFeePayment')}
 				class="grower"
-			>
-				<Option value="ongoing">{$_('ongoing')}</Option>
-				<Option value="forty-sixty">40/60</Option>
-				<Option value="upfront">{$_('upfront')}</Option>
-			</Select>
+				items={[
+					{ value: 'ongoing', label: $_('ongoing') },
+					{ value: 'forty-sixty', label: '40/60' },
+					{ value: 'upfront', label: $_('upfront') },
+				]}
+			></Select>
 		</section>
 
 		<section class="horizontal">
@@ -300,10 +301,11 @@
 				bind:value={exitFeeType}
 				label={$_('exitFee')}
 				class="grower"
-			>
-				<Option value="percentage">{$_('percentage')}</Option>
-				<Option value="fixed">{$_('fixedFee')}</Option>
-			</Select>
+				items={[
+					{ value: 'percentage', label: $_('percentage') },
+					{ value: 'fixed', label: $_('fixedFee') },
+				]}
+			></Select>
 			<Input
 				type="number"
 				variant="solid"
