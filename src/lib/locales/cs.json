@@ -18,6 +18,13 @@
 		"ctaDisclaimer": "Přihlášením k odběru souhlasíte s tím, že vám Kalkul bude zasílat e-maily s informacemi o spuštění produktu, novinkách a aktualizacích. Nebudeme vás zahlcovat spamem. Odhlásit se můžete kdykoliv.",
 		"subscribedText": "Děkujeme za odběr! Jakmile budeme mít zajímavé novinky, pošleme vám e-mail na adresu {colorHigh}."
 	},
+	"moneyfestPage": {
+		"cta": "Získejte exkluzivní přístup dříve než ostatní díky MoneyFestu 2025!",
+		"title": "Pomozte formovat budoucnost nezávislého finančního plánování, přidejte se k komunitě <span style='font-weight: 700;'>Kalkul</span>.",
+		"subtitle": "Kalkul je nová aplikace, která pomáhá nezávislým profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s klienty.",
+		"button": "Začněte ještě dnes",
+		"disclaimer": "Kalkul je dostupný v omezené bezplatné beta verzi, určené pouze k testování."
+	},
 	"allClients": "Klienti",
 	"clearSearch": "Vymazat hledání",
 	"name": "Jméno",

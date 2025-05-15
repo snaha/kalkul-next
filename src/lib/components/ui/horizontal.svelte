@@ -4,7 +4,6 @@
 
 	type Props = {
 		children: Snippet
-		class?: string
 	}
 	let {
 		children,

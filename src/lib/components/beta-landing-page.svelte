@@ -12,6 +12,7 @@
 	import { z } from 'zod'
 	import ErrorComponent from './error.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import Banner from './banner.svelte'
 
 	type Props = {
 		isMobile: boolean
@@ -25,7 +26,7 @@
 	let email = $state('')
 	let emailValid = $state(true)
 	let isSubscribing = $state(false)
-	let subscribed = $state(false)
+	let subscribed = $state(true)
 
 	async function onSubscribe() {
 		isSubscribing = true
@@ -95,18 +96,18 @@
 		</Vertical>
 
 		{#if subscribed}
-			<Vertical class="rounded-box trans-green-10" --vertical-gap="var(--padding)">
-				<Typography style="display: flex; gap: var(--half-padding); text-align: start;">
-					<!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
-					<div style="color: var(--colors-high)"><CheckmarkFilled size={48 as any} /></div>
-					<span>
-						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html $_('landingPage.subscribedText', {
-							values: { colorHigh: `<span class='color-high'>${email}</span>` },
-						})}</span
-					></Typography
-				>
-			</Vertical>
+			{#snippet icon()}
+				<!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
+				<CheckmarkFilled size={48 as any} />
+			{/snippet}
+			<Banner {icon}>
+				<Typography>
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+					{@html $_('landingPage.subscribedText', {
+						values: { colorHigh: `<span class='color-high'>${email}</span>` },
+					})}
+				</Typography>
+			</Banner>
 		{:else}
 			<Vertical
 				--vertical-gap="var(--padding)"
@@ -184,13 +185,6 @@
 	:global(.max-width560) {
 		max-width: 560px;
 		text-align: center;
-	}
-	:global(.rounded-box) {
-		border-radius: var(--quarter-padding);
-		padding: var(--padding);
-	}
-	:global(.trans-green-10) {
-		background-color: rgb(from var(--colors-high) r g b / 0.1) !important;
 	}
 	img {
 		width: 256px;

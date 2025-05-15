@@ -18,6 +18,13 @@
 		"ctaDisclaimer": "By subscribing you agree to receive emails from Kalkul to get notified about product releases, updates and news. We won’t spam you. Unsubscribe anytime.",
 		"subscribedText": "Thanks for subscribing! You’ll get an email at {colorHigh} as soon as we have some exciting news to share!"
 	},
+	"moneyfestPage": {
+		"cta": "Get early exclusive access with MoneyFest 2025!",
+		"title": "Help shape the future of independent financial planning, join the  <span style='font-weight: 700;'>Kalkul</span> beta community!.",
+		"subtitle": "Kalkul is a new application that helps independent professional advisors create, visualise and share financial plans with their clients.",
+		"button": "Get started",
+		"disclaimer": "Kalkul is currently available as a limited free beta, for testing purposes only."
+	},
 	"allClients": "All clients",
 	"clearSearch": "Clear search",
 	"name": "Name",
