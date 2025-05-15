@@ -60,7 +60,7 @@
 	.root {
 		margin: 0;
 		padding: 0;
-		color: var(--colors-ultra-high);
+		color: var(--typography-color, var(--colors-ultra-high));
 		font-style: normal;
 		font-weight: 400;
 	}
@@ -83,33 +83,39 @@
 		font-weight: var(--font-weight-h1);
 		font-size: var(--font-size-h1);
 		line-height: var(--line-height-h1);
+		font-family: var(--font-family-h1);
 	}
 	.h2 {
 		font-weight: var(--font-weight-h2);
 		font-size: var(--font-size-h2);
 		line-height: var(--line-height-h2);
+		font-family: var(--font-family-h2);
 	}
 	.h3 {
 		font-weight: var(--font-weight-h3);
 		font-size: var(--font-size-h3);
 		line-height: var(--line-height-h3);
+		font-family: var(--font-family-h3);
 	}
 	.h4 {
 		font-weight: var(--font-weight-h4);
 		font-size: var(--font-size-h4);
 		line-height: var(--line-height-h4);
+		font-family: var(--font-family-h4);
 		letter-spacing: var(--letter-spacing-h4);
 	}
 	.h5 {
 		font-weight: var(--font-weight-h5);
 		font-size: var(--font-size-h5);
 		line-height: var(--line-height-h5);
+		font-family: var(--font-family-h5);
 		letter-spacing: var(--letter-spacing-h5);
 	}
 	.h6 {
 		font-weight: var(--font-weight-h6);
 		font-size: var(--font-size-h6);
 		line-height: var(--line-height-h6);
+		font-family: var(--font-family-h6);
 		letter-spacing: var(--letter-spacing-h6);
 	}
 	.large {

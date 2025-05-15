@@ -76,6 +76,7 @@
 	--three-quarters-padding: calc(var(--quarter-padding) * 3);
 	--one-and-a-half-padding: calc(var(--half-padding) * 3);
 	--double-padding: calc(2 * var(--padding));
+	--quadruple-padding: calc(4 * var(--padding));
 	--border-radius: 0.25rem;
 	--focus-outline: 4px solid var(--colors-top);
 	--focus-outline-offset: -4px;
@@ -94,7 +95,9 @@ body {
 	background-color: var(--colors-ultra-low);
 	color: var(--colors-ultra-high);
 	font-family: var(--font-family-sans-serif);
-	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 a {
 	color: var(--colors-high);

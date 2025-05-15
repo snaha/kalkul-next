@@ -33,6 +33,8 @@ export default {
 	SHARE: (portfolioId: number) => `${routePrefix}/share/${portfolioId}`,
 	VIEW: (id: string) => `${routePrefix}/view/${id}`,
 	PAYMENTS: `${routePrefix}/payments`,
+	TERMS: `${routePrefix}/terms`,
+	PRIVACY: `${routePrefix}/privacy`,
 }
 
 export const apiRoutes = {

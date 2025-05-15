@@ -139,6 +139,7 @@
 		flex-direction: column;
 		justify-content: center;
 		max-width: 560px;
+		width: 100%;
 		gap: var(--double-padding);
 		height: 100vh;
 		margin: 0 auto;

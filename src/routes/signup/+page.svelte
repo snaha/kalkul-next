@@ -15,6 +15,7 @@
 	import { page } from '$app/state'
 	import { locale } from 'svelte-i18n'
 	import { base } from '$app/paths'
+	import FlexItem from '$lib/components/ui/flex-item.svelte'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -150,6 +151,7 @@
 					><Checkmark size={24} />{$_('createAccount')}</Button
 				>
 				<Button href={routes.HOME} variant="secondary"><Close size={24} /> {$_('cancel')}</Button>
+				<FlexItem />
 			</div>
 		</form>
 		<Divider --margin="0" />
@@ -196,6 +198,7 @@
 		justify-content: center;
 		gap: var(--double-padding);
 		max-width: 560px;
+		width: 100%;
 		height: 100vh;
 		margin: 0 auto;
 	}

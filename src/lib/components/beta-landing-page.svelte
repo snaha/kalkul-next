@@ -13,6 +13,7 @@
 	import ErrorComponent from './error.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import Banner from './banner.svelte'
+	import Footer from './footer.svelte'
 
 	type Props = {
 		isMobile: boolean
@@ -154,6 +155,7 @@
 		{/if}
 	</Vertical>
 </main>
+<Footer />
 
 <style>
 	:global(.color-high) {
