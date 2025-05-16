@@ -27,7 +27,7 @@
 	let email = $state('')
 	let emailValid = $state(true)
 	let isSubscribing = $state(false)
-	let subscribed = $state(true)
+	let subscribed = $state(false)
 
 	async function onSubscribe() {
 		isSubscribing = true
