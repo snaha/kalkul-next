@@ -4,10 +4,10 @@
 	import { z, type ZodFormattedError } from 'zod'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import adapter from '$lib/adapters'
-	import { registerFormSchema } from '$lib/schemas'
+	import { loginFormSchema as registerFormSchema } from '$lib/schemas'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { _ } from 'svelte-i18n'
-	import { Close, Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
+	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
 	import Logo from '$lib/components/icons/logo.svelte'
 	import routes from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
@@ -16,6 +16,12 @@
 	import { locale } from 'svelte-i18n'
 	import { base } from '$app/paths'
 	import FlexItem from '$lib/components/ui/flex-item.svelte'
+	import Checkbox from '$lib/components/ui/checkbox.svelte'
+	import Vertical from '$lib/components/ui/vertical.svelte'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
+	import Google from '$lib/components/icons/google.svelte'
+	import Horizontal from '$lib/components/ui/horizontal.svelte'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -29,12 +35,12 @@
 	let formValid = $state(false)
 	let error = $state('')
 	let success = $state(false)
+	let newsletterConsent = $state(false)
 
 	let user: Partial<User> = $state({})
 
 	let emailTouched = $state(false)
 	let passwordTouched = $state(false)
-	let confirmPasswordTouched = $state(false)
 	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	function onEmailBlur() {
@@ -53,18 +59,10 @@
 		}
 	}
 
-	function onConfirmPasswordBlur() {
-		if (user.confirmPassword && user.confirmPassword !== user.password) {
-			confirmPasswordTouched = true
-		} else {
-			confirmPasswordTouched = false
-		}
-	}
-
 	async function register() {
 		try {
 			if (user.email && user.password && $locale) {
-				await adapter.signUp(user.email, user.password, $locale.split('-')[0])
+				await adapter.signUp(user.email, user.password, $locale.split('-')[0], newsletterConsent)
 				success = true
 			}
 		} catch (e) {
@@ -99,120 +97,126 @@
 	{/if}
 {/snippet}
 
-{#snippet confirmPasswordError()}
-	{#if formErrors?.confirmPassword?._errors}
-		{#each formErrors?.confirmPassword?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
-
-<a href={routes.HOME} class="logo"><Logo size={40} /></a>
+<ContentLayout --content-layout-margin="0">
+	<Horizontal --horizontal-justify-content="space-between" class="width-100">
+		<a href={routes.HOME} class="logo"><Logo size={40} /></a>
+		<FlexItem></FlexItem>
+	</Horizontal>
+</ContentLayout>
 {#if !success}
-	<div class="regitration">
-		<Typography variant="h4">{$_('signUp')}</Typography>
-		<form class="registration-form" onsubmit={register}>
-			<Input
-				bind:value={user.email}
-				label="Email"
-				error={emailTouched && user.email?.trim() !== '' && formErrors?.email?._errors
-					? emailError
-					: undefined}
-				onblur={onEmailBlur}
-			/>
-			<Input
-				bind:value={user.password}
-				label={$_('password')}
-				error={passwordTouched && user.password?.trim() !== '' && formErrors?.password?._errors
-					? passwordError
-					: undefined}
-				type="password"
-				onblur={onPasswordBlur}
-			/>
-			<Input
-				bind:value={user.confirmPassword}
-				label={$_('confirmPassword')}
-				error={confirmPasswordTouched &&
-				user.confirmPassword?.trim() !== '' &&
-				formErrors?.confirmPassword?._errors
-					? confirmPasswordError
-					: undefined}
-				type="password"
-				onblur={onConfirmPasswordBlur}
-			/>
-			{#if error}
-				<div class="error">
-					<WarningAltFilled size={24} />
-					{error}
-				</div>
-			{/if}
-			<div class="buttons">
-				<Button type="submit" disabled={!formValid} onclick={register}
-					><Checkmark size={24} />{$_('createAccount')}</Button
-				>
-				<Button href={routes.HOME} variant="secondary"><Close size={24} /> {$_('cancel')}</Button>
-				<FlexItem />
-			</div>
-		</form>
-		<Divider --margin="0" />
-		<div class="signin">
-			<Typography>{$_('haveAccount')}</Typography>
-			<a href={routes.LOGIN}>{$_('login')}</a>
-		</div>
-	</div>
+	<ContentLayout --content-layout-margin="0">
+		<Vertical class="registration" --vertical-gap="var(--double-padding)">
+			<Typography variant="h4">{$_('signUp')}</Typography>
+			<Vertical --vertical-gap="var(--padding)">
+				<Input
+					variant="solid"
+					dimension="compact"
+					bind:value={user.email}
+					label="Email"
+					error={emailTouched && user.email?.trim() !== '' && formErrors?.email?._errors
+						? emailError
+						: undefined}
+					onblur={onEmailBlur}
+				/>
+				<Input
+					variant="solid"
+					dimension="compact"
+					bind:value={user.password}
+					label={$_('password')}
+					error={passwordTouched && user.password?.trim() !== '' && formErrors?.password?._errors
+						? passwordError
+						: undefined}
+					type="password"
+					onblur={onPasswordBlur}
+				/>
+				<Checkbox
+					label={$_('I want to receive product updates and news via email')}
+					bind:checked={newsletterConsent}
+				></Checkbox>
+				{#if error}
+					<div class="error">
+						<WarningAltFilled size={24} />
+						{error}
+					</div>
+				{/if}
+				<Vertical --vertical-gap="var(--padding)">
+					<ResponsiveLayout
+						--responsive-gap="var(--padding)"
+						--responsive-justify-content="stretch"
+					>
+						<Button
+							variant="strong"
+							dimension="compact"
+							type="submit"
+							disabled={!formValid}
+							onclick={register}><Checkmark size={24} />{$_('createAccount')}</Button
+						>
+						<Horizontal --horizontal-justify-content="center">{$_('or')}</Horizontal>
+						<Button variant="solid" dimension="compact" href={routes.HOME}
+							><Google size={24} /> {$_('Sign up with Google')}</Button
+						>
+					</ResponsiveLayout>
+					<Typography
+						>By proceeding you agree to Kalkul <a href={routes.TERMS}>Terms of Service</a> and
+						<a href={routes.PRIVACY}>Privacy Policy</a>.</Typography
+					>
+				</Vertical>
+			</Vertical>
+			<Divider --margin="0" />
+			<ResponsiveLayout --responsive-justify-content="stretch">
+				<Horizontal --horizontal-justify-content="center">
+					<Typography>{$_('haveAccount')} <a href={routes.LOGIN}>{$_('login')}</a></Typography>
+				</Horizontal>
+			</ResponsiveLayout>
+		</Vertical>
+	</ContentLayout>
 {:else}
-	<div class="regitration success">
-		<img src={`${base}/images/email-link.svg`} alt="Verification link sent" />
-		<div class="text">
-			<Typography variant="h4">{$_('checkEmail')}</Typography>
-			<Typography variant="large">
-				{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('verificationLinkLocal', {
-						values: {
-							email: `<a class='green' href="${inbucketUrl}/m/${user.email}" target="_blank">inbucket</a>`,
-						},
-					})}
-				{:else}
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('verificationLinkRemote', {
-						values: { email: `<span class='green'>${user.email}</span>` },
-					})}
-				{/if}</Typography
-			>
-		</div>
-	</div>
+	<ContentLayout>
+		<Vertical
+			class="registration"
+			--vertical-gap="var(--double-padding)"
+			--vertical-align-items="center"
+		>
+			<img src={`${base}/images/email-link.svg`} alt="Verification link sent" class="image" />
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="center">
+				<Typography variant="h4">{$_('checkEmail')}</Typography>
+				<Typography variant="large">
+					{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html $_('verificationLinkLocal', {
+							values: {
+								email: `<a class='green' href="${inbucketUrl}/m/${user.email}" target="_blank">inbucket</a>`,
+							},
+						})}
+					{:else}
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html $_('verificationLinkRemote', {
+							values: { email: `<span class='green'>${user.email}</span>` },
+						})}
+					{/if}</Typography
+				>
+				<Typography>{$_('Don’t see the email? Please check your spam folder.')}</Typography>
+			</Vertical>
+		</Vertical>
+	</ContentLayout>
 {/if}
 
 <style>
 	.logo {
-		position: fixed;
-		display: flex;
-		top: var(--double-padding);
-		left: var(--double-padding);
 		color: var(--colors-ultra-high);
+		height: 40px;
 	}
-	.regitration {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		gap: var(--double-padding);
+	:global(.registration) {
 		max-width: 560px;
 		width: 100%;
-		height: 100vh;
-		margin: 0 auto;
 	}
-	.success {
-		align-items: center;
+	:global(.width-100) {
+		max-width: 100%;
+		width: 100%;
 	}
-	.registration-form {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-	}
-	.buttons {
-		display: flex;
-		gap: var(--half-padding);
+	.image {
+		width: 256px;
+		height: 256px;
 	}
 	a {
 		font-size: var(--font-size);
@@ -220,11 +224,6 @@
 		letter-spacing: var(--letter-spacing);
 		font-family: var(--font-family-sans-serif);
 		color: var(--colors-high);
-	}
-	.signin {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
 	}
 	.error {
 		display: inline-flex;
@@ -240,10 +239,7 @@
 		line-height: var(--line-height);
 		letter-spacing: var(--letter-spacing);
 	}
-	.text {
-		display: flex;
-		flex-direction: column;
+	:global(.center) {
 		text-align: center;
-		gap: var(--half-padding);
 	}
 </style>

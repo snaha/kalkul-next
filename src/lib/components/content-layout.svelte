@@ -4,23 +4,27 @@
 	type Props = {
 		children: Snippet
 		centerAlign?: boolean
+		centerVertical?: boolean
 	}
 
-	let { children, centerAlign }: Props = $props()
+	let { children, centerAlign, centerVertical }: Props = $props()
 </script>
 
-<main class="centered" class:centerAlign>
+<main class="centered" class:centerAlign class:centerVertical>
 	{@render children()}
 </main>
 
 <style lang="postcss">
+	:root {
+		--content-layout-margin: auto;
+	}
 	.centered {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		gap: var(--gap, --padding);
-		margin: auto;
+		margin: var(--content-layout-margin);
 		padding: var(--double-padding);
 		width: 100%;
 		max-width: 1952px;

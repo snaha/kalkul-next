@@ -8,20 +8,6 @@ export const loginFormSchema = emailFormSchema.extend({
 	password: z.string().min(6, { message: 'passwordError' }),
 })
 
-export const registerFormSchema = loginFormSchema
-	.extend({
-		confirmPassword: z.string(),
-	})
-	.superRefine((data, ctx) => {
-		if (data.password !== data.confirmPassword) {
-			ctx.addIssue({
-				code: 'custom',
-				path: ['confirmPassword'],
-				message: 'confirmPasswordError',
-			})
-		}
-	})
-
 export const resetPasswordFormSchema = z
 	.object({
 		newPassword: z.string().min(6, { message: 'passwordError' }),

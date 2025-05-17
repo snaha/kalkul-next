@@ -96,7 +96,10 @@
 					})}
 				{/if}
 			</Typography>
-			<Typography>{$_('checkNewEmail.footer')}</Typography>
+			<Typography
+				>{$_('checkNewEmail.footer')}
+				{$_('Don’t see the email? Please check your spam folder.')}</Typography
+			>
 		</div>
 	{:else}
 		<Typography variant="h4">{$_('changeEmailAddress')}</Typography>

@@ -16,7 +16,12 @@ export interface Adapter {
 	// This is run when the app unmounts and should clear subscriptions
 	stop: () => Promise<void> | void
 
-	signUp: (email: string, password: string, language: string) => Promise<void>
+	signUp: (
+		email: string,
+		password: string,
+		language: string,
+		newsletterConsent: boolean,
+	) => Promise<void>
 	signIn: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
 	sendResetPasswordLink: (email: string) => Promise<void>

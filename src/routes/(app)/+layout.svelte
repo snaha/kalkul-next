@@ -50,7 +50,7 @@
 	<ContentLayout>
 		<Loader />
 	</ContentLayout>
-{:else if authStore.isLoggedIn && !layoutStore.mobile}
+{:else if authStore.isLoggedIn}
 	{#if subscriptionStore.loading}
 		<ContentLayout>
 			<Loader />

@@ -126,6 +126,7 @@
 					})}
 				{/if}
 			</Typography>
+			<Typography>{$_('Don’t see the email? Please check your spam folder.')}</Typography>
 		</div>
 	</div>
 {/if}

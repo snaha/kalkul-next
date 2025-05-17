@@ -8,6 +8,7 @@
 		FolderShared,
 		UserProfile,
 		TrashCan,
+		ArrowRight,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge, formatDate } from '$lib/utils'
@@ -24,6 +25,12 @@
 	import adapter from '$lib/adapters'
 	import DeleteModal from '$lib/components/delete-modal.svelte'
 	import { base } from '$app/paths'
+	import DesktopOnly from '$lib/components/desktop-only.svelte'
+	import MobileOnly from '$lib/components/mobile-only.svelte'
+	import Vertical from '$lib/components/ui/vertical.svelte'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+	import Discord from '$lib/components/icons/discord.svelte'
+	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 
 	let showConfirmModal = $state(false)
 	let clientToBeDeleted: number | undefined = $state()
@@ -77,72 +84,121 @@
 {/snippet}
 
 <Header />
-<main>
-	<section class="top-bar horizontal">
-		<div class="left">
-			<Typography variant="h4">{$_('allClients')}</Typography>
-			<SearchInput bind:value={searchQuery} dimension="compact" variant="solid" placeholder="Search"
-			></SearchInput>
-			{#if searchQuery.length > 0}
-				<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
-					>{$_('clearSearch')}</Button
-				>
-			{/if}
-		</div>
-		<div class="grower"></div>
-		<Button dimension="compact" variant="strong" onclick={addClient}
-			><UserFollow />{$_('addClient')}</Button
-		>
-	</section>
-	{#if clientStore.loading}
-		<Typography>Loading...</Typography><Loader />
-	{:else if clientStore.data.length === 0}
-		<section class="empty">
-			<img src={`${base}/images/no-client.svg`} alt="No client yet" />
-			<Typography variant="h4">{$_('noClientsYet')}</Typography>
-			<Typography>{$_('createYourFirstClient')}</Typography>
-			<div class="spacer"></div>
-			<Button variant="strong" onclick={addClient}><UserFollow />{$_('addClient')}</Button>
-		</section>
-	{:else}
-		<ul>
-			<li class="clients title">
-				<span>{$_('name')}</span>
-				<span>{$_('birthDate')}</span>
-				<span class="right-aligned">{$_('age')}</span>
-				<span class="right-aligned">{$_('portfolios')}</span>
-				<span class="right-aligned">{$_('investments')}</span>
-				<span class="right-aligned"></span>
-			</li>
-			{#each filteredClient as client}
-				{@const birtDate = new Date(client.birth_date)}
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<li
-					class="clients client"
-					onclick={(e: MouseEvent) => {
-						if (!e.defaultPrevented) {
-							goto(routes.CLIENT(client.id))
-						}
-					}}
-				>
-					<span
-						><Avatar
-							name={client.name}
-							birthDate={birtDate}
-							imageURI={undefined}
-						/>{client.name}</span
+<DesktopOnly>
+	<main>
+		<section class="top-bar horizontal">
+			<div class="left">
+				<Typography variant="h4">{$_('allClients')}</Typography>
+				<SearchInput
+					bind:value={searchQuery}
+					dimension="compact"
+					variant="solid"
+					placeholder="Search"
+				></SearchInput>
+				{#if searchQuery.length > 0}
+					<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
+						>{$_('clearSearch')}</Button
 					>
-					<span>{formatDate(new Date(client.birth_date))}</span>
-					<span class="right-aligned">{formatAge(birtDate)}</span>
-					<span class="right-aligned">{portfolioStore.filter(client.id).length}</span>
-					<span class="right-aligned">{0}</span>
-					<span class="right-aligned">{@render clientDropdown(client.id)}</span>
+				{/if}
+			</div>
+			<div class="grower"></div>
+			<Button dimension="compact" variant="strong" onclick={addClient}
+				><UserFollow />{$_('addClient')}</Button
+			>
+		</section>
+		{#if clientStore.loading}
+			<Typography>Loading...</Typography><Loader />
+		{:else if clientStore.data.length === 0}
+			<section class="empty">
+				<img src={`${base}/images/no-client.svg`} alt="No client yet" />
+				<Typography variant="h4">{$_('noClientsYet')}</Typography>
+				<Typography>{$_('createYourFirstClient')}</Typography>
+				<div class="spacer"></div>
+				<Button variant="strong" onclick={addClient}><UserFollow />{$_('addClient')}</Button>
+			</section>
+		{:else}
+			<ul>
+				<li class="clients title">
+					<span>{$_('name')}</span>
+					<span>{$_('birthDate')}</span>
+					<span class="right-aligned">{$_('age')}</span>
+					<span class="right-aligned">{$_('portfolios')}</span>
+					<span class="right-aligned">{$_('investments')}</span>
+					<span class="right-aligned"></span>
 				</li>
-			{/each}
-		</ul>
-	{/if}
-</main>
+				{#each filteredClient as client}
+					{@const birtDate = new Date(client.birth_date)}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<li
+						class="clients client"
+						onclick={(e: MouseEvent) => {
+							if (!e.defaultPrevented) {
+								goto(routes.CLIENT(client.id))
+							}
+						}}
+					>
+						<span
+							><Avatar
+								name={client.name}
+								birthDate={birtDate}
+								imageURI={undefined}
+							/>{client.name}</span
+						>
+						<span>{formatDate(new Date(client.birth_date))}</span>
+						<span class="right-aligned">{formatAge(birtDate)}</span>
+						<span class="right-aligned">{portfolioStore.filter(client.id).length}</span>
+						<span class="right-aligned">{0}</span>
+						<span class="right-aligned">{@render clientDropdown(client.id)}</span>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</main>
+</DesktopOnly>
+<MobileOnly>
+	<Vertical --vertical-gap="0" --vertical-align-items="center">
+		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
+			<ContentLayout --content-layout-margin="0">
+				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
+					<img src="/images/collaboration.svg" alt="collaboration" />
+					<Typography variant="h4" class="text-center">{$_('Welcome to Kalkul beta!')}</Typography>
+					<Typography class="text-center"
+						>{$_(
+							'Kalkul is a new application that helps independent advisors create, visualise and share financial plans with their clients.',
+						)}</Typography
+					>
+				</Vertical>
+			</ContentLayout>
+			<div class="video">
+				<iframe src="https://www.youtube.com/embed/QDia3e12czc" title="intro video"> </iframe>
+			</div>
+			<ContentLayout --content-layout-margin="0">
+				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
+					<Typography variant="h5" class="text-center">{$_('What’s next?')}</Typography>
+					<Vertical --vertical-gap="var(--half-padding)">
+						<Typography class="text-center"
+							>{$_(
+								'Once you’ll be in front of your computer, login with your account to kalkul.app and start testing yourself.',
+							)}</Typography
+						>
+						<Typography variant="small" class="text-center"
+							>{$_('Kalkul will be available on mobile soon!')}</Typography
+						>
+					</Vertical>
+					<Typography class="text-center"
+						>{$_(
+							'In the meantime, you can already join the conversation on our Discord server.',
+						)}</Typography
+					>
+					<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
+						><Discord size={24} /> {$_('Join community')} <ArrowRight size={24} /></Button
+					>
+				</Vertical>
+			</ContentLayout>
+		</Vertical>
+	</Vertical>
+</MobileOnly>
 
 <DeleteModal
 	confirm={deleteClient}
@@ -231,5 +287,22 @@
 	}
 	.spacer {
 		margin-top: var(--half-padding);
+	}
+	.video {
+		background-color: black;
+		width: 100%;
+		max-width: 100%;
+		aspect-ratio: 360 / 190;
+	}
+	:global(.text-center) {
+		text-align: center;
+	}
+	iframe {
+		width: 100%;
+		height: 100%;
+	}
+	:global(.max560) {
+		max-width: 560px;
+		width: 100%;
 	}
 </style>

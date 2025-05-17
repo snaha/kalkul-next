@@ -5,13 +5,19 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { z, type ZodFormattedError } from 'zod'
 	import { loginFormSchema } from '$lib/schemas'
-	import { Close, Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
+	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import Logo from '$lib/components/icons/logo.svelte'
 	import routes from '$lib/routes'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
+	import ContentLayout from './content-layout.svelte'
+	import Horizontal from './ui/horizontal.svelte'
+	import FlexItem from './ui/flex-item.svelte'
+	import Vertical from './ui/vertical.svelte'
+	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import Google from './icons/google.svelte'
 
 	type User = z.infer<typeof loginFormSchema>
 
@@ -38,6 +44,7 @@
 			passwordTouched = true
 		}
 	}
+
 	async function login() {
 		try {
 			if (!loginFormValid) return
@@ -51,6 +58,13 @@
 			error = (e as Error).message
 		}
 	}
+
+	function onKeyDown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			login()
+		}
+	}
+
 	$effect(() => {
 		const res = loginFormSchema.safeParse({ email, password })
 		if (res.success) {
@@ -79,87 +93,87 @@
 	{/if}
 {/snippet}
 
-<a href={routes.HOME} class="logo"><Logo size={40} /></a>
-<div class="login">
-	<Typography variant="h4">{$_('login')}</Typography>
-	<form class="login-form" onsubmit={login}>
-		<Input
-			bind:value={email}
-			label="Email"
-			type="email"
-			error={emailTouched && email.trim() !== '' && loginFormErrors?.email?._errors
-				? emailError
-				: undefined}
-			onblur={onEmailBlur}
-			oninput={() => (error = '')}
-		></Input>
-		<Input
-			bind:value={password}
-			type="password"
-			label="Password"
-			error={passwordTouched && password.trim() !== '' && loginFormErrors?.password?._errors
-				? passwordError
-				: undefined}
-			onblur={onPasswordBlur}
-			oninput={() => (error = '')}
-		></Input>
-		{#if error}
-			<div class="error">
-				<WarningAltFilled size={24} />
-				{error}
-			</div>
-		{/if}
-		<div class="controls">
-			<div class="buttons">
-				<Button type="submit" disabled={!loginFormValid}
+<ContentLayout --content-layout-margin="0">
+	<Horizontal --horizontal-justify-content="space-between" class="width-100">
+		<a href={routes.HOME} class="logo"><Logo size={40} /></a>
+		<FlexItem></FlexItem>
+	</Horizontal>
+</ContentLayout>
+<ContentLayout --content-layout-margin="0">
+	<Vertical class="login" --vertical-gap="var(--double-padding)">
+		<Typography variant="h4">{$_('login')}</Typography>
+		<Vertical --vertical-gap="var(--padding)">
+			<Input
+				variant="solid"
+				dimension="compact"
+				bind:value={email}
+				label="Email"
+				type="email"
+				error={emailTouched && email.trim() !== '' && loginFormErrors?.email?._errors
+					? emailError
+					: undefined}
+				onblur={onEmailBlur}
+				oninput={() => (error = '')}
+				onkeydown={onKeyDown}
+			></Input>
+			<Input
+				variant="solid"
+				dimension="compact"
+				bind:value={password}
+				type="password"
+				label="Password"
+				error={passwordTouched && password.trim() !== '' && loginFormErrors?.password?._errors
+					? passwordError
+					: undefined}
+				onblur={onPasswordBlur}
+				oninput={() => (error = '')}
+				onkeydown={onKeyDown}
+			></Input>
+			{#if error}
+				<div class="error">
+					<WarningAltFilled size={24} />
+					{error}
+				</div>
+			{/if}
+		</Vertical>
+		<Vertical --vertical-gap="var(--padding)">
+			<ResponsiveLayout --responsive-gap="var(--padding)" --responsive-justify-content="stretch">
+				<Button variant="strong" dimension="compact" disabled={!loginFormValid} onclick={login}
 					><Checkmark size={24} />{$_('login')}</Button
 				>
-				<Button variant="secondary" href={routes.HOME}><Close size={24} /> {$_('cancel')}</Button>
-			</div>
-			<a href={routes.FORGOT_PASSWORD}>{$_('forgotPassword')}</a>
-		</div>
-	</form>
-	<Divider --margin="0" />
-	<div class="register">
-		<Typography>{$_('noAccount')}</Typography>
-		<a href={routes.SIGNUP}>{$_('signUp')}</a>
-	</div>
-</div>
+				<Horizontal --horizontal-justify-content="center">{$_('or')}</Horizontal>
+
+				<Button variant="solid" dimension="compact" href={routes.HOME}
+					><Google size={24} /> {$_('Sign in with Google')}</Button
+				>
+			</ResponsiveLayout>
+			<ResponsiveLayout --responsive-justify-content="stretch">
+				<Horizontal --horizontal-justify-content="center">
+					<a href={routes.FORGOT_PASSWORD}>{$_('forgotPassword')}</a>
+				</Horizontal>
+			</ResponsiveLayout>
+		</Vertical>
+		<Divider --margin="0" />
+		<ResponsiveLayout --responsive-justify-content="stretch">
+			<Horizontal --horizontal-justify-content="center">
+				<Typography>{$_('noAccount')} <a href={routes.SIGNUP}>{$_('signUp')}</a></Typography>
+			</Horizontal>
+		</ResponsiveLayout>
+	</Vertical>
+</ContentLayout>
 
 <style>
 	.logo {
-		position: fixed;
-		display: flex;
-		top: var(--double-padding);
-		left: var(--double-padding);
 		color: var(--colors-ultra-high);
+		height: 40px;
 	}
-	.login {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
+	:global(.width-100) {
+		max-width: 100%;
+		width: 100%;
+	}
+	:global(.login) {
 		max-width: 560px;
 		width: 100%;
-		gap: var(--double-padding);
-		height: 100vh;
-		margin: 0 auto;
-		padding: var(--padding);
-	}
-	.login-form {
-		display: flex;
-		flex-direction: column;
-		gap: var(--padding);
-	}
-	.controls {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: var(--half-padding);
-		flex-wrap: wrap;
-	}
-	.buttons {
-		display: flex;
-		gap: var(--half-padding);
 	}
 	a {
 		font-size: var(--font-size);
@@ -167,11 +181,6 @@
 		letter-spacing: var(--letter-spacing);
 		font-family: var(--font-family-sans-serif);
 		color: var(--colors-high);
-	}
-	.register {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
 	}
 	.error {
 		display: inline-flex;

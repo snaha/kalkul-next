@@ -175,11 +175,11 @@ export default class Supabase implements Adapter {
 		this.subscriptions.forEach((subscription) => subscription.unsubscribe())
 	}
 
-	async signUp(email: string, password: string, language: string) {
+	async signUp(email: string, password: string, language: string, newsletterConsent: boolean) {
 		const { error } = await supabase.auth.signUp({
 			email,
 			password,
-			options: { data: { prefer_language: language } },
+			options: { data: { prefer_language: language, newsletter_consent: newsletterConsent } },
 		})
 		if (error) {
 			console.error('Failed to register', error)

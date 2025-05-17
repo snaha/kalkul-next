@@ -11,6 +11,7 @@
 	import { goto } from '$app/navigation'
 	import { notImplemented } from '$lib/not-implemented'
 	import BetaBadge from './beta-badge.svelte'
+	import DesktopOnly from './desktop-only.svelte'
 
 	let showFeedbackModal = $state(false)
 
@@ -27,24 +28,28 @@
 		</a>
 		<BetaBadge>BETA</BetaBadge>
 	</div>
+
 	<div class="user-info">
-		<Dropdown buttonDimension="small" mode="dark">
-			{#snippet button()}
-				<UserAvatarFilled size={16} />{authStore.user?.email}
-			{/snippet}
-			<ul class="dropdown-menu">
-				<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
-					<SettingsEdit size={24} />
-					{$_('accountSettings')}
-				</Button>
-				<Button variant="ghost" dimension="compact" onclick={logout} leftAlign>
-					<Logout size={24} />
-					{$_('logout')}
-				</Button>
-			</ul>
-		</Dropdown>
+		<DesktopOnly>
+			<Dropdown buttonDimension="small" mode="dark">
+				{#snippet button()}
+					<UserAvatarFilled size={16} />{authStore.user?.email}
+				{/snippet}
+				<ul class="dropdown-menu">
+					<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
+						<SettingsEdit size={24} />
+						{$_('accountSettings')}
+					</Button>
+					<Button variant="ghost" dimension="compact" onclick={logout} leftAlign>
+						<Logout size={24} />
+						{$_('logout')}
+					</Button>
+				</ul>
+			</Dropdown>
+		</DesktopOnly>
+
 		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
-			><ChatBot size={16} />{$_('feedbackButton')}</Button
+			><ChatBot size={16} /><DesktopOnly>{$_('feedbackButton')}</DesktopOnly></Button
 		>
 		<Button
 			mode="dark"

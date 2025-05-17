@@ -85,16 +85,14 @@
 		border: 0;
 		background-color: var(--colors-ultra-low);
 		padding: 0;
-		max-width: 624px;
+		max-width: 560px;
 		width: 100%;
 		color: var(--colors-ultra-high);
 	}
 	@media screen and (max-width: 560px) {
 		dialog {
-			width: 100%;
-			max-width: 100%;
-			height: 100%;
-			max-height: 100%;
+			max-width: calc(100% - var(--double-padding));
+			margin: auto var(--padding);
 		}
 	}
 	::backdrop {
