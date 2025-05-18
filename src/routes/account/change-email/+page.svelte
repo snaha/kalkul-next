@@ -53,7 +53,7 @@
 		if (res.success) {
 			if (newEmail === authStore.user?.email) {
 				formErrors = {
-					email: { _errors: ['This email is already associated with your account.'] },
+					email: { _errors: [$_('error.emailAlreadyAssociated')] },
 					_errors: [],
 				}
 				formValid = false
@@ -80,32 +80,32 @@
 	{#if success}
 		<img class="main-image" src={`${base}/images/email-link.svg`} alt="Change email" />
 		<div class="confirm-information">
-			<Typography variant="h4">{$_('checkNewEmail.header')}</Typography>
+			<Typography variant="h4">{$_('page.changeEmail.header')}</Typography>
 			<Typography variant="large">
 				{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('checkNewEmail.bodyLocal', {
+					{@html $_('page.changeEmail.bodyLocal', {
 						values: {
 							link: `<a class='green' href="${inbucketUrl}/m/${newEmail}" target="_blank">inbucket</a>`,
 						},
 					})}
 				{:else}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('checkNewEmail.bodyRemote', {
+					{@html $_('page.changeEmail.bodyRemote', {
 						values: { newEmail: `<span class='green'>${newEmail}</span>` },
 					})}
 				{/if}
 			</Typography>
 			<Typography
-				>{$_('checkNewEmail.footer')}
-				{$_('Don’t see the email? Please check your spam folder.')}</Typography
+				>{$_('page.changeEmail.footer')}
+				{$_('page.changeEmail.checkSpam')}</Typography
 			>
 		</div>
 	{:else}
-		<Typography variant="h4">{$_('changeEmailAddress')}</Typography>
+		<Typography variant="h4">{$_('page.changeEmail.changeEmailAddress')}</Typography>
 		<form onsubmit={updateUserEmail} class="change-email">
 			<Input
-				label={$_('newEmailAddress')}
+				label={$_('page.changeEmail.newEmailAddress')}
 				bind:value={newEmail}
 				oninput={clearErrorState}
 				onblur={onEmailBlur}
@@ -122,10 +122,10 @@
 		{/if}
 		<div class="control-buttons">
 			<Button dimension="compact" disabled={!formValid} onclick={updateUserEmail}
-				><Checkmark size={24} />{$_('changeEmail')}</Button
+				><Checkmark size={24} />{$_('page.changeEmail.changeEmail')}</Button
 			>
 			<Button dimension="compact" variant="secondary" href={routes.ACCOUNT}
-				><Close size={24} />{$_('cancel')}</Button
+				><Close size={24} />{$_('common.cancel')}</Button
 			>
 		</div>
 	{/if}

@@ -70,11 +70,11 @@
 <main>
 	<ContentLayout>
 		<Vertical --vertical-align-items="flex-start" --vertical-gap="var(--double-padding)">
-			<Typography variant="h3">{$_('Share portfolio')}</Typography>
+			<Typography variant="h3">{$_('page.share.sharePortfolio')}</Typography>
 
 			<Vertical --vertical-gap="var(--padding)">
 				<Toggle
-					label={$_('Link sharing (view only)')}
+					label={$_('page.share.linkSharingToggle')}
 					checked={linkSharing}
 					onclick={(e) => handleToggleClick(e)}
 				></Toggle>
@@ -84,32 +84,24 @@
 						<CopyButton
 							variant="ghost"
 							position="bottom"
-							helperText={$_('Link copied')}
+							helperText={$_('page.share.linkCopied')}
 							copyText={linkValue}
 						/>
 					</section>
 				{:else}
 					<Vertical --vertical-gap="var(--half-padding)">
-						<Typography
-							>{$_(
-								'Activate link sharing to easily share this portfolio page with your client.',
-							)}</Typography
-						>
-						<Typography variant="small"
-							>{$_(
-								'The client will not be able to edit or make any changes to the portfolio data.',
-							)}</Typography
-						>
+						<Typography>{$_('page.share.activateLinkText')}</Typography>
+						<Typography variant="small">{$_('page.share.deactivateLinkText')}</Typography>
 					</Vertical>
 				{/if}
 			</Vertical>
 			{#if portfolio?.link}
 				<Button variant="secondary" dimension="compact" onclick={cancel}
-					><Checkmark size={24} />{$_('Done')}</Button
+					><Checkmark size={24} />{$_('common.done')}</Button
 				>
 			{:else}
 				<Button variant="secondary" dimension="compact" onclick={cancel}
-					><Close size={24} />{$_(`Don't share`)}</Button
+					><Close size={24} />{$_('page.share.dontShare')}</Button
 				>
 			{/if}
 		</Vertical>

@@ -123,7 +123,7 @@
 			return
 		}
 
-		if (confirm($_('Are you sure you want to delete?'))) {
+		if (confirm($_('component.editTransaction.deleteConfirmWarning'))) {
 			await adapter.deleteTransaction(transaction)
 			close()
 		}
@@ -215,7 +215,9 @@
 <Vertical --gap="var(--half-padding)">
 	<section class="horizontal">
 		<Typography variant="h5"
-			>{formType === 'create' ? $_('Add') : $_('Edit')}{$_(' transaction')}</Typography
+			>{formType === 'create'
+				? $_('component.editTransaction.addTransaction')
+				: $_('component.editTransaction.editTransaction')}</Typography
 		>
 		<FlexItem />
 		<Button dimension="compact" variant="ghost" onclick={cancel}><Close size={24} /></Button>
@@ -226,16 +228,16 @@
 			variant="solid"
 			dimension="compact"
 			bind:value={transactionType}
-			label={$_('Type')}
+			label={$_('common.type')}
 			items={[
-				{ value: 'deposit', label: capitalizeFirstLetter($_('deposit')) },
-				{ value: 'withdrawal', label: capitalizeFirstLetter($_('withdrawal')) },
+				{ value: 'deposit', label: capitalizeFirstLetter($_('common.deposit')) },
+				{ value: 'withdrawal', label: capitalizeFirstLetter($_('common.withdrawal')) },
 			]}
 		></Select>
 		<Toggle
 			class="toggle"
 			dimension="compact"
-			label={$_('Recurring')}
+			label={$_('common.recurring')}
 			bind:checked={isRecurring}
 			onchange={toggleRecurring}
 		></Toggle>
@@ -245,7 +247,7 @@
 		variant="solid"
 		dimension="compact"
 		placeholder={'0'}
-		label={$_('Amount')}
+		label={$_('common.amount')}
 		unit={portfolio.currency}
 		bind:value={amount}
 		min={1}
@@ -255,14 +257,14 @@
 	<Input
 		dimension="compact"
 		variant="solid"
-		placeholder={$_('Label')}
-		label={$_('Label')}
+		placeholder={$_('common.label')}
+		label={$_('common.label')}
 		bind:value={label}
 	></Input>
 	<DateAge
 		dimension="compact"
-		dateInputLabel={$_('Start date')}
-		ageLabel={$_('Client´s age at start')}
+		dateInputLabel={$_('common.startDate')}
+		ageLabel={$_('component.editTransaction.clientAgeAtStart')}
 		agePlaceholder={'0'}
 		bind:date
 		birthDate={new Date(client.birth_date)}
@@ -275,7 +277,7 @@
 				variant="solid"
 				dimension="compact"
 				placeholder={'1'}
-				label={$_('Repeats every')}
+				label={$_('component.editTransaction.repeatLabel')}
 				min={1}
 				step={1}
 				bind:value={repeat}
@@ -286,10 +288,10 @@
 				dimension="compact"
 				bind:value={repeatUnit}
 				items={[
-					{ value: 'day', label: $_('day') },
-					{ value: 'week', label: $_('week') },
-					{ value: 'month', label: $_('month') },
-					{ value: 'year', label: $_('year') },
+					{ value: 'day', label: $_('common.day').toLowerCase() },
+					{ value: 'week', label: $_('common.week').toLowerCase() },
+					{ value: 'month', label: $_('common.month').toLowerCase() },
+					{ value: 'year', label: $_('common.year').toLowerCase() },
 				]}
 			></Select>
 		</section>
@@ -299,7 +301,7 @@
 				variant="solid"
 				dimension="compact"
 				placeholder={'30'}
-				label={$_('For')}
+				label={$_('component.editTransaction.for')}
 				min={1}
 				step={1}
 				bind:value={period}
@@ -312,17 +314,17 @@
 				bind:value={periodUnit}
 				onchange={onPeriodUnitChange}
 				items={[
-					{ value: 'day', label: $_('day') },
-					{ value: 'week', label: $_('week') },
-					{ value: 'month', label: $_('month') },
-					{ value: 'year', label: $_('year') },
+					{ value: 'day', label: $_('common.day').toLowerCase() },
+					{ value: 'week', label: $_('common.week').toLowerCase() },
+					{ value: 'month', label: $_('common.month').toLowerCase() },
+					{ value: 'year', label: $_('common.year').toLowerCase() },
 				]}
 			></Select>
 		</section>
 		<DateAge
 			dimension="compact"
-			dateInputLabel={$_('End date')}
-			ageLabel={$_('Client´s age at end')}
+			dateInputLabel={$_('common.endDate')}
+			ageLabel={$_('component.editTransaction.clientAgeAtEnd')}
 			agePlaceholder={'0'}
 			bind:date={endDate}
 			birthDate={new Date(client.birth_date)}
@@ -330,11 +332,11 @@
 		></DateAge>
 		<div class="spacer"></div>
 		<Vertical --vertical-gap="var(--quarter-padding)">
-			<Typography>{numOccurrences} {$_('occurences')}</Typography>
+			<Typography>{numOccurrences} {$_('component.editTransaction.occurences')}</Typography>
 			<Typography
 				>{formatCurrency(totalAmount, portfolio.currency)} ({transactionType === 'deposit'
-					? $_('total deposits')
-					: $_('total withdrawals')})</Typography
+					? $_('component.editTransaction.totalDeposits')
+					: $_('component.editTransaction.totalWithdrawals')})</Typography
 			>
 		</Vertical>
 	{/if}
@@ -345,23 +347,23 @@
 				variant="strong"
 				dimension="compact"
 				onclick={createTransaction}
-				disabled={createDisabled}><Checkmark size={16} />{$_('Create')}</Button
+				disabled={createDisabled}><Checkmark size={16} />{$_('common.create')}</Button
 			>
 		{:else}
 			<Button
 				variant="strong"
 				dimension="compact"
 				onclick={editTransaction}
-				disabled={createDisabled}><Checkmark size={16} />{$_('Done')}</Button
+				disabled={createDisabled}><Checkmark size={16} />{$_('common.done')}</Button
 			>
 		{/if}
 		<Button variant="secondary" dimension="compact" onclick={cancel}
-			><Close size={16} />{$_('Cancel')}</Button
+			><Close size={16} />{$_('common.cancel')}</Button
 		>
 	</menu>
 	{#if formType === 'edit'}
 		<Button variant="ghost" dimension="compact" onclick={deleteTransaction}
-			><TrashCan size={16} />{$_('Delete transaction')}</Button
+			><TrashCan size={16} />{$_('component.editTransaction.deleteTransaction')}</Button
 		>
 	{/if}
 </Vertical>

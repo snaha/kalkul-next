@@ -43,7 +43,7 @@
 	{#if adjustWithInflation}
 		<div class="col">
 			<div class="total">
-				<Typography class="color-light" variant="h6">{$_('Total')}</Typography>
+				<Typography class="color-light" variant="h6">{$_('common.total')}</Typography>
 				<Typography variant="h6" class="color-light"
 					>{formatCurrency(totalWithInflation[tooltipData[0].dataIndex], currency, {
 						maximumFractionDigits: 0,
@@ -51,7 +51,7 @@
 				>
 			</div>
 			<div class="total opacity">
-				<Typography class="color-light" variant="small">{$_('Without inflation')}</Typography>
+				<Typography class="color-light" variant="small">{$_('common.withoutInflation')}</Typography>
 				<Typography variant="small" class="color-light"
 					>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, {
 						maximumFractionDigits: 0,
@@ -61,7 +61,7 @@
 		</div>
 	{:else}
 		<div class="total">
-			<Typography class="color-light" variant="h6">{$_('Total')}</Typography>
+			<Typography class="color-light" variant="h6">{$_('common.total')}</Typography>
 			<Typography variant="h6" class="color-light"
 				>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, {
 					maximumFractionDigits: 0,

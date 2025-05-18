@@ -23,6 +23,6 @@
 	{#if portfolio && investment}
 		<EditInvestment {close} {portfolio} {investment} />
 	{:else}
-		<Typography variant="h2">404 - {$_('Not found')}</Typography>
+		<Typography variant="h2">404 - {$_('common.notFound')}</Typography>
 	{/if}
 </Fullscreen>

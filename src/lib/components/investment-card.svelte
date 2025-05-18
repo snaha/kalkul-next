@@ -121,20 +121,24 @@
 					<List>
 						<ListItem onclick={toggleFocus}
 							><CenterSquare size={24} />{focused
-								? $_('Remove focus')
-								: $_('Focus in chart')}</ListItem
+								? $_('component.investmentCard.removeFocus')
+								: $_('component.investmentCard.focusInChart')}</ListItem
 						>
-						<ListItem onclick={toggleHide}><ViewOff size={24} />{$_('Hide in charts')}</ListItem>
+						<ListItem onclick={toggleHide}
+							><ViewOff size={24} />{$_('component.investmentCard.hideInChart')}</ListItem
+						>
 						{#if !viewOnly}
 							<ListItem onclick={editInvestment}
-								><Settings size={24} />{$_('Edit investment details')}</ListItem
+								><Settings size={24} />{$_(
+									'component.investmentCard.editInvestmentDetails',
+								)}</ListItem
 							>
 							<ListItem
 								onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
-								><Copy size={24} />{$_('Duplicate investment')}</ListItem
+								><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
 							>
 							<ListItem onclick={() => deleteInvestment(investment.id)}
-								><TrashCan size={24} />{$_('Delete investment')}</ListItem
+								><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
 							>
 						{/if}
 					</List>
@@ -144,7 +148,7 @@
 	</Horizontal>
 	<div class="trasaction-container" class:modalShow={!openInvestment || hidden}>
 		<Horizontal>
-			<Typography variant="h5">{$_('Transactions')}</Typography>
+			<Typography variant="h5">{$_('common.transactions')}</Typography>
 			<FlexItem />
 			{#if openTransaction && !viewOnly}
 				<Button
@@ -152,16 +156,18 @@
 					onclick={(e: Event) => {
 						e.preventDefault()
 						openTransaction(investment)
-					}}><Add size={24} />{$_('Add')}</Button
+					}}><Add size={24} />{$_('common.add')}</Button
 				>
 			{/if}
 		</Horizontal>
 		{#if transactions.length === 0}
 			<section class="centered">
 				<img src={`${base}/images/no-transaction.svg`} alt="No transaction yet" />
-				<Typography variant="h5">{$_('No transaction yet')}</Typography>
+				<Typography variant="h5">{$_('component.investmentCard.noTransactionsYet')}</Typography>
 				{#if !viewOnly}
-					<Typography variant="small">{$_('Use the button above to add one')}</Typography>
+					<Typography variant="small"
+						>{$_('component.investmentCard.noTransactionsYetText')}</Typography
+					>
 				{/if}
 			</section>
 		{:else}

@@ -157,22 +157,22 @@
 	<Vertical class="max-width-560">
 		<section class="horizontal">
 			{#if formType === 'create'}
-				<Typography variant="h4">{$_('addInvestment')}</Typography>
+				<Typography variant="h4">{$_('component.editInvestment.addInvestment')}</Typography>
 			{:else}
-				<Typography variant="h4">{$_('Edit investment')}</Typography>
+				<Typography variant="h4">{$_('component.editInvestment.editInvestment')}</Typography>
 			{/if}
 			<div class="grower"></div>
-			<Typography>{$_('in')} {portfolio.name}</Typography>
+			<Typography>{$_('common.in')} {portfolio.name}</Typography>
 		</section>
 		<div class="spacer"></div>
-		<Typography variant="h5">{$_('details')}</Typography>
+		<Typography variant="h5">{$_('common.details')}</Typography>
 		<section class="horizontal half-gap">
 			<Input
 				dimension="compact"
 				variant="solid"
 				bind:value={name}
 				placeholder={defaultName}
-				label={$_('investmentName')}
+				label={$_('component.editInvestment.investmentName')}
 				class="grower"
 			></Input>
 			<Dropdown buttonDimension="compact" buttonVariant="solid" left autoClose={false}>
@@ -180,16 +180,17 @@
 					<DocumentImport size={24} />
 				{/snippet}
 				<div class="dropdown">
-					<Typography variant="h5">{$_('Import data for this investment')}</Typography>
+					<Typography variant="h5">{$_('component.editInvestment.importDataInvestment')}</Typography
+					>
 					<div class="horizontal half-gap">
 						<Input
 							dimension="compact"
 							variant="solid"
 							bind:value={isinNumber}
-							label={$_('ISIN number')}
+							label={$_('component.editInvestment.isin')}
 						></Input>
 						<Button variant="strong" dimension="compact" onclick={notImplemented}
-							><Checkmark size={24} />{$_('Import data')}</Button
+							><Checkmark size={24} />{$_('component.editInvestment.importData')}</Button
 						>
 					</div>
 				</div>
@@ -199,31 +200,35 @@
 			dimension="compact"
 			variant="solid"
 			bind:value={type}
-			placeholder={$_('E.g. "Equity"')}
-			label={$_('Type (optional)')}
+			placeholder={$_('component.editInvestment.typePlaceholder')}
+			label={$_('component.editInvestment.typeLabel')}
 		></Input>
 		<Input
 			dimension="compact"
 			variant="solid"
 			bind:value={apy}
 			placeholder={'0'}
-			label={$_('APY')}
+			label={$_('common.apy')}
 			unit="%"
 			type="number"
 			step={0.001}
 			min={0}
 		></Input>
 		<Horizontal>
-			<Typography variant="h5">{$_('fees')}</Typography>
+			<Typography variant="h5">{$_('common.fees')}</Typography>
 			<div class="grower"></div>
-			<Toggle label={$_('advancedSetup')} bind:checked={advancedFees} dimension="compact"></Toggle>
+			<Toggle
+				label={$_('component.editInvestment.advancedSetup')}
+				bind:checked={advancedFees}
+				dimension="compact"
+			></Toggle>
 		</Horizontal>
 		{#if advancedFees}
 			<Input
 				variant="solid"
 				dimension="compact"
 				placeholder={'0'}
-				label={$_('successFee')}
+				label={$_('common.successFee')}
 				unit="%"
 				min={0}
 				step={0.001}
@@ -235,11 +240,11 @@
 					variant="solid"
 					dimension="compact"
 					bind:value={managementFeeType}
-					label={$_('managementFee')}
+					label={$_('common.managementFee')}
 					class="grower"
 					items={[
-						{ value: 'percentage', label: $_('percentage') },
-						{ value: 'fixed', label: $_('fixedFee') },
+						{ value: 'percentage', label: $_('common.percentage') },
+						{ value: 'fixed', label: $_('common.fixedFee') },
 					]}
 				></Select>
 				<Input
@@ -260,7 +265,7 @@
 				variant="solid"
 				dimension="compact"
 				placeholder={'0'}
-				label={$_('ter')}
+				label={$_('common.ter')}
 				unit="%"
 				min={0}
 				step={'0.001'}
@@ -274,7 +279,7 @@
 				dimension="compact"
 				bind:value={entryFee}
 				placeholder={'0'}
-				label={$_('entryFee')}
+				label={$_('common.entryFee')}
 				unit="%"
 				step={'.001'}
 				min={0}
@@ -284,12 +289,12 @@
 				variant="solid"
 				dimension="compact"
 				bind:value={entryFeeType}
-				label={$_('entryFeePayment')}
+				label={$_('common.entryFeePayment')}
 				class="grower"
 				items={[
-					{ value: 'ongoing', label: $_('ongoing') },
+					{ value: 'ongoing', label: $_('common.ongoing') },
 					{ value: 'forty-sixty', label: '40/60' },
-					{ value: 'upfront', label: $_('upfront') },
+					{ value: 'upfront', label: $_('common.upfront') },
 				]}
 			></Select>
 		</section>
@@ -299,11 +304,11 @@
 				variant="solid"
 				dimension="compact"
 				bind:value={exitFeeType}
-				label={$_('exitFee')}
+				label={$_('common.exitFee')}
 				class="grower"
 				items={[
-					{ value: 'percentage', label: $_('percentage') },
-					{ value: 'fixed', label: $_('fixedFee') },
+					{ value: 'percentage', label: $_('common.percentage') },
+					{ value: 'fixed', label: $_('common.fixedFee') },
 				]}
 			></Select>
 			<Input
@@ -325,18 +330,19 @@
 					variant="strong"
 					dimension="compact"
 					onclick={createInvestment}
-					disabled={createDisabled}><Checkmark size={24} />{$_('createInvestment')}</Button
+					disabled={createDisabled}
+					><Checkmark size={24} />{$_('component.editInvestment.createInvestment')}</Button
 				>
 			{:else}
 				<Button
 					variant="strong"
 					dimension="compact"
 					onclick={updateInvestment}
-					disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
+					disabled={createDisabled}><Checkmark size={24} />{$_('common.done')}</Button
 				>
 			{/if}
 			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_('cancel')}</Button
+				><Close size={24} />{$_('common.cancel')}</Button
 			>
 			{#if formType === 'edit'}
 				<div class="grower"></div>
@@ -344,7 +350,8 @@
 					variant="ghost"
 					dimension="compact"
 					onclick={confirmDeleteInvestment}
-					disabled={createDisabled}><TrashCan size={24} />{$_('Delete investment')}</Button
+					disabled={createDisabled}
+					><TrashCan size={24} />{$_('component.editInvestment.deleteInvestment')}</Button
 				>
 			{/if}
 		</section>
@@ -355,8 +362,8 @@
 	confirm={deleteInvestment}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
-	title={$_('Delete investment?')}
-	text={$_('This investment will be deleted permanently. There’s no undo.')}
+	title={$_('component.editInvestment.deleteInvestmentWarningTitle')}
+	text={$_('component.editInvestment.deleteInvestmentWarning')}
 />
 
 <style>

@@ -92,19 +92,19 @@
 		{/snippet}
 		<List>
 			<ListItem onclick={() => goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))}
-				><Folder size={24} />{$_('Open portfolio')}</ListItem
+				><Folder size={24} />{$_('page.portfolio.openPortfolio')}</ListItem
 			>
 			<ListItem onclick={() => goto(routes.SHARE(portfolioId))}
-				><Share size={24} />{$_('Share portfolio')}</ListItem
+				><Share size={24} />{$_('page.portfolio.sharePortfolio')}</ListItem
 			>
 			<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(clientId, portfolioId))}
-				><FolderDetails size={24} />{$_('Edit portfolio details')}</ListItem
+				><FolderDetails size={24} />{$_('page.portfolio.editPortfolioDetails')}</ListItem
 			>
 			<ListItem onclick={() => cascadeDuplicatePortfolio(clientId, portfolioId)}
-				><Copy size={24} />{$_('Duplicate portfolio')}</ListItem
+				><Copy size={24} />{$_('page.portfolio.duplicatePortfolio')}</ListItem
 			>
 			<ListItem onclick={() => confirmDeletePortfolio(portfolioId)}
-				><TrashCan size={24} />{$_('Delete portfolio')}</ListItem
+				><TrashCan size={24} />{$_('page.portfolio.deletePortfolio')}</ListItem
 			>
 		</List>
 	</Dropdown>
@@ -148,25 +148,25 @@
 		<Typography variant="h4">{client.name}</Typography>
 		<div class="grower"></div>
 		<Button dimension="default" variant="strong" onclick={addPortfolio}
-			><Add size={24} />{$_('addPortfolio')}</Button
+			><Add size={24} />{$_('page.portfolio.addPortfolio')}</Button
 		>
 		<Button
 			dimension="default"
 			variant="secondary"
 			onclick={() => goto(routes.EDIT_CLIENT(clientId))}
-			><UserProfile size={24} />{$_('Edit client details')}</Button
+			><UserProfile size={24} />{$_('page.portfolio.editClient')}</Button
 		>
 	</section>
 	<main>
 		{#if client}
 			{#if portfolioStore.loading}
-				<Typography>Loading...</Typography><Loader />
+				<Typography>{$_('common.loading')}</Typography><Loader />
 			{:else if portfolios.length === 0}
 				<section class="empty">
 					<img src={`${base}/images/no-portfolio.svg`} alt="No portfolio yet" />
 					<div class="spacer"></div>
-					<Typography variant="h4">{$_('noPortfoliosYet')}</Typography>
-					<Typography>{$_('createYourFirstPortfolio')}</Typography>
+					<Typography variant="h4">{$_('page.client.noPortfoliosYet')}</Typography>
+					<Typography>{$_('page.client.createYourFirstPortfolio')}</Typography>
 					<div class="spacer"></div>
 					<Button variant="strong" onclick={addPortfolio}><UserFollow />{$_('addPortfolio')}</Button
 					>
@@ -174,12 +174,12 @@
 			{:else}
 				<ul>
 					<li class="portfolios title">
-						<span>{$_('portfolioName')}</span>
-						<span>{$_('currency')}</span>
-						<span>{$_('startDate')}</span>
-						<span>{$_('endDate')}</span>
-						<span class="right-aligned">{$_('inflation')}</span>
-						<span class="right-aligned">{$_('currentValue')}</span>
+						<span>{$_('common.portfolioName')}</span>
+						<span>{$_('common.currency')}</span>
+						<span>{$_('common.startDate')}</span>
+						<span>{$_('common.endDate')}</span>
+						<span class="right-aligned">{$_('common.inflation')}</span>
+						<span class="right-aligned">{$_('common.currentValue')}</span>
 						<span></span>
 						<span></span>
 					</li>
@@ -216,10 +216,8 @@
 	confirm={deletePortfolio}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
-	title={$_('Delete portfolio?')}
-	text={$_(
-		'This portfolio and all the investments it contains will be deleted permanently. There’s no undo.',
-	)}
+	title={$_('page.client.deletePortfolio')}
+	text={$_('page.client.deletePortfolioWarning')}
 />
 
 <style>

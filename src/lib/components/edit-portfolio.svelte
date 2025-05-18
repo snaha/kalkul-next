@@ -146,9 +146,9 @@
 	<Vertical class="max-width-560">
 		<section class="horizontal">
 			{#if formType === 'create'}
-				<Typography variant="h4">{$_('addPortfolio')}</Typography>
+				<Typography variant="h4">{$_('component.editPortfolio.addPortfolio')}</Typography>
 			{:else}
-				<Typography variant="h4">{$_('Edit portfolio')}</Typography>
+				<Typography variant="h4">{$_('component.editPortfolio.editPortfolio')}</Typography>
 			{/if}
 			<div class="grower"></div>
 			<Typography>{client.name}</Typography>
@@ -158,8 +158,8 @@
 			autofocus
 			dimension="compact"
 			variant="solid"
-			placeholder={$_('portfolioName')}
-			label={$_('portfolioName')}
+			placeholder={$_('component.editPortfolio.portfolioName')}
+			label={$_('component.editPortfolio.portfolioName')}
 			bind:value={name}
 		></Input>
 		<section class="horizontal">
@@ -167,8 +167,8 @@
 				variant="solid"
 				dimension="compact"
 				bind:value={currency}
-				placeholder={$_('currency')}
-				label={$_('currency')}
+				placeholder={$_('common.currency')}
+				label={$_('common.currency')}
 				class="grower"
 				items={[
 					{ value: 'EUR', label: 'EUR' },
@@ -180,8 +180,8 @@
 				type="number"
 				variant="solid"
 				dimension="compact"
-				placeholder={$_('inflation')}
-				label={$_('inflation')}
+				placeholder={$_('common.inflation')}
+				label={$_('common.inflation')}
 				unit="%"
 				bind:value={inflation}
 				step={'.01'}
@@ -192,19 +192,19 @@
 
 		<DateAge
 			dimension="compact"
-			dateInputLabel={$_('startDate')}
+			dateInputLabel={$_('common.startDate')}
 			bind:date={startDate}
-			ageLabel={$_('clientAge') + ' ' + $_('atPortfolioStart')}
-			agePlaceholder={$_('clientAge')}
+			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioStart')}
+			agePlaceholder={$_('common.clientAge')}
 			birthDate={new Date(client.birth_date)}
 		/>
 
 		<Input
 			variant="solid"
 			dimension="compact"
-			placeholder={$_('horizon')}
-			label={$_('horizon')}
-			unit={$_('years')}
+			placeholder={$_('component.editPortfolio.horizon')}
+			label={$_('component.editPortfolio.horizon')}
+			unit={$_('common.years')}
 			bind:value={horizon}
 			oninput={onHorizonInput}
 			onblur={checkHorizonInput}
@@ -212,9 +212,9 @@
 
 		<DateAge
 			dimension="compact"
-			dateInputLabel={$_('endDate')}
+			dateInputLabel={$_('common.endDate')}
 			bind:date={endDate}
-			ageLabel={$_('clientAge') + ' ' + $_('atPortfolioEnd')}
+			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioEnd')}
 			agePlaceholder={$_('clientAge')}
 			birthDate={new Date(client.birth_date)}
 		/>
@@ -225,23 +225,24 @@
 					variant="strong"
 					dimension="compact"
 					onclick={createPortfolio}
-					disabled={createDisabled}><Checkmark size={24} />{$_('createPortfolio')}</Button
+					disabled={createDisabled}
+					><Checkmark size={24} />{$_('component.editPortfolio.createPortfolio')}</Button
 				>
 			{:else}
 				<Button
 					variant="strong"
 					dimension="compact"
 					onclick={updatePortfolio}
-					disabled={createDisabled}><Checkmark size={24} />{$_('Done')}</Button
+					disabled={createDisabled}><Checkmark size={24} />{$_('common.done')}</Button
 				>
 			{/if}
 			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_('cancel')}</Button
+				><Close size={24} />{$_('common.cancel')}</Button
 			>
 			{#if formType === 'edit'}
 				<div class="grower"></div>
 				<Button variant="ghost" dimension="compact" onclick={confirmDeletePortfolio}
-					><TrashCan size={24} />{$_('Delete portfolio')}</Button
+					><TrashCan size={24} />{$_('component.editPortfolio.deletePortfolio')}</Button
 				>
 			{/if}
 		</section>
@@ -252,10 +253,8 @@
 	confirm={deletePortfolio}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
-	title={$_('Delete portfolio?')}
-	text={$_(
-		'This portfolio and all the investments it contains will be deleted permanently. There’s no undo.',
-	)}
+	title={$_('component.editPortfolio.deletePortfolioWarningTitle')}
+	text={$_('component.editPortfolio.deletePortfolioWarning')}
 />
 
 <style>

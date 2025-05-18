@@ -75,11 +75,11 @@
 <main>
 	<a href={routes.HOME} class="logo"><Logo size={40} /></a>
 	<div class="reset-password">
-		<Typography variant="h4">{$_('resetPassword')}</Typography>
+		<Typography variant="h4">{$_('page.resetPassword.resetPassword')}</Typography>
 		<form>
 			<Input
 				type="password"
-				label={$_('password')}
+				label={$_('page.resetPassword.password')}
 				bind:value={newPassword}
 				onblur={onPasswordBlur}
 				error={passwordTouched && newPassword.trim() !== '' && formErrors?.newPassword?._errors
@@ -88,7 +88,7 @@
 			></Input>
 			<Input
 				type="password"
-				label={$_('confirmPassword')}
+				label={$_('page.resetPassword.confirmPassword')}
 				bind:value={confirmNewPassword}
 				onblur={onConfirmPasswordBlur}
 				error={confirmPasswordTouched &&
@@ -106,10 +106,10 @@
 		{/if}
 		<div class="buttons">
 			<Button disabled={!formValid} dimension="compact" onclick={() => resetPassword(newPassword)}
-				><Checkmark size={24} />{$_('resetPassword')}</Button
+				><Checkmark size={24} />{$_('page.resetPassword.resetPasswordButton')}</Button
 			>
 			<Button variant="secondary" dimension="compact" onclick={() => goto(routes.HOME)}
-				><Close size={24} />{$_('cancel')}</Button
+				><Close size={24} />{$_('page.resetPassword.cancel')}</Button
 			>
 		</div>
 	</div>

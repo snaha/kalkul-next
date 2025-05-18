@@ -15,21 +15,21 @@
 	<section class="dialog">
 		<header class="horizontal">
 			<div class="title">
-				<Typography variant="h5">{$_('linkSharingConfirmation.title')}</Typography>
+				<Typography variant="h5">{$_('component.linkSharingConfirmation.title')}</Typography>
 			</div>
 			<div class="grower"></div>
 			<Button variant="ghost" dimension="compact" onclick={oncancel}><Close size={24} /></Button>
 		</header>
 		<section class="text">
-			<Typography>{$_('linkSharingConfirmation.text')}</Typography>
-			<Typography variant="small">{$_('linkSharingConfirmation.smallText')}</Typography>
+			<Typography>{$_('component.linkSharingConfirmation.text')}</Typography>
+			<Typography variant="small">{$_('component.linkSharingConfirmation.smallText')}</Typography>
 		</section>
 		<section class="buttons">
 			<Button variant="strong" dimension="compact" onclick={confirm}
-				><SendAlt size={24} />{$_('linkSharingConfirmation.confirmButton')}</Button
+				><SendAlt size={24} />{$_('component.linkSharingConfirmation.confirmButton')}</Button
 			>
 			<Button variant="secondary" dimension="compact" onclick={oncancel}
-				><Close size={24} />{$_('linkSharingConfirmation.cancelButton')}</Button
+				><Close size={24} />{$_('component.linkSharingConfirmation.cancelButton')}</Button
 			>
 			<div class="grower"></div>
 		</section>

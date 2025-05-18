@@ -14,8 +14,8 @@
 	<ResponsiveLayout --responsive-gap="var(--double-padding)" --responsive-justify-content="center">
 		<Logo size={48} color="var(--colors-light-base)"></Logo>
 		<a href={PUBLIC_DISCORD_LINK}>Discord</a>
-		<a href={routes.TERMS}>{$_('Terms of use')}</a>
-		<a href={routes.PRIVACY}>{$_('Privacy policy')}</a>
+		<a href={routes.TERMS}>{$_('component.footer.termsOfService')}</a>
+		<a href={routes.PRIVACY}>{$_('component.footer.privacyPolicy')}</a>
 		<FlexItem />
 		<Typography --typography-color="var(--colors-light-base)" style="opacity: 0.5"
 			>© 2025 Kalkul.app s.r.o.</Typography

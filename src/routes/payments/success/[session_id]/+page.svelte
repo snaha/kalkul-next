@@ -124,7 +124,7 @@
 								'You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.',
 								{
 									values: {
-										accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('Payment & billing')}</a>`,
+										accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
 									},
 								},
 							)}</Typography
@@ -174,7 +174,7 @@
 								'You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.',
 								{
 									values: {
-										accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('Payment & billing')}</a>`,
+										accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
 									},
 								},
 							)}</Typography

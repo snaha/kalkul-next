@@ -37,7 +37,7 @@
 
 <TooltipBase {tooltipData} {...restProps}>
 	{#if deposits.length > 0}
-		<Typography variant="h6" class="color-light">{$_('deposits')}</Typography>
+		<Typography variant="h6" class="color-light">{$_('common.deposits')}</Typography>
 		<div class="col">
 			{#each deposits as deposit}
 				<div class="investment-details">
@@ -59,7 +59,9 @@
 		{#if adjustWithInflation}
 			<div class="col">
 				<div class="total">
-					<Typography class="color-light" variant="h6">{$_('Total deposits')}</Typography>
+					<Typography class="color-light" variant="h6"
+						>{$_('component.tooltipTransaction.totalDeposits')}</Typography
+					>
 					<Typography variant="h6" class="color-light"
 						>{formatCurrency(totalDepositsWithInflation[tooltipData[0].dataIndex], currency, {
 							maximumFractionDigits: 0,
@@ -67,7 +69,9 @@
 					>
 				</div>
 				<div class="total opacity">
-					<Typography class="color-light" variant="small">{$_('Without inflation')}</Typography>
+					<Typography class="color-light" variant="small"
+						>{$_('common.withoutInflation')}</Typography
+					>
 					<Typography variant="small" class="color-light"
 						>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, {
 							maximumFractionDigits: 0,
@@ -77,7 +81,9 @@
 			</div>
 		{:else}
 			<div class="total">
-				<Typography class="color-light" variant="h6">{$_('Total deposits')}</Typography>
+				<Typography class="color-light" variant="h6"
+					>{$_('component.tooltipTransaction.totalDeposits')}</Typography
+				>
 				<Typography variant="h6" class="color-light"
 					>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, {
 						maximumFractionDigits: 0,
@@ -112,7 +118,9 @@
 		{#if adjustWithInflation}
 			<div class="col">
 				<div class="total">
-					<Typography class="color-light" variant="h6">{$_('Total withdrawals')}</Typography>
+					<Typography class="color-light" variant="h6"
+						>{$_('component.tooltipTransaction.totalWithdrawals')}</Typography
+					>
 					<Typography variant="h6" class="color-light"
 						>{formatCurrency(totalWithdrawalsWithInflation[tooltipData[0].dataIndex], currency, {
 							maximumFractionDigits: 0,
@@ -120,7 +128,9 @@
 					>
 				</div>
 				<div class="total opacity">
-					<Typography class="color-light" variant="small">{$_('Without inflation')}</Typography>
+					<Typography class="color-light" variant="small"
+						>{$_('component.tooltipTransaction.totalWithdrawals')}</Typography
+					>
 					<Typography variant="small" class="color-light"
 						>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, {
 							maximumFractionDigits: 0,
@@ -130,7 +140,9 @@
 			</div>
 		{:else}
 			<div class="total">
-				<Typography class="color-light" variant="h6">{$_('Total withdrawals')}</Typography>
+				<Typography class="color-light" variant="h6"
+					>{$_('component.tooltipTransaction.totalWithdrawals')}</Typography
+				>
 				<Typography variant="h6" class="color-light"
 					>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, {
 						maximumFractionDigits: 0,
@@ -144,7 +156,9 @@
 	{/if}
 	{#if showFees && totalFees[tooltipData[0].dataIndex] !== 0}
 		<div class="total">
-			<Typography class="color-light" variant="h6">{$_('Total fees')}</Typography>
+			<Typography class="color-light" variant="h6"
+				>{$_('component.tooltipTransaction.totalFees')}</Typography
+			>
 			<Typography variant="h6" class="color-light"
 				>{formatCurrency(
 					(adjustWithInflation ? totalFeesWithInflation : totalFees)[tooltipData[0].dataIndex],

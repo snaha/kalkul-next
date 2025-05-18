@@ -106,13 +106,13 @@
 {#if !success}
 	<ContentLayout --content-layout-margin="0">
 		<Vertical class="registration" --vertical-gap="var(--double-padding)">
-			<Typography variant="h4">{$_('signUp')}</Typography>
+			<Typography variant="h4">{$_('page.signUp.signUp')}</Typography>
 			<Vertical --vertical-gap="var(--padding)">
 				<Input
 					variant="solid"
 					dimension="compact"
 					bind:value={user.email}
-					label="Email"
+					label={$_('common.email')}
 					error={emailTouched && user.email?.trim() !== '' && formErrors?.email?._errors
 						? emailError
 						: undefined}
@@ -122,16 +122,14 @@
 					variant="solid"
 					dimension="compact"
 					bind:value={user.password}
-					label={$_('password')}
+					label={$_('common.password')}
 					error={passwordTouched && user.password?.trim() !== '' && formErrors?.password?._errors
 						? passwordError
 						: undefined}
 					type="password"
 					onblur={onPasswordBlur}
 				/>
-				<Checkbox
-					label={$_('I want to receive product updates and news via email')}
-					bind:checked={newsletterConsent}
+				<Checkbox label={$_('page.signUp.subscribeToNewsletter')} bind:checked={newsletterConsent}
 				></Checkbox>
 				{#if error}
 					<div class="error">
@@ -149,23 +147,31 @@
 							dimension="compact"
 							type="submit"
 							disabled={!formValid}
-							onclick={register}><Checkmark size={24} />{$_('createAccount')}</Button
+							onclick={register}><Checkmark size={24} />{$_('page.signUp.createAccount')}</Button
 						>
-						<Horizontal --horizontal-justify-content="center">{$_('or')}</Horizontal>
+						<Horizontal --horizontal-justify-content="center">{$_('common.or')}</Horizontal>
 						<Button variant="solid" dimension="compact" href={routes.HOME}
-							><Google size={24} /> {$_('Sign up with Google')}</Button
+							><Google size={24} /> {$_('page.signUp.signUpWithGoogle')}</Button
 						>
 					</ResponsiveLayout>
-					<Typography
-						>By proceeding you agree to Kalkul <a href={routes.TERMS}>Terms of Service</a> and
-						<a href={routes.PRIVACY}>Privacy Policy</a>.</Typography
+					<Typography>
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html $_('page.signUp.agreeToTerms', {
+							values: {
+								terms: `<a href="${routes.TERMS}">${$_('page.signUp.terms')}</a>`,
+								privacy: `<a href="${routes.PRIVACY}">${$_('page.signUp.privacy')}</a>`,
+							},
+						})}</Typography
 					>
 				</Vertical>
 			</Vertical>
 			<Divider --margin="0" />
 			<ResponsiveLayout --responsive-justify-content="stretch">
 				<Horizontal --horizontal-justify-content="center">
-					<Typography>{$_('haveAccount')} <a href={routes.LOGIN}>{$_('login')}</a></Typography>
+					<Typography
+						>{$_('page.signUp.alreadyHaveAccount')}
+						<a href={routes.LOGIN}>{$_('common.login')}</a></Typography
+					>
 				</Horizontal>
 			</ResponsiveLayout>
 		</Vertical>
@@ -179,23 +185,23 @@
 		>
 			<img src={`${base}/images/email-link.svg`} alt="Verification link sent" class="image" />
 			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="center">
-				<Typography variant="h4">{$_('checkEmail')}</Typography>
+				<Typography variant="h4">{$_('page.signUp.checkEmail')}</Typography>
 				<Typography variant="large">
 					{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html $_('verificationLinkLocal', {
+						{@html $_('page.signUp.verificationLinkLocal', {
 							values: {
 								email: `<a class='green' href="${inbucketUrl}/m/${user.email}" target="_blank">inbucket</a>`,
 							},
 						})}
 					{:else}
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html $_('verificationLinkRemote', {
+						{@html $_('page.signUp.verificationLinkRemote', {
 							values: { email: `<span class='green'>${user.email}</span>` },
 						})}
 					{/if}</Typography
 				>
-				<Typography>{$_('Don’t see the email? Please check your spam folder.')}</Typography>
+				<Typography>{$_('page.signUp.checkSpam')}</Typography>
 			</Vertical>
 		</Vertical>
 	</ContentLayout>

@@ -18,7 +18,7 @@
 {/snippet}
 {#snippet disclaimer()}
 	<BetaBadge>beta</BetaBadge>
-	<Typography variant="small" class="color-high">{$_('moneyfestPage.disclaimer')}</Typography>
+	<Typography variant="small" class="color-high">{$_('page.moneyfest.disclaimer')}</Typography>
 {/snippet}
 <main class:mobile={layoutStore.mobile}>
 	<Vertical
@@ -34,20 +34,20 @@
 		<Vertical --vertical-gap="var(--half-padding)">
 			<Banner --banner-padding="var(--half-padding)" --banner-border-radius="1000px" {icon}>
 				<Typography style="color: var(--colors-high); font-weight: 700;">
-					{$_('moneyfestPage.cta')}
+					{$_('page.moneyfest.cta')}
 				</Typography>
 			</Banner>
 			<Typography variant="large">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html $_('moneyfestPage.title')}</Typography
+				{@html $_('page.moneyfest.title')}</Typography
 			>
 			<Typography>
-				{$_('moneyfestPage.subtitle')}</Typography
+				{$_('page.moneyfest.subtitle')}</Typography
 			>
 		</Vertical>
 
 		<Button variant="strong" href={routes.SIGNUP}
-			>{$_('moneyfestPage.button')}<ArrowRight size={24} /></Button
+			>{$_('page.moneyfest.button')}<ArrowRight size={24} /></Button
 		>
 
 		{#if layoutStore.mobile}

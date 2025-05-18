@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n'
 	import { page } from '$app/state'
 	import EditPortfolio from '$lib/components/edit-portfolio.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
@@ -20,6 +21,6 @@
 	{#if client && portfolio}
 		<EditPortfolio {close} {client} {portfolio} />
 	{:else}
-		<Typography variant="h2">404 Not found</Typography>
+		<Typography variant="h2">404 - {$_('common.notFound')}</Typography>
 	{/if}
 </Fullscreen>

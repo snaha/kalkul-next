@@ -29,7 +29,10 @@
 	<div class="horizontal">
 		<Typography>{`${portfolio.start_date} → ${portfolio.end_date}`}</Typography>
 		{#if investments && investments.length > 0}
-			<Toggle label={$_('Show inflation')} dimension="small" bind:checked={adjustWithInflation}
+			<Toggle
+				label={$_('common.showInflation')}
+				dimension="small"
+				bind:checked={adjustWithInflation}
 			></Toggle>
 			{#if adjustWithInflation}
 				<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>

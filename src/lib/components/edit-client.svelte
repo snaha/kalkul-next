@@ -48,7 +48,7 @@
 	async function create() {
 		error = undefined
 		if (!birthDate) {
-			error = $_('birthDateUndefined')
+			error = $_('error.birthDateUndefined')
 			return
 		}
 		try {
@@ -113,20 +113,20 @@
 </script>
 
 {#snippet birthDateError()}
-	{$_('birthDateError')}
+	{$_('error.birthDateError')}
 {/snippet}
 
 {#snippet emailErrorSnippet()}
-	{$_('invalidEmailAddress')}
+	{$_('error.emailError')}
 {/snippet}
 
 <ContentLayout>
 	<Vertical>
 		<section class="horizontal">
 			{#if formType === 'create'}
-				<Typography variant="h4">{$_('addClient')}</Typography>
+				<Typography variant="h4">{$_('page.client.addClient')}</Typography>
 			{:else}
-				<Typography variant="h4">{$_('Edit client')}</Typography>
+				<Typography variant="h4">{$_('page.client.editClient')}</Typography>
 			{/if}
 			<div class="grower"></div>
 			{#if hasClose}
@@ -138,43 +138,42 @@
 			autofocus
 			variant="solid"
 			dimension="compact"
-			placeholder={$_('clientName')}
-			label={$_('name')}
+			placeholder={$_('page.client.clientName')}
+			label={$_('common.name')}
 			bind:value={name}
 		></Input>
 		<DateInput
 			variant="solid"
 			dimension="compact"
-			yearLabel={$_('Year')}
+			yearLabel={$_('common.year')}
 			yearPlaceholder="1990"
-			monthLabel={$_('Month')}
+			monthLabel={$_('common.month')}
 			monthPlaceholder="01"
-			dayLabel={$_('Day')}
+			dayLabel={$_('common.day')}
 			dayPlaceholder="01"
-			label={$_('birthDate')}
+			label={$_('common.birthDate')}
 			bind:value={birthDate}
 			error={birthDate && birthDate > date ? birthDateError : undefined}
 			errorMessages={{
-				invalidYear: $_('Invalid year'),
-				invalidMonth: $_('Invalid month'),
-				invalidDay: $_('Invalid day'),
-				invalidDate: $_('Invalid date'),
+				invalidYear: $_('error.invalidYear'),
+				invalidMonth: $_('error.invalidMonth'),
+				invalidDay: $_('error.invalidDay'),
+				invalidDate: $_('error.invalidDate'),
 			}}
 		></DateInput>
 		<Input
 			variant="solid"
 			dimension="compact"
-			placeholder={$_('Email')}
-			label={$_('Email')}
+			placeholder={$_('common.email')}
+			label={$_('common.email')}
 			bind:value={email}
 			error={emailTouched && email.trim() !== '' && emailError?.email?._errors
 				? emailErrorSnippet
 				: undefined}
-			oninput={() => (emailTouched = true)}
-			>This will be used for sharing portfolio with your client.</Input
+			oninput={() => (emailTouched = true)}>{$_('page.client.clientEmailExplanation')}</Input
 		>
 		<section class="profile-picture">
-			<Typography>{$_('profilePicture')}</Typography>
+			<Typography>{$_('page.client.profilePicture')}</Typography>
 			<section class="horizontal">
 				<Avatar
 					{name}
@@ -183,12 +182,12 @@
 					size={80}
 				/>
 				<section class="profile-helper">
-					<Typography variant="small">{$_('profileImageHelper')}</Typography>
+					<Typography variant="small">{$_('page.client.profileImageHelper')}</Typography>
 					<Button
 						variant="solid"
 						dimension="small"
 						onclick={() => notImplemented(undefined, $_('comingSoon'))}
-						><Image size={16} />{$_('uploadImage')}</Button
+						><Image size={16} />{$_('page.client.uploadImage')}</Button
 					>
 				</section>
 			</section>
@@ -202,7 +201,7 @@
 			{#if formType === 'create'}
 				<Button variant="strong" dimension="compact" onclick={create} disabled={createDisabled}
 					><Checkmark size={24} />
-					{$_('createClient')}
+					{$_('page.client.createClient')}
 				</Button>
 			{:else}
 				<Button
@@ -211,16 +210,16 @@
 					onclick={updateClient}
 					disabled={createDisabled}
 					><Checkmark size={24} />
-					{$_('Done')}
+					{$_('common.done')}
 				</Button>
 			{/if}
 			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_('cancel')}</Button
+				><Close size={24} />{$_('common.cancel')}</Button
 			>
 			{#if formType === 'edit'}
 				<div class="grower"></div>
 				<Button variant="ghost" dimension="compact" onclick={confirmDeleteClient}
-					><TrashCan size={24} />{$_('Delete client')}</Button
+					><TrashCan size={24} />{$_('page.client.deleteClient')}</Button
 				>
 			{/if}
 		</section>
@@ -231,10 +230,8 @@
 	confirm={deleteClient}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
-	title={$_('Delete client?')}
-	text={$_(
-		'This client and all the portfolios it contains will be deleted permanently. There’s no undo.',
-	)}
+	title={$_('page.client.clientDelete')}
+	text={$_('page.client.clientDeleteExplanation')}
 />
 
 <style>

@@ -83,7 +83,7 @@
 		{dimension}
 		placeholder={agePlaceholder}
 		label={ageLabel}
-		unit={$_('years')}
+		unit={$_('common.years')}
 		bind:value={age}
 		class="date-age-grower"
 		style="max-width: 100%"

@@ -71,13 +71,13 @@
 		{/snippet}
 		<List>
 			<ListItem onclick={() => goto(routes.CLIENT(clientId))}
-				><FolderShared size={24} />{$_('View portfolios')}</ListItem
+				><FolderShared size={24} />{$_('page.home.portfoliosView')}</ListItem
 			>
 			<ListItem onclick={() => goto(routes.EDIT_CLIENT(clientId))}
-				><UserProfile size={24} />{$_('Edit client details')}</ListItem
+				><UserProfile size={24} />{$_('page.home.clientEdit')}</ListItem
 			>
 			<ListItem onclick={() => confirmDeleteClient(clientId)}
-				><TrashCan size={24} />{$_('Delete client')}</ListItem
+				><TrashCan size={24} />{$_('page.home.clientDeleteButton')}</ListItem
 			>
 		</List>
 	</Dropdown>
@@ -88,7 +88,7 @@
 	<main>
 		<section class="top-bar horizontal">
 			<div class="left">
-				<Typography variant="h4">{$_('allClients')}</Typography>
+				<Typography variant="h4">{$_('page.home.allClients')}</Typography>
 				<SearchInput
 					bind:value={searchQuery}
 					dimension="compact"
@@ -97,13 +97,13 @@
 				></SearchInput>
 				{#if searchQuery.length > 0}
 					<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
-						>{$_('clearSearch')}</Button
+						>{$_('page.home.clearSearch')}</Button
 					>
 				{/if}
 			</div>
 			<div class="grower"></div>
 			<Button dimension="compact" variant="strong" onclick={addClient}
-				><UserFollow />{$_('addClient')}</Button
+				><UserFollow />{$_('page.home.addClient')}</Button
 			>
 		</section>
 		{#if clientStore.loading}
@@ -111,19 +111,21 @@
 		{:else if clientStore.data.length === 0}
 			<section class="empty">
 				<img src={`${base}/images/no-client.svg`} alt="No client yet" />
-				<Typography variant="h4">{$_('noClientsYet')}</Typography>
-				<Typography>{$_('createYourFirstClient')}</Typography>
+				<Typography variant="h4">{$_('page.home.noClientsYet')}</Typography>
+				<Typography>{$_('page.home.createYourFirstClient')}</Typography>
 				<div class="spacer"></div>
-				<Button variant="strong" onclick={addClient}><UserFollow />{$_('addClient')}</Button>
+				<Button variant="strong" onclick={addClient}
+					><UserFollow />{$_('page.home.addClient')}</Button
+				>
 			</section>
 		{:else}
 			<ul>
 				<li class="clients title">
-					<span>{$_('name')}</span>
-					<span>{$_('birthDate')}</span>
-					<span class="right-aligned">{$_('age')}</span>
-					<span class="right-aligned">{$_('portfolios')}</span>
-					<span class="right-aligned">{$_('investments')}</span>
+					<span>{$_('common.name')}</span>
+					<span>{$_('common.birthDate')}</span>
+					<span class="right-aligned">{$_('common.age')}</span>
+					<span class="right-aligned">{$_('common.portfolios')}</span>
+					<span class="right-aligned">{$_('common.investments')}</span>
 					<span class="right-aligned"></span>
 				</li>
 				{#each filteredClient as client}
@@ -162,12 +164,9 @@
 			<ContentLayout --content-layout-margin="0">
 				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
 					<img src="/images/collaboration.svg" alt="collaboration" />
-					<Typography variant="h4" class="text-center">{$_('Welcome to Kalkul beta!')}</Typography>
-					<Typography class="text-center"
-						>{$_(
-							'Kalkul is a new application that helps independent advisors create, visualise and share financial plans with their clients.',
-						)}</Typography
+					<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography
 					>
+					<Typography class="text-center">{$_('page.home.kalkulExplanation')}</Typography>
 				</Vertical>
 			</ContentLayout>
 			<div class="video">
@@ -177,22 +176,14 @@
 				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
 					<Typography variant="h5" class="text-center">{$_('What’s next?')}</Typography>
 					<Vertical --vertical-gap="var(--half-padding)">
-						<Typography class="text-center"
-							>{$_(
-								'Once you’ll be in front of your computer, login with your account to kalkul.app and start testing yourself.',
-							)}</Typography
-						>
+						<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
 						<Typography variant="small" class="text-center"
-							>{$_('Kalkul will be available on mobile soon!')}</Typography
+							>{$_('page.home.kalkulNotAvailableOnMobile')}</Typography
 						>
 					</Vertical>
-					<Typography class="text-center"
-						>{$_(
-							'In the meantime, you can already join the conversation on our Discord server.',
-						)}</Typography
-					>
+					<Typography class="text-center">{$_('page.home.joinDiscordText')}</Typography>
 					<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
-						><Discord size={24} /> {$_('Join community')} <ArrowRight size={24} /></Button
+						><Discord size={24} /> {$_('page.home.joinCommunity')} <ArrowRight size={24} /></Button
 					>
 				</Vertical>
 			</ContentLayout>
@@ -204,10 +195,8 @@
 	confirm={deleteClient}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
-	title={$_('Delete client?')}
-	text={$_(
-		'This client and all the portfolios it contains will be deleted permanently. There’s no undo.',
-	)}
+	title={$_('page.home.clientDelete')}
+	text={$_('page.home.clientDeleteWarning')}
 />
 
 <style>

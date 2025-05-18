@@ -58,8 +58,8 @@
 		if (browser && newLocale) {
 			error = undefined
 			adapters.updateLanguage(newLocale).catch((error) => {
-				error = $_('updateLanguageError')
-				console.error('Failed to update language', error)
+				error = $_('page.account.errorFailedToUpdateLanguage')
+				console.error('Failed to update language', error) // TODO: consider if this needs translation
 			})
 			// FIXME: handle the case when the user is not logged in
 			if (authStore.user) authStore.user.user_metadata.prefer_language = newLocale
@@ -69,17 +69,17 @@
 	async function manageSubscriptions() {
 		const customer = subscriptionStore.customer
 		if (!customer) {
-			throw new Error('invalid customer id', { cause: customer })
+			throw new Error('invalid customer id', { cause: customer }) // TODO: consider if this needs translation
 		}
 
 		const response = await authorizedFetch(apiRoutes.PORTAL_CUSTOMER(customer))
 		if (!response.ok) {
-			throw new Error('customer portal call failed', { cause: response })
+			throw new Error('customer portal call failed', { cause: response }) // TODO: consider if this needs translation
 		}
 
 		const { url } = await response.json()
 		if (!url) {
-			throw new Error('invalid checkout url', { cause: url })
+			throw new Error('invalid checkout url', { cause: url }) // TODO: consider if this needs translation
 		}
 
 		window.open(url)
@@ -94,27 +94,25 @@
 	<Vertical --vertical-gap="var(--padding)" class="vertical-border">
 		<Typography variant="h5"
 			>{isTrial
-				? $_('First payment on {date}', { values: { date: nextPaymentFormattedDate } })
-				: $_('Next payment on {date}', {
+				? $_('page.account.firstPaymentOn', { values: { date: nextPaymentFormattedDate } })
+				: $_('page.account.nextPaymentOn', {
 						values: { date: nextPaymentFormattedDate },
 					})}</Typography
 		>
 		<Vertical --vertical-gap="0">
 			<Horizontal --horizontal-justify-content="space-between">
-				<Typography>{$_('Yearly plan')}</Typography>
+				<Typography>{$_('page.account.yearlyPlan')}</Typography>
 				<Typography
 					><Typography bold>{formatNumber(yearlyFee)}</Typography>
 					{currency}</Typography
 				>
 			</Horizontal>
 		</Vertical>
-		<Typography variant="small"
-			>{$_('Your subscription will automatically renew annually on a recurring basis.')}</Typography
-		>
+		<Typography variant="small">{$_('page.account.subscriptionDisclaimer')}</Typography>
 	</Vertical>
 	<Horizontal --horizontal-justify-content="flex-start">
 		<Button variant="strong" dimension="compact" onclick={manageSubscriptions}
-			>{$_('Manage subscription')}<ArrowRight size={24} /></Button
+			>{$_('page.account.manageSubscription')}<ArrowRight size={24} /></Button
 		>
 	</Horizontal>
 {/snippet}
@@ -126,7 +124,7 @@
 			<Button variant="ghost" dimension="compact" onclick={() => goto(routes.HOME)}
 				><ArrowLeft size={24} /></Button
 			>
-			<Typography variant="h4">{$_('Settings')}</Typography>
+			<Typography variant="h4">{$_('page.account.settings')}</Typography>
 		</Horizontal>
 		<TabBar
 			dimension="compact"
@@ -136,14 +134,14 @@
 		>
 			<TabContent>
 				{#snippet value()}
-					<User size={24} />{$_('Account')}
+					<User size={24} />{$_('page.account.account')}
 				{/snippet}
 				<Vertical --vertical-gap="var(--padding)">
 					<Vertical --vertical-gap="var(--quarter-padding)">
 						{#if $locale}
 							<Select
 								bind:value={$locale}
-								label={$_('language')}
+								label={$_('page.account.language')}
 								dimension="compact"
 								layout="vertical"
 								items={$locales.map((locale) => ({ value: locale, label: languageName[locale] }))}
@@ -153,28 +151,27 @@
 							{/if}
 						{/if}
 					</Vertical>
-					<Input label={$_('emailAddress')} value={authStore.user?.email} disabled />
+					<Input label={$_('common.email')} value={authStore.user?.email} disabled />
 					<Horizontal --horizontal-gap="var(--half-padding)">
 						<Button dimension="compact" href={routes.ACCOUNT_CHANGE_EMAIL} variant="secondary"
-							>{$_('changeEmailAddress')}</Button
+							>{$_('page.account.changeEmailAddress')}</Button
 						>
 						<Button dimension="compact" href={routes.ACCOUNT_CHANGE_PASSWORD} variant="secondary"
-							>{$_('changePassword')}</Button
+							>{$_('page.account.changePassword')}</Button
 						>
 						<FlexItem />
 						<Button
 							dimension="compact"
 							variant="ghost"
-							onclick={(e: Event) =>
-								notImplemented(e, $_('Contact support to delete your account with all its data'))}
-							>{$_('Delete account')}</Button
+							onclick={(e: Event) => notImplemented(e, $_('page.account.deleteAccountWarning'))}
+							>{$_('page.account.deleteAccountButton')}</Button
 						>
 					</Horizontal>
 				</Vertical>
 			</TabContent>
 			<TabContent>
 				{#snippet value()}
-					<Receipt size={24} />{$_('Payment & billing')}
+					<Receipt size={24} />{$_('common.paymentAndBilling')}
 				{/snippet}
 				<Vertical --vertical-gap="var(--padding)">
 					{#if subscription?.status === 'active'}
@@ -185,12 +182,10 @@
 								style="display: flex; gap: var(--half-padding)"
 							>
 								<CheckmarkFilled size={32} />
-								{$_('Your subscription is active')}</Typography
+								{$_('page.account.activeSubscription')}</Typography
 							>
 							<Typography variant="small" --colors-ultra-high="var(--colors-high)">
-								{$_(
-									'To review your payment & billing details or manage anything about your subscription, please use the button below.',
-								)}
+								{$_('page.account.activeSubscriptionNote')}
 							</Typography>
 						</Vertical>
 						{@render nextPayment()}
@@ -198,17 +193,17 @@
 						<Vertical class="rounded-box trans-green-10" --vertical-gap="var(--padding)">
 							<Horizontal --horizontal-justify-content="space-between">
 								<Typography variant="h4" --colors-ultra-high="var(--colors-high)"
-									>{$_('Free trial')}</Typography
+									>{$_('page.account.freeTrial')}</Typography
 								>
 								{#if trialRemainingDays === 0}
 									<Typography --colors-ultra-high="var(--colors-high)" bold
-										>{$_('Expiring today')}</Typography
+										>{$_('page.account.expiringToday')}</Typography
 									>
 								{:else}
 									<Typography --colors-ultra-high="var(--colors-high)"
 										><Typography bold>{trialRemainingDays}</Typography>
-										{$_('{days} remaining', {
-											values: { days: trialRemainingDays > 1 ? $_('days') : $_('day') },
+										{$_('page.account.expiringIn', {
+											values: { count: trialRemainingDays },
 										})}</Typography
 									>
 								{/if}
@@ -216,14 +211,12 @@
 							<Vertical --vertical-gap="var(--padding)">
 								<Vertical --vertical-gap="0">
 									<Typography variant="small" bold --colors-ultra-high="var(--colors-high)">
-										{$_('Cancel before {date} and you won’t be charged.', {
+										{$_('page.account.cancelBeforeDate', {
 											values: { date: nextPaymentFormattedDate },
 										})}
 									</Typography>
 									<Typography variant="small" --colors-ultra-high="var(--colors-high)">
-										{$_(
-											'We will remind you via email 7 days before your trial period ends. To review your payment & billing details or manage anything about your subscription, please use the button below.',
-										)}</Typography
+										{$_('page.account.cancelReminder')}</Typography
 									>
 								</Vertical>
 							</Vertical>
@@ -237,14 +230,14 @@
 								style="display: flex; gap: var(--half-padding)"
 							>
 								<WarningFilled size={32} />
-								{$_('No active subscription')}</Typography
+								{$_('page.account.noActiveSubscription')}</Typography
 							>
 						</Vertical>
 						<Horizontal --horizontal-justify-content="space-between">
-							<Typography>You need a subscription to use Kalkul</Typography>
+							<Typography>{$_('page.account.needSubscription')}</Typography>
 							<FlexItem />
 							<Button variant="strong" dimension="compact" onclick={() => goto(routes.PAYMENTS)}
-								>{$_('Subscribe now')}<ArrowRight size={24} /></Button
+								>{$_('page.account.subscribeNow')}<ArrowRight size={24} /></Button
 							>
 						</Horizontal>
 					{:else}
@@ -255,7 +248,7 @@
 								style="display: flex; gap: var(--half-padding)"
 							>
 								<CheckmarkFilled size={32} />
-								{$_('Free Beta')}</Typography
+								{$_('page.account.freeBeta')}</Typography
 							>
 						</Vertical>
 					{/if}

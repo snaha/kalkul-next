@@ -90,19 +90,21 @@
 <main>
 	{#if success}
 		<img class="main-image" src={`${base}/images/hand-success.svg`} alt="Change password" />
-		<Typography variant="h4" class="center-align">{$_('successChangePassword')}</Typography>
+		<Typography variant="h4" class="center-align"
+			>{$_('page.changePassword.successChangePassword')}</Typography
+		>
 		<Button
 			class="fit-content center-align"
 			variant="strong"
 			dimension="compact"
-			href={routes.ACCOUNT}>{$_('backToSettings')}</Button
+			href={routes.ACCOUNT}>{$_('page.changePassword.backToSettings')}</Button
 		>
 	{:else}
-		<Typography variant="h4">{$_('changePassword')}</Typography>
+		<Typography variant="h4">{$_('page.changePassword.changePassword')}</Typography>
 		<form onsubmit={updateUserPassword} class="change-email">
 			<Input
 				type="password"
-				label={$_('newPassword')}
+				label={$_('page.changePassword.newPassword')}
 				bind:value={newPassword}
 				oninput={clearErrorState}
 				onblur={onPasswordBlur}
@@ -112,7 +114,7 @@
 			/>
 			<Input
 				type="password"
-				label={$_('confirmNewPassword')}
+				label={$_('page.changePassword.confirmNewPassword')}
 				bind:value={confirmNewPassword}
 				oninput={clearErrorState}
 				onblur={onConfirmPasswordBlur}
@@ -131,10 +133,10 @@
 		{/if}
 		<div class="control-buttons">
 			<Button dimension="compact" disabled={!formValid} onclick={updateUserPassword}
-				><Checkmark size={24} />{$_('changePassword')}</Button
+				><Checkmark size={24} />{$_('page.changePassword.changePassword')}</Button
 			>
 			<Button dimension="compact" variant="secondary" href={routes.ACCOUNT}
-				><Close size={24} />{$_('cancel')}</Button
+				><Close size={24} />{$_('common.cancel')}</Button
 			>
 		</div>
 	{/if}

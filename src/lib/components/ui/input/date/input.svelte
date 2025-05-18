@@ -31,11 +31,11 @@
 
 	let {
 		label,
-		yearLabel = 'Year',
+		yearLabel = 'Year', // TODO: translate
 		yearPlaceholder,
-		monthLabel = 'Month',
+		monthLabel = 'Month', // TODO: translate
 		monthPlaceholder,
-		dayLabel = 'Day',
+		dayLabel = 'Day', // TODO: translate
 		dayPlaceholder,
 		dimension,
 		error,
@@ -44,10 +44,10 @@
 		variant = 'outline',
 		value = $bindable(),
 		errorMessages = {
-			invalidYear: 'Invalid year',
-			invalidMonth: 'Invalid month',
-			invalidDay: 'Invalid day',
-			invalidDate: 'Invalid date',
+			invalidYear: 'Invalid year', // TODO: translate
+			invalidMonth: 'Invalid month', // TODO: translate
+			invalidDay: 'Invalid day', // TODO: translate
+			invalidDate: 'Invalid date', // TODO: translate
 		},
 	}: Props = $props()
 

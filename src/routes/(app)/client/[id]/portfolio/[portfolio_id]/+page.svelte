@@ -77,7 +77,7 @@
 	</Fullscreen>
 {:else if !portfolio || !client}
 	<Fullscreen>
-		404 - {$_('Not found')}
+		404 - {$_('common.notFound')}
 	</Fullscreen>
 {:else}
 	{#if !isGraphFullscreened}
@@ -93,10 +93,12 @@
 		<section class="empty">
 			<img src={`${base}/images/no-investment.svg`} alt="No investments yet" />
 			<div class="spacer"></div>
-			<Typography variant="h4">{$_('noInvestmentYet')}</Typography>
-			<Typography>{$_('createYourFirstInvestment')}</Typography>
+			<Typography variant="h4">{$_('page.portfolio.noInvestmentYet')}</Typography>
+			<Typography>{$_('page.portfolio.createYourFirstInvestment')}</Typography>
 			<div class="spacer"></div>
-			<Button variant="strong" onclick={addInvestment}><UserFollow />{$_('addInvestment')}</Button>
+			<Button variant="strong" onclick={addInvestment}
+				><UserFollow />{$_('page.portfolio.addInvestment')}</Button
+			>
 		</section>
 	{:else}
 		<main

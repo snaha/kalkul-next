@@ -70,10 +70,10 @@
 	<div class="grower"></div>
 	<div class="controls">
 		<Button dimension="compact" variant="strong" onclick={addInvestment}
-			><Add size={24} />{$_('Add investment')}</Button
+			><Add size={24} />{$_('component.portfolioHeader.addInvestment')}</Button
 		>
 		<Button dimension="compact" variant="secondary" onclick={share}
-			><Share size={24} />{$_('share')}</Button
+			><Share size={24} />{$_('common.share')}</Button
 		>
 		<Dropdown left buttonDimension="compact">
 			{#snippet button()}
@@ -81,10 +81,10 @@
 			{/snippet}
 			<List>
 				<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(client.id, portfolio.id))}
-					><FolderDetails size={24} />{$_('Edit portfolio details')}</ListItem
+					><FolderDetails size={24} />{$_('component.portfolioHeader.editPortfolio')}</ListItem
 				>
 				<ListItem onclick={() => goto(routes.CLIENT_NEW_PORTFOLIO(client.id))}
-					><Add size={24} />{$_('Add portfolio')}</ListItem
+					><Add size={24} />{$_('component.portfolioHeader.addPortfolio')}</ListItem
 				>
 				<ListItem
 					onclick={async () => {
@@ -94,10 +94,10 @@
 							return
 						}
 						goto(routes.CLIENT_PORTFOLIO(client.id, duplicatedPortfolioId))
-					}}><Copy size={24} />{$_('Duplicate portfolio')}</ListItem
+					}}><Copy size={24} />{$_('component.portfolioHeader.duplicatePortfolio')}</ListItem
 				>
 				<ListItem onclick={() => confirmDeletePortfolio()}
-					><TrashCan size={24} />{$_('Delete portfolio')}</ListItem
+					><TrashCan size={24} />{$_('component.portfolioHeader.deletePortfolio')}</ListItem
 				>
 			</List>
 		</Dropdown>
@@ -108,10 +108,8 @@
 	confirm={deletePortfolio}
 	oncancel={() => (showConfirmModal = false)}
 	bind:open={showConfirmModal}
-	title={$_('Delete portfolio?')}
-	text={$_(
-		'This portfolio and all the investments it contains will be deleted permanently. There’s no undo.',
-	)}
+	title={$_('component.portfolioHeader.deletePortfolioWarningTitle')}
+	text={$_('component.portfolioHeader.deletePortfolioWarning')}
 />
 
 <style>

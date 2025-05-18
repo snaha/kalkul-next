@@ -42,7 +42,7 @@
 			return
 		}
 
-		if (confirm($_('Are you sure you want to delete?'))) {
+		if (confirm($_('component.transactionCard.deleteWarning'))) {
 			await adapter.deleteTransaction(transaction)
 		}
 	}
@@ -90,7 +90,7 @@
 				dimension="small"
 				onclick={(e: Event) => {
 					e.stopPropagation()
-					notImplemented(e, $_('comingSoon'))
+					notImplemented(e, $_('common.comingSoon'))
 				}}
 			>
 				<ViewOff size={16} />
@@ -106,13 +106,13 @@
 							onclick={(e: Event) => {
 								e.stopPropagation()
 								editTransaction?.(transaction)
-							}}><Edit size={16} />Edit transaction</ListItem
+							}}><Edit size={16} />{$_('component.viewHeader.editTransaction')}</ListItem
 						>
 						<ListItem dimension="small" onclick={duplicateTransaction}
-							><Copy size={16} />Duplicate transaction</ListItem
+							><Copy size={16} />{$_('component.viewHeader.duplicateTransaction')}</ListItem
 						>
 						<ListItem dimension="small" onclick={deleteTransaction}
-							><TrashCan size={16} />Delete transaction</ListItem
+							><TrashCan size={16} />{$_('component.viewHeader.deleteTransaction')}</ListItem
 						>
 					</List>
 				</Dropdown>
@@ -131,8 +131,12 @@
 			<Typography variant="small">{numOccurrences} occurrences</Typography>
 		{/if}
 		<Typography variant="small"
-			>{totalAmount}
-			{currency} total {transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}</Typography
+			>{$_(
+				transaction.type === 'deposit'
+					? 'component.viewHeader.totalDeposit'
+					: 'component.viewHeader.totalWithdrawal',
+				{ values: { amount: totalAmount, currency } },
+			)}</Typography
 		>
 	</section>
 </div>

@@ -72,13 +72,13 @@
 {#if !success}
 	<div class="login">
 		<div class="header">
-			<Typography variant="h4">{$_('forgotPassword')}</Typography>
-			<Typography variant="large">{$_('forgotPasswordText')}</Typography>
+			<Typography variant="h4">{$_('page.forgotPassword.forgotPassword')}</Typography>
+			<Typography variant="large">{$_('page.forgotPassword.forgotPasswordText')}</Typography>
 		</div>
 		<form class="email">
 			<Input
 				bind:value={email}
-				label="Email"
+				label={$_('page.forgotPassword.email')}
 				type="email"
 				error={emailTouched && email.trim() !== '' && resetPasswordError?.email?._errors
 					? resetPassError
@@ -94,26 +94,30 @@
 		{/if}
 		<div class="buttons">
 			<Button disabled={!resetPasswordFormValid} onclick={() => resetPassword(email)}
-				><Checkmark size={24} />{$_('resetLink')}</Button
+				><Checkmark size={24} />{$_('page.forgotPassword.resetLink')}</Button
 			>
 			<Button variant="secondary" onclick={() => history.back()}
-				><Close size={24} /> {$_('cancel')}</Button
+				><Close size={24} /> {$_('page.forgotPassword.cancel')}</Button
 			>
 		</div>
 		<Divider --margin="0" />
 		<div class="register">
-			<Typography>{$_('goBack')}<a href={routes.LOGIN}>{$_('login')}</a></Typography>
+			<Typography
+				>{$_('page.forgotPassword.goBack')}<a href={routes.LOGIN}
+					>{$_('page.forgotPassword.login')}</a
+				></Typography
+			>
 		</div>
 	</div>
 {:else}
 	<div class="login success">
 		<img src={`${base}/images/reset-password-link.svg`} alt="Reset password link" />
 		<div class="text">
-			<Typography variant="h4">{$_('emailSent')}</Typography>
+			<Typography variant="h4">{$_('page.forgotPassword.emailSent')}</Typography>
 			<Typography variant="large">
 				{#if page.url.hostname === 'localhost' || page.url.hostname === '127.0.0.1'}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('resetPasswordLocal', {
+					{@html $_('page.forgotPassword.resetPasswordLocal', {
 						values: {
 							email: `<span class='green'>${email}</span>`,
 							link: `<a href="${inbucketUrl}/m/${email}" target="_blank">inbucket</a>`,
@@ -121,12 +125,12 @@
 					})}
 				{:else}
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('resetPasswordRemote', {
+					{@html $_('page.forgotPassword.resetPasswordRemote', {
 						values: { email: `<span class='green'>${email}</span>` },
 					})}
 				{/if}
 			</Typography>
-			<Typography>{$_('Don’t see the email? Please check your spam folder.')}</Typography>
+			<Typography>{$_('page.forgotPassword.checkSpam')}</Typography>
 		</div>
 	</div>
 {/if}

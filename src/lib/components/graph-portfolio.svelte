@@ -41,7 +41,7 @@
 	let {
 		investments,
 		portfolio,
-		title = $_('Value'),
+		title = $_('common.value'),
 		adjustWithInflation = $bindable(),
 		investmentsViewStore,
 		fullscreen,
@@ -553,7 +553,7 @@
 				{view}
 				{sidebarButton}
 				bind:adjustWithInflation
-				graphName="Value"
+				graphName={$_('common.value')}
 				fullscreen={() => {
 					fullscreenGraph = undefined
 					fullscreen()
@@ -596,7 +596,7 @@
 				{view}
 				{sidebarButton}
 				bind:adjustWithInflation
-				graphName="Transactions"
+				graphName={$_('common.transactions')}
 				fullscreen={() => {
 					fullscreenGraph = undefined
 					fullscreen()
@@ -605,10 +605,14 @@
 				hidden={fullscreenGraph !== 'transactions'}
 			>
 				{#snippet controls()}
-					<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}></Checkbox>
-					<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
+					<Checkbox dimension="small" label={$_('common.deposits')} bind:checked={showDeposits}
 					></Checkbox>
-					<Checkbox dimension="small" label={$_('Fees')} bind:checked={showFees}></Checkbox>
+					<Checkbox
+						dimension="small"
+						label={$_('common.withdrawals')}
+						bind:checked={showWithdrawals}
+					></Checkbox>
+					<Checkbox dimension="small" label={$_('common.fees')} bind:checked={showFees}></Checkbox>
 				{/snippet}
 				{@render transactionsChart()}
 			</FullscreenGraph>
@@ -618,10 +622,10 @@
 					--horizontal-gap="var(--half-padding)"
 					--padding-left={isGraphFullscreened && !isSidebarOpen ? '42px' : '0'}
 				>
-					<Typography variant="h5">{$_('Transactions')}</Typography>
+					<Typography variant="h5">{$_('common.transactions')}</Typography>
 					{#if isGraphFullscreened}
 						<Toggle
-							label={$_('Show inflation')}
+							label={$_('common.showInflation')}
 							dimension="small"
 							bind:checked={adjustWithInflation}
 						></Toggle>
@@ -640,11 +644,15 @@
 							}}><ArrowRight size={16} /></Button
 						>
 					{:else}
-						<Checkbox dimension="small" label={$_('Deposits')} bind:checked={showDeposits}
+						<Checkbox dimension="small" label={$_('common.deposits')} bind:checked={showDeposits}
 						></Checkbox>
-						<Checkbox dimension="small" label={$_('Withdrawals')} bind:checked={showWithdrawals}
+						<Checkbox
+							dimension="small"
+							label={$_('common.withdrawals')}
+							bind:checked={showWithdrawals}
 						></Checkbox>
-						<Checkbox dimension="small" label={$_('Fees')} bind:checked={showFees}></Checkbox>
+						<Checkbox dimension="small" label={$_('common.fees')} bind:checked={showFees}
+						></Checkbox>
 
 						<Button
 							dimension="small"
@@ -664,7 +672,7 @@
 				{view}
 				{sidebarButton}
 				bind:adjustWithInflation
-				graphName="Breakdown"
+				graphName={$_('common.breakdown')}
 				fullscreen={() => {
 					fullscreenGraph = undefined
 					fullscreen()
@@ -691,7 +699,7 @@
 							} else {
 								console.error('Out of range')
 							}
-						}}>{$_('Show today')}</Button
+						}}>{$_('common.showToday')}</Button
 					>
 				{/snippet}
 				{@render breakdownChart()}
@@ -702,10 +710,10 @@
 					--horizontal-gap="var(--half-padding)"
 					--padding-left={isGraphFullscreened && !isSidebarOpen ? '42px' : '0'}
 				>
-					<Typography variant="h5">{$_('Breakdown')}</Typography>
+					<Typography variant="h5">{$_('common.breakdown')}</Typography>
 					{#if isGraphFullscreened}
 						<Toggle
-							label={$_('Show inflation')}
+							label={$_('common.showInflation')}
 							dimension="small"
 							bind:checked={adjustWithInflation}
 						></Toggle>
@@ -743,7 +751,7 @@
 								} else {
 									console.error('Out of range')
 								}
-							}}>{$_('Show today')}</Button
+							}}>{$_('common.showToday')}</Button
 						>
 						<Button
 							dimension="small"

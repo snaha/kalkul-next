@@ -49,7 +49,10 @@
 			{#if sidebarButton}
 				{@render sidebarButton()}
 			{/if}
-			<Toggle label={$_('Show inflation')} dimension="small" bind:checked={adjustWithInflation}
+			<Toggle
+				label={$_('common.showInflation')}
+				dimension="small"
+				bind:checked={adjustWithInflation}
 			></Toggle>
 			{#if adjustWithInflation}
 				<Badge dimension="small">{infaltion * 100}%</Badge>
@@ -66,7 +69,10 @@
 	{:else}
 		<Horizontal --horizontal-gap="var(--half-padding)" --padding-left="42px">
 			<Typography variant="h5">{graphName}</Typography>
-			<Toggle label={$_('Show inflation')} dimension="small" bind:checked={adjustWithInflation}
+			<Toggle
+				label={$_('common.showInflation')}
+				dimension="small"
+				bind:checked={adjustWithInflation}
 			></Toggle>
 			{#if adjustWithInflation}
 				<Badge dimension="small">{infaltion * 100}%</Badge>

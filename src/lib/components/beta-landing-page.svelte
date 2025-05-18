@@ -47,7 +47,7 @@
 </script>
 
 {#snippet emailError()}
-	{$_('invalidEmailAddress')}
+	{$_('error.emailError')}
 {/snippet}
 
 <header class:mobile={isMobile}>
@@ -63,7 +63,9 @@
 				EN
 			{/if}
 		</Button>
-		<Button variant="secondary" href={routes.LOGIN}><UserAvatar size={24} />{$_('login')}</Button>
+		<Button variant="secondary" href={routes.LOGIN}
+			><UserAvatar size={24} />{$_('common.login')}</Button
+		>
 	</div>
 </header>
 <main class:mobile={isMobile}>
@@ -77,23 +79,23 @@
 		{#if isMobile}
 			<Typography variant="h2">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html $_('landingPage.title', {
-					values: { colorHigh: `<span class='color-high'>${$_('landingPage.titleHigh')}</span>` },
+				{@html $_('page.landing.title', {
+					values: { colorHigh: `<span class='color-high'>${$_('page.landing.titleHigh')}</span>` },
 				})}</Typography
 			>
 		{:else}
 			<span class="headline">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html $_('landingPage.title', {
-					values: { colorHigh: `<span class='color-high'>${$_('landingPage.titleHigh')}</span>` },
+				{@html $_('page.landing.title', {
+					values: { colorHigh: `<span class='color-high'>${$_('page.landing.titleHigh')}</span>` },
 				})}
 			</span>
 		{/if}
-		<Typography variant="large">{$_('landingPage.subtitle')}</Typography>
+		<Typography variant="large">{$_('page.landing.subtitle')}</Typography>
 
 		<Vertical --vertical-gap="var(--half-padding)">
 			<BetaBadge>beta</BetaBadge>
-			<Typography class="color-high">{$_('landingPage.betaDisclaimer')}</Typography>
+			<Typography class="color-high">{$_('page.landing.betaDisclaimer')}</Typography>
 		</Vertical>
 
 		{#if subscribed}
@@ -104,7 +106,7 @@
 			<Banner {icon}>
 				<Typography>
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('landingPage.subscribedText', {
+					{@html $_('page.landing.subscribedText', {
 						values: { colorHigh: `<span class='color-high'>${email}</span>` },
 					})}
 				</Typography>
@@ -122,7 +124,7 @@
 				>
 					<div class="cta" class:vertical={isMobile}>
 						<Input
-							placeholder={$_('landingPage.ctaEmailPlaceholder')}
+							placeholder={$_('page.landing.ctaEmailPlaceholder')}
 							type="email"
 							variant="solid"
 							class="email-input"
@@ -140,7 +142,9 @@
 							onclick={onSubscribe}
 							disabled={!emailValid || email === '' || isSubscribing}
 							>{$_(
-								isSubscribing ? 'landingPage.ctaEmailSubmitLoading' : 'landingPage.ctaEmailSubmit',
+								isSubscribing
+									? 'page.landing.ctaEmailSubmitLoading'
+									: 'page.landing.ctaEmailSubmit',
 							)}</Button
 						>
 					</div>
@@ -149,7 +153,7 @@
 					{/if}
 				</Vertical>
 				<Typography variant="small" style="text-align: start">
-					{$_('landingPage.ctaDisclaimer')}
+					{$_('page.landing.ctaDisclaimer')}
 				</Typography>
 			</Vertical>
 		{/if}

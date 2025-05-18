@@ -1,16 +1,16 @@
 import { z } from 'zod'
 
 export const emailFormSchema = z.object({
-	email: z.string().email({ message: 'emailError' }),
+	email: z.string().email({ message: 'error.emailError' }),
 })
 
 export const loginFormSchema = emailFormSchema.extend({
-	password: z.string().min(6, { message: 'passwordError' }),
+	password: z.string().min(6, { message: 'error.passwordLengthError' }),
 })
 
 export const resetPasswordFormSchema = z
 	.object({
-		newPassword: z.string().min(6, { message: 'passwordError' }),
+		newPassword: z.string().min(6, { message: 'error.passwordLengthError' }),
 		confirmNewPassword: z.string(),
 	})
 	.superRefine((data, ctx) => {
@@ -18,7 +18,7 @@ export const resetPasswordFormSchema = z
 			ctx.addIssue({
 				code: 'custom',
 				path: ['confirmNewPassword'],
-				message: 'confirmPasswordError',
+				message: 'error.confirmPasswordError',
 			})
 		}
 	})

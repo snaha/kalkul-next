@@ -101,13 +101,13 @@
 </ContentLayout>
 <ContentLayout --content-layout-margin="0">
 	<Vertical class="login" --vertical-gap="var(--double-padding)">
-		<Typography variant="h4">{$_('login')}</Typography>
+		<Typography variant="h4">{$_('common.login')}</Typography>
 		<Vertical --vertical-gap="var(--padding)">
 			<Input
 				variant="solid"
 				dimension="compact"
 				bind:value={email}
-				label="Email"
+				label={$_('common.email')}
 				type="email"
 				error={emailTouched && email.trim() !== '' && loginFormErrors?.email?._errors
 					? emailError
@@ -121,7 +121,7 @@
 				dimension="compact"
 				bind:value={password}
 				type="password"
-				label="Password"
+				label={$_('common.password')}
 				error={passwordTouched && password.trim() !== '' && loginFormErrors?.password?._errors
 					? passwordError
 					: undefined}
@@ -139,24 +139,27 @@
 		<Vertical --vertical-gap="var(--padding)">
 			<ResponsiveLayout --responsive-gap="var(--padding)" --responsive-justify-content="stretch">
 				<Button variant="strong" dimension="compact" disabled={!loginFormValid} onclick={login}
-					><Checkmark size={24} />{$_('login')}</Button
+					><Checkmark size={24} />{$_('common.login')}</Button
 				>
-				<Horizontal --horizontal-justify-content="center">{$_('or')}</Horizontal>
+				<Horizontal --horizontal-justify-content="center">{$_('common.or')}</Horizontal>
 
 				<Button variant="solid" dimension="compact" href={routes.HOME}
-					><Google size={24} /> {$_('Sign in with Google')}</Button
+					><Google size={24} /> {$_('component.login.signInGoogle')}</Button
 				>
 			</ResponsiveLayout>
 			<ResponsiveLayout --responsive-justify-content="stretch">
 				<Horizontal --horizontal-justify-content="center">
-					<a href={routes.FORGOT_PASSWORD}>{$_('forgotPassword')}</a>
+					<a href={routes.FORGOT_PASSWORD}>{$_('component.login.forgotPassword')}</a>
 				</Horizontal>
 			</ResponsiveLayout>
 		</Vertical>
 		<Divider --margin="0" />
 		<ResponsiveLayout --responsive-justify-content="stretch">
 			<Horizontal --horizontal-justify-content="center">
-				<Typography>{$_('noAccount')} <a href={routes.SIGNUP}>{$_('signUp')}</a></Typography>
+				<Typography
+					>{$_('component.login.noAccount')}
+					<a href={routes.SIGNUP}>{$_('component.login.signUp')}</a></Typography
+				>
 			</Horizontal>
 		</ResponsiveLayout>
 	</Vertical>

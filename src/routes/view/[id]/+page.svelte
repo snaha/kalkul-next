@@ -60,7 +60,7 @@
 
 {#if notFound}
 	<Fullscreen>
-		<div class="center">404 - {$_('Page not found')}</div>
+		<div class="center">404 - {$_('common.notFound')}</div>
 	</Fullscreen>
 {:else if !portfolioView}
 	<Fullscreen>
@@ -81,7 +81,10 @@
 		<section class="topbar horizontal mobile">
 			{@render sidebarButton()}
 			<div class="inflation-container">
-				<Toggle label={$_('Show inflation')} dimension="small" bind:checked={adjustWithInflation}
+				<Toggle
+					label={$_('common.showInflation')}
+					dimension="small"
+					bind:checked={adjustWithInflation}
 				></Toggle>
 				{#if adjustWithInflation}
 					<Badge dimension="small">{portfolioView.portfolio.inflation_rate * 100}%</Badge>

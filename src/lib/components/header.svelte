@@ -38,24 +38,25 @@
 				<ul class="dropdown-menu">
 					<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
 						<SettingsEdit size={24} />
-						{$_('accountSettings')}
+						{$_('component.header.accountSettings')}
 					</Button>
 					<Button variant="ghost" dimension="compact" onclick={logout} leftAlign>
 						<Logout size={24} />
-						{$_('logout')}
+						{$_('common.logout')}
 					</Button>
 				</ul>
 			</Dropdown>
 		</DesktopOnly>
 
 		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
-			><ChatBot size={16} /><DesktopOnly>{$_('feedbackButton')}</DesktopOnly></Button
+			><ChatBot size={16} /><DesktopOnly>{$_('component.header.feedbackButton')}</DesktopOnly
+			></Button
 		>
 		<Button
 			mode="dark"
 			dimension="small"
 			variant="ghost"
-			onclick={(e: Event) => notImplemented(e, $_('comingSoon'))}><Moon size={16} /></Button
+			onclick={(e: Event) => notImplemented(e, $_('common.comingSoon'))}><Moon size={16} /></Button
 		>
 	</div>
 </header>

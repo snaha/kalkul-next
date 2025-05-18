@@ -31,10 +31,10 @@
 		<Typography>{text}</Typography>
 		<section class="buttons">
 			<Button variant="strong" dimension="compact" onclick={confirm}
-				><TrashCan size={24} />{$_('Confirm delete')}</Button
+				><TrashCan size={24} />{$_('component.deleteModal.confirmDelete')}</Button
 			>
 			<Button variant="secondary" dimension="compact" onclick={oncancel}
-				><Close size={24} />{$_("Don't delete")}</Button
+				><Close size={24} />{$_('component.deleteModal.cancelDelete')}</Button
 			>
 			<div class="grower"></div>
 		</section>
