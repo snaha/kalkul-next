@@ -158,7 +158,7 @@
 							variant="strong"
 							dimension="compact"
 							type="submit"
-							disabled={!formValid}
+							disabled={!formValid || !termsConsent}
 							onclick={register}><Checkmark size={24} />{$_('page.signUp.createAccount')}</Button
 						>
 					</ResponsiveLayout>
