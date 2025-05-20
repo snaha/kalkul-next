@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.6.0](https://github.com/snaha/kalkul/compare/v0.5.0...v0.6.0) (2025-05-20)
+
+
+### Features
+
+* add terms of service and privacy policy ([#649](https://github.com/snaha/kalkul/issues/649)) ([a729c24](https://github.com/snaha/kalkul/commit/a729c2492ed98f474606f3ab15a6b979a0395808))
+* analytics ([#590](https://github.com/snaha/kalkul/issues/590)) ([59b8929](https://github.com/snaha/kalkul/commit/59b8929c77028f246f88fb16e7a8643c4abad649))
+* beta landing page ([#610](https://github.com/snaha/kalkul/issues/610)) ([1f7e971](https://github.com/snaha/kalkul/commit/1f7e971b2f5236c0bc9820e0133ef6475364c2f8))
+* czech translation ([#642](https://github.com/snaha/kalkul/issues/642)) ([24fb313](https://github.com/snaha/kalkul/commit/24fb3130c035dab88c4bb448eb07ec8c7aef27c7))
+* delete english moneyfest translations ([#650](https://github.com/snaha/kalkul/issues/650)) ([992dbaa](https://github.com/snaha/kalkul/commit/992dbaa7c84951f00f891b5fcdd76d4a42a66a9d))
+* email subscribe ([#648](https://github.com/snaha/kalkul/issues/648)) ([b643ab2](https://github.com/snaha/kalkul/commit/b643ab29a76367ac75112f39637d83bf6406f121))
+* explicitly agree with TOS and PP ([#652](https://github.com/snaha/kalkul/issues/652)) ([785f6f7](https://github.com/snaha/kalkul/commit/785f6f7cca4c6a5f9cf64eff47de5811b2bbbe1f))
+* fee calculation ([#498](https://github.com/snaha/kalkul/issues/498)) ([ef6bef6](https://github.com/snaha/kalkul/commit/ef6bef6d4bb036160920cf68d50896695fdc0c7f))
+* free beta signup flow ([#640](https://github.com/snaha/kalkul/issues/640)) ([f73868c](https://github.com/snaha/kalkul/commit/f73868c64985c9bef3b071ae9174349223185117))
+* landing page footer ([#632](https://github.com/snaha/kalkul/issues/632)) ([7b2a4ee](https://github.com/snaha/kalkul/commit/7b2a4ee3a27d4911c9593b80f495f823181ed808))
+* moneyfest landing page ([#633](https://github.com/snaha/kalkul/issues/633)) ([f568d63](https://github.com/snaha/kalkul/commit/f568d632359099ed15199963719eaa1ccf8a06b7))
+* subscribe to newsletter when registering ([#659](https://github.com/snaha/kalkul/issues/659)) ([e4d5d00](https://github.com/snaha/kalkul/commit/e4d5d00bcafc2ac288ada236b09bbee011bcf414))
+* welcome popup ([#654](https://github.com/snaha/kalkul/issues/654)) ([c84f49e](https://github.com/snaha/kalkul/commit/c84f49e7c967cecdd4832cdf2ab75412d912841a))
+
+
+### Bug Fixes
+
+* add discord link ([#588](https://github.com/snaha/kalkul/issues/588)) ([9244094](https://github.com/snaha/kalkul/commit/92440944660e3e1633c9f7ca1e01fb2ba45a4479))
+* dark mode coming soon ([#587](https://github.com/snaha/kalkul/issues/587)) ([a0f2672](https://github.com/snaha/kalkul/commit/a0f2672db1dbf3245973570e5b3521f79cb40065)), closes [#509](https://github.com/snaha/kalkul/issues/509)
+* delete account text ([#589](https://github.com/snaha/kalkul/issues/589)) ([699e9cb](https://github.com/snaha/kalkul/commit/699e9cbb1f16f3f4657a9d7e02342d2a5907ca59))
+* entry fee already paid ([#630](https://github.com/snaha/kalkul/issues/630)) ([ac75c0b](https://github.com/snaha/kalkul/commit/ac75c0bb5ec02c0cd64fba3ddf76a14a7314edd1))
+* exit fee ([#624](https://github.com/snaha/kalkul/issues/624)) ([9441363](https://github.com/snaha/kalkul/commit/9441363bf3a6b2bfa4f47811fea8f3be136c12e5)), closes [#621](https://github.com/snaha/kalkul/issues/621)
+* graph transaction withdrawal ([#625](https://github.com/snaha/kalkul/issues/625)) ([57f1161](https://github.com/snaha/kalkul/commit/57f1161da9184e23a1e23a656b580859a57ddf1c))
+* landing page was showing successful subscribe ([#638](https://github.com/snaha/kalkul/issues/638)) ([af09440](https://github.com/snaha/kalkul/commit/af094407ad5da5e140e6f334df0f57395d5b0aa7))
+* multiple select ([#629](https://github.com/snaha/kalkul/issues/629)) ([16fa5d5](https://github.com/snaha/kalkul/commit/16fa5d5377e094dd92c76c643158dc8343b31412))
+* paywall disable ([#658](https://github.com/snaha/kalkul/issues/658)) ([3aec139](https://github.com/snaha/kalkul/commit/3aec139bea7c647351703baa899766cdfb9cc98a)), closes [#657](https://github.com/snaha/kalkul/issues/657)
+* prevent registration if user did not consent ([#656](https://github.com/snaha/kalkul/issues/656)) ([dcc67f5](https://github.com/snaha/kalkul/commit/dcc67f568cc35dba6046cc54940c661e042bd3a9))
+* remove form element from complex forms ([#594](https://github.com/snaha/kalkul/issues/594)) ([b90f793](https://github.com/snaha/kalkul/commit/b90f793aa01afb224ad3824d4d439d508c96e740))
+* remove non-existing icon ([#647](https://github.com/snaha/kalkul/issues/647)) ([16d43c1](https://github.com/snaha/kalkul/commit/16d43c1ebe7cb8345d3cff6a0d9e4d952472428c))
+* remove ROI column ([#591](https://github.com/snaha/kalkul/issues/591)) ([0e74b63](https://github.com/snaha/kalkul/commit/0e74b635aa70f60d1f653936df6c2dc98a6516f8)), closes [#526](https://github.com/snaha/kalkul/issues/526)
+* remove signup and signin with google as it is not implemented ([#653](https://github.com/snaha/kalkul/issues/653)) ([db8ebe2](https://github.com/snaha/kalkul/commit/db8ebe21a84203888f736acd4eb832446f9595a7))
+* TER, management and sucess fee ([#623](https://github.com/snaha/kalkul/issues/623)) ([78c329f](https://github.com/snaha/kalkul/commit/78c329f16f82b873b703dc5d2c1c51c3ccbbc0c1)), closes [#622](https://github.com/snaha/kalkul/issues/622)
+* translate welcome modal on mobile view ([#660](https://github.com/snaha/kalkul/issues/660)) ([cdc29b0](https://github.com/snaha/kalkul/commit/cdc29b00ac6d7d73d387e7524550cdea0806ceb6))
+
 ## [0.5.0](https://github.com/snaha/kalkul/compare/v0.4.0...v0.5.0) (2025-03-28)
 
 
