@@ -195,7 +195,7 @@
 			</div>
 			<ContentLayout --content-layout-margin="0">
 				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
-					<Typography variant="h5" class="text-center">{$_('What’s next?')}</Typography>
+					<Typography variant="h5" class="text-center">{$_('page.home.whatsNext')}</Typography>
 					<Vertical --vertical-gap="var(--half-padding)">
 						<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
 						<Typography variant="small" class="text-center"

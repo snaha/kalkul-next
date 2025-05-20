@@ -36,37 +36,33 @@
 			</div>
 			<Horizontal class="video-button" --horizontal-justify-content="center">
 				<Button variant="darkoverlay" dimension="compact" onclick={close}>
-					{$_('Start testing')}
+					{$_('component.welcomeModal.startTestingButton')}
 					<ArrowRight size={24} />
 				</Button>
 			</Horizontal>
 		</Vertical>
 	{:else}
 		<Vertical class="content">
-			<Typography variant="h5" class="text-center">{$_('Welcome to Kalkul beta!')}</Typography>
+			<Typography variant="h5" class="text-center"
+				>{$_('component.welcomeModal.welcomeText')}</Typography
+			>
 			<Typography variant="large" class="text-center" --letter-spacing-large="var(--letter-spacing)"
-				>{$_(
-					'Kalkul helps independent advisors create, visualise and share financial plans with their clients.',
-				)}</Typography
+				>{$_('component.welcomeModal.kalkulTagline')}</Typography
 			>
-			<Typography class="text-center"
-				>{$_(
-					'The app is currently in Free beta version, and will launch as a commercial product later this year. As a beta user, you have early access to the app as we develop it. We’re looking forward to your feedback — help us shape the future of independent financial planning!',
-				)}</Typography
-			>
+			<Typography class="text-center">{$_('component.welcomeModal.betaDisclaimer')}</Typography>
 			<Horizontal class="green box" --horizontal-justify-content="center">
 				<Badge size={24} />
 				<Typography bold --typography-color="var(--colors-high)"
-					>{$_('As a beta user, you will be eligible for special discounts!')}</Typography
+					>{$_('component.welcomeModal.specialDiscountEligibility')}</Typography
 				>
 			</Horizontal>
 			<Horizontal --horizontal-justify-content="center">
 				<Button variant="strong" dimension="compact" onclick={startVideoPlayer}>
 					<Youtube size={24} color="var(--colors-ultra-high)" />
-					{$_('Watch video intro')}
+					{$_('component.welcomeModal.videoIntroButton')}
 				</Button>
 				<Button variant="secondary" dimension="compact" onclick={close}>
-					{$_('Start testing')}
+					{$_('component.welcomeModal.startTestingButton')}
 					<ArrowRight size={24} />
 				</Button>
 			</Horizontal>
