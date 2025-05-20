@@ -605,14 +605,11 @@
 				hidden={fullscreenGraph !== 'transactions'}
 			>
 				{#snippet controls()}
-					<Checkbox dimension="small" label={$_('common.deposits')} bind:checked={showDeposits}
-					></Checkbox>
-					<Checkbox
-						dimension="small"
-						label={$_('common.withdrawals')}
-						bind:checked={showWithdrawals}
-					></Checkbox>
-					<Checkbox dimension="small" label={$_('common.fees')} bind:checked={showFees}></Checkbox>
+					<Checkbox dimension="small" bind:checked={showDeposits}>{$_('common.deposits')}</Checkbox>
+					<Checkbox dimension="small" bind:checked={showWithdrawals}
+						>{$_('common.withdrawals')}</Checkbox
+					>
+					<Checkbox dimension="small" bind:checked={showFees}>{$_('common.fees')}</Checkbox>
 				{/snippet}
 				{@render transactionsChart()}
 			</FullscreenGraph>
@@ -644,15 +641,13 @@
 							}}><ArrowRight size={16} /></Button
 						>
 					{:else}
-						<Checkbox dimension="small" label={$_('common.deposits')} bind:checked={showDeposits}
-						></Checkbox>
-						<Checkbox
-							dimension="small"
-							label={$_('common.withdrawals')}
-							bind:checked={showWithdrawals}
-						></Checkbox>
-						<Checkbox dimension="small" label={$_('common.fees')} bind:checked={showFees}
-						></Checkbox>
+						<Checkbox dimension="small" bind:checked={showDeposits}
+							>{$_('common.deposits')}</Checkbox
+						>
+						<Checkbox dimension="small" bind:checked={showWithdrawals}
+							>{$_('common.withdrawals')}</Checkbox
+						>
+						<Checkbox dimension="small" bind:checked={showFees}>{$_('common.fees')}</Checkbox>
 
 						<Button
 							dimension="small"

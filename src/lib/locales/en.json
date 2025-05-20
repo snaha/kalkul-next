@@ -113,7 +113,7 @@
 			"verificationLinkRemote": "An email with a verification link was sent to {email}.",
 			"checkEmail": "Check your email to complete sign up!",
 			"checkSpam": "Don’t see the email? Please check your spam folder.",
-			"agreeToTerms": "By proceeding you agree to Kalkul {terms} and {privacy}",
+			"agreeToTerms": "I agree to Kalkul {terms} and {privacy}",
 			"terms": "Terms of service",
 			"privacy": "Privacy policy"
 		},

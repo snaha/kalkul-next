@@ -2,20 +2,18 @@
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	type Dimension = 'default' | 'large' | 'compact' | 'small'
 	interface Props extends HTMLInputAttributes {
-		label: string
 		dimension?: Dimension
 		hover?: boolean
 		active?: boolean
 		focus?: boolean
 	}
 	let {
-		label,
 		dimension = 'default',
 		hover,
 		checked = $bindable(),
 		active,
 		focus,
-
+		children,
 		class: className = '',
 		...restProps
 	}: Props = $props()
@@ -23,7 +21,7 @@
 
 <label class="{dimension} {className}" class:hover class:active class:focus>
 	<input type="checkbox" bind:checked {...restProps} />
-	{label}
+	{#if children}{@render children()}{/if}
 </label>
 
 <style lang="postcss">

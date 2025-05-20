@@ -36,6 +36,7 @@
 	let error = $state('')
 	let success = $state(false)
 	let newsletterConsent = $state(false)
+	let termsConsent = $state(false)
 
 	let user: Partial<User> = $state({})
 
@@ -129,8 +130,20 @@
 					type="password"
 					onblur={onPasswordBlur}
 				/>
-				<Checkbox label={$_('page.signUp.subscribeToNewsletter')} bind:checked={newsletterConsent}
-				></Checkbox>
+				<Checkbox bind:checked={newsletterConsent}>
+					{$_('page.signUp.subscribeToNewsletter')}</Checkbox
+				>
+				<Checkbox bind:checked={termsConsent}>
+					<span>
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html $_('page.signUp.agreeToTerms', {
+							values: {
+								terms: `<a href="${routes.TERMS}">${$_('page.signUp.terms')}</a>`,
+								privacy: `<a href="${routes.PRIVACY}">${$_('page.signUp.privacy')}</a>`,
+							},
+						})}
+					</span>
+				</Checkbox>
 				{#if error}
 					<div class="error">
 						<WarningAltFilled size={24} />
@@ -154,15 +167,6 @@
 							><Google size={24} /> {$_('page.signUp.signUpWithGoogle')}</Button
 						>
 					</ResponsiveLayout>
-					<Typography>
-						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html $_('page.signUp.agreeToTerms', {
-							values: {
-								terms: `<a href="${routes.TERMS}">${$_('page.signUp.terms')}</a>`,
-								privacy: `<a href="${routes.PRIVACY}">${$_('page.signUp.privacy')}</a>`,
-							},
-						})}</Typography
-					>
 				</Vertical>
 			</Vertical>
 			<Divider --margin="0" />
