@@ -1,12 +1,5 @@
 {
 	"page": {
-		"moneyfest": {
-			"cta": "Get early exclusive access with MoneyFest 2025!",
-			"title": "Help shape the future of independent financial planning, join the  <span style='font-weight: 700;'>Kalkul</span> beta community!.",
-			"subtitle": "Kalkul is a new application that helps independent professional advisors create, visualise and share financial plans with their clients.",
-			"button": "Get started",
-			"disclaimer": "Kalkul is currently available as a limited free beta, for testing purposes only."
-		},
 		"forgotPassword": {
 			"forgotPassword": "Forgot password?",
 			"forgotPasswordText": "Enter the email associated with your account and you will receive a link to reset your password.",
