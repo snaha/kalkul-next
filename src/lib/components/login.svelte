@@ -17,7 +17,6 @@
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
-	import Google from './icons/google.svelte'
 
 	type User = z.infer<typeof loginFormSchema>
 
@@ -140,11 +139,6 @@
 			<ResponsiveLayout --responsive-gap="var(--padding)" --responsive-justify-content="stretch">
 				<Button variant="strong" dimension="compact" disabled={!loginFormValid} onclick={login}
 					><Checkmark size={24} />{$_('common.login')}</Button
-				>
-				<Horizontal --horizontal-justify-content="center">{$_('common.or')}</Horizontal>
-
-				<Button variant="solid" dimension="compact" href={routes.HOME}
-					><Google size={24} /> {$_('component.login.signInGoogle')}</Button
 				>
 			</ResponsiveLayout>
 			<ResponsiveLayout --responsive-justify-content="stretch">

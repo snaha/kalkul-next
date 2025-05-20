@@ -20,7 +20,6 @@
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
-	import Google from '$lib/components/icons/google.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 
 	$effect(() => {
@@ -161,10 +160,6 @@
 							type="submit"
 							disabled={!formValid}
 							onclick={register}><Checkmark size={24} />{$_('page.signUp.createAccount')}</Button
-						>
-						<Horizontal --horizontal-justify-content="center">{$_('common.or')}</Horizontal>
-						<Button variant="solid" dimension="compact" href={routes.HOME}
-							><Google size={24} /> {$_('page.signUp.signUpWithGoogle')}</Button
 						>
 					</ResponsiveLayout>
 				</Vertical>
