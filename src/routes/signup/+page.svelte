@@ -9,7 +9,7 @@
 	import { _ } from 'svelte-i18n'
 	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
 	import Logo from '$lib/components/icons/logo.svelte'
-	import routes from '$lib/routes'
+	import routes, { apiRoutes } from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
@@ -67,6 +67,27 @@
 			}
 		} catch (e) {
 			error = (e as Error).message
+		}
+
+		// Subscribe to newsletter if consent is given
+		try {
+			if (newsletterConsent && user.email) {
+				const res = await fetch(apiRoutes.NEWSLETTER_SUBSCRIBE, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ email: user.email }),
+				})
+
+				const data = await res.json()
+
+				if (!res.ok) {
+					console.error(data?.error || 'Something went wrong.')
+				}
+			}
+		} catch (e) {
+			console.error('Error subscribing to newsletter:', e)
 		}
 	}
 	$effect(() => {
