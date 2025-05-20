@@ -47,4 +47,5 @@ export const apiRoutes = {
 	PRICE: (priceId: string) => `${routeApiPrefix}/api/payments/price/${priceId}`,
 	SUBSCRIPTIONS: `${routeApiPrefix}/api/payments/subscriptions`,
 	SUCCESS: (sessionId: string) => `${routeApiPrefix}/api/payments/success/${sessionId}`,
+	NEWSLETTER_SUBSCRIBE: `${routeApiPrefix}/api/newsletter/subscribe`,
 }

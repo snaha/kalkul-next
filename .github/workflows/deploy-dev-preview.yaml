@@ -19,6 +19,8 @@ env:
   PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
   VITE_API_URL: ${{ vars.PREVIEW_VITE_API_URL }}
   PUBLIC_DISCORD_LINK: ${{ vars.PUBLIC_DISCORD_LINK }}
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+  RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
 
 permissions:
   contents: write

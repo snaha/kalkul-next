@@ -28,12 +28,6 @@ services:
       - key: PUBLIC_ORIGIN
         scope: RUN_AND_BUILD_TIME
         value: ${PUBLIC_ORIGIN}
-      - key: SUPABASE_JWT_SECRET
-        scope: RUN_AND_BUILD_TIME
-        value: ${SUPABASE_JWT_SECRET}
-      - key: SUPABASE_SERVICE_ROLE_KEY
-        scope: RUN_AND_BUILD_TIME
-        value: ${SUPABASE_SERVICE_ROLE_KEY}
       - key: STRIPE_API_KEY
         scope: RUN_AND_BUILD_TIME
         value: ${STRIPE_API_KEY}
@@ -42,7 +36,13 @@ services:
         value: ${PUBLIC_DISABLE_PAYWALL}
       - key: PUBLIC_DISCORD_LINK
         scope: RUN_AND_BUILD_TIME
-        value: PUBLIC_DISCORD_LINK
+        value: ${PUBLIC_DISCORD_LINK}
+      - key: RESEND_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${RESEND_API_KEY}
+      - key: RESEND_AUDIENCE_ID
+        scope: RUN_AND_BUILD_TIME
+        value: ${RESEND_AUDIENCE_ID}
       - key: PORT
         scope: RUN_TIME
         value: 8080

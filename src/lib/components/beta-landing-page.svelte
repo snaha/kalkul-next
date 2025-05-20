@@ -4,11 +4,10 @@
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
 	import { _, locale } from 'svelte-i18n'
-	import routes from '$lib/routes'
+	import routes, { apiRoutes } from '$lib/routes'
 	import { base } from '$app/paths'
 	import Typography from './ui/typography.svelte'
 	import Input from './ui/input/input.svelte'
-	import { notImplemented } from '$lib/not-implemented'
 	import { z } from 'zod'
 	import ErrorComponent from './error.svelte'
 	import Vertical from './ui/vertical.svelte'
@@ -19,10 +18,6 @@
 		isMobile: boolean
 	}
 
-	function sleep(ms: number) {
-		return new Promise((resolve) => setTimeout(resolve, ms))
-	}
-
 	const { isMobile }: Props = $props()
 	let email = $state('')
 	let emailValid = $state(true)
@@ -31,12 +26,24 @@
 
 	async function onSubscribe() {
 		isSubscribing = true
-		// TODO: handle errors, subscribe etc
-		await sleep(1000)
-		notImplemented()
 
 		if (emailValid && email !== '') {
-			subscribed = true
+			const res = await fetch(apiRoutes.NEWSLETTER_SUBSCRIBE, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email }),
+			})
+
+			const data = await res.json()
+
+			if (res.ok) {
+				subscribed = true
+				email = ''
+			} else {
+				console.error(data?.error || 'Something went wrong.')
+			}
 			isSubscribing = false
 		}
 	}

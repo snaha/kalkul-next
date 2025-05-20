@@ -33,52 +33,54 @@ export const handle: Handle = async ({ event, resolve }) => {
 		})
 	}
 
-	// For API routes, enforce Authorization header
-	const auth = event.request.headers.get('Authorization')
-	if (!auth) {
-		return json('missing Authorization header', {
-			status: 400,
-			headers,
-		})
-	}
+	if (event.url.pathname !== apiRoutes.NEWSLETTER_SUBSCRIBE) {
+		// For API routes, enforce Authorization header
+		const auth = event.request.headers.get('Authorization')
+		if (!auth) {
+			return json('missing Authorization header', {
+				status: 400,
+				headers,
+			})
+		}
 
-	const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-		cookies: {
-			getAll: () => event.cookies.getAll(),
-			/**
-			 * SvelteKit's cookies API requires `path` to be explicitly set in
-			 * the cookie options. Setting `path` to `/` replicates previous/
-			 * standard behavior.
-			 */
-			setAll: (cookiesToSet) => {
-				cookiesToSet.forEach(({ name, value, options }) => {
-					event.cookies.set(name, value, { ...options, path: '/' })
-				})
+		const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+			cookies: {
+				getAll: () => event.cookies.getAll(),
+				/**
+				 * SvelteKit's cookies API requires `path` to be explicitly set in
+				 * the cookie options. Setting `path` to `/` replicates previous/
+				 * standard behavior.
+				 */
+				setAll: (cookiesToSet) => {
+					cookiesToSet.forEach(({ name, value, options }) => {
+						event.cookies.set(name, value, { ...options, path: '/' })
+					})
+				},
 			},
-		},
-	})
-
-	const [, authToken] = auth.split(' ')
-	if (!authToken) {
-		return json('invalid auth token', {
-			status: 400,
-			headers,
 		})
-	}
 
-	const authUser = await supabase.auth.getUser(authToken)
-	const {
-		data: { user },
-		error,
-	} = authUser
-	if (error || !user) {
-		return json('invalid auth user', {
-			status: 400,
-			headers,
-		})
-	}
+		const [, authToken] = auth.split(' ')
+		if (!authToken) {
+			return json('invalid auth token', {
+				status: 400,
+				headers,
+			})
+		}
 
-	event.locals.user = user
+		const authUser = await supabase.auth.getUser(authToken)
+		const {
+			data: { user },
+			error,
+		} = authUser
+		if (error || !user) {
+			return json('invalid auth user', {
+				status: 400,
+				headers,
+			})
+		}
+
+		event.locals.user = user
+	}
 
 	// Resolve API routes and append CORS headers
 	const response = await resolve(event)
