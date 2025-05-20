@@ -28,7 +28,7 @@
 
 	$effect(() => {
 		if (
-			PUBLIC_DISABLE_PAYWALL !== 'yes' &&
+			PUBLIC_DISABLE_PAYWALL !== 'true' &&
 			authStore.isLoggedIn &&
 			!subscriptionStore.loading &&
 			!subscriptionStore.data.some(
@@ -55,7 +55,7 @@
 		<ContentLayout>
 			<Loader />
 		</ContentLayout>
-	{:else if PUBLIC_DISABLE_PAYWALL === 'yes' || subscriptionStore.getActiveSubscription()}
+	{:else if PUBLIC_DISABLE_PAYWALL === 'true' || subscriptionStore.getActiveSubscription()}
 		{#if children}
 			{@render children()}
 		{/if}

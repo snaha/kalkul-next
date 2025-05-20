@@ -86,7 +86,7 @@
 	}
 
 	function isPaymentEnabled() {
-		return PUBLIC_DISABLE_PAYWALL !== 'yes'
+		return PUBLIC_DISABLE_PAYWALL !== 'true'
 	}
 </script>
 
