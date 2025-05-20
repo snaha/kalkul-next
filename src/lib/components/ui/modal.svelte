@@ -81,11 +81,14 @@
 </dialog>
 
 <style>
+	:root {
+		--modal-max-width: 560px;
+	}
 	dialog {
 		border: 0;
 		background-color: var(--colors-ultra-low);
 		padding: 0;
-		max-width: 560px;
+		max-width: var(--modal-max-width);
 		width: 100%;
 		color: var(--colors-ultra-high);
 	}

@@ -31,11 +31,30 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import Discord from '$lib/components/icons/discord.svelte'
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
+	import WelcomeModal from '$lib/components/welcome-modal.svelte'
+	import { onMount } from 'svelte'
+
+	const HIDE_WELCOME = 'hide-welcome'
 
 	let showConfirmModal = $state(false)
+	let showWelcomeModal = $state(false)
 	let clientToBeDeleted: number | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(searchByName(searchQuery))
+
+	onMount(() => {
+		const hideWelcome = localStorage.getItem(HIDE_WELCOME)
+		if (hideWelcome === 'true') {
+			showWelcomeModal = false
+		} else {
+			showWelcomeModal = true
+		}
+	})
+
+	function hideWelcomeModal() {
+		showWelcomeModal = false
+		localStorage.setItem(HIDE_WELCOME, 'true')
+	}
 
 	function addClient() {
 		goto(routes.NEW_CLIENT)
@@ -157,6 +176,8 @@
 			</ul>
 		{/if}
 	</main>
+
+	<WelcomeModal oncancel={hideWelcomeModal} bind:open={showWelcomeModal} />
 </DesktopOnly>
 <MobileOnly>
 	<Vertical --vertical-gap="0" --vertical-align-items="center">
@@ -170,7 +191,7 @@
 				</Vertical>
 			</ContentLayout>
 			<div class="video">
-				<iframe src="https://www.youtube.com/embed/QDia3e12czc" title="intro video"> </iframe>
+				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
 			</div>
 			<ContentLayout --content-layout-margin="0">
 				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
@@ -281,7 +302,7 @@
 		background-color: black;
 		width: 100%;
 		max-width: 100%;
-		aspect-ratio: 360 / 190;
+		aspect-ratio: 16 / 9;
 	}
 	:global(.text-center) {
 		text-align: center;
@@ -289,6 +310,7 @@
 	iframe {
 		width: 100%;
 		height: 100%;
+		border: 0;
 	}
 	:global(.max560) {
 		max-width: 560px;
