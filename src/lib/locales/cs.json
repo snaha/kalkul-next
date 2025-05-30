@@ -341,7 +341,14 @@
 		"comingSoon": "Na téhle funkci usilovně pracujeme!",
 		"portfolioName": "Název portfolia",
 		"currentValue": "Aktuální hodnota",
-		"password": "Heslo"
+		"password": "Heslo",
+		"withdrawn": "Vybráno",
+		"deposited": "Vloženo",
+		"investmentValue": "Hodnota investic",
+		"totalDeposited": "Celkem vloženo",
+		"totalWithdrawn": "Celkem vybráno",
+		"totalFees": "Celkem poplatky",
+		"totalInvestments": "Celková hodnota investic"
 	},
 	"error": {
 		"passwordLengthError": "Heslo musí mít alespoň 6 znaků",

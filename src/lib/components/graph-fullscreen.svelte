@@ -12,9 +12,8 @@
 	type Props = {
 		view?: boolean
 		adjustWithInflation: boolean
-		hidden: boolean
-		graphName: string
-		infaltion: number
+		graphName: Snippet
+		inflation: number
 		fullscreen: () => void
 		children: Snippet
 		controls?: Snippet
@@ -23,9 +22,8 @@
 	let {
 		view = false,
 		adjustWithInflation = $bindable(),
-		hidden,
 		graphName,
-		infaltion,
+		inflation,
 		fullscreen,
 		children,
 		controls,
@@ -33,7 +31,7 @@
 	}: Props = $props()
 </script>
 
-<div class="fullscreen-graph" class:hidden class:view>
+<div class="fullscreen-graph" class:view>
 	{#if view}
 		<div class="row">
 			<Button
@@ -43,7 +41,7 @@
 					fullscreen()
 				}}><ArrowLeft size={16} /></Button
 			>
-			<Typography variant="h5">{graphName}</Typography>
+			<Typography variant="h5">{@render graphName()}</Typography>
 		</div>
 		<div class="row">
 			{#if sidebarButton}
@@ -55,7 +53,7 @@
 				bind:checked={adjustWithInflation}
 			></Toggle>
 			{#if adjustWithInflation}
-				<Badge dimension="small">{infaltion * 100}%</Badge>
+				<Badge dimension="small">{inflation * 100}%</Badge>
 			{/if}
 		</div>
 		<div class="row no-border">
@@ -68,14 +66,14 @@
 		{/if}
 	{:else}
 		<Horizontal --horizontal-gap="var(--half-padding)" --padding-left="42px">
-			<Typography variant="h5">{graphName}</Typography>
+			<Typography variant="h5">{@render graphName()}</Typography>
 			<Toggle
 				label={$_('common.showInflation')}
 				dimension="small"
 				bind:checked={adjustWithInflation}
 			></Toggle>
 			{#if adjustWithInflation}
-				<Badge dimension="small">{infaltion * 100}%</Badge>
+				<Badge dimension="small">{inflation * 100}%</Badge>
 			{/if}
 			<FlexItem />
 			{#if controls}
@@ -105,9 +103,6 @@
 		flex-grow: 1;
 		padding: var(--padding);
 		gap: var(--half-padding);
-	}
-	.hidden {
-		display: none;
 	}
 	.view {
 		gap: 0;

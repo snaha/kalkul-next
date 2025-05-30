@@ -19,6 +19,15 @@
 	const DEFAULT_OPTIONS: ChartOptions<'doughnut'> = {
 		maintainAspectRatio: false,
 		responsive: false,
+		interaction: {
+			intersect: false,
+			mode: 'index',
+		},
+		elements: {
+			point: {
+				radius: 0,
+			},
+		},
 	}
 
 	let { data, labels, investments, investmentsViewStore }: Props = $props()

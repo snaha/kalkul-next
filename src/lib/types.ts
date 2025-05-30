@@ -43,3 +43,7 @@ export type CustomDataset<T extends keyof ChartTypeRegistry> = ChartDataset<T> &
 	colorIndex: number
 	label: string
 }
+
+export type ChartDatasetWithColor = ChartDataset & {
+	colorIndex?: number
+}

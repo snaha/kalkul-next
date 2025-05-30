@@ -29,7 +29,7 @@
 		responsive: false,
 	}
 
-	let { labels, datasets, type, options = {}, plugins = [] }: Props = $props()
+	let { labels = [], datasets = [], type, options = {}, plugins = [] }: Props = $props()
 
 	let canvas: HTMLCanvasElement | null = $state(null)
 	let chart: Chart | null = $state(null)

@@ -96,7 +96,7 @@
 		<Divider --margin="0" --divider-color="var(--colors-light-base)" style="opacity: 0.25" />
 	{/if}
 	{#if withdrawals.length > 0}
-		<Typography variant="h6" class="color-light">{$_('withdrawals')}</Typography>
+		<Typography variant="h6" class="color-light">{$_('common.withdrawals')}</Typography>
 		<div class="col">
 			{#each withdrawals as withdrawal}
 				<div class="investment-details">
@@ -129,7 +129,7 @@
 				</div>
 				<div class="total opacity">
 					<Typography class="color-light" variant="small"
-						>{$_('component.tooltipTransaction.totalWithdrawals')}</Typography
+						>{$_('common.withoutInflation')}</Typography
 					>
 					<Typography variant="small" class="color-light"
 						>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, {
@@ -155,20 +155,41 @@
 		<Divider --margin="0" --divider-color="var(--colors-light-base)" style="opacity: 0.25" />
 	{/if}
 	{#if showFees && totalFees[tooltipData[0].dataIndex] !== 0}
-		<div class="total">
-			<Typography class="color-light" variant="h6"
-				>{$_('component.tooltipTransaction.totalFees')}</Typography
-			>
-			<Typography variant="h6" class="color-light"
-				>{formatCurrency(
-					(adjustWithInflation ? totalFeesWithInflation : totalFees)[tooltipData[0].dataIndex],
-					currency,
-					{
+		{#if adjustWithInflation}
+			<div class="col">
+				<div class="total">
+					<Typography class="color-light" variant="h6"
+						>{$_('component.tooltipTransaction.totalFees')}</Typography
+					>
+					<Typography variant="h6" class="color-light"
+						>{formatCurrency(totalFeesWithInflation[tooltipData[0].dataIndex], currency, {
+							maximumFractionDigits: 0,
+						})}</Typography
+					>
+				</div>
+				<div class="total opacity">
+					<Typography class="color-light" variant="small"
+						>{$_('common.withoutInflation')}</Typography
+					>
+					<Typography variant="small" class="color-light"
+						>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, {
+							maximumFractionDigits: 0,
+						})}</Typography
+					>
+				</div>
+			</div>
+		{:else}
+			<div class="total">
+				<Typography class="color-light" variant="h6"
+					>{$_('component.tooltipTransaction.totalFees')}</Typography
+				>
+				<Typography variant="h6" class="color-light"
+					>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, {
 						maximumFractionDigits: 0,
-					},
-				)}</Typography
-			>
-		</div>
+					})}</Typography
+				>
+			</div>
+		{/if}
 	{/if}
 </TooltipBase>
 

@@ -334,7 +334,14 @@
 		"comingSoon": "Coming soon!",
 		"portfolioName": "Portfolio name",
 		"currentValue": "Current value",
-		"password": "Password"
+		"password": "Password",
+		"withdrawn": "Withdrawn",
+		"deposited": "Deposited",
+		"investmentValue": "Investment value",
+		"totalDeposited": "Total deposited",
+		"totalWithdrawn": "Total withdrawn",
+		"totalFees": "Total fees",
+		"totalInvestments": "Total investment value"
 	},
 	"error": {
 		"passwordLengthError": "Password must be at least 6 characters long",
