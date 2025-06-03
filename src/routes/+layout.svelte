@@ -2,6 +2,7 @@
 	import { onDestroy, onMount } from 'svelte'
 	import '../app.pcss'
 	import adapter from '$lib/adapters'
+	import { page } from '$app/state'
 
 	let { children } = $props()
 
@@ -11,14 +12,20 @@
 	onDestroy(() => {
 		adapter.stop()
 	})
+
+	function isProductionEnvironment() {
+		return page.url.origin === 'kalkul.app'
+	}
 </script>
 
 <svelte:head>
-	<script
-		defer
-		src="https://cloud.umami.is/script.js"
-		data-website-id="792b102b-b18a-440b-9fce-58639490a4d2"
-	></script>
+	{#if isProductionEnvironment()}
+		<script
+			defer
+			src="https://cloud.umami.is/script.js"
+			data-website-id="792b102b-b18a-440b-9fce-58639490a4d2"
+		></script>
+	{/if}
 </svelte:head>
 
 {@render children()}
