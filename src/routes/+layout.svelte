@@ -14,7 +14,7 @@
 	})
 
 	function isProductionEnvironment() {
-		return page.url.origin === 'kalkul.app'
+		return page.url.origin === 'https://kalkul.app'
 	}
 </script>
 
