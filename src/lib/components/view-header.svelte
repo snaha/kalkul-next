@@ -22,12 +22,12 @@
 	<div class="user-info">
 		<Typography variant="small" --colors-ultra-high="var(--colors-ultra-low)">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html $_('component.viewHeader.helpAndFeedback', {
-				values: { email: `<a href=${routes.HOME}>kalkul.app</a>` },
+			{@html $_('component.viewHeader.madeWithKalkul', {
+				values: { link: `<a class="link" href=${routes.HOME}>kalkul.app</a>` },
 			})}</Typography
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
-			><ChatBot size={16} />{$_('component.viewHeader.madeWithKalkul')}</Button
+			><ChatBot size={16} />{$_('component.viewHeader.helpAndFeedback')}</Button
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
 			><Moon size={16} /></Button
