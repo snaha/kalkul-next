@@ -18,7 +18,11 @@ import { portfolioStore } from '$lib/stores/portfolio.svelte'
 import { investmentStore } from '$lib/stores/investment.svelte'
 import { transactionStore } from '$lib/stores/transaction.svelte'
 
-const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
+const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+	auth: {
+		autoRefreshToken: true,
+	},
+})
 
 interface SupabaseSubscription {
 	unsubscribe: () => void
