@@ -13,6 +13,7 @@ env:
   PUBLIC_DISCORD_LINK: ${{ vars.PUBLIC_DISCORD_LINK }}
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
   RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
+  MARKETSTACK_API_KEY: ${{ secrets.MARKETSTACK_API_KEY }}
 
 jobs:
   deploy-app:

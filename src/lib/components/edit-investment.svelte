@@ -17,11 +17,9 @@
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import { capitalizeFirstLetter } from '$lib/utils'
 	import Toggle from './ui/toggle.svelte'
-	import { notImplemented } from '$lib/not-implemented'
-	import Dropdown from './ui/dropdown.svelte'
-	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import Horizontal from './ui/horizontal.svelte'
+	import ImportInvestmentModal from './import-investment-modal.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -38,7 +36,7 @@
 
 	let name = $state(defaultName)
 	let type = $state('')
-	let apy = $state('0')
+	let apy = $state(0)
 	let ter = $state(0)
 	let entryFee = $state(0)
 	let entryFeeType: EntryFeeType = $state(DEFAULT_ENTRY_FEE_TYPE)
@@ -53,14 +51,15 @@
 	let showConfirmModal = $state(false)
 
 	let advancedFees = $state(false)
-	let isinNumber = $state('')
+	let isImportInvestmentModalOpen = $state(false)
 
 	$effect(() => {
 		if (!investment) {
 			return
 		}
+
 		name = investment.name
-		apy = (investment.apy || 0).toString()
+		apy = investment.apy || 0
 		entryFee = investment.entry_fee || 0
 		entryFeeType = stringToEntryFeeType(investment.entry_fee_type || DEFAULT_ENTRY_FEE_TYPE)
 		exitFee = investment.exit_fee || 0
@@ -153,18 +152,17 @@
 	}
 </script>
 
-<ContentLayout>
-	<Vertical class="max-width-560">
-		<section class="horizontal">
-			{#if formType === 'create'}
-				<Typography variant="h4">{$_('component.editInvestment.addInvestment')}</Typography>
-			{:else}
-				<Typography variant="h4">{$_('component.editInvestment.editInvestment')}</Typography>
-			{/if}
-			<div class="grower"></div>
-			<Typography>{$_('common.in')} {portfolio.name}</Typography>
-		</section>
-		<div class="spacer"></div>
+<Vertical class="max-width-560" --vertical-gap="var(--double-padding)">
+	<section class="horizontal">
+		{#if formType === 'create'}
+			<Typography variant="h4">{$_('component.editInvestment.addInvestment')}</Typography>
+		{:else}
+			<Typography variant="h4">{$_('component.editInvestment.editInvestment')}</Typography>
+		{/if}
+		<div class="grower"></div>
+		<Typography>{$_('common.in')} {portfolio.name}</Typography>
+	</section>
+	<Vertical --vertical-gap="var(--padding)">
 		<Typography variant="h5">{$_('common.details')}</Typography>
 		<section class="horizontal half-gap">
 			<Input
@@ -175,26 +173,14 @@
 				label={$_('component.editInvestment.investmentName')}
 				class="grower"
 			></Input>
-			<Dropdown buttonDimension="compact" buttonVariant="solid" left autoClose={false}>
-				{#snippet button()}
-					<DocumentImport size={24} />
-				{/snippet}
-				<div class="dropdown">
-					<Typography variant="h5">{$_('component.editInvestment.importDataInvestment')}</Typography
-					>
-					<div class="horizontal half-gap">
-						<Input
-							dimension="compact"
-							variant="solid"
-							bind:value={isinNumber}
-							label={$_('component.editInvestment.isin')}
-						></Input>
-						<Button variant="strong" dimension="compact" onclick={notImplemented}
-							><Checkmark size={24} />{$_('component.editInvestment.importData')}</Button
-						>
-					</div>
-				</div>
-			</Dropdown>
+			<Button
+				dimension="compact"
+				variant="solid"
+				onclick={() => (isImportInvestmentModalOpen = true)}
+			>
+				<DocumentImport size={24} />
+				{$_('Import data')}
+			</Button>
 		</section>
 		<Input
 			dimension="compact"
@@ -323,40 +309,40 @@
 				class="grower"
 			></Input>
 		</section>
-
-		<section class="buttons horizontal">
-			{#if formType === 'create'}
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={createInvestment}
-					disabled={createDisabled}
-					><Checkmark size={24} />{$_('component.editInvestment.createInvestment')}</Button
-				>
-			{:else}
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={updateInvestment}
-					disabled={createDisabled}><Checkmark size={24} />{$_('common.done')}</Button
-				>
-			{/if}
-			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_('common.cancel')}</Button
-			>
-			{#if formType === 'edit'}
-				<div class="grower"></div>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					onclick={confirmDeleteInvestment}
-					disabled={createDisabled}
-					><TrashCan size={24} />{$_('component.editInvestment.deleteInvestment')}</Button
-				>
-			{/if}
-		</section>
 	</Vertical>
-</ContentLayout>
+
+	<Horizontal>
+		{#if formType === 'create'}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={createInvestment}
+				disabled={createDisabled}
+				><Checkmark size={24} />{$_('component.editInvestment.createInvestment')}</Button
+			>
+		{:else}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={updateInvestment}
+				disabled={createDisabled}><Checkmark size={24} />{$_('common.done')}</Button
+			>
+		{/if}
+		<Button variant="secondary" dimension="compact" onclick={cancel}
+			><Close size={24} />{$_('common.cancel')}</Button
+		>
+		{#if formType === 'edit'}
+			<div class="grower"></div>
+			<Button
+				variant="ghost"
+				dimension="compact"
+				onclick={confirmDeleteInvestment}
+				disabled={createDisabled}
+				><TrashCan size={24} />{$_('component.editInvestment.deleteInvestment')}</Button
+			>
+		{/if}
+	</Horizontal>
+</Vertical>
 
 <DeleteModal
 	confirm={deleteInvestment}
@@ -364,6 +350,15 @@
 	bind:open={showConfirmModal}
 	title={$_('component.editInvestment.deleteInvestmentWarningTitle')}
 	text={$_('component.editInvestment.deleteInvestmentWarning')}
+/>
+
+<ImportInvestmentModal
+	oncancel={() => (isImportInvestmentModalOpen = false)}
+	bind:open={isImportInvestmentModalOpen}
+	bind:name
+	bind:type
+	bind:apy
+	currency={portfolio.currency}
 />
 
 <style>
@@ -377,24 +372,8 @@
 	.horizontal :global(.grower) {
 		flex: 1;
 	}
-	.buttons {
-		margin-top: var(--padding);
-		gap: var(--half-padding);
-	}
-	.spacer {
-		margin-top: var(--half-padding);
-	}
 	.half-gap {
 		gap: var(--half-padding);
-	}
-	.dropdown {
-		display: flex;
-		flex-direction: column;
-		gap: var(--padding);
-		padding: var(--padding);
-		border: 1px solid var(--colors-low);
-		border-radius: 0.25rem;
-		background: var(--colors-base);
 	}
 	:global(.max-width-560) {
 		max-width: 560px;

@@ -15,7 +15,8 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"supabase": "supabase"
+		"supabase": "supabase",
+		"generate-exchanges": "tsx scripts/exchange-country"
 	},
 	"devDependencies": {
 		"@dicebear/collection": "^9.2.2",

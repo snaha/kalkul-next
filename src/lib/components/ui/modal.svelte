@@ -91,6 +91,7 @@
 		max-width: var(--modal-max-width);
 		width: 100%;
 		color: var(--colors-ultra-high);
+		border-radius: var(--quarter-padding);
 	}
 	@media screen and (max-width: 560px) {
 		dialog {

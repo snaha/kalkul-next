@@ -32,7 +32,7 @@
 
 	let dropdownElement: HTMLElement
 	let dropdownMenu: HTMLElement
-	const dropdownId: string = Math.random().toString(16).substring(10)
+	let dropdownId: string = Math.random().toString(16).substring(10)
 
 	function close(ev: MouseEvent) {
 		const target = ev.target as unknown as Node
@@ -63,10 +63,8 @@
 		}
 	})
 
-	function onClick(e: MouseEvent) {
+	function onClick() {
 		if (!disabled) open = !open
-		e.preventDefault()
-		e.stopPropagation()
 	}
 
 	function onKeyPress() {
@@ -88,8 +86,8 @@
 			style="max-width:320px;"
 			variant={buttonVariant}
 			dimension={buttonDimension}
-			active={open}
-			{mode}>{@render button()}</Button
+			{mode}
+			active={open}>{@render button()}</Button
 		>
 	</div>
 
@@ -116,7 +114,7 @@
 
 		div {
 			position: absolute;
-			z-index: 1;
+			z-index: 1000;
 			backdrop-filter: blur(var(--blur));
 			inset: calc(100% + var(--spacing-6)) 0 auto auto;
 			box-shadow: 0 1px 5px 0 rgba(var(--color-accent-rgb, var(--color-dark-base-rgb)), 0.25);
