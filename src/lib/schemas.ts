@@ -38,10 +38,17 @@ export const figiSchema = z.object({
 
 export type FigiSchema = z.infer<typeof figiSchema>
 
+export const figiWarningResponseSchema = z.object({
+	warning: z.string(),
+})
+
 export const figiResponseSchema = z.array(
-	z.object({
-		data: z.array(figiSchema),
-	}),
+	z.union([
+		figiWarningResponseSchema,
+		z.object({
+			data: z.array(figiSchema),
+		}),
+	]),
 )
 
 export const marketstackErrorResponseSchema = z.object({

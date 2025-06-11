@@ -45,6 +45,8 @@
 			const response = await authorizedFetch(`/api/market/id/${identifier}/${currency}`)
 			const jsonValue = await response.json()
 
+			console.debug({ jsonValue })
+
 			const returnValue = figiResponseSchema.safeParse(jsonValue)
 			if (returnValue.error) {
 				isinImportError = $_('There was an error during fetching ISIN number')
@@ -54,6 +56,16 @@
 			const values = returnValue.data
 			if (values.length === 0) {
 				isinImportError = $_('No investment found')
+				return
+			}
+
+			if ('warning' in values[0]) {
+				console.debug({ value: values[0] })
+				if (values[0].warning === 'No identifier found.') {
+					isinImportError = $_('This identifier is not supported with the current currency')
+				} else {
+					isinImportError = $_('No investment found')
+				}
 				return
 			}
 
@@ -126,6 +138,10 @@
 	}
 </script>
 
+{#snippet inputError()}
+	{isinImportError}
+{/snippet}
+
 <div class="dropdown">
 	{#if page === 'input'}
 		<Horizontal --horizontal-justify-content="space-between">
@@ -137,7 +153,7 @@
 		<Typography>{$_('component.editInvestment.isin')}</Typography>
 		<Horizontal
 			--horizontal-gap="var(--half-padding)"
-			--horizontal-align-items="end"
+			--horizontal-align-items="start"
 			--horizontal-justify-content="stretch"
 		>
 			<Input
@@ -153,6 +169,7 @@
 						fetchISINData(isinNumber.trim())
 					}
 				}}
+				error={isinImportError ? inputError : undefined}
 			></Input>
 			<Button
 				variant="strong"
