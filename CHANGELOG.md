@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.7.0](https://github.com/snaha/kalkul/compare/v0.6.0...v0.7.0) (2025-06-11)
+
+
+### Features
+
+* breakdown horizontal chart ([#665](https://github.com/snaha/kalkul/issues/665)) ([4b13d68](https://github.com/snaha/kalkul/commit/4b13d68000a78998e07d4c5ec992f8f623bd2f04))
+* import investment data by isin or ticker ([#672](https://github.com/snaha/kalkul/issues/672)) ([87ea619](https://github.com/snaha/kalkul/commit/87ea619d1d1d4833628e05972b564e39ad696bab))
+
+
+### Bug Fixes
+
+* disable analytics on dev ([#673](https://github.com/snaha/kalkul/issues/673)) ([e703a86](https://github.com/snaha/kalkul/commit/e703a860318249eef55d6863f23780b9f597bf12))
+* import investment error handling ([#691](https://github.com/snaha/kalkul/issues/691)) ([2a8a972](https://github.com/snaha/kalkul/commit/2a8a972fe331f3815288c4ee0f8910c8b1b53353)), closes [#688](https://github.com/snaha/kalkul/issues/688)
+* investment not found ([#687](https://github.com/snaha/kalkul/issues/687)) ([a5cafbe](https://github.com/snaha/kalkul/commit/a5cafbe5f5f0cdb4f85818cdb9122a3f937ccab2)), closes [#682](https://github.com/snaha/kalkul/issues/682)
+* production environmnet check ([#675](https://github.com/snaha/kalkul/issues/675)) ([fac8817](https://github.com/snaha/kalkul/commit/fac8817184d993e3ba57fb9e209504ec6e1fbf17))
+* share issues ([#677](https://github.com/snaha/kalkul/issues/677)) ([5f510ad](https://github.com/snaha/kalkul/commit/5f510ad759d1fc0fc9d4ee76916b129cc8297987))
+* use autoRefreshToken ([#690](https://github.com/snaha/kalkul/issues/690)) ([3c8999b](https://github.com/snaha/kalkul/commit/3c8999b12e9640d220b7d01bb61552b7168b89b4)), closes [#674](https://github.com/snaha/kalkul/issues/674)
+
 ## [0.6.0](https://github.com/snaha/kalkul/compare/v0.5.0...v0.6.0) (2025-05-20)
 
 
