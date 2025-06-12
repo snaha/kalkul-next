@@ -31,7 +31,6 @@
 
 	function onAgeInput() {
 		if (!age) {
-			date = new Date()
 			return
 		}
 		let ageNumber = parseInt(age, 10)
