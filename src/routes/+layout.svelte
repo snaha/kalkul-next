@@ -3,6 +3,7 @@
 	import '../app.pcss'
 	import adapter from '$lib/adapters'
 	import { page } from '$app/state'
+	import LinkPreview from '$lib/components/link-preview.svelte'
 
 	let { children } = $props()
 
@@ -26,6 +27,7 @@
 			data-website-id="792b102b-b18a-440b-9fce-58639490a4d2"
 		></script>
 	{/if}
+	<LinkPreview />
 </svelte:head>
 
 {@render children()}
