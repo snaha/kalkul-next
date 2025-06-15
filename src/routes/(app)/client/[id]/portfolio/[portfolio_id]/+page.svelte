@@ -20,6 +20,7 @@
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import { base } from '$app/paths'
+	import HelpBox from '$lib/components/help-box.svelte'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -151,6 +152,7 @@
 								toggleFocus={() => {
 									investmentsViewStore.toggleFocus(investment.id)
 								}}
+								open={investments.length === 1}
 							/>
 						{/each}
 					</section>
@@ -171,6 +173,27 @@
 				/>
 			</section>
 		</main>
+	{/if}
+	{#if investmentStore.data.length === 0}
+		<HelpBox
+			open={investmentStore.data.length === 0}
+			title={$_('Add investment')}
+			boxText={$_('Press the “Add investment” button to add a first investment in this portfolio')}
+			text={$_(
+				'You can create as many investments as you want in a client portfolio. Once you have at least one investment set up, this page will display detailed information about the whole portfolio.',
+			)}
+		></HelpBox>
+	{:else}
+		<HelpBox
+			open={investmentStore.data.length === 1 && transactionStore.data.length === 0}
+			title={$_('Add a transaction')}
+			boxText={$_(
+				'In the left sidebar, press the “Add transaction” button within the desired investment card.',
+			)}
+			text={$_(
+				'Transactions define the amount of money that is deposited or withdrawn for this specific investment over time.',
+			)}
+		></HelpBox>
 	{/if}
 {/if}
 

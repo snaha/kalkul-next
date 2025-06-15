@@ -40,6 +40,7 @@
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
 		toggleHide: () => void
 		toggleFocus: () => void
+		open?: boolean
 	}
 
 	let {
@@ -52,10 +53,10 @@
 		openTransaction,
 		toggleHide,
 		toggleFocus,
+		open = $bindable(false),
 	}: Props = $props()
 
 	const transactions = $derived(transactionStore.filter(investment.id))
-	let openInvestment = $state(false)
 
 	function cardOpenInvestment(e: MouseEvent) {
 		if (e.defaultPrevented) {
@@ -65,7 +66,7 @@
 	}
 
 	function toggleInvestment() {
-		openInvestment = !openInvestment
+		open = !open
 	}
 
 	function editInvestment() {
@@ -83,7 +84,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={cardOpenInvestment} class:hidden class:openInvestment>
+<div class="card" onclick={cardOpenInvestment} class:hidden class:open>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
 		<div class="chevron">
 			<ChevronRight size={24} class="open-investment-icon" />
@@ -146,7 +147,7 @@
 			</div>
 		{/if}
 	</Horizontal>
-	<div class="trasaction-container" class:modalShow={!openInvestment || hidden}>
+	<div class="trasaction-container" class:modalShow={!open || hidden}>
 		<Horizontal>
 			<Typography variant="h5">{$_('common.transactions')}</Typography>
 			<FlexItem />
@@ -250,7 +251,7 @@
 			transition: none;
 		}
 	}
-	.openInvestment {
+	.card.open {
 		:global(.open-investment-icon) {
 			transform: rotate(90deg);
 			transition: transform 0.2s ease-out;

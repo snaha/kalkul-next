@@ -9,6 +9,8 @@
 		UserProfile,
 		TrashCan,
 		ArrowRight,
+		LogoYoutube,
+		Launch,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge, formatDate } from '$lib/utils'
@@ -33,6 +35,7 @@
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 	import WelcomeModal from '$lib/components/welcome-modal.svelte'
 	import { onMount } from 'svelte'
+	import HelpBox from '$lib/components/help-box.svelte'
 
 	const HIDE_WELCOME = 'hide-welcome'
 
@@ -41,6 +44,7 @@
 	let clientToBeDeleted: number | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(searchByName(searchQuery))
+	let isVideoPlayer = $state(false)
 
 	onMount(() => {
 		const hideWelcome = localStorage.getItem(HIDE_WELCOME)
@@ -177,7 +181,32 @@
 		{/if}
 	</main>
 
-	<WelcomeModal oncancel={hideWelcomeModal} bind:open={showWelcomeModal} />
+	<HelpBox
+		open={clientStore.data.length === 0}
+		title={$_('Add client')}
+		boxText={$_('Press the “Add client” button to create your first client')}
+		text={$_(
+			'This page will list all your clients. You can access it anytime by clicking on the Kalkul logo in the top-left corner of the screen. Once you set up your first client, you will be able to create an investment portfolio for this client.',
+		)}
+	>
+		<Vertical --vertical-gap="var(--half-padding)">
+			<Button
+				variant="solid"
+				dimension="compact"
+				onclick={() => {
+					isVideoPlayer = true
+					showWelcomeModal = true
+				}}><LogoYoutube size={24} />{$_('Watch intro video')}</Button
+			>
+			<Button
+				variant="solid"
+				dimension="compact"
+				href="https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx"
+				target="_blank"><Launch size={24} />{$_('View sample portfolio')}</Button
+			>
+		</Vertical>
+	</HelpBox>
+	<WelcomeModal oncancel={hideWelcomeModal} bind:open={showWelcomeModal} {isVideoPlayer} />
 </DesktopOnly>
 <MobileOnly>
 	<Vertical --vertical-gap="0" --vertical-align-items="center">

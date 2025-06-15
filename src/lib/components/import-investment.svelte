@@ -170,6 +170,7 @@
 					}
 				}}
 				error={isinImportError ? inputError : undefined}
+				autofocus
 			></Input>
 			<Button
 				variant="strong"

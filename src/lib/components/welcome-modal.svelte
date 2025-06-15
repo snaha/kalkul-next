@@ -8,9 +8,16 @@
 	import Button from './ui/button.svelte'
 	import Youtube from './icons/youtube.svelte'
 
-	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
+	type Props = {
+		isVideoPlayer?: boolean
+	}
 
-	let isVideoPlayer = $state(false)
+	let {
+		oncancel,
+		open = $bindable(false),
+		isVideoPlayer = $bindable(false),
+		...restProps
+	}: ModalProps & Props = $props()
 
 	function close() {
 		if (oncancel) oncancel()

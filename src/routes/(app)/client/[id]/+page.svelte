@@ -33,6 +33,7 @@
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
 	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
+	import HelpBox from '$lib/components/help-box.svelte'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -168,7 +169,8 @@
 					<Typography variant="h4">{$_('page.client.noPortfoliosYet')}</Typography>
 					<Typography>{$_('page.client.createYourFirstPortfolio')}</Typography>
 					<div class="spacer"></div>
-					<Button variant="strong" onclick={addPortfolio}><UserFollow />{$_('addPortfolio')}</Button
+					<Button variant="strong" onclick={addPortfolio}
+						><UserFollow />{$_('page.portfolio.addPortfolio')}</Button
 					>
 				</section>
 			{:else}
@@ -211,6 +213,15 @@
 		{/if}
 	</main>
 {/if}
+
+<HelpBox
+	open={portfolioStore.data.length === 0}
+	title={$_('Add portfolio')}
+	boxText={$_('Press the “Add portfolio” button to add a first portfolio for this client')}
+	text={$_(
+		'A portfolio will contain specific investments. Use portfolios to organise investments for your client. You can create as many portfolios as you want for each client. All the portfolios for this client will be listed on the client’s page.',
+	)}
+></HelpBox>
 
 <DeleteModal
 	confirm={deletePortfolio}
