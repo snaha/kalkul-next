@@ -53,4 +53,12 @@
 	.expander.expanded .expander-content {
 		opacity: 1;
 	}
+	@media (prefers-reduced-motion: reduce) {
+		.expander {
+			transition: unset;
+		}
+		.expander-content {
+			transition: unset;
+		}
+	}
 </style>
