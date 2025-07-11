@@ -8,7 +8,6 @@
 		FolderShared,
 		UserProfile,
 		TrashCan,
-		ArrowRight,
 		LogoYoutube,
 		Launch,
 	} from 'carbon-icons-svelte'
@@ -30,14 +29,13 @@
 	import DesktopOnly from '$lib/components/desktop-only.svelte'
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
-	import ContentLayout from '$lib/components/content-layout.svelte'
-	import Discord from '$lib/components/icons/discord.svelte'
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 	import WelcomeModal from '$lib/components/welcome-modal.svelte'
 	import { onMount } from 'svelte'
 	import HelpBox from '$lib/components/help-box.svelte'
 
 	const HIDE_WELCOME = 'hide-welcome'
+	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
 
 	let showConfirmModal = $state(false)
 	let showWelcomeModal = $state(false)
@@ -198,11 +196,8 @@
 					showWelcomeModal = true
 				}}><LogoYoutube size={24} />{$_('Watch intro video')}</Button
 			>
-			<Button
-				variant="solid"
-				dimension="compact"
-				href="https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx"
-				target="_blank"><Launch size={24} />{$_('View sample portfolio')}</Button
+			<Button variant="solid" dimension="compact" href={samplePortfolioLink} target="_blank"
+				><Launch size={24} />{$_('View sample portfolio')}</Button
 			>
 		</Vertical>
 	</HelpBox>
@@ -211,32 +206,32 @@
 <MobileOnly>
 	<Vertical --vertical-gap="0" --vertical-align-items="center">
 		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
-			<ContentLayout --content-layout-margin="0">
-				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
-					<img src="/images/collaboration.svg" alt="collaboration" />
-					<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography
-					>
-					<Typography class="text-center">{$_('page.home.kalkulExplanation')}</Typography>
-				</Vertical>
-			</ContentLayout>
 			<div class="video">
 				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
 			</div>
-			<ContentLayout --content-layout-margin="0">
-				<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
-					<Typography variant="h5" class="text-center">{$_('page.home.whatsNext')}</Typography>
-					<Vertical --vertical-gap="var(--half-padding)">
-						<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
-						<Typography variant="small" class="text-center"
-							>{$_('page.home.kalkulNotAvailableOnMobile')}</Typography
-						>
-					</Vertical>
-					<Typography class="text-center">{$_('page.home.joinDiscordText')}</Typography>
-					<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
-						><Discord size={24} /> {$_('page.home.joinCommunity')} <ArrowRight size={24} /></Button
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
+				<Typography class="text-center" variant="large"
+					>{$_('page.home.kalkulExplanation')}</Typography
+				>
+			</Vertical>
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
+					>{$_('View sample portfolio')}</Button
+				>
+				<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
+					>{$_('page.home.joinCommunity')}</Button
+				>
+			</Vertical>
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Typography variant="h5" class="text-center">{$_('page.home.whatsNext')}</Typography>
+				<Vertical --vertical-gap="var(--half-padding)">
+					<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
+					<Typography variant="small" class="text-center"
+						>{$_('page.home.kalkulNotAvailableOnMobile')}</Typography
 					>
 				</Vertical>
-			</ContentLayout>
+			</Vertical>
 		</Vertical>
 	</Vertical>
 </MobileOnly>
