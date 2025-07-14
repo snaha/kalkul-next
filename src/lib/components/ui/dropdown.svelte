@@ -14,6 +14,7 @@
 		class?: string
 		open?: boolean
 		mode?: Mode
+		stopPropagation?: boolean
 	}
 
 	let {
@@ -28,6 +29,7 @@
 		class: className,
 		open = $bindable(false),
 		mode = 'auto',
+		stopPropagation = true,
 	}: Props = $props()
 
 	let dropdownElement: HTMLElement
@@ -63,8 +65,12 @@
 		}
 	})
 
-	function onClick() {
+	function onClick(e: Event) {
 		if (!disabled) open = !open
+
+		if (stopPropagation) {
+			e.stopPropagation()
+		}
 	}
 
 	function onKeyPress() {
@@ -81,15 +87,15 @@
 	aria-controls={dropdownId}
 	tabindex={-1}
 >
-	<div onclick={onClick} onkeypress={onKeyPress} role="button" tabindex={-1}>
-		<Button
-			style="max-width:320px;"
-			variant={buttonVariant}
-			dimension={buttonDimension}
-			{mode}
-			active={open}>{@render button()}</Button
-		>
-	</div>
+	<Button
+		style="max-width:320px;"
+		variant={buttonVariant}
+		dimension={buttonDimension}
+		{mode}
+		active={open}
+		onclick={onClick}
+		onkeypress={onKeyPress}>{@render button()}</Button
+	>
 
 	<div class={`root`} aria-hidden={!open}>
 		<div
