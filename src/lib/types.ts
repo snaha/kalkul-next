@@ -3,7 +3,7 @@ import type { Tables } from './typesdb'
 import type { ChartDataset, ChartTypeRegistry } from 'chart.js'
 
 export interface Store<T> {
-	data: T[]
+	data: (Omit<T, MetaFields> & { id: number | string })[]
 	loading: boolean
 	reset: () => void
 }
