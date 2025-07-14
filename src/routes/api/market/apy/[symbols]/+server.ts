@@ -27,9 +27,13 @@ async function fetchEodFromMarketstack(date: Date, symbolList: string[]) {
 
 	if ('error' in value.data) {
 		if (value.data.error.code === 'no_valid_symbols_provided') {
-			return {}
+			return undefined
 		}
 		throw value.data.error.code
+	}
+
+	if (value.data.data.length === 0) {
+		return undefined
 	}
 
 	const eodResponse: Record<string, number> = {}
@@ -39,8 +43,8 @@ async function fetchEodFromMarketstack(date: Date, symbolList: string[]) {
 	return eodResponse
 }
 
-function calculateAPY(closingYesterday: number, closingYearAgo: number) {
-	const apy = closingYesterday / closingYearAgo - 1
+function calculateAPY(laterClosingPrice: number, earlierClosingPrice: number, numYears: number) {
+	const apy = Math.pow(laterClosingPrice / earlierClosingPrice, 1 / numYears) - 1
 	return apy * 100
 }
 
@@ -56,6 +60,41 @@ function getBusinessDay(date: Date, direction: 'forward' | 'backward') {
 	return businessDay
 }
 
+// Returns with the first date from the list that was successful
+async function tryGetEodFromMarketstack(symbolList: string[], now: Date, years: number[]) {
+	for (const year of years) {
+		const date = getBusinessDay(addDays(startOfYear(subYears(now, year)), 1), 'forward')
+		const result = await fetchEodFromMarketstack(date, symbolList)
+		if (!result) {
+			continue
+		}
+		return { result, year }
+	}
+}
+
+// This function heuristically tries to find two dates in the past
+// in order to calculate the APY
+async function tryGetEodFromMarketstackForTwoDates(symbolList: string[]) {
+	const now = new Date()
+	const lastDayOfPreviousYear = getBusinessDay(endOfYear(subYears(now, 1)), 'backward')
+	const laterDate = await fetchEodFromMarketstack(lastDayOfPreviousYear, symbolList)
+
+	if (!laterDate) {
+		return { earlierDate: undefined, laterDate: undefined, numYears: 0 }
+	}
+
+	const result = await tryGetEodFromMarketstack(symbolList, now, [9, 5, 1])
+
+	if (!result) {
+		return { earlierDate: undefined, laterDate: undefined, numYears: 0 }
+	}
+
+	const earlierDate = result.result
+	const numYears = result.year
+
+	return { earlierDate, laterDate, numYears }
+}
+
 export async function GET({ params }) {
 	try {
 		const { symbols } = params
@@ -66,31 +105,17 @@ export async function GET({ params }) {
 		// TODO validate symbols to avoid API injection
 		const symbolList = symbols.split(',')
 
-		const now = new Date()
-		const lastDayOfPreviousYear = getBusinessDay(endOfYear(subYears(now, 1)), 'backward')
-		const lastDayOfPreviousYearResponse = await fetchEodFromMarketstack(
-			lastDayOfPreviousYear,
-			symbolList,
-		)
-
-		const firstDayOfPreviousYear = getBusinessDay(
-			addDays(startOfYear(subYears(now, 1)), 1),
-			'forward',
-		)
-		const firstDayOfPreviousYearResponse = await fetchEodFromMarketstack(
-			firstDayOfPreviousYear,
-			symbolList,
-		)
+		const { earlierDate, laterDate, numYears } =
+			await tryGetEodFromMarketstackForTwoDates(symbolList)
 
 		const apyResponse: Record<string, number> = {}
 
-		symbolList.forEach(
-			(symbol) =>
-				(apyResponse[symbol] = calculateAPY(
-					lastDayOfPreviousYearResponse[symbol],
-					firstDayOfPreviousYearResponse[symbol],
-				)),
-		)
+		if (earlierDate && laterDate) {
+			symbolList.forEach(
+				(symbol) =>
+					(apyResponse[symbol] = calculateAPY(laterDate[symbol], earlierDate[symbol], numYears)),
+			)
+		}
 
 		return json(apyResponse)
 	} catch (error) {
