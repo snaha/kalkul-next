@@ -22,13 +22,15 @@
 	import { base } from '$app/paths'
 	import HelpBox from '$lib/components/help-box.svelte'
 
-	const clientId = parseInt(page.params.id, 10)
+	const clientId = $derived(parseInt(page.params.id, 10))
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
-	const portfolioId = parseInt(page.params.portfolio_id, 10)
+	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investments = $derived(investmentStore.filter(portfolioId))
 
-	const investmentsViewStore = withInvestmentsViewStore(investmentStore.filter(portfolioId))
+	const investmentsViewStore = $derived(
+		withInvestmentsViewStore(investmentStore.filter(portfolioId)),
+	)
 
 	let isLoading = $derived(
 		clientStore.loading ||

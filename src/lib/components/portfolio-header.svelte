@@ -47,9 +47,12 @@
 	}
 
 	async function deletePortfolio() {
+		portfolioStore.loading = true
 		await adapters.deletePortfolio({ id: portfolio.id })
+		portfolioStore.loading = true
+		await goto(routes.CLIENT(client.id))
 		showConfirmModal = false
-		goto(routes.CLIENT(client.id))
+		portfolioStore.loading = false
 	}
 </script>
 

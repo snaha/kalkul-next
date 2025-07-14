@@ -22,6 +22,9 @@ function withInvestmentStore(): InvestmentStore {
 		get loading() {
 			return loading
 		},
+		set loading(newValue) {
+			loading = newValue
+		},
 		reset() {
 			data = []
 			loading = true

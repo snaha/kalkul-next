@@ -20,13 +20,16 @@ export async function cascadeDuplicatePortfolio(clientId: number, portfolioId: n
 			name: originalPortfolio.name + ' - Copy',
 		}
 
+		const loading = portfolioStore.loading
 		duplicatedPortfolioId = await adapters.addPortfolio(duplicatedPortfolio)
+		portfolioStore.loading = loading
 
 		const investments = investmentStore.filter(portfolioId)
 		for (const investment of investments) {
 			await cascadeDuplicateInvestment(investment, duplicatedPortfolioId)
 		}
 
+		portfolioStore.loading = false
 		return duplicatedPortfolioId
 	} catch (e) {
 		if (duplicatedPortfolioId) await adapters.deletePortfolio({ id: duplicatedPortfolioId })
@@ -44,16 +47,21 @@ export async function cascadeDuplicateInvestment(
 		const duplicatedInvestment = {
 			...investment,
 			id: undefined,
-			portfolio: duplicatedPortfolioId,
+			portfolio_id: duplicatedPortfolioId,
 		}
 		delete duplicatedInvestment.colorIndex
 
+		const loading = investmentStore.loading
 		duplicatedInvestmentId = await adapters.addInvestment(duplicatedInvestment)
+		investmentStore.loading = loading
 
 		const transactions = transactionStore.filter(investment.id)
 		for (const transaction of transactions) {
 			await cascadeDuplicateTransaction(transaction, duplicatedInvestmentId)
 		}
+
+		investmentStore.loading = false
+		return duplicatedInvestmentId
 	} catch (e) {
 		if (duplicatedInvestmentId) await adapters.deleteInvestment({ id: duplicatedInvestmentId })
 		console.error(e)
@@ -71,7 +79,7 @@ async function cascadeDuplicateTransaction(
 			id: undefined,
 			investment_id: duplicatedInvestmentId,
 		}
-		await adapters.addTransaction(duplicatedTransaction)
+		return await adapters.addTransaction(duplicatedTransaction)
 	} catch (e) {
 		console.error(e)
 		throw e
