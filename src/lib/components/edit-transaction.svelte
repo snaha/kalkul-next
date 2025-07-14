@@ -63,6 +63,7 @@
 	const formType = $derived(transaction ? 'edit' : 'create')
 
 	$effect(() => {
+		transactionType = transaction?.type || 'deposit'
 		label =
 			transaction && transaction.label
 				? transaction.label
@@ -107,7 +108,7 @@
 			id: transaction.id,
 			user_id: authStore.user?.id,
 			investment_id: investment.id,
-			type: transaction.type,
+			type: transactionType,
 			amount,
 			label,
 			date: date.toDateString(),
