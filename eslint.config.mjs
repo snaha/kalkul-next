@@ -33,6 +33,7 @@ export default typescriptEslint.config(
 			'**/static/generated/css',
 			'src/lib/typesdb.ts',
 			'src/lib/types.ts',
+			'.claude/settings.local.json',
 		],
 	},
 )

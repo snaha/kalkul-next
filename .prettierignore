@@ -15,3 +15,6 @@ yarn.lock
 # Ignore automatically generated changelog
 CHANGELOG.md
 typesdb.ts
+
+# Ignore Claude-generated settings
+.claude/settings.local.json
