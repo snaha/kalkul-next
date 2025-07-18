@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.8.0](https://github.com/snaha/kalkul/compare/v0.7.0...v0.8.0) (2025-07-18)
+
+
+### Features
+
+* help boxes ([#697](https://github.com/snaha/kalkul/issues/697)) ([189e711](https://github.com/snaha/kalkul/commit/189e711f9af16696bece501db4f2bca1b430bdb7))
+* link preview ([#698](https://github.com/snaha/kalkul/issues/698)) ([24911e2](https://github.com/snaha/kalkul/commit/24911e2917becdb9febe20fe6bdabe95eba882f4))
+
+
+### Bug Fixes
+
+* add missing czech translations ([#741](https://github.com/snaha/kalkul/issues/741)) ([9169ad1](https://github.com/snaha/kalkul/commit/9169ad1d6db7276489d2107e4f7abb7b98e2b31e))
+* APY calculation ([#723](https://github.com/snaha/kalkul/issues/723)) ([8997f62](https://github.com/snaha/kalkul/commit/8997f621bbea158ca0fa8624b89be8bf06021df5)), closes [#720](https://github.com/snaha/kalkul/issues/720)
+* change transaction type ([#725](https://github.com/snaha/kalkul/issues/725)) ([a99b382](https://github.com/snaha/kalkul/commit/a99b382439cd7e7a7a434b278b0739cadf50072d)), closes [#615](https://github.com/snaha/kalkul/issues/615)
+* dropdown button event propagation ([#726](https://github.com/snaha/kalkul/issues/726)) ([a2826a3](https://github.com/snaha/kalkul/commit/a2826a367970071510caf87d1aa579acf78130a8))
+* duplication ([#727](https://github.com/snaha/kalkul/issues/727)) ([4c236f6](https://github.com/snaha/kalkul/commit/4c236f631a5dd7b17766ab6ebdcce19e6cc3f758)), closes [#407](https://github.com/snaha/kalkul/issues/407)
+* erase age ([#695](https://github.com/snaha/kalkul/issues/695)) ([713cc67](https://github.com/snaha/kalkul/commit/713cc673e193631c1626e1b69f06766b4c344a78)), closes [#351](https://github.com/snaha/kalkul/issues/351)
+* expander reduced motion ([#703](https://github.com/snaha/kalkul/issues/703)) ([076571f](https://github.com/snaha/kalkul/commit/076571fa171a995a2d181455a02ffd904ad405f7))
+* improve Czech translation for success fee ([#740](https://github.com/snaha/kalkul/issues/740)) ([6ef336c](https://github.com/snaha/kalkul/commit/6ef336c32a7648fe995751ce0d934169ece27a66))
+* linter issues ([4c236f6](https://github.com/snaha/kalkul/commit/4c236f631a5dd7b17766ab6ebdcce19e6cc3f758))
+* mobile welcome page ([#722](https://github.com/snaha/kalkul/issues/722)) ([af88ea2](https://github.com/snaha/kalkul/commit/af88ea24a879f21209a7207ff765a96a1c0089e3))
+* period input field can now be cleared with backspace ([#739](https://github.com/snaha/kalkul/issues/739)) ([d00f39f](https://github.com/snaha/kalkul/commit/d00f39f123e11dd1e48c67d5ca5ee96b5f00733b))
+* remove console.debug ([4c236f6](https://github.com/snaha/kalkul/commit/4c236f631a5dd7b17766ab6ebdcce19e6cc3f758))
+* remove supabase realtime ([#724](https://github.com/snaha/kalkul/issues/724)) ([11359b6](https://github.com/snaha/kalkul/commit/11359b6b2acb37ac35f911d7ce7c67e9f712acba))
+
 ## [0.7.0](https://github.com/snaha/kalkul/compare/v0.6.0...v0.7.0) (2025-06-11)
 
 
