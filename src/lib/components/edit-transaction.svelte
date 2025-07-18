@@ -191,6 +191,9 @@
 	}
 
 	function onPeriodChange() {
+		if (!period || period <= 0) {
+			return
+		}
 		recalculateEndDate()
 	}
 
@@ -206,6 +209,12 @@
 	function recalculateEndDate() {
 		const addDate = addDateFunction(periodUnit)
 		endDate = subDays(addDate(date, period), 1)
+	}
+
+	function checkPeriodInput() {
+		if (!period || period <= 0) {
+			recalculatePeriod()
+		}
 	}
 
 	function toggleRecurring() {
@@ -308,6 +317,7 @@
 				bind:value={period}
 				style="max-width: 100%"
 				oninput={onPeriodChange}
+				onblur={checkPeriodInput}
 			></Input>
 			<Select
 				variant="solid"
