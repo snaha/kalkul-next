@@ -176,7 +176,9 @@
 			"createInvestment": "Vytvořit investici",
 			"deleteInvestment": "Smazat investici",
 			"deleteInvestmentWarning": "Tato investice bude nenávratně smazána. Operaci nelze vrátit zpět.",
-			"deleteInvestmentWarningTitle": "Smazat investici?"
+			"deleteInvestmentWarningTitle": "Smazat investici?",
+			"isinInputPlaceholder": "US0378331005 nebo AAPL",
+			"findProducts": "Najít produkty"
 		},
 		"editPortfolio": {
 			"addPortfolio": "Přidat portfolio",
