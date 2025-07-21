@@ -76,7 +76,10 @@
 			"kalkulNotAvailableOnMobile": "Kalkul bude brzy dostupný i na mobilních zařízeních!",
 			"joinDiscordText": "Mezitím se můžete připojit ke konverzaci na našem Discord serveru.",
 			"joinCommunity": "Připojte se k naší komunitě Discord",
-			"whatsNext": "Co dál?"
+			"whatsNext": "Co dál?",
+			"kalkulIsBeta": "Kalkul je momentálně dostupný jako omezená bezplatná beta verze, pouze pro testovací účely",
+			"helpText": "Potřebujete více pomoci nebo máte zpětnou vazbu? Připojte se k naší {discordCommunityLink} nebo nás kontaktujte na {supportEmail}.",
+			"discordCommunity": "komunitě Discord"
 		},
 		"client": {
 			"addClient": "Přidat klienta",
@@ -272,13 +275,8 @@
 			"totalDeposit": "{amount} {currency} celkem vloženo",
 			"totalWithdrawal": "{amount} {currency} celkem vybráno"
 		},
-		"welcomeModal": {
-			"startTestingButton": "Začít testovat",
-			"welcomeText": "Vítejte v betaverzi Kalkul!",
-			"kalkulTagline": "Kalkul pomáhá nezávislým poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
-			"betaDisclaimer": "Aplikace je aktuálně ve fázi bezplatné betaverze a bude oficiálně spuštěna jako komerční produkt později v tomto roce. Jakožto beta uživatel máte předčasný přístup k aplikaci během jejího vývoje. Těšíme se na vaši zpětnou vazbu – pomozte nám formovat budoucnost nezávislého finančního plánování!",
-			"specialDiscountEligibility": "Jako beta uživatel můžete v budoucnu získat přístup ke speciálním nabídkám.",
-			"videoIntroButton": "Přehrát úvodní video"
+		"videoModal": {
+			"startUsingKalkul": "Začít používat Kalkul"
 		}
 	},
 	"common": {

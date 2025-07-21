@@ -12,6 +12,7 @@ import {
 	type Portfolio,
 	type Store,
 	type Feedback,
+	type TypedUserMetadata,
 } from '$lib/types'
 import { clientStore } from '$lib/stores/clients.svelte'
 import { portfolioStore } from '$lib/stores/portfolio.svelte'
@@ -119,10 +120,15 @@ export default class Supabase implements Adapter {
 	}
 
 	async signUp(email: string, password: string, language: string, newsletterConsent: boolean) {
+		const data: TypedUserMetadata = {
+			prefer_language: language,
+			newsletter_consent: newsletterConsent,
+			first_visit: true,
+		}
 		const { error } = await supabase.auth.signUp({
 			email,
 			password,
-			options: { data: { prefer_language: language, newsletter_consent: newsletterConsent } },
+			options: { data },
 		})
 		if (error) {
 			console.error('Failed to register', error)
@@ -184,6 +190,22 @@ export default class Supabase implements Adapter {
 		if (error) {
 			console.error('Failed to update language', error)
 			throw new Error(error.message)
+		}
+	}
+
+	async updateUserMetadata(data: Partial<TypedUserMetadata>) {
+		const { error } = await supabase.auth.updateUser({
+			data: { ...data },
+		})
+		if (error) {
+			console.error('Failed to update user metadata', error)
+			throw new Error(error.message)
+		}
+		if (authStore.user) {
+			authStore.user.user_metadata = {
+				...authStore.user?.user_metadata,
+				...data,
+			}
 		}
 	}
 

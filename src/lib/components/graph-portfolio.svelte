@@ -31,6 +31,7 @@
 		isSidebarOpen: boolean
 		view?: boolean
 		sidebarButton?: Snippet
+		isEmpty?: boolean
 	}
 
 	let {
@@ -44,6 +45,7 @@
 		isSidebarOpen,
 		view = false,
 		sidebarButton,
+		isEmpty,
 	}: Props = $props()
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
@@ -138,6 +140,7 @@
 		class:fullscreen-graph={isGraphFullscreened}
 		class:sidebar-open={isSidebarOpen}
 		class:view
+		class:empty={isEmpty === true}
 	>
 		{#if isGraphFullscreened}
 			<FullscreenGraph
@@ -313,6 +316,10 @@
 			border-radius: var(--border-radius);
 			border: 1px solid var(--colors-low);
 			gap: var(--half-padding);
+		}
+
+		&.empty {
+			opacity: 0.5;
 		}
 	}
 	.fullscreen-graph {

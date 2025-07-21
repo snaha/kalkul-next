@@ -10,6 +10,7 @@
 		TrashCan,
 		LogoYoutube,
 		Launch,
+		ArrowRight,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge, formatDate } from '$lib/utils'
@@ -30,32 +31,33 @@
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
-	import WelcomeModal from '$lib/components/welcome-modal.svelte'
 	import { onMount } from 'svelte'
 	import HelpBox from '$lib/components/help-box.svelte'
+	import { authStore } from '$lib/stores/auth.svelte'
+	import Horizontal from '$lib/components/ui/horizontal.svelte'
+	import BetaBadge from '$lib/components/beta-badge.svelte'
+	import VideoModal from '$lib/components/video-modal.svelte'
 
-	const HIDE_WELCOME = 'hide-welcome'
 	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
 
 	let showConfirmModal = $state(false)
-	let showWelcomeModal = $state(false)
+	let showWelcome = $state(false)
 	let clientToBeDeleted: number | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(searchByName(searchQuery))
 	let isVideoPlayer = $state(false)
 
 	onMount(() => {
-		const hideWelcome = localStorage.getItem(HIDE_WELCOME)
-		if (hideWelcome === 'true') {
-			showWelcomeModal = false
-		} else {
-			showWelcomeModal = true
-		}
+		const firstVisit = authStore.user?.user_metadata.first_visit
+		showWelcome = firstVisit ? true : false
 	})
 
-	function hideWelcomeModal() {
-		showWelcomeModal = false
-		localStorage.setItem(HIDE_WELCOME, 'true')
+	async function hideWelcome() {
+		await adapter.updateUserMetadata({ first_visit: false })
+	}
+
+	function hideVideoPlayer() {
+		isVideoPlayer = false
 	}
 
 	function addClient() {
@@ -104,30 +106,84 @@
 	</Dropdown>
 {/snippet}
 
+{#snippet welcomeDesktop()}
+	<Vertical --vertical-gap="0" --vertical-align-items="center">
+		<Vertical
+			--vertical-gap="var(--double-padding)"
+			style="padding-top: var(--padding)"
+			class="max560"
+		>
+			<div class="video">
+				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
+			</div>
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
+				<Typography class="text-center" variant="large"
+					>{$_('page.home.kalkulExplanation')}</Typography
+				>
+			</Vertical>
+			<Horizontal
+				--horizontal-gap="var(--half-padding)"
+				--horizontal-align-items="stretch"
+				class="max560"
+			>
+				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
+					>{$_('View sample portfolio')}</Button
+				>
+				<Button variant="strong" onclick={hideWelcome} target="_blank" class="max560">
+					{$_('component.welcomeModal.startUsingKalkul')}
+					<ArrowRight size={24} />
+				</Button>
+			</Horizontal>
+			<Horizontal --horizontal-gap="var(--half-padding)" --horizontal-align-items="center">
+				<BetaBadge>beta</BetaBadge>
+				<Typography variant="small" --typography-color="var(--colors-high)">
+					{$_('page.home.kalkulIsBeta')}
+				</Typography>
+			</Horizontal>
+		</Vertical>
+	</Vertical>
+{/snippet}
+
+{#snippet welcomeMobile()}
+	<Vertical --vertical-gap="0" --vertical-align-items="center">
+		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
+			<div class="video">
+				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
+			</div>
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
+				<Typography class="text-center" variant="large"
+					>{$_('page.home.kalkulExplanation')}</Typography
+				>
+			</Vertical>
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
+					>{$_('View sample portfolio')}</Button
+				>
+				<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
+					>{$_('page.home.joinCommunity')}</Button
+				>
+			</Vertical>
+			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
+				<Typography variant="h5" class="text-center">{$_('page.home.whatsNext')}</Typography>
+				<Vertical --vertical-gap="var(--half-padding)">
+					<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
+					<Typography variant="small" class="text-center"
+						>{$_('page.home.kalkulNotAvailableOnMobile')}</Typography
+					>
+				</Vertical>
+			</Vertical>
+		</Vertical>
+	</Vertical>
+{/snippet}
+
 <Header />
 <DesktopOnly>
 	<main>
-		<section class="top-bar horizontal">
-			<div class="left">
-				<Typography variant="h4">{$_('page.home.allClients')}</Typography>
-				<SearchInput
-					bind:value={searchQuery}
-					dimension="compact"
-					variant="solid"
-					placeholder="Search"
-				></SearchInput>
-				{#if searchQuery.length > 0}
-					<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
-						>{$_('page.home.clearSearch')}</Button
-					>
-				{/if}
-			</div>
-			<div class="grower"></div>
-			<Button dimension="compact" variant="strong" onclick={addClient}
-				><UserFollow />{$_('page.home.addClient')}</Button
-			>
-		</section>
-		{#if clientStore.loading}
+		{#if showWelcome}
+			{@render welcomeDesktop()}
+		{:else if clientStore.loading}
 			<Typography>Loading...</Typography><Loader />
 		{:else if clientStore.data.length === 0}
 			<section class="empty">
@@ -139,7 +195,49 @@
 					><UserFollow />{$_('page.home.addClient')}</Button
 				>
 			</section>
+			<HelpBox
+				open={clientStore.data.length === 0}
+				title={$_('Add client')}
+				boxText={$_('Press the “Add client” button to create your first client')}
+				text={$_(
+					'This page will list all your clients. You can access it anytime by clicking on the Kalkul logo in the top-left corner of the screen. Once you set up your first client, you will be able to create an investment portfolio for this client.',
+				)}
+			>
+				<Vertical --vertical-gap="var(--half-padding)">
+					<Button
+						variant="solid"
+						dimension="compact"
+						onclick={() => {
+							isVideoPlayer = true
+						}}><LogoYoutube size={24} />{$_('Watch intro video')}</Button
+					>
+					<Button variant="solid" dimension="compact" href={samplePortfolioLink} target="_blank"
+						><Launch size={24} />{$_('View sample portfolio')}</Button
+					>
+				</Vertical>
+			</HelpBox>
 		{:else}
+			<section class="top-bar horizontal">
+				<div class="left">
+					<Typography variant="h4">{$_('page.home.allClients')}</Typography>
+					<SearchInput
+						bind:value={searchQuery}
+						dimension="compact"
+						variant="solid"
+						placeholder="Search"
+					></SearchInput>
+					{#if searchQuery.length > 0}
+						<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
+							>{$_('page.home.clearSearch')}</Button
+						>
+					{/if}
+				</div>
+				<div class="grower"></div>
+				<Button dimension="compact" variant="strong" onclick={addClient}
+					><UserFollow />{$_('page.home.addClient')}</Button
+				>
+			</section>
+
 			<ul>
 				<li class="clients title">
 					<span>{$_('common.name')}</span>
@@ -179,61 +277,10 @@
 		{/if}
 	</main>
 
-	<HelpBox
-		open={clientStore.data.length === 0}
-		title={$_('Add client')}
-		boxText={$_('Press the “Add client” button to create your first client')}
-		text={$_(
-			'This page will list all your clients. You can access it anytime by clicking on the Kalkul logo in the top-left corner of the screen. Once you set up your first client, you will be able to create an investment portfolio for this client.',
-		)}
-	>
-		<Vertical --vertical-gap="var(--half-padding)">
-			<Button
-				variant="solid"
-				dimension="compact"
-				onclick={() => {
-					isVideoPlayer = true
-					showWelcomeModal = true
-				}}><LogoYoutube size={24} />{$_('Watch intro video')}</Button
-			>
-			<Button variant="solid" dimension="compact" href={samplePortfolioLink} target="_blank"
-				><Launch size={24} />{$_('View sample portfolio')}</Button
-			>
-		</Vertical>
-	</HelpBox>
-	<WelcomeModal oncancel={hideWelcomeModal} bind:open={showWelcomeModal} {isVideoPlayer} />
+	<VideoModal oncancel={hideVideoPlayer} bind:open={isVideoPlayer} />
 </DesktopOnly>
 <MobileOnly>
-	<Vertical --vertical-gap="0" --vertical-align-items="center">
-		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
-			<div class="video">
-				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
-			</div>
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
-				<Typography class="text-center" variant="large"
-					>{$_('page.home.kalkulExplanation')}</Typography
-				>
-			</Vertical>
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
-					>{$_('View sample portfolio')}</Button
-				>
-				<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
-					>{$_('page.home.joinCommunity')}</Button
-				>
-			</Vertical>
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Typography variant="h5" class="text-center">{$_('page.home.whatsNext')}</Typography>
-				<Vertical --vertical-gap="var(--half-padding)">
-					<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
-					<Typography variant="small" class="text-center"
-						>{$_('page.home.kalkulNotAvailableOnMobile')}</Typography
-					>
-				</Vertical>
-			</Vertical>
-		</Vertical>
-	</Vertical>
+	{@render welcomeMobile()}
 </MobileOnly>
 
 <DeleteModal
@@ -339,5 +386,8 @@
 	:global(.max560) {
 		max-width: 560px;
 		width: 100%;
+	}
+	:global(.bg-ultra-low) {
+		background-color: var(--colors-ultra-low);
 	}
 </style>

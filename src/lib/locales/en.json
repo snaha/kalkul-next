@@ -69,7 +69,10 @@
 			"kalkulNotAvailableOnMobile": "Kalkul will be available on mobile soon!",
 			"joinDiscordText": "In the meantime, you can already join the conversation on our Discord server.",
 			"joinCommunity": "Join our Discord community",
-			"whatsNext": "What’s next?"
+			"whatsNext": "What’s next?",
+			"kalkulIsBeta": "Kalkul is currently available as a limited free beta, for testing purposes only",
+			"helpText": "Need more help or have feedback? Join our {discordCommunityLink} or contact us at {supportEmail}.",
+			"discordCommunity": "Discord community"
 		},
 		"client": {
 			"addClient": "Add client",
@@ -265,13 +268,8 @@
 			"totalDeposit": "{amount} {currency} total deposit",
 			"totalWithdrawal": "{amount} {currency} total withdrawal"
 		},
-		"welcomeModal": {
-			"startTestingButton": "Start testing",
-			"welcomeText": "Welcome to Kalkul beta!",
-			"kalkulTagline": "Kalkul helps independent advisors create, visualise and share financial plans with their clients.",
-			"betaDisclaimer": "The app is currently in Free beta version, and will launch as a commercial product later this year. As a beta user, you have early access to the app as we develop it. We’re looking forward to your feedback — help us shape the future of independent financial planning!",
-			"specialDiscountEligibility": "As a beta user, you may be eligible for special discounts!",
-			"videoIntroButton": "Watch video intro"
+		"videoModal": {
+			"startUsingKalkul": "Start using Kalkul"
 		}
 	},
 	"common": {

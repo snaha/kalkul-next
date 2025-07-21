@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Close, InformationFilled, ShrinkScreenFilled } from 'carbon-icons-svelte'
+	import { ChatBot, Close, ShrinkScreenFilled } from 'carbon-icons-svelte'
 	import Vertical from './ui/vertical.svelte'
 	import { type Snippet } from 'svelte'
 	import Button from './ui/button.svelte'
@@ -7,6 +7,8 @@
 	import Expander from './expander.svelte'
 	import Typography from './ui/typography.svelte'
 	import FlexItem from './ui/flex-item.svelte'
+	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
+	import { _ } from 'svelte-i18n'
 
 	type Props = {
 		title?: string
@@ -28,7 +30,7 @@
 				{#if title || closeButton}
 					<Horizontal>
 						{#if title}
-							<InformationFilled size={24} />
+							<ChatBot size={24} />
 							<Typography variant="h5">{title}</Typography>
 						{/if}
 						{#if closeButton}
@@ -53,6 +55,18 @@
 				{#if children}
 					{@render children()}
 				{/if}
+
+				<Horizontal class="bg-ultra-low" style="padding: var(--half-padding)">
+					<Typography variant="small">
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html $_('page.home.helpText', {
+							values: {
+								discordCommunityLink: `<a href="${PUBLIC_DISCORD_LINK}">${$_('page.home.discordCommunity')}</a>`,
+								supportEmail: `<a href="mailto:support@kalkul.app">support@kalkul.app</a>`,
+							},
+						})}
+					</Typography>
+				</Horizontal>
 			</Vertical>
 		</div>
 	</Expander>
@@ -61,7 +75,7 @@
 			{#if open}
 				<ShrinkScreenFilled size={24} />
 			{:else}
-				<InformationFilled size={24} />
+				<ChatBot size={24} />
 			{/if}
 		</Button>
 	</Horizontal>

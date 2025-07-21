@@ -7,6 +7,7 @@ import type {
 	Portfolio,
 	PortfolioView,
 	Transaction,
+	TypedUserMetadata,
 } from '$lib/types'
 import SupabaseAdapter from './supabase'
 
@@ -28,6 +29,7 @@ export interface Adapter {
 	resetPassword: (newPassword: string) => Promise<void>
 	updateEmail: (newEmail: string) => Promise<void>
 	updateLanguage: (newLanguage: string) => Promise<void>
+	updateUserMetadata: (data: Partial<TypedUserMetadata>) => Promise<void>
 
 	addClient: (client: ClientNoId) => Promise<number>
 	updateClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>

@@ -172,22 +172,23 @@
 					{investments}
 					bind:adjustWithInflation
 					{investmentsViewStore}
+					isEmpty={investments.length === 1 && transactionStore.data.length === 0}
 				/>
 			</section>
 		</main>
 	{/if}
 	{#if investmentStore.data.length === 0}
 		<HelpBox
-			open={investmentStore.data.length === 0}
+			open={true}
 			title={$_('Add investment')}
 			boxText={$_('Press the “Add investment” button to add a first investment in this portfolio')}
 			text={$_(
 				'You can create as many investments as you want in a client portfolio. Once you have at least one investment set up, this page will display detailed information about the whole portfolio.',
 			)}
 		></HelpBox>
-	{:else}
+	{:else if investmentStore.data.length === 1 && transactionStore.data.length === 0}
 		<HelpBox
-			open={investmentStore.data.length === 1 && transactionStore.data.length === 0}
+			open={true}
 			title={$_('Add a transaction')}
 			boxText={$_(
 				'In the left sidebar, press the “Add transaction” button within the desired investment card.',

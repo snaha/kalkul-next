@@ -35,6 +35,7 @@ export default {
 	PAYMENTS: `${routePrefix}/payments`,
 	TERMS: `${routePrefix}/terms`,
 	PRIVACY: `${routePrefix}/privacy`,
+	WELCOME: `${routePrefix}/welcome`,
 }
 
 export const apiRoutes = {

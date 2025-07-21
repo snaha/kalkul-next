@@ -47,3 +47,9 @@ export type CustomDataset<T extends keyof ChartTypeRegistry> = ChartDataset<T> &
 export type ChartDatasetWithColor = ChartDataset & {
 	colorIndex?: number
 }
+
+export type TypedUserMetadata = {
+	prefer_language: string
+	newsletter_consent: boolean
+	first_visit: boolean
+}
