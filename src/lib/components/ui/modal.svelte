@@ -82,7 +82,7 @@
 
 <style>
 	:root {
-		--modal-max-width: 560px;
+		--modal-max-width: 592px;
 	}
 	dialog {
 		border: 0;
@@ -93,7 +93,7 @@
 		color: var(--colors-ultra-high);
 		border-radius: var(--quarter-padding);
 	}
-	@media screen and (max-width: 560px) {
+	@media screen and (max-width: 592px) {
 		dialog {
 			max-width: calc(100% - var(--double-padding));
 			margin: auto var(--padding);

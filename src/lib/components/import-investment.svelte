@@ -36,6 +36,13 @@
 	let isHelpOpen = $state(false)
 	let page: 'input' | 'listing' = $state('input')
 
+	$effect(() => {
+		if (open === false) {
+			// reset to the input page when closed
+			page = 'input'
+		}
+	})
+
 	async function fetchISINData(identifier: string) {
 		try {
 			isinImportError = undefined
@@ -49,22 +56,25 @@
 
 			const returnValue = figiResponseSchema.safeParse(jsonValue)
 			if (returnValue.error) {
-				isinImportError = $_('There was an error during fetching ISIN number')
+				isinImportError = $_('component.editInvestment.errorFetchingIsin')
 				return
 			}
 
 			const values = returnValue.data
 			if (values.length === 0) {
-				isinImportError = $_('No investment found')
+				figiValues = []
+				page = 'listing'
 				return
 			}
 
 			if ('warning' in values[0]) {
 				console.debug({ value: values[0] })
 				if (values[0].warning === 'No identifier found.') {
-					isinImportError = $_('This identifier is not supported with the current currency')
+					figiValues = []
+					page = 'listing'
+					return
 				} else {
-					isinImportError = $_('No investment found')
+					isinImportError = $_('component.editInvestment.noInvestmentFound')
 				}
 				return
 			}
@@ -202,14 +212,8 @@
 					: '0'}; transition: height 0.3s ease-in; overflow: hidden;"
 			>
 				<div style="padding-top: var(--half-padding)"></div>
-				<Typography variant="small"
-					>An International Securities Identification Number (ISIN) is a unique twelve-digit code
-					that is assigned to every security issuance in the world.</Typography
-				>
-				<Typography variant="small"
-					>A ticker symbol, also known as a stock symbol, is a unique combination of letters
-					assigned to publicly traded companies on stock exchanges.</Typography
-				>
+				<Typography variant="small">{$_('component.editInvestment.isinExplanation')}</Typography>
+				<Typography variant="small">{$_('component.editInvestment.tickerExplanation')}</Typography>
 			</Vertical>
 		</Vertical>
 	{:else if page === 'listing'}
@@ -223,36 +227,75 @@
 						page = 'input'
 					}}><ArrowLeft size={24} /></Button
 				>
-				<Typography variant="h5">{$_('component.editInvestment.importData')}</Typography>
+				<Typography variant="h5">{$_('component.editInvestment.matchingProducts')}</Typography>
 			</Horizontal>
 			<Button variant="ghost" dimension="compact" onclick={() => (open = false)}
 				><Close size={24} /></Button
 			>
 		</Horizontal>
 
-		<Vertical --vertical-gap="var(--quarter-padding">
-			<li class="header">
-				<Typography variant="small" bold>{$_('Name')}</Typography>
-				<Typography variant="small" bold>{$_('Type')}</Typography>
-				<Typography variant="small" bold>{$_('Symbol')}</Typography>
-				<Typography variant="small" bold>{$_('Exchange')}</Typography>
-			</li>
-			<ul>
-				{#each figiValues as figiValue}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-					<li class="value" onclick={() => selectFigi(figiValue)}>
-						<div>{figiValue.name}</div>
-						<div>{figiValue.securityType2}</div>
-						<div>{figiValue.ticker}</div>
-						<div>{exchangeOperatingMicOrCode(figiValue.exchCode)}</div>
-						<Button variant="strong" dimension="compact" onclick={() => selectFigi(figiValue)}
-							><ArrowRight size={24} /></Button
-						>
-					</li>
-				{/each}
-			</ul>
-		</Vertical>
+		{#if figiValues.length === 0}
+			<Horizontal --horizontal-justify-content="center">
+				<img src="/images/no-client.svg" width="180" height="180" alt="no product" />
+			</Horizontal>
+			<Vertical --vertical-align-items="center" --vertical-gap="0">
+				<Typography --typography-color="var(--colors-high)"
+					>{$_('component.editInvestment.noProductsFound', {
+						values: { currency },
+					})}</Typography
+				>
+				<Typography variant="small">{$_('component.editInvestment.tryDifferentSearch')}</Typography>
+			</Vertical>
+			<Horizontal --horizontal-justify-content="center">
+				<Button
+					variant="secondary"
+					dimension="compact"
+					onclick={(e: Event) => {
+						e.stopPropagation()
+						page = 'input'
+					}}>{$_('component.editInvestment.tryAgain')}</Button
+				>
+			</Horizontal>
+		{:else}
+			<Vertical --vertical-align-items="center" --vertical-gap="0">
+				<Typography --typography-color="var(--colors-high)"
+					>{$_('component.editInvestment.foundMatchingProducts', {
+						values: { numProducts: figiValues.length, currency },
+					})}</Typography
+				>
+				<Typography variant="small"
+					>{$_('component.editInvestment.matchingProductExplanation')}</Typography
+				>
+			</Vertical>
+
+			<Vertical --vertical-gap="var(--quarter-padding">
+				<li class="header">
+					<Typography variant="small" bold>{$_('component.editInvestment.listingName')}</Typography>
+					<Typography variant="small" bold>{$_('component.editInvestment.listingType')}</Typography>
+					<Typography variant="small" bold
+						>{$_('component.editInvestment.listingSymbol')}</Typography
+					>
+					<Typography variant="small" bold
+						>{$_('component.editInvestment.listingExchange')}</Typography
+					>
+				</li>
+				<ul>
+					{#each figiValues as figiValue}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+						<li class="value" onclick={() => selectFigi(figiValue)}>
+							<div>{figiValue.name}</div>
+							<div>{figiValue.securityType2}</div>
+							<div>{figiValue.ticker}</div>
+							<div>{exchangeOperatingMicOrCode(figiValue.exchCode)}</div>
+							<Button variant="strong" dimension="compact" onclick={() => selectFigi(figiValue)}
+								><ArrowRight size={24} /></Button
+							>
+						</li>
+					{/each}
+				</ul>
+			</Vertical>
+		{/if}
 	{/if}
 </div>
 
@@ -265,7 +308,7 @@
 		border: 1px solid var(--colors-low);
 		border-radius: 0.25rem;
 		background: var(--colors-base);
-		max-width: 560px;
+		max-width: 100%;
 		width: 100%;
 		max-height: calc(100vh - var(--quadruple-padding));
 	}
