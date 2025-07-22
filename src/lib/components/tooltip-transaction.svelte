@@ -35,7 +35,7 @@
 	const withdrawals = $derived(tooltipData.filter((t) => t.type === 'transaction' && t.value < 0))
 </script>
 
-<TooltipBase {tooltipData} {...restProps}>
+<TooltipBase {tooltipData} {adjustWithInflation} {...restProps}>
 	{#if deposits.length > 0}
 		<Typography variant="h6" class="color-light">{$_('common.deposits')}</Typography>
 		<div class="col">

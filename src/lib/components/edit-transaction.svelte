@@ -5,7 +5,7 @@
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { type Client, type Investment, type Portfolio, type Transaction } from '$lib/types'
-	import { type Period } from '$lib/@snaha/kalkul-maths'
+	import { type Period, type TransactionType } from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import { capitalizeFirstLetter, formatCurrency, formatDate } from '$lib/utils'
@@ -38,8 +38,13 @@
 
 	let { investment, portfolio, client, transaction, close }: Props = $props()
 
-	let transactionType = $state(transaction?.type || 'deposit')
-	let label = $state('')
+	let transactionType: TransactionType = $state('deposit')
+	let label = $state(
+		capitalizeFirstLetter($_('common.deposit')) +
+			' ' +
+			(investmentStore.filter(investment.id).length + 1).toString(),
+	)
+	let isDefaultLabel = $state(true)
 	let amount = $state(0)
 	let date = $state(new Date())
 	let isRecurring = $state(false)
@@ -63,23 +68,18 @@
 	const formType = $derived(transaction ? 'edit' : 'create')
 
 	$effect(() => {
-		transactionType = transaction?.type || 'deposit'
-		label =
-			transaction && transaction.label
-				? transaction.label
-				: capitalizeFirstLetter($_(transactionType)) +
-					' ' +
-					(investmentStore.filter(investment.id).length + 1).toString()
-		amount = transaction ? transaction.amount : 0
-		date = new Date(formatDate(transaction ? new Date(transaction.date) : new Date()))
-		isRecurring = transaction ? transaction.end_date !== null : false
-		repeat = transaction && transaction.repeat ? transaction.repeat : 1
-		repeatUnit = transactionRepeatUnit(transaction)
-		endDate = new Date(
-			formatDate(transaction && transaction.end_date ? new Date(transaction.end_date) : new Date()),
-		)
-		period = transactionPeriod(transaction)
-		periodUnit = transactionPeriodUnit(transaction)
+		if (transaction) {
+			transactionType = transaction.type
+			label = transaction.label ?? ''
+			amount = transaction.amount
+			date = new Date(transaction.date)
+			isRecurring = transaction.end_date !== null
+			repeat = transaction.repeat ? transaction.repeat : 1
+			repeatUnit = transactionRepeatUnit(transaction)
+			endDate = transaction.end_date ? new Date(transaction.end_date) : new Date()
+			period = transactionPeriod(transaction)
+			periodUnit = transactionPeriodUnit(transaction)
+		}
 	})
 
 	async function createTransaction() {
@@ -220,6 +220,21 @@
 	function toggleRecurring() {
 		recalculateEndDate()
 	}
+
+	function onTransactionTypeChange() {
+		if (isDefaultLabel) {
+			const labelText =
+				transactionType === 'deposit' ? $_('common.deposit') : $_('common.withdrawal')
+			label =
+				capitalizeFirstLetter(labelText) +
+				' ' +
+				(investmentStore.filter(investment.id).length + 1).toString()
+		}
+	}
+
+	function onLabelInput() {
+		isDefaultLabel = false
+	}
 </script>
 
 <Vertical --gap="var(--half-padding)">
@@ -243,6 +258,7 @@
 				{ value: 'deposit', label: capitalizeFirstLetter($_('common.deposit')) },
 				{ value: 'withdrawal', label: capitalizeFirstLetter($_('common.withdrawal')) },
 			]}
+			onchange={onTransactionTypeChange}
 		></Select>
 		<Toggle
 			class="toggle"
@@ -270,6 +286,7 @@
 		placeholder={$_('common.label')}
 		label={$_('common.label')}
 		bind:value={label}
+		oninput={onLabelInput}
 	></Input>
 	<DateAge
 		dimension="compact"

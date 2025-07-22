@@ -6,22 +6,21 @@
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
 	interface Props extends TooltipGraphProps {
-		adjustWithInflation: boolean
 		currency: string
 		totalValue: number[]
 		totalWithInflation: number[]
 	}
 	const {
 		tooltipData,
-		adjustWithInflation,
 		currency,
 		totalValue,
 		totalWithInflation,
+		adjustWithInflation,
 		...restProps
 	}: Props = $props()
 </script>
 
-<TooltipBase {tooltipData} {...restProps}>
+<TooltipBase {tooltipData} {adjustWithInflation} {...restProps}>
 	<div class="col">
 		{#each tooltipData as investment}
 			<div class="investment-details">

@@ -2,14 +2,19 @@
 	import { SERIES_COLORS } from '$lib/colors'
 	import { getCSSVariableValue } from '$lib/css-vars'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
-	import type { InvestmentWithColorIndex } from '$lib/types'
+	import type { InvestmentWithColorIndex, TooltipData } from '$lib/types'
 	import Chart, { type ChartDataset, type ChartOptions } from 'chart.js/auto'
+	import TooltipBreakdownDoughnut from './tooltip-breakdown-doughnut.svelte'
 
 	interface Props {
 		data: number[]
 		labels: string[]
 		investments: InvestmentWithColorIndex[]
 		investmentsViewStore: InvestmentsViewStore
+		currency?: string
+		currentYear?: string
+		clientBirthDate?: Date
+		adjustWithInflation: boolean
 	}
 
 	Chart.defaults.font.family = getCSSVariableValue('--font-family-sans-serif')
@@ -20,8 +25,8 @@
 		maintainAspectRatio: false,
 		responsive: false,
 		interaction: {
-			intersect: false,
-			mode: 'index',
+			intersect: true,
+			mode: 'point',
 		},
 		elements: {
 			point: {
@@ -30,7 +35,29 @@
 		},
 	}
 
-	let { data, labels, investments, investmentsViewStore }: Props = $props()
+	let {
+		data,
+		labels,
+		investments,
+		investmentsViewStore,
+		currency = 'USD',
+		currentYear = '',
+		clientBirthDate,
+		adjustWithInflation,
+	}: Props = $props()
+
+	let tooltipData: TooltipData[] = $state([])
+	let tooltipPosition = $state({ x: 0, y: 0 })
+
+	const doughnutData = $derived.by(() => {
+		return data
+			.map((value, i) => ({
+				value,
+				label: labels[i],
+				colorIndex: investments[i].colorIndex ?? i,
+			}))
+			.filter((item) => item.value > 0)
+	})
 
 	let canvas: HTMLCanvasElement | null = $state(null)
 	let chart: Chart | null = $state(null)
@@ -79,7 +106,26 @@
 							display: false,
 						},
 						tooltip: {
-							enabled: !isEmpty,
+							enabled: false,
+							external: (context) => {
+								const { tooltip } = context
+								if (tooltip.opacity === 0) {
+									tooltipData = []
+								} else {
+									// Fixed position: 16px to the right of the chart, aligned with top
+									// Adjust for TooltipBase centering: add tooltip width to x, adjust y to align top
+									tooltipPosition = {
+										x: context.chart.width + 16 + 321, // 321 is tooltip width
+										y: 0, // Add approximate half tooltip height to compensate for -50% centering
+									}
+									tooltipData = tooltip.dataPoints.map((d) => ({
+										dataIndex: d.dataIndex,
+										value: d.raw as number,
+										name: d.label,
+										colorIndex: investments[d.dataIndex]?.colorIndex ?? d.dataIndex,
+									}))
+								}
+							},
 						},
 					},
 					animation: false,
@@ -91,7 +137,26 @@
 			chart.data.labels = labels
 			chart.data.datasets = [setDataset()]
 			if (chart.options.plugins && chart.options.plugins.tooltip) {
-				chart.options.plugins.tooltip.enabled = !isEmpty
+				chart.options.plugins.tooltip.enabled = false
+				chart.options.plugins.tooltip.external = (context) => {
+					const { tooltip } = context
+					if (tooltip.opacity === 0) {
+						tooltipData = []
+					} else {
+						// Fixed position: 16px to the right of the chart, aligned with top
+						// Adjust for TooltipBase centering: add tooltip width to x, adjust y to align top
+						tooltipPosition = {
+							x: context.chart.width + 16 + 321, // 321 is tooltip width
+							y: 0, // Add approximate half tooltip height to compensate for -50% centering
+						}
+						tooltipData = tooltip.dataPoints.map((d) => ({
+							dataIndex: d.dataIndex,
+							value: d.raw as number,
+							name: d.label,
+							colorIndex: investments[d.dataIndex]?.colorIndex ?? d.dataIndex,
+						}))
+					}
+				}
 			}
 
 			chart.update()
@@ -118,6 +183,15 @@
 <div class="chart" bind:clientWidth={actChartWidth} bind:clientHeight={actChartHeight}>
 	<canvas bind:this={canvas}></canvas>
 </div>
+<TooltipBreakdownDoughnut
+	{tooltipData}
+	{tooltipPosition}
+	{currency}
+	{doughnutData}
+	year={parseInt(currentYear, 10)}
+	{clientBirthDate}
+	{adjustWithInflation}
+/>
 
 <style>
 	.chart {

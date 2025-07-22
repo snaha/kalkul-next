@@ -15,6 +15,7 @@
 		showDeposits: boolean
 		showWithdrawals: boolean
 		showFees: boolean
+		clientBirthDate?: Date
 	}
 
 	let {
@@ -24,6 +25,7 @@
 		showDeposits,
 		showWithdrawals,
 		showFees,
+		clientBirthDate,
 	}: Props = $props()
 
 	let transactionTooltipData: TooltipData[] = $state([])
@@ -158,5 +160,15 @@
 	{adjustWithInflation}
 	{showFees}
 	currency={portfolio.currency}
-	labels={graphTransactionsData.data[0]?.graphLabels}
+	year={(() => {
+		if (transactionTooltipData.length === 0 || !graphTransactionsData.data[0]?.graphLabels)
+			return new Date().getFullYear()
+		const label = graphTransactionsData.data[0].graphLabels[transactionTooltipData[0].dataIndex]
+		if (label?.includes('-')) {
+			return parseInt(label.split('-')[0], 10)
+		} else {
+			return parseInt(label, 10)
+		}
+	})()}
+	{clientBirthDate}
 />

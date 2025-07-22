@@ -173,6 +173,7 @@
 					bind:adjustWithInflation
 					{investmentsViewStore}
 					isEmpty={investments.length === 1 && transactionStore.data.length === 0}
+					clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
 				/>
 			</section>
 		</main>

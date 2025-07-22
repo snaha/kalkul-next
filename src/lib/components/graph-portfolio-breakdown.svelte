@@ -20,6 +20,7 @@
 		total: GraphData
 		lowColor: string
 		baseColor: string
+		clientBirthDate?: Date
 	}
 
 	let {
@@ -32,6 +33,7 @@
 		total,
 		lowColor,
 		baseColor,
+		clientBirthDate,
 	}: Props = $props()
 
 	const breakdownChartData = $derived(
@@ -99,10 +101,7 @@
 				month: 'short',
 			})
 		} else {
-			return new Date(Number(graphLabels), 11).toLocaleDateString('en-US', {
-				year: 'numeric',
-				month: 'short',
-			})
+			return graphLabels
 		}
 	}
 	let tooltipPosition = $state({ x: 0, y: 0 })
@@ -125,10 +124,27 @@
 <Horizontal>
 	<div class="doughnut">
 		<ChartDoughnut
-			data={data.map((d) => d.graphInvestmentValues[selectedIndex])}
+			data={(() => {
+				const investmentValues = data.map((d) =>
+					adjustWithInflation
+						? d.graphInflationInvestmentValues[selectedIndex] +
+							d.graphInflationDeposits[selectedIndex] -
+							d.graphInflationWithdrawals[selectedIndex] -
+							d.graphInflationFeeValues[selectedIndex]
+						: d.graphInvestmentValues[selectedIndex] +
+							d.graphDeposits[selectedIndex] -
+							d.graphWithdrawals[selectedIndex] -
+							d.graphFeeValues[selectedIndex],
+				)
+				return investmentValues
+			})()}
 			labels={data.map((d) => d.label)}
 			{investments}
 			{investmentsViewStore}
+			currency={portfolio.currency}
+			currentYear={getDateFromGraphLabels(data[0].graphLabels[selectedIndex])}
+			{clientBirthDate}
+			{adjustWithInflation}
 		/>
 	</div>
 	<div class="breakdown">
@@ -261,7 +277,7 @@
 		bind:value={selectedIndex}
 	></Slider>
 	<div class="date">
-		<Typography class="selected-date"
+		<Typography variant="small" font="mono"
 			>{getDateFromGraphLabels(data[0].graphLabels[selectedIndex])}</Typography
 		>
 	</div>
@@ -271,11 +287,21 @@
 	{totalLabels}
 	{tooltipData}
 	{tooltipPosition}
-	labels={Array(5).fill([data[0].graphLabels[selectedIndex]])}
 	{adjustWithInflation}
 	currency={portfolio.currency}
 	{totalValue}
 	{totalValueWithInflation}
+	year={(() => {
+		const label = data[0].graphLabels[selectedIndex]
+		if (label.includes('-')) {
+			// Format: "2024-1" -> extract year
+			return parseInt(label.split('-')[0], 10)
+		} else {
+			// Format: "2024" -> direct year
+			return parseInt(label, 10)
+		}
+	})()}
+	{clientBirthDate}
 />
 
 <style>
@@ -285,7 +311,8 @@
 	.date {
 		display: flex;
 		justify-content: end;
-		width: 85px;
+		align-items: center;
+		width: 30px;
 	}
 	.doughnut {
 		width: var(--doughnut-size);

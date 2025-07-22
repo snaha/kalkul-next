@@ -25,7 +25,7 @@
 	}: Props = $props()
 </script>
 
-<TooltipBase {tooltipData} {...restProps}>
+<TooltipBase {tooltipData} {adjustWithInflation} {...restProps}>
 	{#if tooltipData.length > 0}
 		<Typography variant="h6" class="color-light">{dataLabels[tooltipData[0].dataIndex]}</Typography>
 		<div class="col">

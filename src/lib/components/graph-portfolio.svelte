@@ -32,6 +32,7 @@
 		view?: boolean
 		sidebarButton?: Snippet
 		isEmpty?: boolean
+		clientBirthDate?: Date
 	}
 
 	let {
@@ -46,6 +47,7 @@
 		view = false,
 		sidebarButton,
 		isEmpty,
+		clientBirthDate,
 	}: Props = $props()
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
@@ -172,7 +174,7 @@
 					{/if}
 				{/snippet}
 				{#if fullscreenGraph === 'value'}
-					<GraphPortfolioValue {graphValueData} {adjustWithInflation} />
+					<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
 				{:else if fullscreenGraph === 'transactions'}
 					<GraphPortfolioTransactions
 						{portfolio}
@@ -181,6 +183,7 @@
 						{showDeposits}
 						{showWithdrawals}
 						{showFees}
+						{clientBirthDate}
 					/>
 				{:else}
 					<GraphPortfolioBreakdown
@@ -193,6 +196,7 @@
 						bind:selectedIndex
 						{lowColor}
 						{baseColor}
+						{clientBirthDate}
 					/>
 				{/if}
 			</FullscreenGraph>
@@ -203,7 +207,7 @@
 					<FlexItem />
 					{@render fullscreenButton('value')}
 				</Horizontal>
-				<GraphPortfolioValue {graphValueData} {adjustWithInflation} />
+				<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
 			</div>
 			<div class="graph-main-sub">
 				<Horizontal
@@ -234,6 +238,7 @@
 					{showDeposits}
 					{showWithdrawals}
 					{showFees}
+					{clientBirthDate}
 				/>
 			</div>
 			<div class="graph-breakdown-overtime">
@@ -268,6 +273,7 @@
 					bind:selectedIndex
 					{lowColor}
 					{baseColor}
+					{clientBirthDate}
 				/>
 			</div>
 		{/if}

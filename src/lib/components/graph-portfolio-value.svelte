@@ -11,9 +11,10 @@
 	interface Props {
 		graphValueData: GraphPortfolioValue
 		adjustWithInflation: boolean
+		clientBirthDate?: Date
 	}
 
-	let { graphValueData: graphValuesStore, adjustWithInflation }: Props = $props()
+	let { graphValueData: graphValuesStore, adjustWithInflation, clientBirthDate }: Props = $props()
 
 	let investmentsTooltipData: TooltipData[] = $state([])
 	let tooltipPosition = $state({ x: 0, y: 0 })
@@ -136,5 +137,15 @@
 	totalWithInflation={graphValuesStore.totalWithInflation}
 	{adjustWithInflation}
 	currency={graphValuesStore.portfolio.currency}
-	labels={graphValuesStore.data[0]?.graphLabels}
+	year={(() => {
+		if (investmentsTooltipData.length === 0 || !graphValuesStore.data[0]?.graphLabels)
+			return new Date().getFullYear()
+		const label = graphValuesStore.data[0].graphLabels[investmentsTooltipData[0].dataIndex]
+		if (label?.includes('-')) {
+			return parseInt(label.split('-')[0], 10)
+		} else {
+			return parseInt(label, 10)
+		}
+	})()}
+	{clientBirthDate}
 />
