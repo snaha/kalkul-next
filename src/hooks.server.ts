@@ -10,6 +10,18 @@ const headers =
 		: undefined
 
 export const handle: Handle = async ({ event, resolve }) => {
+	// Redirect www to non-www domain
+	if (event.url.hostname.startsWith('www.')) {
+		const nonWwwUrl = new URL(event.url)
+		nonWwwUrl.hostname = nonWwwUrl.hostname.substring(4)
+		return new Response(null, {
+			status: 301,
+			headers: {
+				Location: nonWwwUrl.toString(),
+			},
+		})
+	}
+
 	// For non-API routes
 	if (!event.url.pathname.startsWith(apiRoutes.ROOT)) {
 		const response = await resolve(event)
