@@ -229,6 +229,7 @@
 			"removeFocus": "Odebrat zvýraznění",
 			"focusInChart": "Zvýraznit v grafu",
 			"hideInChart": "Skrýt v grafu",
+			"editInvestmentDetails": "Upravit detaily investice",
 			"duplicateInvestment": "Duplikovat investici",
 			"deleteInvestment": "Smazat investici",
 			"noTransactionsYet": "Zatím žádné transakce",
@@ -387,7 +388,10 @@
 		"totalDeposited": "Celkem vloženo",
 		"totalWithdrawn": "Celkem vybráno",
 		"totalFees": "Celkem poplatky",
-		"totalInvestments": "Celková hodnota investic"
+		"totalInvestments": "Celková hodnota investic",
+		"cancelBeforeTrialEnd": "Zrušte před {firstPaymentFormattedDate} a nebude vám nic účtováno. E-mailem vám připomeneme 7 dní před koncem zkušební doby.",
+		"subscriptionAutoRenew": "Vaše předplatné se automaticky obnovuje každý rok na opakující se základě.",
+		"manageSubscriptionDetails": "Detaily svého předplatného můžete zobrazit a spravovat na stránce {accountPaymentsLink}, která je kdykoli dostupná v nastavení vašeho účtu."
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",

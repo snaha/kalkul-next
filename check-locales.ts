@@ -16,7 +16,7 @@ function scanSourceFiles() {
 		}
 
 		const file = fs.readFileSync(filePath, { encoding: 'utf8' })
-		const localizedTexts = file.matchAll(/\$_\('(.*?)'/gi)
+		const localizedTexts = file.matchAll(/\$_\([\s]*'(.*?)'/gim)
 		for (const localizedText of localizedTexts) {
 			if (!localizedTextSet.has(localizedText[1])) {
 				localizedTextSet.add(localizedText[1])

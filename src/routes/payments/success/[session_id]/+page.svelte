@@ -19,6 +19,13 @@
 	const yearlyFee = $derived((subscription?.items.data[0].price.unit_amount ?? 0) / 100)
 	const currency = $derived(subscription?.items.data[0].price.currency.toUpperCase())
 	const sessionId = $derived(page.params.session_id)
+	const firstPaymentFormattedDate = $derived(
+		new Date(
+			((isTrial ? subscription?.trial_end : subscription?.current_period_end) ?? 0) * 1000,
+		).toLocaleDateString(undefined, {
+			dateStyle: 'medium',
+		}),
+	)
 
 	async function onClick() {
 		goto(routes.HOME)
@@ -116,20 +123,17 @@
 					</Horizontal>
 					<Vertical --vertical-gap="var(--padding)">
 						<Typography variant="small" --colors-ultra-high="var(--colors-high)"
-							>{$_(
-								'Cancel before Dec. 9, 2024 and you won’t be charged. You will be reminded via email 7 days before your trial period ends.',
-							)}</Typography
+							>{$_('common.cancelBeforeTrialEnd', {
+								values: { firstPaymentFormattedDate },
+							})}</Typography
 						>
 						<Typography variant="small" --colors-ultra-high="var(--colors-high)">
 							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-							{@html $_(
-								'You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.',
-								{
-									values: {
-										accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
-									},
+							{@html $_('common.manageSubscriptionDetails', {
+								values: {
+									accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
 								},
-							)}</Typography
+							})}</Typography
 						>
 					</Vertical>
 				</Vertical>
@@ -170,20 +174,15 @@
 					</Horizontal>
 					<Vertical --vertical-gap="var(--padding)">
 						<Typography variant="small" --colors-ultra-high="var(--colors-high)"
-							>{$_(
-								'Your subscription will automatically renew annually on a recurring basis.',
-							)}</Typography
+							>{$_('common.subscriptionAutoRenew')}</Typography
 						>
 						<Typography variant="small" --colors-ultra-high="var(--colors-high)">
 							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-							{@html $_(
-								'You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.',
-								{
-									values: {
-										accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
-									},
+							{@html $_('common.manageSubscriptionDetails', {
+								values: {
+									accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
 								},
-							)}</Typography
+							})}</Typography
 						>
 					</Vertical>
 				</Vertical>

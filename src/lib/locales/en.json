@@ -222,6 +222,7 @@
 			"removeFocus": "Remove focus",
 			"focusInChart": "Focus in chart",
 			"hideInChart": "Hide in chart",
+			"editInvestmentDetails": "Edit investment details",
 			"duplicateInvestment": "Duplicate investment",
 			"deleteInvestment": "Delete investment",
 			"noTransactionsYet": "No transactions yet",
@@ -380,7 +381,10 @@
 		"daysRemaining": "days remaining",
 		"paymentSuccessful": "Payment successful",
 		"thankYouForUsingKalkul": "Thank you for using Kalkul!",
-		"startUsingKalkul": "Start using Kalkul"
+		"startUsingKalkul": "Start using Kalkul",
+		"cancelBeforeTrialEnd": "Cancel before {firstPaymentFormattedDate} and you won't be charged. We will remind you 7 days before your trial period ends.",
+		"subscriptionAutoRenew": "Your subscription will automatically renew annually on a recurring basis.",
+		"manageSubscriptionDetails": "You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings."
 	},
 	"error": {
 		"emailError": "This doesn’t look like a correct email",

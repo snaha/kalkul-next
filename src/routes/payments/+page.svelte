@@ -184,10 +184,9 @@
 							>
 						</Horizontal>
 						<Typography variant="small" --colors-ultra-high="var(--colors-light-base)"
-							>{$_(
-								'Cancel before {firstPaymentFormattedDate} and you won’t be charged. We will remind you 7 days before your trial period ends.',
-								{ values: { firstPaymentFormattedDate } },
-							)}</Typography
+							>{$_('common.cancelBeforeTrialEnd', {
+								values: { firstPaymentFormattedDate },
+							})}</Typography
 						>
 					</Vertical>
 				</Vertical>
@@ -207,11 +206,7 @@
 						>
 					</Horizontal>
 				</Vertical>
-				<Typography variant="small"
-					>{$_(
-						'Your subscription will automatically renew annually on a recurring basis.',
-					)}</Typography
-				>
+				<Typography variant="small">{$_('common.subscriptionAutoRenew')}</Typography>
 			</Vertical>
 
 			<Vertical --vertical-gap="var(--padding)" --vertical-align-items="flex-start">
@@ -243,14 +238,11 @@
 				>
 				<Typography variant="small" --colors-ultra-high="var(--colors-high)">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_(
-						'You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.',
-						{
-							values: {
-								accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
-							},
+					{@html $_('common.manageSubscriptionDetails', {
+						values: {
+							accountPaymentsLink: `<a href="${routes.ACCOUNT}">${$_('common.paymentAndBilling')}</a>`,
 						},
-					)}</Typography
+					})}</Typography
 				>
 			</Vertical>
 		{/if}
