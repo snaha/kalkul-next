@@ -28,6 +28,56 @@ function scanSourceFiles() {
 
 type Json = { [property: string]: Json }
 
+function findDuplicateKeysInJsonString(jsonString: string, fileName: string): string[] {
+	const duplicates: string[] = []
+	const lines = jsonString.split('\n')
+	const objectStack: string[] = [] // Track current object path
+	const keysInCurrentObject = new Map<string, { keys: Set<string>; lines: Map<string, number> }>()
+
+	lines.forEach((line, lineIndex) => {
+		const trimmedLine = line.trim()
+		const lineNumber = lineIndex + 1
+
+		// Check if we're opening a new object
+		const objectMatch = line.match(/^\s*"([^"]+)"\s*:\s*\{/)
+		if (objectMatch) {
+			const objectName = objectMatch[1]
+			objectStack.push(objectName)
+			const objectPath = objectStack.join('.')
+			keysInCurrentObject.set(objectPath, { keys: new Set(), lines: new Map() })
+			return
+		}
+
+		// Check if we're closing an object
+		if (trimmedLine === '},' || trimmedLine === '}') {
+			objectStack.pop()
+			return
+		}
+
+		// Check for key-value pairs
+		const keyMatch = line.match(/^\s*"([^"]+)"\s*:/)
+		if (keyMatch) {
+			const key = keyMatch[1]
+			const currentPath = objectStack.join('.')
+
+			if (keysInCurrentObject.has(currentPath)) {
+				const objData = keysInCurrentObject.get(currentPath)!
+				if (objData.keys.has(key)) {
+					const firstOccurrence = objData.lines.get(key)!
+					duplicates.push(
+						`${fileName}: Duplicate key "${key}" in object "${currentPath}" on lines ${firstOccurrence} and ${lineNumber}`,
+					)
+				} else {
+					objData.keys.add(key)
+					objData.lines.set(key, lineNumber)
+				}
+			}
+		}
+	})
+
+	return duplicates
+}
+
 function readLocaleData(locale: string): Json {
 	const data = fs.readFileSync(`${LOCALE_DIR}/${locale}.json`, { encoding: 'utf8' })
 	const localeData = JSON.parse(data)
@@ -71,6 +121,22 @@ function checkTranslations() {
 	const localizedTextSet = scanSourceFiles()
 	const localeData = readLocaleData(locale)
 
+	// Check for duplicate keys in all locale files
+	const allDuplicates: string[] = []
+	const localeFiles = fs.readdirSync(LOCALE_DIR).filter((file) => file.endsWith('.json'))
+
+	for (const localeFile of localeFiles) {
+		const filePath = `${LOCALE_DIR}/${localeFile}`
+		const fileContent = fs.readFileSync(filePath, { encoding: 'utf8' })
+		const duplicates = findDuplicateKeysInJsonString(fileContent, localeFile)
+		allDuplicates.push(...duplicates)
+	}
+
+	if (allDuplicates.length > 0) {
+		console.log('\nDuplicate keys found:\n')
+		allDuplicates.forEach((dup) => console.log(dup))
+	}
+
 	const missingTexts: string[] = []
 	for (const localizedText of localizedTextSet) {
 		if (!checkRecursively(localizedText, localeData)) {
@@ -96,7 +162,7 @@ function checkTranslations() {
 		unusedTexts.forEach((text) => console.log(`'${text}'`))
 	}
 
-	if (missingTexts.length > 0 || unusedTexts.length > 0) {
+	if (missingTexts.length > 0 || unusedTexts.length > 0 || allDuplicates.length > 0) {
 		process.exit(1)
 	}
 }

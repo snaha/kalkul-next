@@ -24,7 +24,7 @@
 	let { client, portfolio, close }: Props = $props()
 
 	let name = $state(
-		capitalizeFirstLetter($_('portfolio')) +
+		capitalizeFirstLetter($_('common.portfolio')) +
 			' ' +
 			(portfolioStore.filter(client.id).length + 1).toString(),
 	)
@@ -215,7 +215,7 @@
 			dateInputLabel={$_('common.endDate')}
 			bind:date={endDate}
 			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioEnd')}
-			agePlaceholder={$_('clientAge')}
+			agePlaceholder={$_('common.clientAge')}
 			birthDate={new Date(client.birth_date)}
 		/>
 

@@ -26,15 +26,12 @@
 			"subtitle": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
 			"betaDisclaimer": "Kalkul je momentálně dostupný jako omezená bezplatná beta verze. Chcete se připojit k naší rané komunitě? Zadejte svůj e-mail níže a brzy se vám ozveme!",
 			"ctaEmailPlaceholder": "Firemní e-mail",
-			"ctaEmailSubmit": "Odebírat novinky",
-			"ctaEmailSubmitLoading": "Zpracovávám..",
 			"ctaDisclaimer": "Přihlášením k odběru souhlasíte s tím, že vám Kalkul bude zasílat e-maily s informacemi o spuštění produktu, novinkách a aktualizacích. Nebudeme vás zahlcovat spamem. Odhlásit se můžete kdykoliv.",
 			"subscribedText": "Děkujeme za odběr! Jakmile budeme mít zajímavé novinky, pošleme vám e-mail na adresu {colorHigh}."
 		},
 		"account": {
 			"settings": "Nastavení",
 			"account": "Účet",
-			"payments": "Platby a fakturace",
 			"manageSubscription": "Spravovat předplatné",
 			"subscriptionDisclaimer": "Vaše předplatné se automaticky obnovuje každý rok.",
 			"yearlyPlan": "Roční plán",
@@ -60,7 +57,6 @@
 		},
 		"home": {
 			"allClients": "Všichni klienti",
-			"search": "Hledat",
 			"clearSearch": "Vymazat hledání",
 			"addClient": "Přidat klienta",
 			"noClientsYet": "Zatím žádní klienti",
@@ -74,7 +70,6 @@
 			"kalkulExplanation": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
 			"loginOnComputer": "Jakmile budete u počítače, přihlaste se na kalkul.app a začněte testovat.",
 			"kalkulNotAvailableOnMobile": "Kalkul bude brzy dostupný i na mobilních zařízeních!",
-			"joinDiscordText": "Mezitím se můžete připojit ke konverzaci na našem Discord serveru.",
 			"joinCommunity": "Připojte se k naší komunitě Discord",
 			"whatsNext": "Co dál?",
 			"kalkulIsBeta": "Kalkul je momentálně dostupný jako omezená bezplatná beta verze, pouze pro testovací účely",
@@ -108,11 +103,8 @@
 		"signUp": {
 			"signUp": "Zaregistrovat se",
 			"subscribeToNewsletter": "Chci dostávat e-mailem novinky a informace o produktu",
-			"signUpWithGoogle": "Zaregistrovat se pomocí Google",
 			"createAccount": "Vytvořit účet",
-			"cancel": "Zrušit",
 			"alreadyHaveAccount": "Už máte účet?",
-			"login": "Přihlásit se",
 			"verificationLinkLocal": "E-mail s ověřovacím odkazem byl odeslán na adresu {email}.",
 			"verificationLinkRemote": "E-mail s ověřovacím odkazem byl odeslán na {email}.",
 			"checkEmail": "Zkontrolujte e-mail a dokončete registraci!",
@@ -156,9 +148,7 @@
 			"confirmNewPassword": "Potvrdit nové heslo",
 			"successChangePassword": "Vaše heslo bylo úspěšně změněno!",
 			"backToSettings": "Zpět do nastavení účtu",
-			"changePassword": "Změnit heslo",
-			"newPassword:": "Nové heslo",
-			"confirmNewPassword:": "Potvrdit nové heslo"
+			"changePassword": "Změnit heslo"
 		}
 	},
 	"component": {
@@ -170,7 +160,6 @@
 			"addInvestment": "Přidat investici",
 			"editInvestment": "Upravit investici",
 			"investmentName": "Název investice",
-			"importDataInvestment": "Importovat data pro tuto investici",
 			"importData": "Importovat data",
 			"matchingProducts": "Odpovídající produkty",
 			"foundMatchingProducts": "{numProducts, plural, one {Našli jsme jeden produkt odpovídající vašemu hledání a měně portfolia ({currency})} few {Našli jsme # produkty odpovídající vašemu hledání a měně portfolia ({currency})} other {Našli jsme # produktů odpovídajících vašemu hledání a měně portfolia ({currency})}}",
@@ -189,7 +178,6 @@
 			"tickerExplanation": "Ticker symbol, také známý jako symbol akcie, je jedinečná kombinace písmen přiřazená veřejně obchodovaným společnostem na burzách cenných papírů.",
 			"errorFetchingIsin": "Při načítání ISIN čísla došlo k chybě",
 			"noInvestmentFound": "Investice nenalezena",
-			"identifierNotSupported": "Tento identifikátor není podporován s aktuální měnou",
 			"noProductsFound": "Nebyly nalezeny žádné produkty odpovídající vašemu hledání a měně portfolia ({currency})",
 			"tryDifferentSearch": "Zkuste jiný hledaný výraz nebo přidejte investici ručně",
 			"tryAgain": "Zkusit znovu",
@@ -241,11 +229,15 @@
 			"removeFocus": "Odebrat zvýraznění",
 			"focusInChart": "Zvýraznit v grafu",
 			"hideInChart": "Skrýt v grafu",
-			"editInvestmentDetails": "Upravit detaily investice",
 			"duplicateInvestment": "Duplikovat investici",
 			"deleteInvestment": "Smazat investici",
 			"noTransactionsYet": "Zatím žádné transakce",
 			"noTransactionsYetText": "Použijte tlačítko výše pro přidání"
+		},
+		"login": {
+			"forgotPassword": "Zapomněli jste heslo?",
+			"noAccount": "Ještě nemáte účet?",
+			"signUp": "Zaregistrovat se"
 		},
 		"linkSharingConfirmation": {
 			"title": "Vypnout sdílení odkazu?",
@@ -253,16 +245,6 @@
 			"smallText": "Pokud později znovu aktivujete sdílení odkazu, bude vygenerován nový odkaz.",
 			"confirmButton": "Vypnout sdílení odkazu",
 			"cancelButton": "Ponechat sdílení aktivní"
-		},
-		"login": {
-			"signInGoogle": "Přihlásit se pomocí Google",
-			"password": "Heslo",
-			"email": "E-mail",
-			"login": "Přihlásit se",
-			"forgotPassword": "Zapomněli jste heslo?",
-			"cancel": "Zrušit",
-			"noAccount": "Ještě nemáte účet?",
-			"signUp": "Zaregistrovat se"
 		},
 		"portfolioHeader": {
 			"addInvestment": "Přidat investici",
@@ -286,9 +268,7 @@
 			"helpAndFeedback": "Nápověda a zpětná vazba",
 			"editTransaction": "Upravit transakci",
 			"duplicateTransaction": "Duplikovat transakci",
-			"deleteTransaction": "Smazat transakci",
-			"totalDeposit": "{amount} {currency} celkem vloženo",
-			"totalWithdrawal": "{amount} {currency} celkem vybráno"
+			"deleteTransaction": "Smazat transakci"
 		},
 		"welcome": {
 			"startUsingKalkul": "Začít používat Kalkul"
@@ -312,7 +292,6 @@
 	},
 	"common": {
 		"paymentAndBilling": "Platby a fakturace",
-		"or": "nebo",
 		"notFound": "Nenalezeno",
 		"withoutInflation": "Bez inflace",
 		"total": "Celkem",
@@ -337,7 +316,6 @@
 		"in": "v",
 		"details": "Podrobnosti",
 		"apy": "Roční výnosnost (p.a.)",
-		"fee": "Poplatek",
 		"fees": "Poplatky",
 		"successFee": "Výkonnostní poplatek",
 		"managementFee": "Poplatek za správu",
@@ -349,7 +327,6 @@
 		"exitFee": "Výstupní poplatek",
 		"ongoing": "Průběžně",
 		"upfront": "Předem",
-		"fixed": "Fixní",
 		"currency": "Měna",
 		"inflation": "Inflace",
 		"startDate": "Datum začátku",
@@ -371,6 +348,36 @@
 		"showToday": "Zobrazit dnešek",
 		"logout": "Odhlásit se",
 		"comingSoon": "Na téhle funkci usilovně pracujeme!",
+		"investment": "Investice",
+		"importData": "Importovat data",
+		"portfolio": "Portfolio",
+		"inflationAdjusted": "Upraveno o inflaci",
+		"viewSamplePortfolio": "Zobrazit ukázkové portfolio",
+		"errorWhileFetchingPrice": "Chyba při načítání ceny",
+		"thereWasAnErrorWhileLoadingThePage": "Při načítání stránky došlo k chybě",
+		"pleaseTryReloadingThePage": "Zkuste prosím stránku znovu načíst",
+		"welcomeToKalkul": "Vítejte v Kalkulu!",
+		"noActiveSubscription": "Žádné aktivní předplatné",
+		"activateYourTrialRemainingDaysFreeTrialTemplate": "Aktivujte si {trialRemainingDays}-denní zkušební verzi zdarma",
+		"pleaseSubscribeToUseKalkul": "Pro používání Kalkulu si prosím předplaťte!",
+		"earlyBirdDiscount": "Sleva pro první uživatele",
+		"billedEveryYear": "účtováno každý rok",
+		"amountChargedNow": "Částka k úhradě nyní",
+		"firstPaymentOnTemplate": "První platba dne {date}",
+		"amountDue": "Částka k úhradě",
+		"yearlyPlan": "Roční plán",
+		"getStartedNow": "Začít nyní",
+		"proceedToPayment": "Přejít k platbě",
+		"yourSubscriptionIsActive": "Vaše předplatné je aktivní",
+		"portfolioLink": "Odkaz na portfolio",
+		"thereWasAnError": "Došlo k chybě",
+		"manageSubscription": "Spravovat předplatné",
+		"yesFreeTrialNowActive": "Ano! Vaše zkušební verze je nyní aktivní!",
+		"freeTrial": "Zkušební verze",
+		"daysRemaining": "zbývá dní",
+		"paymentSuccessful": "Platba byla úspěšná",
+		"thankYouForUsingKalkul": "Děkujeme za používání Kalkulu!",
+		"startUsingKalkul": "Začít používat Kalkul",
 		"portfolioName": "Název portfolia",
 		"currentValue": "Aktuální hodnota",
 		"password": "Heslo",
@@ -383,8 +390,6 @@
 		"totalInvestments": "Celková hodnota investic"
 	},
 	"error": {
-		"passwordLengthError": "Heslo musí mít alespoň 6 znaků",
-		"passwordNotSameError": "Hesla se neshodují",
 		"emailError": "Toto nevypadá jako platný e-mail",
 		"birthDateError": "Datum narození nemůže být v budoucnosti.",
 		"birthDateUndefined": "Zadejte platné datum narození",

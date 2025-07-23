@@ -51,7 +51,7 @@
 				<Typography variant="h5" class="color-light">{year}</Typography>
 				{#if adjustWithInflation}
 					<Typography variant="small" --typography-color="var(--colors-dark-high)"
-						>{$_('Inflation adjusted')}</Typography
+						>{$_('common.inflationAdjusted')}</Typography
 					>
 				{/if}
 			</Horizontal>

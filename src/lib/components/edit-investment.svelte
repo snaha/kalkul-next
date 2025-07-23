@@ -30,7 +30,7 @@
 	let { portfolio, investment, close }: Props = $props()
 
 	const defaultName =
-		capitalizeFirstLetter($_('investment')) +
+		capitalizeFirstLetter($_('common.investment')) +
 		' ' +
 		(investmentStore.filter(portfolio.id).length + 1).toString()
 
@@ -179,7 +179,7 @@
 				onclick={() => (isImportInvestmentModalOpen = true)}
 			>
 				<DocumentImport size={24} />
-				{$_('Import data')}
+				{$_('common.importData')}
 			</Button>
 		</section>
 		<Input

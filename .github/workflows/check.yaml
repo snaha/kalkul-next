@@ -36,6 +36,9 @@ jobs:
       - name: Code linting
         run: pnpm run lint
 
+      - name: Check localization files
+        run: pnpm check-locales
+
       - name: Check dependencies and unused files
         run: pnpm knip
 

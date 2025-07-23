@@ -38,6 +38,8 @@ See `README.md` for development commands, project structure, and conventions.
    - Import with `import { _ } from 'svelte-i18n'` and use as `$_('key.path')`
    - Initialize in `src/lib/locales/index.ts` with Czech (`cs`) as default
    - Browser language auto-detected in `src/routes/+layout.ts`
+   - Do not use trailing commas in the translation JSON files. Running `pnpm format` fixes the formatting of all files, including the JSON translation files.
+   - Running `pnpm check-locales` returns a list of missing localizations and a list of non-used labels from the JSON translation files.
 
    Example usage:
 
@@ -113,5 +115,6 @@ See `README.md` for development commands, project structure, and conventions.
 2. `pnpm lint` - Checks code style and quality with ESLint and Prettier
 3. `pnpm check` - Runs Svelte Kit sync and TypeScript type checking
 4. `pnpm knip` - Finds unused files, dependencies, and exports
+5. `pnpm check-locales` Checks for missing, unused or duplicate translations
 
-All four commands must pass successfully before committing. This ensures code quality and prevents CI/CD failures.
+All commands must pass successfully before committing. This ensures code quality and prevents CI/CD failures.

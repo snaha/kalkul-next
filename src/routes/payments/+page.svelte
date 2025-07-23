@@ -92,7 +92,7 @@
 	async function fetchPrice(price_id: string) {
 		const response = await authorizedFetch(apiRoutes.PRICE(price_id))
 		if (!response.ok) {
-			throw new Error($_('Error while fetching price'))
+			throw new Error($_('common.errorWhileFetchingPrice'))
 		}
 
 		return (await response.json()) as Stripe.Price
@@ -122,9 +122,9 @@
 			<img src={`${base}/images/payment-error.svg`} alt="error" width="142" height="200" />
 			<Vertical --vertical-gap="var(--half-padding)">
 				<Typography variant="large" bold
-					>{$_('There was an error while loading the page')}</Typography
+					>{$_('common.thereWasAnErrorWhileLoadingThePage')}</Typography
 				>
-				<Typography variant="large">{$_('Please try reloading the page')}</Typography>
+				<Typography variant="large">{$_('common.pleaseTryReloadingThePage')}</Typography>
 			</Vertical>
 			<Button variant="strong" dimension="compact" onclick={reload}
 				><WatsonHealthRotate_360 size={24} />Reload</Button
@@ -136,14 +136,14 @@
 		{#if !subscription}
 			<Vertical --vertical-gap="var(--half-padding)">
 				<Typography --colors-ultra-high={isTrial ? 'var(--colors-ultra-high)' : 'var(--colors-red)'}
-					>{isTrial ? $_('Welcome to Kalkul!') : $_('No active subscription')}</Typography
+					>{isTrial ? $_('common.welcomeToKalkul') : $_('common.noActiveSubscription')}</Typography
 				>
 				<Typography variant="h4"
 					>{isTrial
-						? $_('Activate your {trialRemainingDays}-day free trial', {
+						? $_('common.activateYourTrialRemainingDaysFreeTrialTemplate', {
 								values: { trialRemainingDays },
 							})
-						: $_('Please subscribe to use Kalkul!')}</Typography
+						: $_('common.pleaseSubscribeToUseKalkul')}</Typography
 				>
 			</Vertical>
 			{#if isEarlyBird}
@@ -157,19 +157,19 @@
 								<Typography variant="large" bold class="green"
 									>{earlyBirdMonthlyFee} {currency}</Typography
 								>
-								<Typography variant="large">/ {$_('month')}</Typography>
+								<Typography variant="large">/ {$_('common.month')}</Typography>
 							</Typography>
 							<Badge
 								dimension="small"
 								style="background-color: var(--colors-high); color: var(--colors-light-base)"
-								><Rocket size={16} />{$_('Early bird discount')}</Badge
+								><Rocket size={16} />{$_('common.earlyBirdDiscount')}</Badge
 							>
 						</Horizontal>
 						<Typography variant="small">
 							<Typography variant="small" class="line-through">{yearlyFee} {currency}</Typography
 							>&nbsp;
 							<Typography variant="small">
-								{earlyBirdYearlyFee} {currency} {$_('billed every year')}</Typography
+								{earlyBirdYearlyFee} {currency} {$_('common.billedEveryYear')}</Typography
 							>
 						</Typography>
 					</Vertical>
@@ -177,7 +177,7 @@
 					<Vertical class="vertical-trial-info" --vertical-gap="var(--padding)">
 						<Horizontal --horizontal-justify-content="space-between">
 							<Typography --colors-ultra-high="var(--colors-light-base)"
-								>{$_('Amount charged now')}</Typography
+								>{$_('common.amountChargedNow')}</Typography
 							>
 							<Typography --colors-ultra-high="var(--colors-light-base)"
 								><Typography bold>0</Typography> {currency}</Typography
@@ -195,12 +195,12 @@
 			<Vertical --vertical-gap="var(--padding)" class="vertical-border">
 				<Typography variant="h5"
 					>{isTrial
-						? $_('First payment on {date}', { values: { date: firstPaymentFormattedDate } })
-						: $_('Amount due')}</Typography
+						? $_('common.firstPaymentOnTemplate', { values: { date: firstPaymentFormattedDate } })
+						: $_('common.amountDue')}</Typography
 				>
 				<Vertical --vertical-gap="0">
 					<Horizontal --horizontal-justify-content="space-between">
-						<Typography>{$_('Yearly plan')}</Typography>
+						<Typography>{$_('common.yearlyPlan')}</Typography>
 						<Typography
 							><Typography bold>{formatNumber(earlyBirdYearlyFee)}</Typography>
 							{currency}</Typography
@@ -222,7 +222,8 @@
 					onclick={onClickPay}
 					disabled={payButtonDisabled}
 				>
-					<span id="button-text">{isTrial ? $_('Get started now') : $_('Proceed to payment')}</span
+					<span id="button-text"
+						>{isTrial ? $_('common.getStartedNow') : $_('common.proceedToPayment')}</span
 					><ArrowRight size={24} />
 				</Button>
 				<Typography variant="small"
@@ -238,7 +239,7 @@
 					style="display: flex; gap: var(--half-padding)"
 				>
 					<CheckmarkFilled size={32} />
-					{$_('Your subscription is active')}</Typography
+					{$_('common.yourSubscriptionIsActive')}</Typography
 				>
 				<Typography variant="small" --colors-ultra-high="var(--colors-high)">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->

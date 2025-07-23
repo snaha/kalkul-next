@@ -19,15 +19,12 @@
 			"subtitle": "Kalkul helps professional advisors create, visualise and share financial plans with their clients.",
 			"betaDisclaimer": "Kalkul is currently available as limited free beta. Interested in joining our early community? Add your email below and we’ll be in touch soon!",
 			"ctaEmailPlaceholder": "Business email",
-			"ctaEmailSubmit": "Subscribe",
-			"ctaEmailSubmitLoading": "Subscribing...",
 			"ctaDisclaimer": "By subscribing you agree to receive emails from Kalkul to get notified about product releases, updates and news. We won’t spam you. Unsubscribe anytime.",
 			"subscribedText": "Thanks for subscribing! You’ll get an email at {colorHigh} as soon as we have some exciting news to share!"
 		},
 		"account": {
 			"settings": "Settings",
 			"account": "Account",
-			"payments": "Payments & billing",
 			"manageSubscription": "Manage subscription",
 			"subscriptionDisclaimer": "Your subscription will automatically renew annually on a recurring basis.",
 			"yearlyPlan": "Yearly plan",
@@ -53,7 +50,6 @@
 		},
 		"home": {
 			"allClients": "All clients",
-			"search": "Search",
 			"clearSearch": "Clear search",
 			"addClient": "Add client",
 			"noClientsYet": "No clients yet",
@@ -67,7 +63,6 @@
 			"kalkulExplanation": "Kalkul helps professional advisors create, visualise and share financial plans with their clients.",
 			"loginOnComputer": "Once you’ll be in front of your computer, login with your account to kalkul.app and start testing yourself.",
 			"kalkulNotAvailableOnMobile": "Kalkul will be available on mobile soon!",
-			"joinDiscordText": "In the meantime, you can already join the conversation on our Discord server.",
 			"joinCommunity": "Join our Discord community",
 			"whatsNext": "What’s next?",
 			"kalkulIsBeta": "Kalkul is currently available as a limited free beta, for testing purposes only",
@@ -101,11 +96,8 @@
 		"signUp": {
 			"signUp": "Sign up",
 			"subscribeToNewsletter": "I want to receive product updates and news via email",
-			"signUpWithGoogle": "Sign up with Google",
 			"createAccount": "Create account",
-			"cancel": "Cancel",
 			"alreadyHaveAccount": "Already have an account?",
-			"login": "Login",
 			"verificationLinkLocal": "An email with a verification link was sent to your {email}.",
 			"verificationLinkRemote": "An email with a verification link was sent to {email}.",
 			"checkEmail": "Check your email to complete sign up!",
@@ -149,9 +141,7 @@
 			"confirmNewPassword": "Confirm new password",
 			"successChangePassword": "Your password was successfully changed!",
 			"backToSettings": "Return to account settings",
-			"changePassword": "Change password",
-			"newPassword:": "New password",
-			"confirmNewPassword:": "Confirm new password"
+			"changePassword": "Change password"
 		}
 	},
 	"component": {
@@ -163,7 +153,6 @@
 			"addInvestment": "Add investment",
 			"editInvestment": "Edit investment",
 			"investmentName": "Investment name",
-			"importDataInvestment": "Import data for this investment",
 			"importData": "Import data",
 			"matchingProducts": "Matching products",
 			"foundMatchingProducts": "{numProducts, plural, one {We found one product matching your search and portfolio currency ({currency})} other {We found # products matching your search and portfolio currency ({currency})}}",
@@ -175,7 +164,6 @@
 			"tickerExplanation": "A ticker symbol, also known as a stock symbol, is a unique combination of letters assigned to publicly traded companies on stock exchanges.",
 			"errorFetchingIsin": "There was an error during fetching ISIN number",
 			"noInvestmentFound": "No investment found",
-			"identifierNotSupported": "This identifier is not supported with the current currency",
 			"noProductsFound": "No products matching your search and portfolio currency ({currency})",
 			"tryDifferentSearch": "Please try a different search term or add the investment manually",
 			"tryAgain": "Try again",
@@ -234,11 +222,15 @@
 			"removeFocus": "Remove focus",
 			"focusInChart": "Focus in chart",
 			"hideInChart": "Hide in chart",
-			"editInvestmentDetails": "Edit investment details",
 			"duplicateInvestment": "Duplicate investment",
 			"deleteInvestment": "Delete investment",
 			"noTransactionsYet": "No transactions yet",
 			"noTransactionsYetText": "Use the button above to add one"
+		},
+		"login": {
+			"forgotPassword": "Forgot password?",
+			"noAccount": "No account yet?",
+			"signUp": "Sign up"
 		},
 		"linkSharingConfirmation": {
 			"title": "Turn link sharing off?",
@@ -246,16 +238,6 @@
 			"smallText": "If you re-activate link sharing later on, a new link will be generated.",
 			"confirmButton": "Turn off link sharing",
 			"cancelButton": "Keep link sharing on"
-		},
-		"login": {
-			"signInGoogle": "Sign in with Google",
-			"password": "Password",
-			"email": "Email",
-			"login": "Login",
-			"forgotPassword": "Forgot password?",
-			"cancel": "Cancel",
-			"noAccount": "No account yet?",
-			"signUp": "Sign up"
 		},
 		"portfolioHeader": {
 			"addInvestment": "Add investment",
@@ -279,9 +261,7 @@
 			"helpAndFeedback": "Help & Feedback",
 			"editTransaction": "Edit transaction",
 			"duplicateTransaction": "Duplicate transaction",
-			"deleteTransaction": "Delete transaction",
-			"totalDeposit": "{amount} {currency} total deposit",
-			"totalWithdrawal": "{amount} {currency} total withdrawal"
+			"deleteTransaction": "Delete transaction"
 		},
 		"welcome": {
 			"startUsingKalkul": "Start using Kalkul"
@@ -305,7 +285,6 @@
 	},
 	"common": {
 		"paymentAndBilling": "Payment & billing",
-		"or": "or",
 		"notFound": "Not found",
 		"withoutInflation": "Without inflation",
 		"total": "Total",
@@ -330,7 +309,6 @@
 		"in": "in",
 		"details": "Details",
 		"apy": "APY",
-		"fee": "Fee",
 		"fees": "Fees",
 		"successFee": "Success fee",
 		"managementFee": "Management fee",
@@ -342,7 +320,6 @@
 		"exitFee": "Exit fee",
 		"ongoing": "Ongoing",
 		"upfront": "Upfront",
-		"fixed": "Fixed",
 		"currency": "Currency",
 		"inflation": "Inflation",
 		"startDate": "Start date",
@@ -363,7 +340,6 @@
 		"breakdown": "Breakdown",
 		"showToday": "Show today",
 		"logout": "Logout",
-		"comingSoon": "Coming soon!",
 		"portfolioName": "Portfolio name",
 		"currentValue": "Current value",
 		"password": "Password",
@@ -373,11 +349,40 @@
 		"totalDeposited": "Total deposited",
 		"totalWithdrawn": "Total withdrawn",
 		"totalFees": "Total fees",
-		"totalInvestments": "Total investment value"
+		"totalInvestments": "Total investment value",
+		"comingSoon": "Coming soon!",
+		"investment": "Investment",
+		"importData": "Import data",
+		"portfolio": "Portfolio",
+		"inflationAdjusted": "Inflation adjusted",
+		"viewSamplePortfolio": "View sample portfolio",
+		"errorWhileFetchingPrice": "Error while fetching price",
+		"thereWasAnErrorWhileLoadingThePage": "There was an error while loading the page",
+		"pleaseTryReloadingThePage": "Please try reloading the page",
+		"welcomeToKalkul": "Welcome to Kalkul!",
+		"noActiveSubscription": "No active subscription",
+		"activateYourTrialRemainingDaysFreeTrialTemplate": "Activate your {trialRemainingDays}-day free trial",
+		"pleaseSubscribeToUseKalkul": "Please subscribe to use Kalkul!",
+		"earlyBirdDiscount": "Early bird discount",
+		"billedEveryYear": "billed every year",
+		"amountChargedNow": "Amount charged now",
+		"firstPaymentOnTemplate": "First payment on {date}",
+		"amountDue": "Amount due",
+		"yearlyPlan": "Yearly plan",
+		"getStartedNow": "Get started now",
+		"proceedToPayment": "Proceed to payment",
+		"yourSubscriptionIsActive": "Your subscription is active",
+		"portfolioLink": "Portfolio link",
+		"thereWasAnError": "There was an error",
+		"manageSubscription": "Manage subscription",
+		"yesFreeTrialNowActive": "Yes! Your free trial is now active!",
+		"freeTrial": "Free trial",
+		"daysRemaining": "days remaining",
+		"paymentSuccessful": "Payment successful",
+		"thankYouForUsingKalkul": "Thank you for using Kalkul!",
+		"startUsingKalkul": "Start using Kalkul"
 	},
 	"error": {
-		"passwordLengthError": "Password must be at least 6 characters long",
-		"passwordNotSameError": "Passwords do not match",
 		"emailError": "This doesn’t look like a correct email",
 		"birthDateError": "Birthdate cannot be in the future.",
 		"birthDateUndefined": "Please set valid birthdate",

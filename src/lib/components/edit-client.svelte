@@ -188,7 +188,7 @@
 					<Button
 						variant="solid"
 						dimension="small"
-						onclick={() => notImplemented(undefined, $_('comingSoon'))}
+						onclick={() => notImplemented(undefined, $_('common.comingSoon'))}
 						><Image size={16} />{$_('page.client.uploadImage')}</Button
 					>
 				</section>

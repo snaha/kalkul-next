@@ -78,10 +78,10 @@
 <Vertical class="max560" --vertical-gap="var(--double-padding)">
 	{#if !subscription}
 		<Vertical --vertical-align-items="center">
-			{$_('There was an error')}
+			{$_('common.thereWasAnError')}
 			<Typography>Session: {sessionId}</Typography>
 			<Button variant="strong" dimension="compact" onclick={openStripeSessionPortal}>
-				{$_('Manage subscription')}<ArrowRight size={24} />
+				{$_('common.manageSubscription')}<ArrowRight size={24} />
 			</Button>
 		</Vertical>
 	{:else}
@@ -91,14 +91,14 @@
 			</Horizontal>
 			<Horizontal --horizontal-justify-content="center">
 				<Typography variant="large" bold class="green"
-					>{$_('Yes! Your free trial is now active!')}</Typography
+					>{$_('common.yesFreeTrialNowActive')}</Typography
 				>
 			</Horizontal>
 			<Vertical --vertical-gap="var(--padding)">
 				<Vertical class="green-bg" --vertical-gap="var(--padding)">
 					<Horizontal --horizontal-justify-content="space-between">
 						<Typography --colors-ultra-high="var(--colors-base)"
-							>{$_('Amount charged now')}</Typography
+							>{$_('common.amountChargedNow')}</Typography
 						>
 						<Typography --colors-ultra-high="var(--colors-base)"
 							><Typography bold>{yearlyFee}</Typography> {currency}</Typography
@@ -107,9 +107,11 @@
 				</Vertical>
 				<Vertical class="green-bg trans-10" --vertical-gap="var(--padding)">
 					<Horizontal --horizontal-justify-content="space-between">
-						<Typography --colors-ultra-high="var(--colors-high)">{$_('Free trial')}</Typography>
 						<Typography --colors-ultra-high="var(--colors-high)"
-							><Typography bold>14</Typography> {$_('days remaining')}</Typography
+							>{$_('common.freeTrial')}</Typography
+						>
+						<Typography --colors-ultra-high="var(--colors-high)"
+							><Typography bold>14</Typography> {$_('common.daysRemaining')}</Typography
 						>
 					</Horizontal>
 					<Vertical --vertical-gap="var(--padding)">
@@ -138,17 +140,19 @@
 					<img src={`${base}/images/payment-success.svg`} alt="success" width="256" height="256" />
 				</Horizontal>
 				<Horizontal --horizontal-justify-content="center">
-					<Typography variant="large" bold class="green">{$_('Payment successful')}</Typography>
+					<Typography variant="large" bold class="green"
+						>{$_('common.paymentSuccessful')}</Typography
+					>
 				</Horizontal>
 				<Horizontal --horizontal-justify-content="center">
-					<Typography variant="large">{$_('Thank you for using Kalkul!')}</Typography>
+					<Typography variant="large">{$_('common.thankYouForUsingKalkul')}</Typography>
 				</Horizontal>
 			</Vertical>
 			<Vertical --vertical-gap="var(--padding)">
 				<Vertical class="green-bg" --vertical-gap="var(--padding)">
 					<Horizontal --horizontal-justify-content="space-between">
 						<Typography --colors-ultra-high="var(--colors-base)"
-							>{$_('Amount charged now')}</Typography
+							>{$_('common.amountChargedNow')}</Typography
 						>
 						<Typography --colors-ultra-high="var(--colors-base)"
 							><Typography bold>{yearlyFee}</Typography> {currency}</Typography
@@ -157,7 +161,9 @@
 				</Vertical>
 				<Vertical class="green-bg trans-10" --vertical-gap="var(--padding)">
 					<Horizontal --horizontal-justify-content="space-between">
-						<Typography --colors-ultra-high="var(--colors-high)">{$_('Yearly plan')}</Typography>
+						<Typography --colors-ultra-high="var(--colors-high)"
+							>{$_('common.yearlyPlan')}</Typography
+						>
 						<Typography --colors-ultra-high="var(--colors-high)"
 							><Typography bold>{yearlyFee}</Typography> {currency}</Typography
 						>
@@ -185,7 +191,7 @@
 		{/if}
 		<Horizontal --horizontal-justify-content="center">
 			<Button variant="strong" dimension="compact" onclick={onClick}>
-				{$_('Start using Kalkul')}<ArrowRight size={24} />
+				{$_('common.startUsingKalkul')}<ArrowRight size={24} />
 			</Button>
 		</Horizontal>
 	{/if}

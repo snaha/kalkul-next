@@ -84,7 +84,12 @@
 			></Toggle>
 			{#if linkValue}
 				<section class="horizontal">
-					<Input value={linkValue} inert class="stretch max560" label={$_('Portfolio link')} />
+					<Input
+						value={linkValue}
+						inert
+						class="stretch max560"
+						label={$_('common.portfolioLink')}
+					/>
 					<CopyButton
 						variant="ghost"
 						position="bottom"

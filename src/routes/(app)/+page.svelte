@@ -122,7 +122,7 @@
 				class="max560"
 			>
 				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
-					>{$_('View sample portfolio')}</Button
+					>{$_('common.viewSamplePortfolio')}</Button
 				>
 				<Button variant="strong" onclick={hideWelcome} target="_blank" class="max560">
 					{$_('component.welcome.startUsingKalkul')}
@@ -153,7 +153,7 @@
 			</Vertical>
 			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
 				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
-					>{$_('View sample portfolio')}</Button
+					>{$_('common.viewSamplePortfolio')}</Button
 				>
 				<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
 					>{$_('page.home.joinCommunity')}</Button
