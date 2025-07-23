@@ -31,7 +31,6 @@
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
-	import { onMount } from 'svelte'
 	import HelpBox from '$lib/components/help-box.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
@@ -41,16 +40,11 @@
 	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
 
 	let showConfirmModal = $state(false)
-	let showWelcome = $state(false)
+	let showWelcome = $derived(authStore.user?.user_metadata.first_visit ? true : false)
 	let clientToBeDeleted: number | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(searchByName(searchQuery))
 	let isVideoPlayer = $state(false)
-
-	onMount(() => {
-		const firstVisit = authStore.user?.user_metadata.first_visit
-		showWelcome = firstVisit ? true : false
-	})
 
 	async function hideWelcome() {
 		await adapter.updateUserMetadata({ first_visit: false })
@@ -131,7 +125,7 @@
 					>{$_('View sample portfolio')}</Button
 				>
 				<Button variant="strong" onclick={hideWelcome} target="_blank" class="max560">
-					{$_('component.welcomeModal.startUsingKalkul')}
+					{$_('component.welcome.startUsingKalkul')}
 					<ArrowRight size={24} />
 				</Button>
 			</Horizontal>
@@ -196,12 +190,10 @@
 				>
 			</section>
 			<HelpBox
-				open={clientStore.data.length === 0}
-				title={$_('Add client')}
-				boxText={$_('Press the “Add client” button to create your first client')}
-				text={$_(
-					'This page will list all your clients. You can access it anytime by clicking on the Kalkul logo in the top-left corner of the screen. Once you set up your first client, you will be able to create an investment portfolio for this client.',
-				)}
+				open={true}
+				title={$_('helpBox.addClientTitle')}
+				boxText={$_('helpBox.addClientText')}
+				text={$_('helpBox.clientListExplanation')}
 			>
 				<Vertical --vertical-gap="var(--half-padding)">
 					<Button
@@ -209,10 +201,10 @@
 						dimension="compact"
 						onclick={() => {
 							isVideoPlayer = true
-						}}><LogoYoutube size={24} />{$_('Watch intro video')}</Button
+						}}><LogoYoutube size={24} />{$_('helpBox.watchIntroVideo')}</Button
 					>
 					<Button variant="solid" dimension="compact" href={samplePortfolioLink} target="_blank"
-						><Launch size={24} />{$_('View sample portfolio')}</Button
+						><Launch size={24} />{$_('helpBox.viewSamplePortfolio')}</Button
 					>
 				</Vertical>
 			</HelpBox>

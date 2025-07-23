@@ -290,9 +290,25 @@
 			"totalDeposit": "{amount} {currency} celkem vloženo",
 			"totalWithdrawal": "{amount} {currency} celkem vybráno"
 		},
-		"videoModal": {
+		"welcome": {
 			"startUsingKalkul": "Začít používat Kalkul"
 		}
+	},
+	"helpBox": {
+		"addClientTitle": "Přidat klienta",
+		"addClientText": "Stiskněte tlačítko \"Přidat klienta\" pro vytvoření prvního klienta",
+		"clientListExplanation": "Tato stránka zobrazí všechny vaše klienty. Můžete se na ni kdykoliv vrátit kliknutím na logo Kalkul v levém horním rohu obrazovky. Jakmile nastavíte prvního klienta, budete moci vytvořit investiční portfolio pro tohoto klienta.",
+		"addPortfolioTitle": "Přidat portfolio",
+		"addPortfolioText": "Stiskněte tlačítko \"Přidat portfolio\" pro přidání prvního portfolia pro tohoto klienta",
+		"portfolioExplanation": "Portfolio bude obsahovat konkrétní investice. Používejte portfolia k organizaci investic pro vašeho klienta. Pro každého klienta můžete vytvořit tolik portfolií, kolik chcete. Všechna portfolia pro tohoto klienta budou uvedena na stránce klienta.",
+		"addInvestmentTitle": "Přidat investici",
+		"addInvestmentText": "Stiskněte tlačítko \"Přidat investici\" pro přidání první investice do tohoto portfolia",
+		"investmentExplanation": "V klientském portfoliu můžete vytvořit tolik investic, kolik chcete. Jakmile budete mít nastavenou alespoň jednu investici, zobrazí se na této stránce podrobné informace o celém portfoliu.",
+		"addTransactionTitle": "Přidat transakci",
+		"addTransactionText": "V levé postranní liště stiskněte tlačítko \"Přidat transakci\" v požadované kartě investice.",
+		"transactionExplanation": "Transakce definují množství peněz, které jsou pro tuto konkrétní investici v průběhu času vloženy nebo vybrány.",
+		"watchIntroVideo": "Sledovat úvodní video",
+		"viewSamplePortfolio": "Zobrazit ukázkové portfolio"
 	},
 	"common": {
 		"paymentAndBilling": "Platby a fakturace",
@@ -313,6 +329,7 @@
 		"month": "Měsíc",
 		"day": "Den",
 		"email": "E-mail",
+		"emailOptional": "E-mail (volitelný)",
 		"cancel": "Zrušit",
 		"done": "Hotovo",
 		"login": "Přihlásit se",

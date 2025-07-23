@@ -214,14 +214,12 @@
 	</main>
 {/if}
 
-{#if portfolioStore.data.length === 0}
+{#if portfolios.length === 0}
 	<HelpBox
-		open={portfolioStore.data.length === 0}
-		title={$_('Add portfolio')}
-		boxText={$_('Press the “Add portfolio” button to add a first portfolio for this client')}
-		text={$_(
-			'A portfolio will contain specific investments. Use portfolios to organise investments for your client. You can create as many portfolios as you want for each client. All the portfolios for this client will be listed on the client’s page.',
-		)}
+		open={true}
+		title={$_('helpBox.addPortfolioTitle')}
+		boxText={$_('helpBox.addPortfolioText')}
+		text={$_('helpBox.portfolioExplanation')}
 	></HelpBox>
 {/if}
 

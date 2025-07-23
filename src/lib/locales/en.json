@@ -283,9 +283,25 @@
 			"totalDeposit": "{amount} {currency} total deposit",
 			"totalWithdrawal": "{amount} {currency} total withdrawal"
 		},
-		"videoModal": {
+		"welcome": {
 			"startUsingKalkul": "Start using Kalkul"
 		}
+	},
+	"helpBox": {
+		"addClientTitle": "Add client",
+		"addClientText": "Press the \"Add client\" button to create your first client",
+		"clientListExplanation": "This page will list all your clients. You can access it anytime by clicking on the Kalkul logo in the top-left corner of the screen. Once you set up your first client, you will be able to create an investment portfolio for this client.",
+		"addPortfolioTitle": "Add portfolio",
+		"addPortfolioText": "Press the \"Add portfolio\" button to add a first portfolio for this client",
+		"portfolioExplanation": "A portfolio will contain specific investments. Use portfolios to organise investments for your client. You can create as many portfolios as you want for each client. All the portfolios for this client will be listed on the client's page.",
+		"addInvestmentTitle": "Add investment",
+		"addInvestmentText": "Press the \"Add investment\" button to add a first investment in this portfolio",
+		"investmentExplanation": "You can create as many investments as you want in a client portfolio. Once you have at least one investment set up, this page will display detailed information about the whole portfolio.",
+		"addTransactionTitle": "Add a transaction",
+		"addTransactionText": "In the left sidebar, press the \"Add transaction\" button within the desired investment card.",
+		"transactionExplanation": "Transactions define the amount of money that is deposited or withdrawn for this specific investment over time.",
+		"watchIntroVideo": "Watch intro video",
+		"viewSamplePortfolio": "View sample portfolio"
 	},
 	"common": {
 		"paymentAndBilling": "Payment & billing",
@@ -306,6 +322,7 @@
 		"month": "Month",
 		"day": "Day",
 		"email": "Email",
+		"emailOptional": "Email (Optional)",
 		"cancel": "Cancel",
 		"done": "Done",
 		"login": "Login",

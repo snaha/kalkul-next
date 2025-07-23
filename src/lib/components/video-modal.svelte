@@ -26,7 +26,7 @@
 			</div>
 			<Horizontal class="video-button" --horizontal-justify-content="center">
 				<Button variant="darkoverlay" dimension="compact" onclick={close}>
-					{$_('component.videoModal.startUsingKalkul')}
+					{$_('component.welcome.startUsingKalkul')}
 					<ArrowRight size={24} />
 				</Button>
 			</Horizontal>

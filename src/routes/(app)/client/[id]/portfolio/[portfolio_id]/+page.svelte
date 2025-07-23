@@ -27,6 +27,12 @@
 	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investments = $derived(investmentStore.filter(portfolioId))
+	const investmentIds = $derived(investments.map((investment) => investment.id))
+	const transactions = $derived(
+		transactionStore.data.filter((transaction) =>
+			investmentIds.includes(transaction.investment_id),
+		),
+	)
 
 	const investmentsViewStore = $derived(
 		withInvestmentsViewStore(investmentStore.filter(portfolioId)),
@@ -154,7 +160,7 @@
 								toggleFocus={() => {
 									investmentsViewStore.toggleFocus(investment.id)
 								}}
-								open={investments.length === 1}
+								open={transactions.length === 0}
 							/>
 						{/each}
 					</section>
@@ -172,31 +178,25 @@
 					{investments}
 					bind:adjustWithInflation
 					{investmentsViewStore}
-					isEmpty={investments.length === 1 && transactionStore.data.length === 0}
+					isEmpty={transactions.length === 0}
 					clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
 				/>
 			</section>
 		</main>
 	{/if}
-	{#if investmentStore.data.length === 0}
+	{#if investments.length === 0}
 		<HelpBox
 			open={true}
-			title={$_('Add investment')}
-			boxText={$_('Press the “Add investment” button to add a first investment in this portfolio')}
-			text={$_(
-				'You can create as many investments as you want in a client portfolio. Once you have at least one investment set up, this page will display detailed information about the whole portfolio.',
-			)}
+			title={$_('helpBox.addInvestmentTitle')}
+			boxText={$_('helpBox.addInvestmentText')}
+			text={$_('helpBox.investmentExplanation')}
 		></HelpBox>
-	{:else if investmentStore.data.length === 1 && transactionStore.data.length === 0}
+	{:else if transactions.length === 0}
 		<HelpBox
 			open={true}
-			title={$_('Add a transaction')}
-			boxText={$_(
-				'In the left sidebar, press the “Add transaction” button within the desired investment card.',
-			)}
-			text={$_(
-				'Transactions define the amount of money that is deposited or withdrawn for this specific investment over time.',
-			)}
+			title={$_('helpBox.addTransactionTitle')}
+			boxText={$_('helpBox.addTransactionText')}
+			text={$_('helpBox.transactionExplanation')}
 		></HelpBox>
 	{/if}
 {/if}

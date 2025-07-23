@@ -33,7 +33,7 @@
 	let showConfirmModal = $state(false)
 	let error: string | undefined = $state()
 	let emailError: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state()
-	let emailValid = $state(false)
+	let emailValid = $state(true)
 	let emailTouched = $state(false)
 	let createDisabled = $derived(name === '' || !birthDate || birthDate > date || !emailValid)
 
@@ -100,14 +100,16 @@
 	}
 
 	$effect(() => {
-		const res = emailFormSchema.safeParse({ email })
-		if (res.success) {
-			emailError = undefined
-			emailValid = true
-			emailTouched = false
-		} else {
-			emailError = res.error.format()
-			emailValid = false
+		if (email !== '') {
+			const res = emailFormSchema.safeParse({ email })
+			if (res.success) {
+				emailError = undefined
+				emailValid = true
+				emailTouched = false
+			} else {
+				emailError = res.error.format()
+				emailValid = false
+			}
 		}
 	})
 </script>
@@ -164,7 +166,7 @@
 		<Input
 			variant="solid"
 			dimension="compact"
-			placeholder={$_('common.email')}
+			placeholder={$_('common.emailOptional')}
 			label={$_('common.email')}
 			bind:value={email}
 			error={emailTouched && email.trim() !== '' && emailError?.email?._errors

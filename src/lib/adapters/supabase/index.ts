@@ -202,9 +202,12 @@ export default class Supabase implements Adapter {
 			throw new Error(error.message)
 		}
 		if (authStore.user) {
-			authStore.user.user_metadata = {
-				...authStore.user?.user_metadata,
-				...data,
+			authStore.user = {
+				...authStore.user,
+				user_metadata: {
+					...authStore.user.user_metadata,
+					...data,
+				},
 			}
 		}
 	}
