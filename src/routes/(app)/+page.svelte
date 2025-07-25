@@ -36,6 +36,7 @@
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import VideoModal from '$lib/components/video-modal.svelte'
+	import YoutubeIntroVideo from '$lib/components/youtube-intro-video.svelte'
 
 	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
 
@@ -107,9 +108,7 @@
 			style="padding-top: var(--padding)"
 			class="max560"
 		>
-			<div class="video">
-				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
-			</div>
+			<YoutubeIntroVideo />
 			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
 				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
 				<Typography class="text-center" variant="large"
@@ -142,9 +141,7 @@
 {#snippet welcomeMobile()}
 	<Vertical --vertical-gap="0" --vertical-align-items="center">
 		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
-			<div class="video">
-				<iframe src="https://www.youtube.com/embed/0WOElk__PU0" title="intro video"> </iframe>
-			</div>
+			<YoutubeIntroVideo />
 			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
 				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
 				<Typography class="text-center" variant="large"
@@ -361,19 +358,8 @@
 	.spacer {
 		margin-top: var(--half-padding);
 	}
-	.video {
-		background-color: black;
-		width: 100%;
-		max-width: 100%;
-		aspect-ratio: 16 / 9;
-	}
 	:global(.text-center) {
 		text-align: center;
-	}
-	iframe {
-		width: 100%;
-		height: 100%;
-		border: 0;
 	}
 	:global(.max560) {
 		max-width: 560px;

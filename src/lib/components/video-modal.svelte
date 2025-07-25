@@ -5,6 +5,7 @@
 	import Vertical from './ui/vertical.svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
+	import YoutubeIntroVideo from './youtube-intro-video.svelte'
 
 	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
 
@@ -16,14 +17,7 @@
 <Modal bind:open {oncancel} {...restProps} --modal-max-width="592px">
 	{#if open}
 		<Vertical --vertical-gap="0">
-			<div class="video">
-				<iframe
-					src="https://www.youtube.com/embed/0WOElk__PU0?autoplay=1"
-					class="video"
-					title="intro video"
-				>
-				</iframe>
-			</div>
+			<YoutubeIntroVideo autoplay={true} />
 			<Horizontal class="video-button" --horizontal-justify-content="center">
 				<Button variant="darkoverlay" dimension="compact" onclick={close}>
 					{$_('component.welcome.startUsingKalkul')}
@@ -51,13 +45,6 @@
 	:global(.green) {
 		background-color: color-mix(in srgb, var(--colors-high) 10%, transparent);
 		color: var(--colors-high);
-	}
-	.video {
-		background-color: black;
-		width: 100%;
-		max-width: 100%;
-		aspect-ratio: 16 / 9;
-		border: 0;
 	}
 	:global(.video-button) {
 		background-color: black;
