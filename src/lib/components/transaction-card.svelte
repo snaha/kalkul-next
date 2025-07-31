@@ -131,12 +131,11 @@
 			<Typography variant="small">{numOccurrences} occurrences</Typography>
 		{/if}
 		<Typography variant="small"
-			>{$_(
-				transaction.type === 'deposit'
-					? 'component.viewHeader.totalDeposit'
-					: 'component.viewHeader.totalWithdrawal',
-				{ values: { amount: totalAmount, currency } },
-			)}</Typography
+			>{transaction.type === 'deposit'
+				? $_('component.viewHeader.totalDeposit', { values: { amount: totalAmount, currency } })
+				: $_('component.viewHeader.totalWithdrawal', {
+						values: { amount: totalAmount, currency },
+					})}</Typography
 		>
 	</section>
 </div>

@@ -19,7 +19,9 @@
 			"subtitle": "Kalkul helps professional advisors create, visualise and share financial plans with their clients.",
 			"betaDisclaimer": "Kalkul is currently available as limited free beta. Interested in joining our early community? Add your email below and we’ll be in touch soon!",
 			"ctaEmailPlaceholder": "Business email",
-			"ctaDisclaimer": "By subscribing you agree to receive emails from Kalkul to get notified about product releases, updates and news. We won’t spam you. Unsubscribe anytime.",
+			"ctaEmailSubmit": "Subscribe",
+			"ctaEmailSubmitLoading": "Subscribing...",
+			"ctaDisclaimer": "By subscribing you agree to receive emails from Kalkul to get notified about product releases, updates and news. We won't spam you. Unsubscribe anytime.",
 			"subscribedText": "Thanks for subscribing! You’ll get an email at {colorHigh} as soon as we have some exciting news to share!"
 		},
 		"account": {
@@ -262,7 +264,9 @@
 			"helpAndFeedback": "Help & Feedback",
 			"editTransaction": "Edit transaction",
 			"duplicateTransaction": "Duplicate transaction",
-			"deleteTransaction": "Delete transaction"
+			"deleteTransaction": "Delete transaction",
+			"totalDeposit": "Total deposits: {amount} {currency}",
+			"totalWithdrawal": "Total withdrawals: {amount} {currency}"
 		},
 		"welcome": {
 			"startUsingKalkul": "Start using Kalkul"

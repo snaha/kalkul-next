@@ -148,11 +148,9 @@
 							variant="strong"
 							onclick={onSubscribe}
 							disabled={!emailValid || email === '' || isSubscribing}
-							>{$_(
-								isSubscribing
-									? 'page.landing.ctaEmailSubmitLoading'
-									: 'page.landing.ctaEmailSubmit',
-							)}</Button
+							>{isSubscribing
+								? $_('page.landing.ctaEmailSubmitLoading')
+								: $_('page.landing.ctaEmailSubmit')}</Button
 						>
 					</div>
 					{#if !emailValid && !isMobile}

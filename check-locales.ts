@@ -16,10 +16,27 @@ function scanSourceFiles() {
 		}
 
 		const file = fs.readFileSync(filePath, { encoding: 'utf8' })
-		const localizedTexts = file.matchAll(/\$_\([\s]*'(.*?)'/gim)
-		for (const localizedText of localizedTexts) {
+
+		// First, find simple $_('key') patterns
+		const simpleTexts = file.matchAll(/\$_\([\s]*'(.*?)'/gim)
+		for (const localizedText of simpleTexts) {
 			if (!localizedTextSet.has(localizedText[1])) {
 				localizedTextSet.add(localizedText[1])
+			}
+		}
+
+		// Check for $_() calls with logic instead of simple string literals
+		const logicInLocalizationCalls = file.matchAll(/\$_\(\s*([^'"][^)]*)\s*\)/gim)
+		for (const match of logicInLocalizationCalls) {
+			const content = match[1].trim()
+			// Skip if it's just a simple variable or object access without operators
+			if (
+				content.includes('?') ||
+				content.includes(':') ||
+				content.includes('&&') ||
+				content.includes('||')
+			) {
+				console.log(`⚠️  Logic detected in $_() call in ${filePath}: ${match[0]}`)
 			}
 		}
 	})

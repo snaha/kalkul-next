@@ -26,6 +26,8 @@
 			"subtitle": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
 			"betaDisclaimer": "Kalkul je momentálně dostupný jako omezená bezplatná beta verze. Chcete se připojit k naší rané komunitě? Zadejte svůj e-mail níže a brzy se vám ozveme!",
 			"ctaEmailPlaceholder": "Firemní e-mail",
+			"ctaEmailSubmit": "Přihlásit k odběru",
+			"ctaEmailSubmitLoading": "Přihlašování...",
 			"ctaDisclaimer": "Přihlášením k odběru souhlasíte s tím, že vám Kalkul bude zasílat e-maily s informacemi o spuštění produktu, novinkách a aktualizacích. Nebudeme vás zahlcovat spamem. Odhlásit se můžete kdykoliv.",
 			"subscribedText": "Děkujeme za odběr! Jakmile budeme mít zajímavé novinky, pošleme vám e-mail na adresu {colorHigh}."
 		},
@@ -269,7 +271,9 @@
 			"helpAndFeedback": "Nápověda a zpětná vazba",
 			"editTransaction": "Upravit transakci",
 			"duplicateTransaction": "Duplikovat transakci",
-			"deleteTransaction": "Smazat transakci"
+			"deleteTransaction": "Smazat transakci",
+			"totalDeposit": "Celkem vkladů: {amount} {currency}",
+			"totalWithdrawal": "Celkem výběrů: {amount} {currency}"
 		},
 		"welcome": {
 			"startUsingKalkul": "Začít používat Kalkul"
