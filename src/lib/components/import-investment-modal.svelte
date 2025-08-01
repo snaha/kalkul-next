@@ -5,7 +5,7 @@
 	type Props = {
 		name: string
 		type: string
-		apy: number
+		apy: number | undefined
 		currency: string
 	}
 

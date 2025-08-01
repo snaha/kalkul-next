@@ -24,15 +24,15 @@ export const resetPasswordFormSchema = z
 	})
 
 export const figiSchema = z.object({
-	compositeFIGI: z.string(),
-	exchCode: z.string(),
+	compositeFIGI: z.string().nullable(),
+	exchCode: z.string().nullable(),
 	figi: z.string(),
 	marketSector: z.string(),
 	name: z.string(),
 	securityDescription: z.string(),
 	securityType: z.string(),
 	securityType2: z.string(),
-	shareClassFIGI: z.string(),
+	shareClassFIGI: z.string().nullable(),
 	ticker: z.string(),
 })
 
@@ -91,4 +91,24 @@ export const marketstackEodResponseSchema = z.union([
 			}),
 		),
 	}),
+])
+
+export const marketstackIndexInfoSchema = z.object({
+	benchmark: z.string(),
+	region: z.string(),
+	country: z.string(),
+	price: z.string(),
+	price_change_day: z.string(),
+	percentage_day: z.string(),
+	percentage_week: z.string(),
+	percentage_month: z.string(),
+	percentage_year: z.string(),
+	date: z.string(),
+})
+
+export type MarketstackIndexInfoSchema = z.infer<typeof marketstackIndexInfoSchema>
+
+export const marketstackIndexInfoResponseSchema = z.union([
+	marketstackErrorResponseSchema,
+	z.array(marketstackIndexInfoSchema),
 ])

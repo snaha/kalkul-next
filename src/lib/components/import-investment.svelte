@@ -14,7 +14,7 @@
 	type Props = {
 		name: string
 		type: string
-		apy: number
+		apy: number | undefined
 		open?: boolean
 		currency: string
 	}
@@ -35,11 +35,19 @@
 	let apyPerSymbol: Record<string, number> = $state({})
 	let isHelpOpen = $state(false)
 	let page: 'input' | 'listing' = $state('input')
-
+	let isFiltered = $state(true)
+	const filteredFigiValues = $derived(
+		isFiltered
+			? figiValues.filter(
+					(value) => value.exchCode && EXCHANGE_CODE_TO_CURRENCY[value.exchCode] === currency,
+				)
+			: figiValues,
+	)
 	$effect(() => {
 		if (open === false) {
 			// reset to the input page when closed
 			page = 'input'
+			isFiltered = true
 		}
 	})
 
@@ -49,10 +57,8 @@
 			isFetchingISINData = true
 			disableImportButton = true
 
-			const response = await authorizedFetch(`/api/market/id/${identifier}/${currency}`)
+			const response = await authorizedFetch(`/api/market/id/${identifier}`)
 			const jsonValue = await response.json()
-
-			console.debug({ jsonValue })
 
 			const returnValue = figiResponseSchema.safeParse(jsonValue)
 			if (returnValue.error) {
@@ -68,7 +74,6 @@
 			}
 
 			if ('warning' in values[0]) {
-				console.debug({ value: values[0] })
 				if (values[0].warning === 'No identifier found.') {
 					figiValues = []
 					page = 'listing'
@@ -79,39 +84,64 @@
 				return
 			}
 
-			figiValues = values[0].data
-				.filter((value) => EXCHANGE_CODE_TO_CURRENCY[value.exchCode] === currency)
-				.sort((a, b) => b.ticker.localeCompare(a.ticker))
-				.filter(
-					(value, i, values) =>
-						i === 0 ||
-						(i > 0 &&
-							`${value.ticker}.${exchangeOperatingMicOrCode(value.exchCode)}` !==
-								`${values[i - 1].ticker}.${exchangeOperatingMicOrCode(values[i - 1].exchCode)}`),
-				)
+			if (values[0].data.some((value) => value.securityType2 === 'Index')) {
+				// handle index funds differently
+				figiValues = values[0].data.sort((a, b) => b.ticker.localeCompare(a.ticker))
+				isFiltered = false
 
-			page = 'listing'
+				page = 'listing'
 
-			await fetchAPY()
+				await fetchIndexAPY()
+			} else {
+				figiValues = values[0].data
+					.filter((value) => exchangeCurrency(value.exchCode) !== '')
+					.sort((a, b) => b.ticker.localeCompare(a.ticker))
+					.filter(
+						(value, i, values) =>
+							i === 0 ||
+							(i > 0 &&
+								`${value.ticker}.${exchangeOperatingMicOrCode(value.exchCode)}` !==
+									`${values[i - 1].ticker}.${exchangeOperatingMicOrCode(values[i - 1].exchCode)}`),
+					)
+
+				page = 'listing'
+
+				await fetchAPY()
+			}
 		} catch (e) {
 			console.error({ e })
 		} finally {
 			isFetchingISINData = false
 			disableImportButton = false
-			if (isinImportError) {
-				console.debug({ isinImportError })
-			}
 		}
+	}
+
+	function figiValueToSymbols(values: FigiSchema[]): string {
+		const symbols = values
+			.map((figiValue) => encodeURIComponent(figiValue.ticker))
+			.sort((a, b) => b.localeCompare(a))
+			.filter((value, i, values) => i === 0 || (i > 0 && value !== values[i - 1]))
+			.join(',')
+
+		return symbols
 	}
 
 	async function fetchAPY() {
 		try {
-			const symbols = figiValues
-				.map((figiValue) => figiValue.ticker)
-				.sort((a, b) => b.localeCompare(a))
-				.filter((value, i, values) => i === 0 || (i > 0 && value !== values[i - 1]))
-				.join(',')
+			const symbols = figiValueToSymbols(figiValues)
 			const apyResponse = await authorizedFetch(`/api/market/apy/${symbols}`)
+			const jsonResponse = await apyResponse.json()
+
+			apyPerSymbol = jsonResponse
+		} catch (e) {
+			console.error({ e })
+		}
+	}
+
+	async function fetchIndexAPY() {
+		try {
+			const symbols = figiValueToSymbols(figiValues)
+			const apyResponse = await authorizedFetch(`/api/market/apy/index/${symbols}`)
 			const jsonResponse = await apyResponse.json()
 
 			apyPerSymbol = jsonResponse
@@ -122,15 +152,18 @@
 
 	function formatAPY(value: number | undefined) {
 		if (!value) {
-			return 0
+			return undefined
 		}
 
 		// round to two decimals
 		return parseFloat(value.toFixed(2))
 	}
 
-	function exchangeOperatingMicOrCode(code: string) {
-		if (EXCHANGES[code].operatingMic) {
+	function exchangeOperatingMicOrCode(code: string | null) {
+		if (!code) {
+			return ''
+		}
+		if (EXCHANGES[code]?.operatingMic) {
 			return EXCHANGES[code].operatingMic
 		}
 		return code
@@ -145,6 +178,18 @@
 
 		isinNumber = ''
 		page = 'input'
+	}
+
+	function exchangeCurrency(code: string | null) {
+		if (!code) {
+			return ''
+		}
+		return EXCHANGE_CODE_TO_CURRENCY[code] ?? ''
+	}
+
+	function showAll(e: Event) {
+		e.stopPropagation()
+		isFiltered = false
 	}
 </script>
 
@@ -225,6 +270,7 @@
 					onclick={(e: Event) => {
 						e.stopPropagation()
 						page = 'input'
+						isFiltered = true
 					}}><ArrowLeft size={24} /></Button
 				>
 				<Typography variant="h5">{$_('component.editInvestment.matchingProducts')}</Typography>
@@ -256,17 +302,38 @@
 					}}>{$_('component.editInvestment.tryAgain')}</Button
 				>
 			</Horizontal>
-		{:else}
+		{:else if filteredFigiValues.length === 0}
+			<Horizontal --horizontal-justify-content="center">
+				<img src="/images/currencies.svg" width="200" height="200" alt="no product in currency" />
+			</Horizontal>
 			<Vertical --vertical-align-items="center" --vertical-gap="0">
-				<Typography --typography-color="var(--colors-high)"
-					>{$_('component.editInvestment.foundMatchingProducts', {
-						values: { numProducts: figiValues.length, currency },
+				<Typography style="text-align: center"
+					>{$_('component.editInvestment.noProductsInCurrencyButFoundInOthers', {
+						values: { currency, numMatching: figiValues.length },
 					})}</Typography
 				>
 				<Typography variant="small"
-					>{$_('component.editInvestment.matchingProductExplanation')}</Typography
+					>{$_('component.editInvestment.matchingSearchButNotCurrency')}</Typography
 				>
 			</Vertical>
+			<Horizontal --horizontal-justify-content="center">
+				<Button variant="secondary" dimension="compact" onclick={showAll}
+					>{$_('component.editInvestment.showProducts')}</Button
+				>
+			</Horizontal>
+		{:else}
+			{#if isFiltered}
+				<Vertical --vertical-align-items="center" --vertical-gap="0">
+					<Typography --typography-color="var(--colors-high)"
+						>{$_('component.editInvestment.foundMatchingProducts', {
+							values: { numProducts: filteredFigiValues.length, currency },
+						})}</Typography
+					>
+					<Typography variant="small"
+						>{$_('component.editInvestment.matchingProductExplanation')}</Typography
+					>
+				</Vertical>
+			{/if}
 
 			<Vertical --vertical-gap="var(--quarter-padding">
 				<li class="header">
@@ -275,18 +342,20 @@
 					<Typography variant="small" bold
 						>{$_('component.editInvestment.listingSymbol')}</Typography
 					>
+					<Typography variant="small" bold>{$_('common.currency')}</Typography>
 					<Typography variant="small" bold
 						>{$_('component.editInvestment.listingExchange')}</Typography
 					>
 				</li>
 				<ul>
-					{#each figiValues as figiValue}
+					{#each isFiltered ? filteredFigiValues : figiValues as figiValue}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 						<li class="value" onclick={() => selectFigi(figiValue)}>
 							<div>{figiValue.name}</div>
 							<div>{figiValue.securityType2}</div>
 							<div>{figiValue.ticker}</div>
+							<div>{exchangeCurrency(figiValue.exchCode)}</div>
 							<div>{exchangeOperatingMicOrCode(figiValue.exchCode)}</div>
 							<Button variant="strong" dimension="compact" onclick={() => selectFigi(figiValue)}
 								><ArrowRight size={24} /></Button
@@ -295,6 +364,25 @@
 					{/each}
 				</ul>
 			</Vertical>
+
+			{#if isFiltered && figiValues.length !== filteredFigiValues.length}
+				<Vertical --vertical-align-items="center" --vertical-gap="var(--half-padding)">
+					<Typography
+						>{$_('component.editInvestment.foundMoreInOtherCurrencies', {
+							values: { numMatching: figiValues.length - filteredFigiValues.length },
+						})}</Typography
+					>
+					<Typography variant="small"
+						>{$_('component.editInvestment.matchingButNotPortfolioCurrency')}</Typography
+					>
+				</Vertical>
+
+				<Horizontal --horizontal-align-items="stretch" --horizontal-justify-content="center">
+					<Button variant="secondary" dimension="compact" onclick={showAll}
+						>{$_('component.editInvestment.showAll')}</Button
+					>
+				</Horizontal>
+			{/if}
 		{/if}
 	{/if}
 </div>
@@ -311,6 +399,7 @@
 		max-width: 100%;
 		width: 100%;
 		max-height: calc(100vh - var(--quadruple-padding));
+		overflow: auto;
 	}
 	ul {
 		margin: 0;
@@ -320,7 +409,7 @@
 	}
 	li {
 		display: grid;
-		grid-template-columns: 180px 1fr 1fr 1fr 42px;
+		grid-template-columns: 180px 1fr 1fr 1fr 1fr 42px;
 		flex-direction: row;
 		gap: var(--half-padding);
 		padding: var(--quarter-padding);

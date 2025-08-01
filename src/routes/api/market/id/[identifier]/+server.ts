@@ -12,17 +12,13 @@ function identifierIdType(identifier: string) {
 
 export async function GET({ params }) {
 	try {
-		const { identifier, currency } = params
+		const { identifier } = params
 		if (!identifier) {
 			return jsonError('missing identifier', 400)
 		}
 
-		if (!currency) {
-			return jsonError('missing currency', 400)
-		}
-
 		const idType = identifierIdType(identifier)
-		const mappingRequest = [{ idType, idValue: identifier, currency }]
+		const mappingRequest = [{ idType, idValue: identifier }]
 
 		const response = await fetch(OPENFIGI_ENDPOINT, {
 			method: 'POST',
@@ -33,6 +29,8 @@ export async function GET({ params }) {
 		})
 
 		const jsonResponse = await response.json()
+		console.debug({ jsonResponse })
+
 		return json(jsonResponse)
 	} catch (error) {
 		console.error(error)

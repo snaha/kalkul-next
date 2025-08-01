@@ -1,6 +1,12 @@
 <script lang="ts">
 	import DeleteModal from './delete-modal.svelte'
-	import { Close, Checkmark, TrashCan, DocumentImport } from 'carbon-icons-svelte'
+	import {
+		Close,
+		Checkmark,
+		TrashCan,
+		DocumentImport,
+		InformationFilled,
+	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
@@ -152,6 +158,13 @@
 	}
 </script>
 
+{#snippet APYError()}
+	<Horizontal --horizontal-gap="var(--half-padding)">
+		<InformationFilled size={24} />
+		{$_('component.editInvestment.noImportDataFound')}
+	</Horizontal>
+{/snippet}
+
 <Vertical class="max-width-560" --vertical-gap="var(--double-padding)">
 	<section class="horizontal">
 		{#if formType === 'create'}
@@ -199,6 +212,7 @@
 			type="number"
 			step={0.001}
 			min={0}
+			error={apy === undefined ? APYError : undefined}
 		></Input>
 		<Horizontal>
 			<Typography variant="h5">{$_('common.fees')}</Typography>

@@ -9,7 +9,7 @@ const MARKETSTACK_ENDPOINT = 'https://api.marketstack.com/v2/eod'
 
 async function fetchEodFromMarketstack(date: Date, symbolList: string[]) {
 	const formattedDate = format(date, 'yyyy-MM-dd')
-	const safeSymbols = symbolList.join(',')
+	const safeSymbols = symbolList.map(encodeURIComponent).join(',')
 	const url = `${MARKETSTACK_ENDPOINT}/${formattedDate}?access_key=${MARKETSTACK_API_KEY}&symbols=${safeSymbols}`
 	const response = await fetch(url, {
 		method: 'GET',
@@ -103,7 +103,7 @@ export async function GET({ params }) {
 		}
 
 		// TODO validate symbols to avoid API injection
-		const symbolList = symbols.split(',')
+		const symbolList = symbols.split(',').map(decodeURIComponent)
 
 		const { earlierDate, laterDate, numYears } =
 			await tryGetEodFromMarketstackForTwoDates(symbolList)
