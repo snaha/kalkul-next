@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.8.1](https://github.com/snaha/kalkul/compare/v0.8.0...v0.8.1) (2025-08-01)
+
+
+### Bug Fixes
+
+* doughnut chart ([#746](https://github.com/snaha/kalkul/issues/746)) ([f8ed97f](https://github.com/snaha/kalkul/commit/f8ed97f3e25d5532a1b17d4828ebd6a50ce435d6))
+* helpbox visibility ([#753](https://github.com/snaha/kalkul/issues/753)) ([817130e](https://github.com/snaha/kalkul/commit/817130ec920daf41d80630cbcf73ac46ccc75efb))
+* helpbox/onboarding ([#743](https://github.com/snaha/kalkul/issues/743)) ([a0f915a](https://github.com/snaha/kalkul/commit/a0f915ad860b354cad06967fcc7aa8b1499b15d7))
+* ISIN import ([#762](https://github.com/snaha/kalkul/issues/762)) ([ec30021](https://github.com/snaha/kalkul/commit/ec30021d19c4423a443372104cbc4e7f0f6ac41d))
+* ISIN updates ([#745](https://github.com/snaha/kalkul/issues/745)) ([c6ce101](https://github.com/snaha/kalkul/commit/c6ce1011ec3c1d3d5a0b908d55385930b3ee8b03))
+* missing translations ([#754](https://github.com/snaha/kalkul/issues/754)) ([7bacf16](https://github.com/snaha/kalkul/commit/7bacf163b389415e9f04be73b1ea94c6babcb549))
+* more missing translations ([#755](https://github.com/snaha/kalkul/issues/755)) ([ad28080](https://github.com/snaha/kalkul/commit/ad28080bf7b53ef2325d0636b50052ccb01d3bb7))
+* no logic in localization ([#761](https://github.com/snaha/kalkul/issues/761)) ([69ddaa8](https://github.com/snaha/kalkul/commit/69ddaa844ab79fb24130cd1dd0656dfdaac7eadb))
+* redirect to non-www domain ([#752](https://github.com/snaha/kalkul/issues/752)) ([dbf0cd3](https://github.com/snaha/kalkul/commit/dbf0cd37f38a8bbcf5c06abbb52e2fc8d80ee819)), closes [#742](https://github.com/snaha/kalkul/issues/742)
+* update youtube intro video ([#756](https://github.com/snaha/kalkul/issues/756)) ([480cec6](https://github.com/snaha/kalkul/commit/480cec6b8d4f0c98e3cb6b7693014e023379ed45))
+
 ## [0.8.0](https://github.com/snaha/kalkul/compare/v0.7.0...v0.8.0) (2025-07-18)
 
 
