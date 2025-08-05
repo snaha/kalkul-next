@@ -176,6 +176,7 @@
 			"deleteInvestmentWarningTitle": "Smazat investici?",
 			"isinInputPlaceholder": "US0378331005 nebo AAPL",
 			"findProducts": "Najít produkty",
+			"whatsThis": "Více informací",
 			"isinExplanation": "Mezinárodní identifikační číslo cenných papírů (ISIN) je jedinečný dvanáctimístný kód přiřazený každé emisi cenných papírů na světě.",
 			"tickerExplanation": "Ticker symbol, také známý jako symbol akcie, je jedinečná kombinace písmen přiřazená veřejně obchodovaným společnostem na burzách cenných papírů.",
 			"errorFetchingIsin": "Při načítání ISIN čísla došlo k chybě",

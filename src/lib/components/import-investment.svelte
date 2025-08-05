@@ -247,7 +247,8 @@
 					variant="ghost"
 					dimension="small"
 					onclick={() => (isHelpOpen = !isHelpOpen)}
-					active={isHelpOpen}><InformationFilled size={16} />{$_("What's this?")}</Button
+					active={isHelpOpen}
+					><InformationFilled size={16} />{$_('component.editInvestment.whatsThis')}</Button
 				></Horizontal
 			>
 			<Vertical

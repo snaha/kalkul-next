@@ -162,6 +162,7 @@
 			"isin": "Please enter an ISIN number or a ticker symbol",
 			"isinInputPlaceholder": "US0378331005 or AAPL",
 			"findProducts": "Find products",
+			"whatsThis": "What's this?",
 			"isinExplanation": "An International Securities Identification Number (ISIN) is a unique twelve-digit code that is assigned to every security issuance in the world.",
 			"tickerExplanation": "A ticker symbol, also known as a stock symbol, is a unique combination of letters assigned to publicly traded companies on stock exchanges.",
 			"errorFetchingIsin": "There was an error during fetching ISIN number",
