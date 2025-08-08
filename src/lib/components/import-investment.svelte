@@ -53,7 +53,11 @@
 	})
 
 	async function reportISINError(identifier: string, error: object) {
-		adapters.addISINError(identifier, error)
+		try {
+			adapters.addISINError(identifier, error)
+		} catch (e) {
+			console.error(e)
+		}
 	}
 
 	async function fetchISINData(identifier: string) {
