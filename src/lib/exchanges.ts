@@ -6,6 +6,7 @@
 export const EXCHANGE_CODE_TO_CURRENCY: Record<string, string> = {
 	CK: 'CZK',
 	CD: 'CZK',
+	CP: 'CZK',
 	KL: 'CZK',
 	RC: 'CZK',
 	UP: 'USD',

@@ -384,4 +384,12 @@ export default class Supabase implements Adapter {
 			throw new Error(error.message)
 		}
 	}
+
+	async addISINError(identifier: string, error: object) {
+		const { error: dbError } = await supabase.from('isin_errors').insert({ identifier, error })
+		if (dbError) {
+			console.error('Failed to add isin_error', dbError)
+			throw new Error(dbError.message)
+		}
+	}
 }

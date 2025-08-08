@@ -50,6 +50,8 @@ export interface Adapter {
 	portfolioView: (id: string) => Promise<PortfolioView | undefined>
 
 	addFeedback: (feedback: Omit<Feedback, MetaFields>) => Promise<void>
+
+	addISINError: (identifier: string, error: object) => Promise<void>
 }
 
 export default new SupabaseAdapter() as Adapter

@@ -10,6 +10,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import { EXCHANGE_CODE_TO_CURRENCY, EXCHANGES } from '$lib/exchanges'
 	import Vertical from './ui/vertical.svelte'
+	import adapters from '$lib/adapters'
 
 	type Props = {
 		name: string
@@ -51,6 +52,10 @@
 		}
 	})
 
+	async function reportISINError(identifier: string, error: object) {
+		adapters.addISINError(identifier, error)
+	}
+
 	async function fetchISINData(identifier: string) {
 		try {
 			isinImportError = undefined
@@ -63,6 +68,7 @@
 			const returnValue = figiResponseSchema.safeParse(jsonValue)
 			if (returnValue.error) {
 				isinImportError = $_('component.editInvestment.errorFetchingIsin')
+				await reportISINError(identifier, { error: isinImportError })
 				return
 			}
 
@@ -70,6 +76,7 @@
 			if (values.length === 0) {
 				figiValues = []
 				page = 'listing'
+				await reportISINError(identifier, { error: 'not found' })
 				return
 			}
 
@@ -81,6 +88,7 @@
 				} else {
 					isinImportError = $_('component.editInvestment.noInvestmentFound')
 				}
+				await reportISINError(identifier, { error: 'not found' })
 				return
 			}
 
@@ -110,6 +118,10 @@
 			}
 		} catch (e) {
 			console.error({ e })
+			await authorizedFetch(`/api/market/error/${identifier}`, {
+				method: 'POST',
+				body: JSON.stringify(e),
+			})
 		} finally {
 			isFetchingISINData = false
 			disableImportButton = false
@@ -127,27 +139,25 @@
 	}
 
 	async function fetchAPY() {
-		try {
-			const symbols = figiValueToSymbols(figiValues)
-			const apyResponse = await authorizedFetch(`/api/market/apy/${symbols}`)
-			const jsonResponse = await apyResponse.json()
-
-			apyPerSymbol = jsonResponse
-		} catch (e) {
-			console.error({ e })
+		const symbols = figiValueToSymbols(figiValues)
+		if (symbols === '') {
+			return
 		}
+		const apyResponse = await authorizedFetch(`/api/market/apy/${symbols}`)
+		const jsonResponse = await apyResponse.json()
+
+		apyPerSymbol = jsonResponse
 	}
 
 	async function fetchIndexAPY() {
-		try {
-			const symbols = figiValueToSymbols(figiValues)
-			const apyResponse = await authorizedFetch(`/api/market/apy/index/${symbols}`)
-			const jsonResponse = await apyResponse.json()
-
-			apyPerSymbol = jsonResponse
-		} catch (e) {
-			console.error({ e })
+		const symbols = figiValueToSymbols(figiValues)
+		if (symbols === '') {
+			return
 		}
+		const apyResponse = await authorizedFetch(`/api/market/apy/index/${symbols}`)
+		const jsonResponse = await apyResponse.json()
+
+		apyPerSymbol = jsonResponse
 	}
 
 	function formatAPY(value: number | undefined) {
