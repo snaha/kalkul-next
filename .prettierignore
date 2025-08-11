@@ -18,3 +18,8 @@ typesdb.ts
 
 # Ignore Claude-generated settings
 .claude/settings.local.json
+
+# Ignore Playwright cache and generated files
+.cache
+playwright-report
+test-results

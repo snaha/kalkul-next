@@ -34,6 +34,9 @@ export default typescriptEslint.config(
 			'src/lib/typesdb.ts',
 			'src/lib/types.ts',
 			'.claude/settings.local.json',
+			'**/.cache',
+			'**/playwright-report',
+			'**/test-results',
 		],
 	},
 )
