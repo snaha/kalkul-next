@@ -59,6 +59,7 @@ See `README.md` for development commands, project structure, and conventions.
    - TypeScript strict mode is enabled
    - Always run `pnpm check` before committing
    - Use generated database types from `typesdb.ts`
+   - Don't use null, only when imported
 
 2. **Testing Financial Logic**
 

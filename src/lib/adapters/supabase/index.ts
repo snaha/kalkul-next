@@ -19,44 +19,48 @@ import { portfolioStore } from '$lib/stores/portfolio.svelte'
 import { investmentStore } from '$lib/stores/investment.svelte'
 import { transactionStore } from '$lib/stores/transaction.svelte'
 
-const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-	auth: {
-		autoRefreshToken: true,
-	},
-})
+const POSTGRES_NO_ROWS_ERROR_CODE = 'PGRST116'
 
 interface SupabaseSubscription {
 	unsubscribe: () => void
 }
 
-async function loadStore<T extends { id: string | number }>(
-	store: Store<T>,
-	table: string,
-	name: string,
-	ids: (string | number)[],
-) {
-	store.reset()
-
-	const res = await supabase.from(table).select('*').in(name, ids)
-
-	if (res.error) {
-		console.error('Error fetching data:', res.error)
-	} else {
-		store.data = res.data as (Omit<T, MetaFields> & { id: number })[]
-	}
-}
-
 export default class Supabase implements Adapter {
 	private subscriptions: SupabaseSubscription[] = []
 
+	public constructor(
+		private supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+			auth: {
+				autoRefreshToken: true,
+			},
+		}),
+	) {}
+
+	private async loadStore<T extends { id: string | number }>(
+		store: Store<T>,
+		table: string,
+		name: string,
+		ids: (string | number)[],
+	) {
+		store.reset()
+
+		const res = await this.supabase.from(table).select('*').in(name, ids)
+
+		if (res.error) {
+			console.error('Error fetching data:', res.error)
+		} else {
+			store.data = res.data as (Omit<T, MetaFields> & { id: number })[]
+		}
+	}
+
 	start() {
 		if (authStore.user) return
-		supabase.auth.startAutoRefresh()
+		this.supabase.auth.startAutoRefresh()
 
-		const onAuthStateChangeRes = supabase.auth.onAuthStateChange((event) => {
+		const onAuthStateChangeRes = this.supabase.auth.onAuthStateChange((event) => {
 			setTimeout(async () => {
 				if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
-					const { data, error } = await supabase.auth.getUser()
+					const { data, error } = await this.supabase.auth.getUser()
 					if (error) {
 						console.error('Failed to fetch user', error)
 						throw new Error('Failed to fetch user')
@@ -64,7 +68,7 @@ export default class Supabase implements Adapter {
 					const {
 						data: { session },
 						error: sessionError,
-					} = await supabase.auth.getSession()
+					} = await this.supabase.auth.getSession()
 					if (sessionError || !session) {
 						console.error('Failed to fetch session', sessionError)
 						throw new Error('Failed to fetch session')
@@ -76,23 +80,23 @@ export default class Supabase implements Adapter {
 
 						this.stop()
 
-						await loadStore<Client>(clientStore, 'client', 'advisor', [data.user.id])
+						await this.loadStore<Client>(clientStore, 'client', 'advisor', [data.user.id])
 
-						await loadStore<Portfolio>(
+						await this.loadStore<Portfolio>(
 							portfolioStore,
 							'portfolio',
 							'client',
 							clientStore.data.map((client) => client.id),
 						)
 
-						await loadStore<Investment>(
+						await this.loadStore<Investment>(
 							investmentStore,
 							'investment',
 							'portfolio_id',
 							portfolioStore.data.map((portfolio) => portfolio.id),
 						)
 
-						await loadStore<Transaction>(
+						await this.loadStore<Transaction>(
 							transactionStore,
 							'transaction',
 							'investment_id',
@@ -100,7 +104,7 @@ export default class Supabase implements Adapter {
 						)
 					}
 				} else if (event === 'INITIAL_SESSION') {
-					const { error } = await supabase.auth.refreshSession()
+					const { error } = await this.supabase.auth.refreshSession()
 					if (error) {
 						console.error('Failed to fetch session', error)
 						authStore.user = undefined
@@ -125,7 +129,7 @@ export default class Supabase implements Adapter {
 			newsletter_consent: newsletterConsent,
 			first_visit: true,
 		}
-		const { error } = await supabase.auth.signUp({
+		const { error } = await this.supabase.auth.signUp({
 			email,
 			password,
 			options: { data },
@@ -138,7 +142,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async signIn(email: string, password: string) {
-		const { error } = await supabase.auth.signInWithPassword({ email, password })
+		const { error } = await this.supabase.auth.signInWithPassword({ email, password })
 		if (error) {
 			console.error('Failed to sign in', error)
 			throw new Error(error.message)
@@ -148,7 +152,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async signOut() {
-		const { error } = await supabase.auth.signOut({ scope: 'local' })
+		const { error } = await this.supabase.auth.signOut({ scope: 'local' })
 		if (error) {
 			console.error('Failed to sign out', error)
 			throw new Error(error.message)
@@ -161,7 +165,7 @@ export default class Supabase implements Adapter {
 	async sendResetPasswordLink(email: string) {
 		const redirectTo = `${page.url.origin}/reset-password`
 
-		const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+		const { error } = await this.supabase.auth.resetPasswordForEmail(email, { redirectTo })
 
 		if (error) {
 			console.error('Failed to send reset password link', error)
@@ -169,7 +173,7 @@ export default class Supabase implements Adapter {
 		}
 	}
 	async resetPassword(newPassword: string) {
-		const { error } = await supabase.auth.updateUser({ password: newPassword })
+		const { error } = await this.supabase.auth.updateUser({ password: newPassword })
 		if (error) {
 			console.error('Failed to update password', error)
 			throw new Error(error.message)
@@ -177,14 +181,14 @@ export default class Supabase implements Adapter {
 	}
 
 	async updateEmail(newEmail: string) {
-		const { error } = await supabase.auth.updateUser({ email: newEmail })
+		const { error } = await this.supabase.auth.updateUser({ email: newEmail })
 		if (error) {
 			console.error('Failed to update email', error)
 			throw new Error(error.message)
 		}
 	}
 	async updateLanguage(newLanguage: string) {
-		const { error } = await supabase.auth.updateUser({
+		const { error } = await this.supabase.auth.updateUser({
 			data: { prefer_language: newLanguage },
 		})
 		if (error) {
@@ -194,7 +198,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async updateUserMetadata(data: Partial<TypedUserMetadata>) {
-		const { error } = await supabase.auth.updateUser({
+		const { error } = await this.supabase.auth.updateUser({
 			data: { ...data },
 		})
 		if (error) {
@@ -225,7 +229,7 @@ export default class Supabase implements Adapter {
 	}
 
 	private async addData<T>(tableName: string, value: Omit<T, MetaFields>, store: Store<T>) {
-		const { data, error } = await supabase.from(tableName).insert(value).select('id').single()
+		const { data, error } = await this.supabase.from(tableName).insert(value).select('id').single()
 		if (error) {
 			console.error(`Failed to add ${tableName}`, error)
 			throw new Error(error.message)
@@ -280,7 +284,7 @@ export default class Supabase implements Adapter {
 		const origData = store.data
 		store.data = store.data.map((item) => (item.id === value.id ? { ...item, ...value } : item))
 
-		const { error } = await supabase.from(tableName).update(value).eq('id', value.id)
+		const { error } = await this.supabase.from(tableName).update(value).eq('id', value.id)
 
 		if (error) {
 			console.error(`Failed to update ${tableName}`, error)
@@ -297,7 +301,7 @@ export default class Supabase implements Adapter {
 		const origData = store.data
 		store.data = store.data.filter((item) => item.id !== value.id)
 
-		const { error } = await supabase.from(tableName).delete().eq('id', value.id)
+		const { error } = await this.supabase.from(tableName).delete().eq('id', value.id)
 
 		if (error) {
 			console.error(`Failed to delete from ${tableName}`, error)
@@ -311,7 +315,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async portfolioView(link_id: string) {
-		const { data: portfolioData, error: portfolioError } = await supabase.rpc(
+		const { data: portfolioData, error: portfolioError } = await this.supabase.rpc(
 			'portfolio_readonly_view',
 			{
 				link_id,
@@ -329,9 +333,12 @@ export default class Supabase implements Adapter {
 
 		const portfolio = portfolios[0]
 
-		const { data: clientData, error: clientError } = await supabase.rpc('client_readonly_view', {
-			link_id,
-		})
+		const { data: clientData, error: clientError } = await this.supabase.rpc(
+			'client_readonly_view',
+			{
+				link_id,
+			},
+		)
 		if (clientError) {
 			console.error(clientError)
 			return
@@ -344,7 +351,7 @@ export default class Supabase implements Adapter {
 
 		const client = clients[0]
 
-		const { data: investmentData, error: investmentError } = await supabase.rpc(
+		const { data: investmentData, error: investmentError } = await this.supabase.rpc(
 			'investment_readonly_view',
 			{
 				link_id,
@@ -356,7 +363,7 @@ export default class Supabase implements Adapter {
 		}
 		const investments = investmentData as Investment[]
 
-		const { data: transactionData, error: transactionError } = await supabase.rpc(
+		const { data: transactionData, error: transactionError } = await this.supabase.rpc(
 			'transaction_readonly_view',
 			{
 				link_id,
@@ -378,7 +385,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async addFeedback(feedback: Omit<Feedback, MetaFields>) {
-		const { error } = await supabase.from('feedback').insert(feedback)
+		const { error } = await this.supabase.from('feedback').insert(feedback)
 		if (error) {
 			console.error('Failed to add feedback', error)
 			throw new Error(error.message)
@@ -386,10 +393,54 @@ export default class Supabase implements Adapter {
 	}
 
 	async addISINError(identifier: string, error: object) {
-		const { error: dbError } = await supabase.from('isin_errors').insert({ identifier, error })
+		const { error: dbError } = await this.supabase.from('isin_errors').insert({ identifier, error })
 		if (dbError) {
 			console.error('Failed to add isin_error', dbError)
 			throw new Error(dbError.message)
+		}
+	}
+
+	async getMarketData(
+		identifier: string,
+		idType: string,
+		updatedAfter: Date | undefined = undefined,
+	): Promise<object | undefined> {
+		const baseQuery = this.supabase
+			.from('market_data_cache')
+			.select('response_data')
+			.eq('identifier', identifier)
+			.eq('id_type', idType)
+		const query = updatedAfter ? baseQuery.gt('updated_at', updatedAfter.toISOString()) : baseQuery
+		const { data, error } = await query.single()
+
+		if (error && error.code !== POSTGRES_NO_ROWS_ERROR_CODE) {
+			console.error('Failed to get market data cache', error)
+			throw new Error(error.message)
+		}
+
+		if (!data?.response_data) {
+			return
+		}
+
+		return data.response_data
+	}
+
+	async addMarketData(identifier: string, idType: string, responseData: object) {
+		const { error } = await this.supabase.from('market_data_cache').upsert(
+			{
+				identifier,
+				id_type: idType,
+				response_data: responseData,
+			},
+			{
+				ignoreDuplicates: false,
+				onConflict: 'identifier,id_type',
+			},
+		)
+
+		if (error) {
+			console.error('Failed to set market data cache', error)
+			throw new Error(error.message)
 		}
 	}
 }

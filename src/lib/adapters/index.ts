@@ -52,6 +52,13 @@ export interface Adapter {
 	addFeedback: (feedback: Omit<Feedback, MetaFields>) => Promise<void>
 
 	addISINError: (identifier: string, error: object) => Promise<void>
+
+	getMarketData: (
+		identifier: string,
+		idType: string,
+		updatedAfter: Date | undefined,
+	) => Promise<object | undefined>
+	addMarketData: (identifier: string, idType: string, responseData: object) => Promise<void>
 }
 
 export default new SupabaseAdapter() as Adapter

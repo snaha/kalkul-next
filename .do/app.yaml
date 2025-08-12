@@ -46,6 +46,9 @@ services:
       - key: MARKETSTACK_API_KEY
         scope: RUN_AND_BUILD_TIME
         value: ${MARKETSTACK_API_KEY}
+      - key: SUPABASE_SECRET_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${SUPABASE_SECRET_KEY}
       - key: PORT
         scope: RUN_TIME
         value: 8080

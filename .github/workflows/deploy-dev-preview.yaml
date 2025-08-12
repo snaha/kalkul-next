@@ -21,6 +21,7 @@ env:
   PUBLIC_DISCORD_LINK: ${{ vars.PUBLIC_DISCORD_LINK }}
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
   RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
+  SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
 
 permissions:
   contents: write

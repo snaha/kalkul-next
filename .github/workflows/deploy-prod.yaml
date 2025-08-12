@@ -14,6 +14,7 @@ env:
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
   RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
   MARKETSTACK_API_KEY: ${{ secrets.MARKETSTACK_API_KEY }}
+  SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
 
 jobs:
   deploy-app:

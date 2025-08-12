@@ -10,7 +10,6 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import { EXCHANGE_CODE_TO_CURRENCY, EXCHANGES } from '$lib/exchanges'
 	import Vertical from './ui/vertical.svelte'
-	import adapters from '$lib/adapters'
 
 	type Props = {
 		name: string
@@ -54,7 +53,10 @@
 
 	async function reportISINError(identifier: string, error: object) {
 		try {
-			adapters.addISINError(identifier, error)
+			await authorizedFetch(`/api/market/error/${identifier}`, {
+				method: 'POST',
+				body: JSON.stringify(error),
+			})
 		} catch (e) {
 			console.error(e)
 		}
@@ -122,10 +124,7 @@
 			}
 		} catch (e) {
 			console.error({ e })
-			await authorizedFetch(`/api/market/error/${identifier}`, {
-				method: 'POST',
-				body: JSON.stringify(e),
-			})
+			await reportISINError(identifier, { e })
 		} finally {
 			isFetchingISINData = false
 			disableImportButton = false
