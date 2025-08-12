@@ -3,6 +3,7 @@
 	import type { TooltipData, CustomDataset } from '$lib/types'
 	import TooltipInvestment from './tooltip-investment.svelte'
 	import type { GraphPortfolioValue } from '$lib/graph'
+	import { locale } from 'svelte-i18n'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -18,6 +19,9 @@
 
 	let investmentsTooltipData: TooltipData[] = $state([])
 	let tooltipPosition = $state({ x: 0, y: 0 })
+
+	// Store locale for use in callbacks
+	const currentLocale = $derived($locale)
 </script>
 
 <Chart
@@ -35,6 +39,14 @@
 			y: {
 				stacked: true,
 				min: 0,
+				ticks: {
+					callback: function (value) {
+						if (typeof value === 'number') {
+							return new Intl.NumberFormat(currentLocale || undefined).format(value)
+						}
+						return value
+					},
+				},
 			},
 			x: {
 				grid: {

@@ -103,7 +103,7 @@
 			<Horizontal --horizontal-justify-content="space-between">
 				<Typography>{$_('page.account.yearlyPlan')}</Typography>
 				<Typography
-					><Typography bold>{formatNumber(yearlyFee)}</Typography>
+					><Typography bold>{formatNumber(yearlyFee, $locale)}</Typography>
 					{currency}</Typography
 				>
 			</Horizontal>

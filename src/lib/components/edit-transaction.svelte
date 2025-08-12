@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
+	import FormattedNumberInput from '$lib/components/ui/input/formatted-number/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { type Client, type Investment, type Portfolio, type Transaction } from '$lib/types'
 	import { type Period, type TransactionType } from '$lib/@snaha/kalkul-maths'
@@ -45,7 +46,7 @@
 			(investmentStore.filter(investment.id).length + 1).toString(),
 	)
 	let isDefaultLabel = $state(true)
-	let amount = $state(0)
+	let amount = $state<number | undefined>(undefined)
 	let date = $state(new Date())
 	let isRecurring = $state(false)
 	let repeat = $state(1)
@@ -61,9 +62,9 @@
 			repeat,
 		}),
 	)
-	const totalAmount = $derived(numOccurrences * Number(amount))
+	const totalAmount = $derived(amount !== undefined ? numOccurrences * amount : 0)
 	const createDisabled = $derived(
-		label === '' || amount === 0 || (isRecurring && totalAmount === 0),
+		label === '' || amount === undefined || amount <= 0 || (isRecurring && totalAmount === 0),
 	)
 	const formType = $derived(transaction ? 'edit' : 'create')
 
@@ -83,7 +84,7 @@
 	})
 
 	async function createTransaction() {
-		if (!authStore.user) {
+		if (!authStore.user || amount === undefined || amount <= 0) {
 			return
 		}
 		await adapter.addTransaction({
@@ -101,7 +102,7 @@
 	}
 
 	async function editTransaction() {
-		if (!transaction) {
+		if (!transaction || amount === undefined || amount <= 0) {
 			return
 		}
 		await adapter.updateTransaction({
@@ -268,18 +269,18 @@
 			onchange={toggleRecurring}
 		></Toggle>
 	</div>
-	<Input
-		type="number"
+	<FormattedNumberInput
 		variant="solid"
 		dimension="compact"
 		placeholder={'0'}
 		label={$_('common.amount')}
 		unit={portfolio.currency}
 		bind:value={amount}
-		min={1}
+		min={0}
 		step={1}
 		class="grower"
-	></Input>
+		locale={$locale}
+	></FormattedNumberInput>
 	<Input
 		dimension="compact"
 		variant="solid"
@@ -299,8 +300,7 @@
 	></DateAge>
 	{#if isRecurring}
 		<section class="horizontal inputs">
-			<Input
-				type="number"
+			<FormattedNumberInput
 				variant="solid"
 				dimension="compact"
 				placeholder={'1'}
@@ -309,7 +309,8 @@
 				step={1}
 				bind:value={repeat}
 				style="max-width: 100%"
-			></Input>
+				locale={$locale}
+			></FormattedNumberInput>
 			<Select
 				variant="solid"
 				dimension="compact"
@@ -323,8 +324,7 @@
 			></Select>
 		</section>
 		<section class="horizontal inputs">
-			<Input
-				type="number"
+			<FormattedNumberInput
 				variant="solid"
 				dimension="compact"
 				placeholder={'30'}
@@ -335,7 +335,8 @@
 				style="max-width: 100%"
 				oninput={onPeriodChange}
 				onblur={checkPeriodInput}
-			></Input>
+				locale={$locale}
+			></FormattedNumberInput>
 			<Select
 				variant="solid"
 				dimension="compact"
@@ -362,7 +363,7 @@
 		<Vertical --vertical-gap="var(--quarter-padding)">
 			<Typography>{numOccurrences} {$_('component.editTransaction.occurences')}</Typography>
 			<Typography
-				>{formatCurrency(totalAmount, portfolio.currency)} ({transactionType === 'deposit'
+				>{formatCurrency(totalAmount, portfolio.currency, $locale)} ({transactionType === 'deposit'
 					? $_('component.editTransaction.totalDeposits')
 					: $_('component.editTransaction.totalWithdrawals')})</Typography
 			>

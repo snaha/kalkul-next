@@ -6,7 +6,7 @@ import postcssNesting from 'postcss-nesting'
 
 export default defineConfig({
 	testDir: './src',
-	testMatch: '**/*.ct.spec.ts',
+	testMatch: '**/*.ct.{test,spec}.{js,ts}',
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
@@ -23,6 +23,11 @@ export default defineConfig({
 			css: {
 				postcss: {
 					plugins: [autoprefixer, postcssNesting],
+				},
+			},
+			resolve: {
+				alias: {
+					$lib: new URL('./src/lib', import.meta.url).pathname,
 				},
 			},
 		},

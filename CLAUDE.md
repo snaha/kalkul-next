@@ -100,11 +100,70 @@ See `README.md` for development commands, project structure, and conventions.
 - Environment variables control routing and adapters
 - See README.md for deployment details
 
+### Testing Strategy
+
+**Kalkul uses a three-tier testing approach:**
+
+1. **Unit Tests** (`pnpm test:unit` - Vitest)
+
+   - Financial calculations and business logic
+   - Utilities and helper functions
+   - Store/state management
+   - Files: `*.test.ts`
+
+2. **Component Tests** (`pnpm test:ct` - Playwright)
+
+   - UI component behavior and user interactions
+   - Cross-browser compatibility (Chrome, Firefox, WebKit)
+   - Real browser environment with actual rendering
+   - Files: `*.ct.spec.ts`
+
+3. **E2E Tests** (`pnpm test:integration` - Playwright)
+   - Full application workflows
+   - Files: `tests/*.test.ts`
+
+**When to use Component Tests:**
+
+- Complex UI components (formatted inputs, charts, modals)
+- User interaction testing (typing, clicking, selection)
+- Cross-browser behavior validation
+- Visual component behavior
+
+**Component Testing Best Practices:**
+
+- Use hardcoded expected values: `await expect(input).toHaveValue('1,234.56')`
+- Avoid regex patterns in assertions: ❌ `toMatch(/^10[0-9,]+$/)`
+- Use `--reporter=list` to avoid HTML server for faster runs
+- Test user flows step-by-step with proper waits
+
+**Example Component Test:**
+
+```typescript
+test('should handle text selection replacement', async ({ mount }) => {
+	const component = await mount(FormattedNumberInput, {
+		props: { value: 1234, locale: 'en-US' },
+	})
+	const input = component.locator('input')
+
+	await input.focus()
+	await expect(input).toHaveValue('1,234')
+
+	// Select "23" and replace with "9"
+	await input.evaluate((el) => {
+		;(el as HTMLInputElement).setSelectionRange(2, 4)
+	})
+	await input.press('9')
+
+	await expect(input).toHaveValue('1,94') // Specific expected value
+})
+```
+
 ### Key Reminders
 
 - Financial precision is critical - always use Decimal.js
 - Follow conventional commits strictly
-- Test financial calculations thoroughly
+- Test financial calculations thoroughly (unit tests)
+- Test UI interactions comprehensively (component tests)
 - Check TypeScript types before committing
 - Reference README.md for commands and setup
 

@@ -5,7 +5,7 @@
 	import TooltipBase from './tooltip-base.svelte'
 	import Divider from './ui/divider.svelte'
 	import Typography from './ui/typography.svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 	interface Props extends TooltipGraphProps {
 		adjustWithInflation: boolean
 		showFees: boolean
@@ -49,7 +49,7 @@
 						<Typography variant="small" class="color-light">{deposit.name}</Typography>
 					</div>
 					<Typography variant="small" class="color-light"
-						>+{formatCurrency(deposit.value, currency, {
+						>+{formatCurrency(deposit.value, currency, $locale, {
 							maximumFractionDigits: 0,
 						})}</Typography
 					>
@@ -63,9 +63,14 @@
 						>{$_('component.tooltipTransaction.totalDeposits')}</Typography
 					>
 					<Typography variant="h6" class="color-light"
-						>{formatCurrency(totalDepositsWithInflation[tooltipData[0].dataIndex], currency, {
-							maximumFractionDigits: 0,
-						})}</Typography
+						>{formatCurrency(
+							totalDepositsWithInflation[tooltipData[0].dataIndex],
+							currency,
+							$locale,
+							{
+								maximumFractionDigits: 0,
+							},
+						)}</Typography
 					>
 				</div>
 				<div class="total opacity">
@@ -73,7 +78,7 @@
 						>{$_('common.withoutInflation')}</Typography
 					>
 					<Typography variant="small" class="color-light"
-						>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, {
+						>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,
 						})}</Typography
 					>
@@ -85,7 +90,7 @@
 					>{$_('component.tooltipTransaction.totalDeposits')}</Typography
 				>
 				<Typography variant="h6" class="color-light"
-					>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, {
+					>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, $locale, {
 						maximumFractionDigits: 0,
 					})}</Typography
 				>
@@ -108,7 +113,7 @@
 						<Typography variant="small" class="color-light">{withdrawal.name}</Typography>
 					</div>
 					<Typography variant="small" class="color-light"
-						>{formatCurrency(withdrawal.value, currency, {
+						>{formatCurrency(withdrawal.value, currency, $locale, {
 							maximumFractionDigits: 0,
 						})}</Typography
 					>
@@ -122,9 +127,14 @@
 						>{$_('component.tooltipTransaction.totalWithdrawals')}</Typography
 					>
 					<Typography variant="h6" class="color-light"
-						>{formatCurrency(totalWithdrawalsWithInflation[tooltipData[0].dataIndex], currency, {
-							maximumFractionDigits: 0,
-						})}</Typography
+						>{formatCurrency(
+							totalWithdrawalsWithInflation[tooltipData[0].dataIndex],
+							currency,
+							$locale,
+							{
+								maximumFractionDigits: 0,
+							},
+						)}</Typography
 					>
 				</div>
 				<div class="total opacity">
@@ -132,7 +142,7 @@
 						>{$_('common.withoutInflation')}</Typography
 					>
 					<Typography variant="small" class="color-light"
-						>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, {
+						>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,
 						})}</Typography
 					>
@@ -144,7 +154,7 @@
 					>{$_('component.tooltipTransaction.totalWithdrawals')}</Typography
 				>
 				<Typography variant="h6" class="color-light"
-					>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, {
+					>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, $locale, {
 						maximumFractionDigits: 0,
 					})}</Typography
 				>
@@ -162,7 +172,7 @@
 						>{$_('component.tooltipTransaction.totalFees')}</Typography
 					>
 					<Typography variant="h6" class="color-light"
-						>{formatCurrency(totalFeesWithInflation[tooltipData[0].dataIndex], currency, {
+						>{formatCurrency(totalFeesWithInflation[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,
 						})}</Typography
 					>
@@ -172,7 +182,7 @@
 						>{$_('common.withoutInflation')}</Typography
 					>
 					<Typography variant="small" class="color-light"
-						>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, {
+						>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,
 						})}</Typography
 					>
@@ -184,7 +194,7 @@
 					>{$_('component.tooltipTransaction.totalFees')}</Typography
 				>
 				<Typography variant="h6" class="color-light"
-					>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, {
+					>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, $locale, {
 						maximumFractionDigits: 0,
 					})}</Typography
 				>

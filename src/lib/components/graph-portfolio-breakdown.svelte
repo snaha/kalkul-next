@@ -8,7 +8,7 @@
 	import Slider from './ui/slider.svelte'
 	import ChartDoughnut from './chart-doughnut.svelte'
 	import TooltipBreakdownBar from './tooltip-breakdown-bar.svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 
 	interface Props {
 		portfolio: Portfolio
@@ -175,6 +175,14 @@
 					x: {
 						stacked: true,
 						min: 0,
+						ticks: {
+							callback: function (value) {
+								if (typeof value === 'number') {
+									return new Intl.NumberFormat($locale || undefined).format(value)
+								}
+								return value
+							},
+						},
 					},
 				},
 				indexAxis: 'y',

@@ -14,7 +14,7 @@
 		UserFollow,
 		UserProfile,
 	} from 'carbon-icons-svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 	import { formatCurrency, formatDate } from '$lib/utils'
 	import Avatar from '$lib/components/avatar.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
@@ -202,7 +202,7 @@
 							<span>{formatDate(new Date(portfolio.end_date))}</span>
 							<span class="right-aligned">{portfolio.inflation_rate * 100}%</span>
 							<span class="right-aligned"
-								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency)}</span
+								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency, $locale)}</span
 							>
 							<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span>
 							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>

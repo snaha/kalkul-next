@@ -4,7 +4,7 @@
 	import type { TooltipGraphProps } from './tooltip-base.svelte'
 	import TooltipBase from './tooltip-base.svelte'
 	import Typography from './ui/typography.svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 	interface Props extends TooltipGraphProps {
 		currency: string
 		totalValue: number[]
@@ -32,7 +32,7 @@
 					<Typography variant="small" class="color-light">{investment.name}</Typography>
 				</div>
 				<Typography variant="small" class="color-light"
-					>{formatCurrency(investment.value, currency, {
+					>{formatCurrency(investment.value, currency, $locale, {
 						maximumFractionDigits: 0,
 					})}</Typography
 				>
@@ -44,7 +44,7 @@
 			<div class="total">
 				<Typography class="color-light" variant="h6">{$_('common.total')}</Typography>
 				<Typography variant="h6" class="color-light"
-					>{formatCurrency(totalWithInflation[tooltipData[0].dataIndex], currency, {
+					>{formatCurrency(totalWithInflation[tooltipData[0].dataIndex], currency, $locale, {
 						maximumFractionDigits: 0,
 					})}</Typography
 				>
@@ -52,7 +52,7 @@
 			<div class="total opacity">
 				<Typography class="color-light" variant="small">{$_('common.withoutInflation')}</Typography>
 				<Typography variant="small" class="color-light"
-					>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, {
+					>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, $locale, {
 						maximumFractionDigits: 0,
 					})}</Typography
 				>
@@ -62,7 +62,7 @@
 		<div class="total">
 			<Typography class="color-light" variant="h6">{$_('common.total')}</Typography>
 			<Typography variant="h6" class="color-light"
-				>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, {
+				>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, $locale, {
 					maximumFractionDigits: 0,
 				})}</Typography
 			>

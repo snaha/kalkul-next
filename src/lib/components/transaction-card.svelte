@@ -10,7 +10,7 @@
 	} from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 	import { formatCurrency } from '$lib/utils'
 	import adapter from '$lib/adapters'
 	import Horizontal from './ui/horizontal.svelte'
@@ -78,9 +78,9 @@
 		</div>
 		<Typography class={`transaction ${transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}`}>
 			{#if transaction.repeat}
-				{`${formatCurrency(transaction.amount, currency)} / ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${transaction.repeat_unit ? transaction.repeat_unit.substring(0, 1) : ''}`}
+				{`${formatCurrency(transaction.amount, currency, $locale)} / ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${transaction.repeat_unit ? transaction.repeat_unit.substring(0, 1) : ''}`}
 			{:else}
-				{formatCurrency(transaction.amount, currency)}
+				{formatCurrency(transaction.amount, currency, $locale)}
 			{/if}
 		</Typography>
 		<FlexItem />

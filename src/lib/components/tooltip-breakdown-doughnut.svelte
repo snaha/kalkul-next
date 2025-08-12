@@ -4,6 +4,7 @@
 	import type { TooltipGraphProps } from './tooltip-base.svelte'
 	import TooltipBase from './tooltip-base.svelte'
 	import Typography from './ui/typography.svelte'
+	import { locale } from 'svelte-i18n'
 
 	interface Props extends TooltipGraphProps {
 		currency: string
@@ -30,7 +31,9 @@
 						{totalValue > 0 ? ((item.value / totalValue) * 100).toFixed(1) : '0'}%
 					</Typography>
 					<Typography variant="small" class="color-light donut-tooltip-value">
-						{formatCurrency(item.value, currency, { maximumFractionDigits: 0 })}
+						{formatCurrency(item.value, currency, $locale, {
+							maximumFractionDigits: 0,
+						})}
 					</Typography>
 				</div>
 			</div>

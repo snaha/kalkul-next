@@ -7,7 +7,7 @@ Financial portfolio management application built with SvelteKit and TypeScript.
 - **Frontend**: SvelteKit 2.16+ with Svelte 5 (runes)
 - **Language**: TypeScript (strict mode)
 - **Database**: Supabase (PostgreSQL)
-- **Testing**: Vitest + Playwright
+- **Testing**: Vitest (unit) + Playwright (component & e2e)
 - **Node**: >=22, **pnpm**: >=10
 
 ## Quick Start
@@ -35,8 +35,9 @@ pnpm lint             # Run linting
 pnpm format           # Auto-format code
 
 pnpm test             # Run all tests
-pnpm test:unit        # Run unit tests
-pnpm test:integration # Run e2e tests
+pnpm test:unit        # Run unit tests (Vitest)
+pnpm test:ct          # Run component tests (Playwright)
+pnpm test:integration # Run e2e tests (Playwright)
 ```
 
 ## Database Commands
@@ -74,6 +75,48 @@ pnpm supabase gen types --lang=typescript --local > src/lib/typesdb.ts  # Genera
 | `VITE_API_URL`             |                          | API endpoints URL                  |
 | `VITE_ADAPTER`             |                          | Adapter (`static` or `node`)       |
 | `CORS_ALLOWED_ORIGIN`      |                          | CORS allowed origin                |
+
+## Testing
+
+### Test Types
+
+1. **Unit Tests** (`pnpm test:unit`) - Vitest
+
+   - Business logic, utilities, and stores
+   - Fast execution, no browser required
+   - Files: `*.test.ts`
+
+2. **Component Tests** (`pnpm test:ct`) - Playwright Component Testing
+
+   - Individual component behavior and user interactions
+   - Real browser environment with cross-browser testing (Chrome, Firefox, Safari)
+   - Files: `*.ct.spec.ts`
+
+3. **E2E Tests** (`pnpm test:integration`) - Playwright
+   - Full application workflows
+   - Files: `tests/*.test.ts`
+
+### Component Testing Examples
+
+Component tests are ideal for testing complex UI components like the formatted number input:
+
+```typescript
+// src/lib/components/ui/input/formatted-number/formatted-number-input.ct.spec.ts
+test('should format numbers correctly', async ({ mount }) => {
+	const component = await mount(FormattedNumberInput, {
+		props: { value: 1234.56, locale: 'en-US' },
+	})
+	const input = component.locator('input')
+	await expect(input).toHaveValue('1,234.56')
+})
+```
+
+### Testing Best Practices
+
+- Use hardcoded expected values instead of regex patterns in assertions
+- Test cross-browser compatibility for user interaction components
+- Use `--reporter=list` to avoid HTML server for faster CI runs
+- Financial calculations must have comprehensive test coverage
 
 ## Conventions
 
