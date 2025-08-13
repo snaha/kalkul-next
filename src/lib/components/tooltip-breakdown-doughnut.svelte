@@ -4,21 +4,26 @@
 	import type { TooltipGraphProps } from './tooltip-base.svelte'
 	import TooltipBase from './tooltip-base.svelte'
 	import Typography from './ui/typography.svelte'
-	import { locale } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 
 	interface Props extends TooltipGraphProps {
 		currency: string
-		doughnutData: { value: number; label: string; colorIndex: number }[]
+		doughnutData: { value: number; nonInflationValue?: number; label: string; colorIndex: number }[]
 	}
 
-	const { tooltipData, currency, doughnutData, ...restProps }: Props = $props()
+	const { tooltipData, currency, doughnutData, adjustWithInflation, ...restProps }: Props = $props()
 
 	const totalValue = $derived(
 		Array.isArray(doughnutData) ? doughnutData.reduce((sum, item) => sum + item.value, 0) : 0,
 	)
+	const totalNonInflationValue = $derived(
+		Array.isArray(doughnutData)
+			? doughnutData.reduce((sum, item) => sum + (item.nonInflationValue ?? item.value), 0)
+			: 0,
+	)
 </script>
 
-<TooltipBase {tooltipData} {...restProps}>
+<TooltipBase {tooltipData} {adjustWithInflation} {...restProps}>
 	<div class="col">
 		{#each doughnutData.filter((item) => item.value > 0).sort((a, b) => b.value - a.value) as item}
 			<div class="investment-details">
@@ -39,6 +44,35 @@
 			</div>
 		{/each}
 	</div>
+	{#if adjustWithInflation && totalNonInflationValue !== totalValue}
+		<div class="col">
+			<div class="total">
+				<Typography class="color-light" variant="h6">{$_('common.total')}</Typography>
+				<Typography variant="h6" class="color-light"
+					>{formatCurrency(totalValue, currency, $locale, {
+						maximumFractionDigits: 0,
+					})}</Typography
+				>
+			</div>
+			<div class="total opacity">
+				<Typography class="color-light" variant="small">{$_('common.withoutInflation')}</Typography>
+				<Typography variant="small" class="color-light"
+					>{formatCurrency(totalNonInflationValue, currency, $locale, {
+						maximumFractionDigits: 0,
+					})}</Typography
+				>
+			</div>
+		</div>
+	{:else if !adjustWithInflation}
+		<div class="total">
+			<Typography class="color-light" variant="h6">{$_('common.total')}</Typography>
+			<Typography variant="h6" class="color-light"
+				>{formatCurrency(totalValue, currency, $locale, {
+					maximumFractionDigits: 0,
+				})}</Typography
+			>
+		</div>
+	{/if}
 </TooltipBase>
 
 <style>
@@ -70,5 +104,13 @@
 	}
 	:global(.donut-tooltip-value) {
 		opacity: 0.5;
+	}
+	.total {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--half-padding);
+	}
+	.opacity {
+		opacity: 50%;
 	}
 </style>

@@ -8,6 +8,7 @@
 
 	interface Props {
 		data: number[]
+		nonInflationData?: number[]
 		labels: string[]
 		investments: InvestmentWithColorIndex[]
 		investmentsViewStore: InvestmentsViewStore
@@ -37,6 +38,7 @@
 
 	let {
 		data,
+		nonInflationData,
 		labels,
 		investments,
 		investmentsViewStore,
@@ -53,6 +55,7 @@
 		return data
 			.map((value, i) => ({
 				value,
+				nonInflationValue: nonInflationData?.[i] ?? value,
 				label: labels[i],
 				colorIndex: investments[i].colorIndex ?? i,
 			}))

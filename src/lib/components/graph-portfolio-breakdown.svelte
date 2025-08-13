@@ -36,42 +36,89 @@
 		clientBirthDate,
 	}: Props = $props()
 
+	// Utility function to calculate cumulative sum up to selectedIndex
+	function getCumulativeSum(array: number[], index: number): number {
+		return array.slice(0, index + 1).reduce((acc, val) => acc + val, 0)
+	}
+
+	// Utility function to calculate all cumulative values for a dataset
+	function getCumulativeValues(graphData: GraphData, index: number, useInflation = false) {
+		const deposits = useInflation ? graphData.graphInflationDeposits : graphData.graphDeposits
+		const withdrawals = useInflation
+			? graphData.graphInflationWithdrawals
+			: graphData.graphWithdrawals
+		const fees = useInflation ? graphData.graphInflationFeeValues : graphData.graphFeeValues
+		const values = useInflation
+			? graphData.graphInflationInvestmentValues
+			: graphData.graphInvestmentValues
+
+		const cumulativeDeposits = getCumulativeSum(deposits, index)
+		const cumulativeWithdrawals = getCumulativeSum(withdrawals, index)
+		const cumulativeFees = getCumulativeSum(fees, index)
+		const currentValue = values[index]
+		const cumulativeInterest =
+			currentValue - cumulativeDeposits + cumulativeWithdrawals + cumulativeFees
+
+		return {
+			cumulativeDeposits,
+			cumulativeWithdrawals,
+			cumulativeFees,
+			currentValue,
+			cumulativeInterest,
+		}
+	}
+
 	const breakdownChartData = $derived(
-		data.map((r, i) => ({
-			data: [
-				r.graphInvestmentValues[selectedIndex],
-				r.graphDeposits[selectedIndex],
-				-r.graphWithdrawals[selectedIndex],
-				-r.graphFeeValues[selectedIndex],
-			],
-			label: r.label,
-			colorIndex: investments[i].colorIndex ?? i,
-			fill: 'origin',
-			hidden: investmentsViewStore.isHidden(investments[i].id),
-		})),
+		data.map((r, i) => {
+			const values = getCumulativeValues(r, selectedIndex)
+
+			return {
+				data: [
+					values.currentValue,
+					values.cumulativeInterest,
+					values.cumulativeDeposits,
+					-values.cumulativeWithdrawals,
+					-values.cumulativeFees,
+				],
+				label: r.label,
+				colorIndex: investments[i].colorIndex ?? i,
+				fill: 'origin',
+				hidden: investmentsViewStore.isHidden(investments[i].id),
+			}
+		}),
 	)
 
 	const breakdownInflationChartData = $derived([
-		...data.map((r, i) => ({
-			data: [
-				r.graphInflationInvestmentValues[selectedIndex],
-				r.graphInflationDeposits[selectedIndex],
-				-r.graphInflationWithdrawals[selectedIndex],
-				-r.graphInflationFeeValues[selectedIndex],
-			],
-			label: r.label,
-			colorIndex: investments[i].colorIndex ?? i,
-			fill: 'origin',
-			hidden: investmentsViewStore.isHidden(investments[i].id),
-		})),
+		...data.map((r, i) => {
+			const values = getCumulativeValues(r, selectedIndex, true)
+
+			return {
+				data: [
+					values.currentValue,
+					values.cumulativeInterest,
+					values.cumulativeDeposits,
+					-values.cumulativeWithdrawals,
+					-values.cumulativeFees,
+				],
+				label: r.label,
+				colorIndex: investments[i].colorIndex ?? i,
+				fill: 'origin',
+				hidden: investmentsViewStore.isHidden(investments[i].id),
+			}
+		}),
 		{
-			data: [
-				total.graphInvestmentValues[selectedIndex] -
-					total.graphInflationInvestmentValues[selectedIndex],
-				total.graphDeposits[selectedIndex] - total.graphInflationDeposits[selectedIndex],
-				-total.graphWithdrawals[selectedIndex] - total.graphInflationWithdrawals[selectedIndex],
-				-total.graphFeeValues[selectedIndex] - total.graphInflationFeeValues[selectedIndex],
-			],
+			data: (() => {
+				const normalValues = getCumulativeValues(total, selectedIndex)
+				const inflationValues = getCumulativeValues(total, selectedIndex, true)
+
+				return [
+					normalValues.currentValue - inflationValues.currentValue,
+					normalValues.cumulativeInterest - inflationValues.cumulativeInterest,
+					normalValues.cumulativeDeposits - inflationValues.cumulativeDeposits,
+					-(normalValues.cumulativeWithdrawals + inflationValues.cumulativeWithdrawals),
+					-(normalValues.cumulativeFees + inflationValues.cumulativeFees),
+				]
+			})(),
 			label: '_hidden',
 			borderColor: lowColor,
 			borderWidth: 1,
@@ -79,18 +126,64 @@
 		},
 	])
 
-	const totalValue = $derived([
-		data.reduce((acc, r) => acc + r.graphInvestmentValues[selectedIndex], 0),
-		data.reduce((acc, r) => acc + r.graphDeposits[selectedIndex], 0),
-		data.reduce((acc, r) => acc + -r.graphWithdrawals[selectedIndex], 0),
-		data.reduce((acc, r) => acc + -r.graphFeeValues[selectedIndex], 0),
-	])
-	const totalValueWithInflation = $derived([
-		data.reduce((acc, r) => acc + r.graphInflationInvestmentValues[selectedIndex], 0),
-		data.reduce((acc, r) => acc + r.graphInflationDeposits[selectedIndex], 0),
-		data.reduce((acc, r) => acc + -r.graphInflationWithdrawals[selectedIndex], 0),
-		data.reduce((acc, r) => acc + -r.graphInflationFeeValues[selectedIndex], 0),
-	])
+	const totalValue = $derived.by(() => {
+		const totals = data.reduce(
+			(acc, r) => {
+				const values = getCumulativeValues(r, selectedIndex)
+				return {
+					currentValue: acc.currentValue + values.currentValue,
+					cumulativeInterest: acc.cumulativeInterest + values.cumulativeInterest,
+					cumulativeDeposits: acc.cumulativeDeposits + values.cumulativeDeposits,
+					cumulativeWithdrawals: acc.cumulativeWithdrawals + values.cumulativeWithdrawals,
+					cumulativeFees: acc.cumulativeFees + values.cumulativeFees,
+				}
+			},
+			{
+				currentValue: 0,
+				cumulativeInterest: 0,
+				cumulativeDeposits: 0,
+				cumulativeWithdrawals: 0,
+				cumulativeFees: 0,
+			},
+		)
+
+		return [
+			totals.currentValue,
+			totals.cumulativeInterest,
+			totals.cumulativeDeposits,
+			-totals.cumulativeWithdrawals,
+			-totals.cumulativeFees,
+		]
+	})
+	const totalValueWithInflation = $derived.by(() => {
+		const totals = data.reduce(
+			(acc, r) => {
+				const values = getCumulativeValues(r, selectedIndex, true)
+				return {
+					currentValue: acc.currentValue + values.currentValue,
+					cumulativeInterest: acc.cumulativeInterest + values.cumulativeInterest,
+					cumulativeDeposits: acc.cumulativeDeposits + values.cumulativeDeposits,
+					cumulativeWithdrawals: acc.cumulativeWithdrawals + values.cumulativeWithdrawals,
+					cumulativeFees: acc.cumulativeFees + values.cumulativeFees,
+				}
+			},
+			{
+				currentValue: 0,
+				cumulativeInterest: 0,
+				cumulativeDeposits: 0,
+				cumulativeWithdrawals: 0,
+				cumulativeFees: 0,
+			},
+		)
+
+		return [
+			totals.currentValue,
+			totals.cumulativeInterest,
+			totals.cumulativeDeposits,
+			-totals.cumulativeWithdrawals,
+			-totals.cumulativeFees,
+		]
+	})
 
 	function getDateFromGraphLabels(graphLabels: string) {
 		const month = graphLabels.includes('-') ? graphLabels : undefined
@@ -108,15 +201,27 @@
 	let tooltipData: TooltipData[] = $state([])
 	let dataLabels = [
 		$_('common.investmentValue'),
+		$_('common.interestEarned'),
 		$_('common.deposited'),
 		$_('common.withdrawn'),
 		$_('common.fees'),
 	]
+	let tooltipLabels = $derived.by(() => {
+		const date = getDateFromGraphLabels(data[0].graphLabels[selectedIndex])
+		return [
+			$_('common.investmentValueAsOf', { values: { date } }),
+			$_('common.totalInterestEarned', { values: { date } }),
+			$_('common.totalDeposited', { values: { date } }),
+			$_('common.totalWithdrawn', { values: { date } }),
+			$_('common.totalFees', { values: { date } }),
+		]
+	})
 	let totalLabels = [
-		$_('common.totalInvestments'),
-		$_('common.totalDeposited'),
-		$_('common.totalWithdrawn'),
-		$_('common.totalFees'),
+		$_('common.total'),
+		$_('common.total'),
+		$_('common.total'),
+		$_('common.total'),
+		$_('common.total'),
 	]
 	let cursorX = $state(0)
 </script>
@@ -124,20 +229,16 @@
 <Horizontal>
 	<div class="doughnut">
 		<ChartDoughnut
-			data={(() => {
-				const investmentValues = data.map((d) =>
-					adjustWithInflation
-						? d.graphInflationInvestmentValues[selectedIndex] +
-							d.graphInflationDeposits[selectedIndex] -
-							d.graphInflationWithdrawals[selectedIndex] -
-							d.graphInflationFeeValues[selectedIndex]
-						: d.graphInvestmentValues[selectedIndex] +
-							d.graphDeposits[selectedIndex] -
-							d.graphWithdrawals[selectedIndex] -
-							d.graphFeeValues[selectedIndex],
-				)
-				return investmentValues
-			})()}
+			data={data.map((d) => {
+				const values = getCumulativeValues(d, selectedIndex, adjustWithInflation)
+				// Doughnut chart shows the current value of each investment
+				return values.currentValue
+			})}
+			nonInflationData={data.map((d) => {
+				const values = getCumulativeValues(d, selectedIndex, false)
+				// Non-inflation adjusted values for tooltip display
+				return values.currentValue
+			})}
 			labels={data.map((d) => d.label)}
 			{investments}
 			{investmentsViewStore}
@@ -291,7 +392,7 @@
 	</div>
 </div>
 <TooltipBreakdownBar
-	{dataLabels}
+	dataLabels={tooltipLabels}
 	{totalLabels}
 	{tooltipData}
 	{tooltipPosition}
