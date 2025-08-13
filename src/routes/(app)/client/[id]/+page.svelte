@@ -32,7 +32,7 @@
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
-	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
+	import { getCurrentPortfolioValue } from '$lib/@snaha/kalkul-maths'
 	import HelpBox from '$lib/components/help-box.svelte'
 
 	const clientId = parseInt(page.params.id, 10)
@@ -63,26 +63,8 @@
 	}
 
 	function portfolioValue(portfolioId: number): number {
-		return investmentStore.filter(portfolioId).reduce((total, investment) => {
-			const transactions = transactionStore.filter(investment.id)
-
-			let deposits = 0
-			let withdrawals = 0
-
-			for (const transaction of transactions) {
-				const amount = transaction.end_date
-					? transaction.amount * calculateNumOccurrences(transaction)
-					: transaction.amount
-
-				if (transaction.type === 'deposit') {
-					deposits += amount
-				} else if (transaction.type === 'withdrawal') {
-					withdrawals += amount
-				}
-			}
-
-			return total + (deposits - withdrawals)
-		}, 0)
+		const investments = investmentStore.filter(portfolioId)
+		return getCurrentPortfolioValue(transactionStore, investments)
 	}
 </script>
 
@@ -202,7 +184,9 @@
 							<span>{formatDate(new Date(portfolio.end_date))}</span>
 							<span class="right-aligned">{portfolio.inflation_rate * 100}%</span>
 							<span class="right-aligned"
-								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency, $locale)}</span
+								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency, $locale, {
+									maximumFractionDigits: 0,
+								})}</span
 							>
 							<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span>
 							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
