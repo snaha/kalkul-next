@@ -95,28 +95,30 @@
 			>
 				<ViewOff size={16} />
 			</Button>
-			<div class="dropdown" class:hidden={viewOnly}>
-				<Dropdown left buttonDimension="small" buttonVariant="solid">
-					{#snippet button()}
-						<OverflowMenuVertical size={16} />
-					{/snippet}
-					<List>
-						<ListItem
-							dimension="small"
-							onclick={(e: Event) => {
-								e.stopPropagation()
-								editTransaction?.(transaction)
-							}}><Edit size={16} />{$_('component.viewHeader.editTransaction')}</ListItem
-						>
-						<ListItem dimension="small" onclick={duplicateTransaction}
-							><Copy size={16} />{$_('component.viewHeader.duplicateTransaction')}</ListItem
-						>
-						<ListItem dimension="small" onclick={deleteTransaction}
-							><TrashCan size={16} />{$_('component.viewHeader.deleteTransaction')}</ListItem
-						>
-					</List>
-				</Dropdown>
-			</div>
+			{#if !viewOnly}
+				<div class="dropdown">
+					<Dropdown left buttonDimension="small" buttonVariant="solid">
+						{#snippet button()}
+							<OverflowMenuVertical size={16} />
+						{/snippet}
+						<List>
+							<ListItem
+								dimension="small"
+								onclick={(e: Event) => {
+									e.stopPropagation()
+									editTransaction?.(transaction)
+								}}><Edit size={16} />{$_('component.viewHeader.editTransaction')}</ListItem
+							>
+							<ListItem dimension="small" onclick={duplicateTransaction}
+								><Copy size={16} />{$_('component.viewHeader.duplicateTransaction')}</ListItem
+							>
+							<ListItem dimension="small" onclick={deleteTransaction}
+								><TrashCan size={16} />{$_('component.viewHeader.deleteTransaction')}</ListItem
+							>
+						</List>
+					</Dropdown>
+				</div>
+			{/if}
 		</div>
 		<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
 	</Horizontal>

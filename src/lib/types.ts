@@ -18,7 +18,6 @@ export type Transaction = Tables<'transaction'> & {
 	repeat_unit: Period | null
 	type: TransactionType
 }
-export type Feedback = Tables<'feedback'>
 
 export type InvestmentWithColorIndex = Investment & {
 	colorIndex?: number

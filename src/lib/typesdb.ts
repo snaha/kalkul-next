@@ -61,33 +61,6 @@ export type Database = {
         }
         Relationships: []
       }
-      feedback: {
-        Row: {
-          created_at: string
-          data: Json | null
-          email: string | null
-          id: number
-          message: string
-          pathname: string | null
-        }
-        Insert: {
-          created_at?: string
-          data?: Json | null
-          email?: string | null
-          id?: number
-          message: string
-          pathname?: string | null
-        }
-        Update: {
-          created_at?: string
-          data?: Json | null
-          email?: string | null
-          id?: number
-          message?: string
-          pathname?: string | null
-        }
-        Relationships: []
-      }
       investment: {
         Row: {
           advanced_fees: boolean | null
@@ -261,7 +234,6 @@ export type Database = {
           repeat: number | null
           repeat_unit: string | null
           type: string
-          user_id: string
         }
         Insert: {
           amount: number
@@ -275,7 +247,6 @@ export type Database = {
           repeat?: number | null
           repeat_unit?: string | null
           type: string
-          user_id?: string
         }
         Update: {
           amount?: number
@@ -289,7 +260,6 @@ export type Database = {
           repeat?: number | null
           repeat_unit?: string | null
           type?: string
-          user_id?: string
         }
         Relationships: [
           {

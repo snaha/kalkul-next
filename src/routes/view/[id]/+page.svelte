@@ -16,6 +16,9 @@
 	import { Menu, SidePanelCloseFilled, SidePanelOpenFilled } from 'carbon-icons-svelte'
 	import Toggle from '$lib/components/ui/toggle.svelte'
 	import Badge from '$lib/components/ui/badge.svelte'
+	import { portfolioStore } from '$lib/stores/portfolio.svelte'
+	import { investmentStore } from '$lib/stores/investment.svelte'
+	import { transactionStore } from '$lib/stores/transaction.svelte'
 
 	const session_id = page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
@@ -28,7 +31,13 @@
 		portfolioView = await adapters.portfolioView(session_id)
 		if (!portfolioView) {
 			notFound = true
+			return
 		}
+
+		// Set store data because some components (e.g. graphs) assume they exist
+		portfolioStore.data = [portfolioView.portfolio]
+		investmentStore.data = portfolioView.investments
+		transactionStore.data = portfolioView.transactions
 	})
 	let investmentsViewStore = withInvestmentsViewStore([])
 	$effect(() => {

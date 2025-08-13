@@ -88,7 +88,6 @@
 			return
 		}
 		await adapter.addTransaction({
-			user_id: authStore.user?.id,
 			investment_id: investment.id,
 			type: transactionType,
 			amount,
@@ -107,7 +106,6 @@
 		}
 		await adapter.updateTransaction({
 			id: transaction.id,
-			user_id: authStore.user?.id,
 			investment_id: investment.id,
 			type: transactionType,
 			amount,

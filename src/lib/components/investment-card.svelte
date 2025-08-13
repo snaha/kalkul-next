@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import { cascadeDuplicateInvestment } from '$lib/cascade'
 	import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
 	import {
@@ -29,6 +28,7 @@
 	import Divider from './ui/divider.svelte'
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
+	import { transactionStore } from '$lib/stores/transaction.svelte'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
