@@ -7,13 +7,13 @@
 	import { authStore } from '$lib/stores/auth.svelte'
 	import routes from '$lib/routes'
 	import { _ } from 'svelte-i18n'
-	import FeedbackModal from './feedback-modal.svelte'
+	import HelpModal from './help-modal.svelte'
 	import { goto } from '$app/navigation'
 	import { notImplemented } from '$lib/not-implemented'
 	import BetaBadge from './beta-badge.svelte'
 	import DesktopOnly from './desktop-only.svelte'
 
-	let showFeedbackModal = $state(false)
+	let showHelpModal = $state(false)
 
 	async function logout() {
 		await adapter.signOut()
@@ -48,9 +48,8 @@
 			</Dropdown>
 		</DesktopOnly>
 
-		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
-			><ChatBot size={16} /><DesktopOnly>{$_('component.header.feedbackButton')}</DesktopOnly
-			></Button
+		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showHelpModal = true)}
+			><ChatBot size={16} /><DesktopOnly>{$_('component.header.helpButton')}</DesktopOnly></Button
 		>
 		<Button
 			mode="dark"
@@ -60,7 +59,7 @@
 		>
 	</div>
 </header>
-<FeedbackModal bind:open={showFeedbackModal} oncancel={() => (showFeedbackModal = false)} />
+<HelpModal bind:open={showHelpModal} oncancel={() => (showHelpModal = false)} />
 
 <style lang="postcss">
 	header {

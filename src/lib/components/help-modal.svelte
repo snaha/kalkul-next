@@ -19,25 +19,27 @@
 		<header class="horizontal">
 			<div class="title">
 				<ChatBot size={24} />
-				<Typography variant="h5">{$_('component.feedback.title')}</Typography>
+				<Typography variant="h5">{$_('component.help.title')}</Typography>
 			</div>
 			<div class="grower"></div>
 			<Button variant="ghost" dimension="compact" onclick={close}><Close size={24} /></Button>
 		</header>
-		<Typography>{$_('component.feedback.text')}</Typography>
+		<Typography>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html $_('component.help.text', {
+				values: {
+					email: `<a href="mailto:support@kalkul.app" class="email-link">support@kalkul.app</a>`,
+				},
+			})}
+		</Typography>
 		<Button variant="strong" dimension="compact" href={PUBLIC_DISCORD_LINK} target="_blank"
 			><Discord size={24} />
-			{$_('component.feedback.joinTheConversation')}<ArrowRight size={24} /></Button
+			{$_('component.help.joinTheConversation')}<ArrowRight size={24} /></Button
 		>
 
 		<Typography variant="small">
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html $_('component.feedback.sendUsEmail', {
-				values: {
-					email: `<a href="mailto:support@kalkul.app">support@kalkul.app</a>`,
-				},
-			})}</Typography
-		>
+			{$_('component.help.discordInfo')}
+		</Typography>
 	</section>
 </Modal>
 
@@ -70,5 +72,9 @@
 	}
 	.grower {
 		flex-grow: 1;
+	}
+
+	:global(.email-link:hover) {
+		text-decoration: none !important;
 	}
 </style>

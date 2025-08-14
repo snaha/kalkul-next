@@ -1,15 +1,12 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
 	import Logo from '$lib/components/icons/logo.svelte'
-	import { ChatBot, Moon } from 'carbon-icons-svelte'
+	import { Moon } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Typography from './ui/typography.svelte'
 	import { notImplemented } from '$lib/not-implemented'
-	import FeedbackModal from './feedback-modal.svelte'
 	import routes from '$lib/routes'
 	import BetaBadge from './beta-badge.svelte'
-
-	let showFeedbackModal = $state(false)
 </script>
 
 <header>
@@ -20,21 +17,17 @@
 		<BetaBadge>BETA</BetaBadge>
 	</div>
 	<div class="user-info">
-		<Typography variant="small" --colors-ultra-high="var(--colors-ultra-low)">
+		<Typography variant="small" --colors-ultra-high="var(--colors-dark-ultra-high)">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html $_('component.viewHeader.madeWithKalkul', {
 				values: { link: `<a class="link" href=${routes.HOME}>kalkul.app</a>` },
 			})}</Typography
-		>
-		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showFeedbackModal = true)}
-			><ChatBot size={16} />{$_('component.viewHeader.helpAndFeedback')}</Button
 		>
 		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
 			><Moon size={16} /></Button
 		>
 	</div>
 </header>
-<FeedbackModal bind:open={showFeedbackModal} oncancel={() => (showFeedbackModal = false)} />
 
 <style lang="postcss">
 	header {
@@ -59,10 +52,8 @@
 		gap: var(--half-padding);
 		align-items: center;
 	}
-	a {
-		color: var(--colors-ultra-low);
-	}
-	a:hover {
-		text-decoration: none;
+	:global(.link) {
+		color: var(--colors-dark-ultra-high);
+		text-decoration: underline;
 	}
 </style>

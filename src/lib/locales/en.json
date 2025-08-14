@@ -214,11 +214,11 @@
 			"totalWithdrawals": "total withdrawals",
 			"deleteTransaction": "Delete transaction"
 		},
-		"feedback": {
-			"title": "Help & Feedback",
-			"text": "Have an idea how to improve Kalkul? Something didn’t work as expected? Something you really loved? Anything else?... we’re listening. Your feedback help us make Kalkul better, thank you!",
-			"joinTheConversation": "Join the conversation",
-			"sendUsEmail": "Alternatively, you can send us an email to {email}"
+		"help": {
+			"title": "Help",
+			"text": "If you need help, have questions, suggestions, or feedback, we recommend contacting us through our Discord server. Alternatively, you can contact us via email at {email}.",
+			"joinTheConversation": "Join Kalkul on Discord",
+			"discordInfo": "We also share news, product updates and announcements on Discord, don't miss out!"
 		},
 		"footer": {
 			"termsOfService": "Terms of service",
@@ -226,7 +226,7 @@
 		},
 		"header": {
 			"accountSettings": "Account settings",
-			"feedbackButton": "Help & Feedback"
+			"helpButton": "Help"
 		},
 		"investmentCard": {
 			"removeFocus": "Remove focus",
@@ -269,7 +269,6 @@
 		},
 		"viewHeader": {
 			"madeWithKalkul": "Made with {link}",
-			"helpAndFeedback": "Help & Feedback",
 			"editTransaction": "Edit transaction",
 			"duplicateTransaction": "Duplicate transaction",
 			"deleteTransaction": "Delete transaction",

@@ -40,6 +40,9 @@ See `README.md` for development commands, project structure, and conventions.
    - Browser language auto-detected in `src/routes/+layout.ts`
    - Do not use trailing commas in the translation JSON files. Running `pnpm format` fixes the formatting of all files, including the JSON translation files.
    - Running `pnpm check-locales` returns a list of missing localizations and a list of non-used labels from the JSON translation files.
+   - **IMPORTANT**: When updating localization text, ALWAYS update ALL language files (currently `cs.json` and `en.json`)
+   - Never update only one language file - this creates inconsistencies between languages
+   - Always maintain the same structure and parameter names across all languages
 
    Example usage:
 

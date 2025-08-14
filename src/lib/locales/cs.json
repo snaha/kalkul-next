@@ -221,11 +221,11 @@
 			"totalWithdrawals": "celkem výběrů",
 			"deleteTransaction": "Smazat transakci"
 		},
-		"feedback": {
-			"title": "Nápověda a zpětná vazba",
-			"text": "Máte nápad, jak vylepšit Kalkul? Něco nefungovalo dle očekávání? Něco vás nadchlo? Cokoliv dalšího?... nasloucháme vám. Vaše zpětná vazba nám pomáhá Kalkul vylepšovat. Děkujeme!",
-			"joinTheConversation": "Zapojte se do diskuze",
-			"sendUsEmail": "Případně nám můžete napsat na {email}"
+		"help": {
+			"title": "Nápověda",
+			"text": "Pokud potřebujete pomoct, máte dotazy, návrhy nebo zpětnou vazbu, doporučujeme nás kontaktovat prostřednictvím našeho Discord serveru. Alternativně nás můžete kontaktovat e-mailem na {email}.",
+			"joinTheConversation": "Připojte se ke Kalkulu na Discordu",
+			"discordInfo": "Na Discordu také sdílíme novinky, aktualizace produktu a oznámení, nenechte si to ujít!"
 		},
 		"footer": {
 			"termsOfService": "Podmínky služby",
@@ -233,7 +233,7 @@
 		},
 		"header": {
 			"accountSettings": "Nastavení účtu",
-			"feedbackButton": "Nápověda a zpětná vazba"
+			"helpButton": "Nápověda"
 		},
 		"investmentCard": {
 			"removeFocus": "Odebrat zvýraznění",
@@ -276,7 +276,6 @@
 		},
 		"viewHeader": {
 			"madeWithKalkul": "Vytvořeno pomocí {link}",
-			"helpAndFeedback": "Nápověda a zpětná vazba",
 			"editTransaction": "Upravit transakci",
 			"duplicateTransaction": "Duplikovat transakci",
 			"deleteTransaction": "Smazat transakci",

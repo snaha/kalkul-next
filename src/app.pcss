@@ -99,6 +99,9 @@ body {
 	flex-direction: column;
 	min-height: 100vh;
 }
+body:has(dialog[open]) {
+	position: fixed;
+}
 a {
 	color: var(--colors-high);
 }
