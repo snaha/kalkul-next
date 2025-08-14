@@ -27,6 +27,12 @@
 		currency,
 	}: Props = $props()
 
+	// Comparison function for figiValues - sorts by ticker first, then by name
+	function compareFigiValues(a: FigiSchema, b: FigiSchema): number {
+		const tickerCompare = b.ticker.localeCompare(a.ticker)
+		return tickerCompare !== 0 ? tickerCompare : b.name.localeCompare(a.name)
+	}
+
 	let isinNumber = $state('')
 	let isFetchingISINData = $state(false)
 	let isinImportError: string | undefined = $state()
@@ -74,7 +80,7 @@
 			const returnValue = figiResponseSchema.safeParse(jsonValue)
 			if (returnValue.error) {
 				isinImportError = $_('component.editInvestment.errorFetchingIsin')
-				await reportISINError(identifier, { error: isinImportError })
+				await reportISINError(identifier, { error: returnValue.error })
 				return
 			}
 
@@ -100,7 +106,7 @@
 
 			if (values[0].data.some((value) => value.securityType2 === 'Index')) {
 				// handle index funds differently
-				figiValues = values[0].data.sort((a, b) => b.ticker.localeCompare(a.ticker))
+				figiValues = values[0].data.sort(compareFigiValues)
 				isFiltered = false
 
 				page = 'listing'
@@ -109,7 +115,7 @@
 			} else {
 				figiValues = values[0].data
 					.filter((value) => exchangeCurrency(value.exchCode) !== '')
-					.sort((a, b) => b.ticker.localeCompare(a.ticker))
+					.sort(compareFigiValues)
 					.filter(
 						(value, i, values) =>
 							i === 0 ||

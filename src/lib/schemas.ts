@@ -29,7 +29,7 @@ export const figiSchema = z.object({
 	figi: z.string(),
 	marketSector: z.string(),
 	name: z.string(),
-	securityDescription: z.string(),
+	securityDescription: z.string().nullable(),
 	securityType: z.string(),
 	securityType2: z.string(),
 	shareClassFIGI: z.string().nullable(),
