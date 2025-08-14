@@ -1,7 +1,8 @@
 import Decimal from 'decimal.js'
 import { type Investment, type Portfolio } from '$lib/types'
 import {
-	type PeriodCount,
+	type PortfolioPeriodCount,
+	type PortfolioPeriod,
 	type GraphData,
 	DEFAULT_ENTRY_FEE_TYPE,
 	type EntryFeeType,
@@ -11,7 +12,6 @@ import {
 import { formatDate } from '$lib/utils'
 import { addDays, differenceInYears } from 'date-fns'
 import type { TransactionStore } from '$lib/stores/transaction.svelte'
-import { incrementDate } from './date'
 import { createTransactionMap } from './transaction-map'
 import type { TransactionMap, Transaction, Period, InvestmentData } from './types'
 
@@ -37,12 +37,33 @@ function feeValue(type: FeeType, value: number): number {
 	return value
 }
 
-function generateGraphDateLabels(start: Date, end: Date, period: Period, count = 1) {
+function generateGraphDateLabels(start: Date, end: Date, period: PortfolioPeriod, count = 1) {
 	const res = []
-	for (let date = new Date(start); date <= end; date = incrementDate(date, period, count)) {
-		if (period === 'year') res.push(date.getFullYear().toString())
-		else if (period === 'month') res.push(`${date.getFullYear()}-${date.getMonth() + 1}`)
-		else res.push(formatDate(date))
+	if (period === 'year') {
+		// For yearly periods, generate labels based on calendar years
+		const startYear = start.getFullYear()
+		const endYear = end.getFullYear()
+		for (let year = startYear; year <= endYear; year += count) {
+			res.push(year.toString())
+		}
+	} else if (period === 'month') {
+		// For monthly periods, generate labels based on calendar months
+		const startYear = start.getFullYear()
+		const startMonth = start.getMonth()
+		const endYear = end.getFullYear()
+		const endMonth = end.getMonth()
+
+		let currentYear = startYear
+		let currentMonth = startMonth
+
+		while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+			res.push(`${currentYear}-${currentMonth + 1}`)
+			currentMonth += count
+			if (currentMonth > 11) {
+				currentYear += Math.floor(currentMonth / 12)
+				currentMonth = currentMonth % 12
+			}
+		}
 	}
 	return res
 }
@@ -62,7 +83,7 @@ function getInvestmentStartAndEndDates(transaction: Transaction[]) {
 	return { startDate, endDate }
 }
 
-function getSamplingPeriodCount(startDate: Date, endDate: Date): PeriodCount {
+function getSamplingPeriodCount(startDate: Date, endDate: Date): PortfolioPeriodCount {
 	const years = differenceInYears(endDate, startDate)
 	if (years < 5) return { period: 'month', count: 1 }
 
@@ -369,7 +390,7 @@ function calculateDailyInvestmentUpdate(
  * @returns An object containing the investment values, fees, withdrawals and deposits for a certain period defined by arity
  */
 export function getInvestmentValues(
-	{ period, count }: PeriodCount,
+	{ period, count }: PortfolioPeriodCount,
 	{ deposits, withdrawals, startDate, endDate }: InvestmentData,
 	investment: Investment,
 	numDaysPerYear = NUM_DAYS_PER_YEAR,
@@ -400,8 +421,15 @@ export function getInvestmentValues(
 
 	const totalDepositAmount = calculateTotalDepositAmount(deposits)
 
-	let nextRecordDate = incrementDate(startDate, period, count)
-	investmentValues.push(0)
+	// For portfolio periods, record values at the end of each calendar period
+	let nextRecordDate: Date
+	if (period === 'year') {
+		nextRecordDate = new Date(startDate.getFullYear(), 11, 31) // December 31st of start year
+	} else {
+		// period === 'month' - record at the end of each calendar month
+		const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0) // Last day of start month
+		nextRecordDate = lastDayOfMonth
+	}
 
 	for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
 		const depositsOnDate = deposits.get(formatDate(date)) ?? 0
@@ -426,7 +454,24 @@ export function getInvestmentValues(
 		withdrawal = withdrawal.add(withdrawalsOnDate)
 
 		if (date >= nextRecordDate) {
-			nextRecordDate = incrementDate(date, period, count)
+			if (period === 'year') {
+				// Move to the end of the next calendar year
+				const nextYear = nextRecordDate.getFullYear() + count
+				nextRecordDate = new Date(nextYear, 11, 31) // December 31st of next year
+			} else {
+				// period === 'month' - move to the end of the next calendar month
+				let nextMonth = nextRecordDate.getMonth() + count
+				let nextYear = nextRecordDate.getFullYear()
+
+				// Handle month overflow
+				while (nextMonth > 11) {
+					nextYear += 1
+					nextMonth -= 12
+				}
+
+				// Last day of the next month
+				nextRecordDate = new Date(nextYear, nextMonth + 1, 0)
+			}
 
 			investmentValues.push(currentValue.toNumber())
 
