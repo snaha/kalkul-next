@@ -24,6 +24,7 @@ export interface Adapter {
 	) => Promise<void>
 	signIn: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
+	refreshSession: () => Promise<void>
 	sendResetPasswordLink: (email: string) => Promise<void>
 	resetPassword: (newPassword: string) => Promise<void>
 	updateEmail: (newEmail: string) => Promise<void>

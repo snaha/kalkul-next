@@ -161,6 +161,22 @@ export default class Supabase implements Adapter {
 		authStore.session = undefined
 	}
 
+	async refreshSession() {
+		const {
+			data: { session },
+			error,
+		} = await this.supabase.auth.getSession()
+		if (error || !session) {
+			console.error('Failed to refresh session', error)
+			throw new Error('Authentication required')
+		}
+
+		// Update auth store if we got a refreshed session
+		if (authStore.session?.access_token !== session.access_token) {
+			authStore.session = session
+		}
+	}
+
 	async sendResetPasswordLink(email: string) {
 		const redirectTo = `${page.url.origin}/reset-password`
 
