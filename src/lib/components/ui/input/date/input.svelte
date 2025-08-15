@@ -7,7 +7,7 @@
 
 	type Dimension = 'default' | 'large' | 'compact' | 'small'
 
-	type Props = {
+	export type Props = {
 		label?: string
 		yearLabel?: string
 		yearPlaceholder?: string
@@ -37,7 +37,7 @@
 		monthPlaceholder,
 		dayLabel = 'Day', // TODO: translate
 		dayPlaceholder,
-		dimension,
+		dimension = 'default',
 		error,
 		disabled,
 		helperText,

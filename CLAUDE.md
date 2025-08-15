@@ -48,12 +48,17 @@ See `README.md` for development commands, project structure, and conventions.
 
    ```svelte
    <script>
-   	import { _ } from 'svelte-i18n'
+   	import { _, locale } from 'svelte-i18n'
    </script>
 
    <h1>{$_('page.account.settings')}</h1>
    <p>{$_('page.account.firstPaymentOn', { values: { date: '2024-01-01' } })}</p>
    ```
+
+   **Accessing current locale**: Use `$locale` directly instead of `get(locale)`
+
+   - Example: `new Date().toLocaleDateString($locale ?? undefined)` instead of `new Date().toLocaleDateString(get(locale) || 'cs')`
+   - This avoids unnecessary imports of `get` from `svelte/store` and is more reactive
 
 ### Important Patterns
 
@@ -62,7 +67,9 @@ See `README.md` for development commands, project structure, and conventions.
    - TypeScript strict mode is enabled
    - Always run `pnpm check` before committing
    - Use generated database types from `typesdb.ts`
-   - Don't use null, only when imported
+   - **Never use `null` in your code** - always use `undefined` instead for optional/missing values
+   - The only exception is when `null` comes from external libraries or APIs (e.g., DOM methods that return `null`)
+   - When checking for missing values, use `!value` or `value === undefined`, not `value === null`
 
 2. **Testing Financial Logic**
 
@@ -71,9 +78,32 @@ See `README.md` for development commands, project structure, and conventions.
    - Test edge cases with various decimal precisions
 
 3. **Component Architecture**
+
    - Components in `src/lib/components/` are reusable
    - Route-specific components stay in route folders
    - Use composition over inheritance
+
+4. **Design System (Diete)**
+
+   - Uses **Diete** design system for UI components
+   - Design system components are located in `src/lib/components/ui/`
+   - Key components include: `Typography`, `Button`, `Input`, `Dropdown`, `List`, `Vertical`, `Horizontal`, etc.
+   - Full documentation available at https://diete.design
+   - Always prefer Diete components over custom HTML elements for consistency
+   - Use CSS custom properties (e.g., `--padding`, `--half-padding`, `--double-padding`) for spacing
+   - Follow Diete patterns for layout, typography, and interactions
+
+   **Important Layout Component Properties:**
+
+   - `Vertical` component uses `--vertical-gap` (NOT `--gap`)
+   - `Horizontal` component uses `--horizontal-gap` (NOT `--gap`)
+   - Example: `<Vertical --vertical-gap="var(--padding)">` and `<Horizontal --horizontal-gap="var(--half-padding)">`
+   - **Alignment properties**:
+     - `Vertical`: `--vertical-align-items` and `--vertical-justify-content`
+     - `Horizontal`: `--horizontal-align-items` and `--horizontal-justify-content`
+     - Example: `<Vertical --vertical-align-items="start">` and `<Horizontal --horizontal-align-items="center">`
+   - **Style properties**: CSS custom properties can be passed directly to components
+     - Example: `<Divider --divider-color="black" />` instead of `<Divider style="--divider-color: black;" />`
 
 ### Common Tasks
 

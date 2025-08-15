@@ -17,5 +17,6 @@
 		min-height: calc(100% - 106px);
 		padding: var(--padding);
 		padding-bottom: var(--double-padding);
+		background-color: var(--colors-ultra-low);
 	}
 </style>

@@ -264,7 +264,19 @@
 			"duplicatePortfolio": "Duplikovat portfolio",
 			"deletePortfolio": "Smazat portfolio",
 			"deletePortfolioWarning": "Toto portfolio a všechny investice v něm budou nenávratně smazány. Operaci nelze vrátit zpět.",
-			"deletePortfolioWarningTitle": "Smazat portfolio?"
+			"deletePortfolioWarningTitle": "Smazat portfolio?",
+			"linkSharing": "Sdílení odkazem",
+			"pdfExport": "Export do PDF"
+		},
+		"PDFExport": {
+			"value": "Hodnota",
+			"inflationAdjusted": "Upraveno o inflaci",
+			"exportTitle": "Export PDF",
+			"exportDescription": "Graf \"Hodnota\" je zahrnut ve výchozím nastavení. Pomocí možností níže si můžete přizpůsobit svůj PDF soubor.",
+			"exportButton": "Exportovat PDF",
+			"includeBreakdown": "Zahrnout rozdělení portfolia v klíčových datech",
+			"breakdownExplanation": "Zobrazit rozdělení hodnoty portfolia ke konkrétním datům.",
+			"addKeyDate": "Přidat klíčové datum"
 		},
 		"tooltipTransaction": {
 			"totalDeposits": "Celkem vkladů",

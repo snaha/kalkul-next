@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@castlenine/svelte-qrcode':
+        specifier: ^2.3.0
+        version: 2.3.0(svelte@5.19.2)
     devDependencies:
       '@dicebear/collection':
         specifier: ^9.2.2
@@ -131,6 +135,11 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@castlenine/svelte-qrcode@2.3.0':
+    resolution: {integrity: sha512-1YO6tL63gjbCuBkhd/PyMMFbjFD6gO6TJjvq5Ucfs5+0s13oDfiUyxO15kjR11enG7O/A2R0WBuc4bfdMqjTJQ==}
+    peerDependencies:
+      svelte: '>=3.54.0'
 
   '@csstools/selector-resolve-nested@3.0.0':
     resolution: {integrity: sha512-ZoK24Yku6VJU1gS79a5PFmC8yn3wIapiKmPgun0hZgEI5AOqgH2kiPRsPz1qkGv4HL+wuDLH83yQyk6inMYrJQ==}
@@ -2781,6 +2790,10 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@castlenine/svelte-qrcode@2.3.0(svelte@5.19.2)':
+    dependencies:
+      svelte: 5.19.2
 
   '@csstools/selector-resolve-nested@3.0.0(postcss-selector-parser@7.0.0)':
     dependencies:

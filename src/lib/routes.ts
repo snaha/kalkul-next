@@ -31,6 +31,10 @@ export default {
 	EDIT_INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/edit-investment/${investmentId}`,
 	SHARE: (portfolioId: number) => `${routePrefix}/share/${portfolioId}`,
+	PDF_EXPORT_PARAMS: (clientId: number, portfolioId: number) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/pdf-export-params`,
+	PDF_EXPORT: (clientId: number, portfolioId: number) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/pdf-export`,
 	VIEW: (id: string) => `${routePrefix}/view/${id}`,
 	PAYMENTS: `${routePrefix}/payments`,
 	TERMS: `${routePrefix}/terms`,

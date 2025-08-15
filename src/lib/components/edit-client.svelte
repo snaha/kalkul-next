@@ -3,7 +3,7 @@
 	import { Close, Checkmark, Image, TrashCan } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
-	import DateInput from '$lib/components/ui/input/date/input.svelte'
+	import LocalizedDateInput from '$lib/components/localized-date-input.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Avatar from '$lib/components/avatar.svelte'
@@ -144,25 +144,16 @@
 			label={$_('common.name')}
 			bind:value={name}
 		></Input>
-		<DateInput
+		<LocalizedDateInput
 			variant="solid"
 			dimension="compact"
-			yearLabel={$_('common.year')}
 			yearPlaceholder="1990"
-			monthLabel={$_('common.month')}
 			monthPlaceholder="01"
-			dayLabel={$_('common.day')}
 			dayPlaceholder="01"
 			label={$_('common.birthDate')}
 			bind:value={birthDate}
 			error={birthDate && birthDate > date ? birthDateError : undefined}
-			errorMessages={{
-				invalidYear: $_('error.invalidYear'),
-				invalidMonth: $_('error.invalidMonth'),
-				invalidDay: $_('error.invalidDay'),
-				invalidDate: $_('error.invalidDate'),
-			}}
-		></DateInput>
+		/>
 		<Input
 			variant="solid"
 			dimension="compact"

@@ -12,6 +12,8 @@
 		Copy,
 		TrashCan,
 		ArrowLeft,
+		DocumentExport,
+		Link,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
@@ -40,6 +42,10 @@
 
 	function share() {
 		goto(routes.SHARE(portfolio.id))
+	}
+
+	function exportPdf() {
+		goto(routes.PDF_EXPORT_PARAMS(client.id, portfolio.id))
 	}
 
 	function confirmDeletePortfolio() {
@@ -75,9 +81,19 @@
 		<Button dimension="compact" variant="strong" onclick={addInvestment}
 			><Add size={24} />{$_('component.portfolioHeader.addInvestment')}</Button
 		>
-		<Button dimension="compact" variant="secondary" onclick={share}
-			><Share size={24} />{$_('common.share')}</Button
-		>
+		<Dropdown left buttonDimension="compact" buttonVariant="secondary">
+			{#snippet button()}
+				<Share size={24} />{$_('common.share')}
+			{/snippet}
+			<List>
+				<ListItem onclick={share}
+					><Link size={24} />{$_('component.portfolioHeader.linkSharing')}</ListItem
+				>
+				<ListItem onclick={exportPdf}
+					><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</ListItem
+				>
+			</List>
+		</Dropdown>
 		<Dropdown left buttonDimension="compact">
 			{#snippet button()}
 				<OverflowMenuVertical size={24} />

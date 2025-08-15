@@ -256,8 +256,20 @@
 			"addPortfolio": "Add portfolio",
 			"duplicatePortfolio": "Duplicate portfolio",
 			"deletePortfolio": "Delete portfolio",
-			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There’s no undo.",
-			"deletePortfolioWarningTitle": "Delete portfolio?"
+			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo.",
+			"deletePortfolioWarningTitle": "Delete portfolio?",
+			"linkSharing": "Link sharing",
+			"pdfExport": "PDF export"
+		},
+		"PDFExport": {
+			"value": "Value",
+			"inflationAdjusted": "Inflation adjusted",
+			"exportTitle": "Export PDF",
+			"exportDescription": "The \"Value\" chart is included by default. You can use the options below to customise your PDF file.",
+			"exportButton": "Export PDF",
+			"includeBreakdown": "Include portfolio breakdown at key date(s)",
+			"breakdownExplanation": "Show a breakdown of the portfolio value at specific dates.",
+			"addKeyDate": "Add key date"
 		},
 		"tooltipTransaction": {
 			"totalDeposits": "Total deposits",
