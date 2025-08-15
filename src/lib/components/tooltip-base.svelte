@@ -41,11 +41,12 @@
 	}
 </script>
 
-{#if tooltipData.length > 0}
-	<div
-		class="tooltip"
-		style={`transform: translate(calc(${tooltipPosition.x}px - 100%),calc(${tooltipPosition.y}px - 50%)`}
-	>
+<div
+	class="tooltip"
+	class:visible={tooltipData.length > 0}
+	style={`transform: translate(calc(${tooltipPosition.x}px - 100%),calc(${tooltipPosition.y}px - 50%)`}
+>
+	{#if tooltipData.length > 0}
 		<div class="tooltip-header">
 			<Horizontal --horizontal-gap="var(--half-padding)">
 				<Typography variant="h5" class="color-light">{year}</Typography>
@@ -68,8 +69,8 @@
 		{#if children}
 			{@render children()}
 		{/if}
-	</div>
-{/if}
+	{/if}
+</div>
 
 <style>
 	:global(.color-light) {
@@ -87,6 +88,19 @@
 		border: 1px solid var(--colors-base);
 		background: var(--colors-top);
 		z-index: 10;
+		transition:
+			max-height 0.2s ease-out,
+			opacity 0.2s ease-out;
+		overflow: hidden;
+		opacity: 0;
+		visibility: hidden;
+		max-height: 0;
+	}
+
+	.tooltip.visible {
+		opacity: 1;
+		visibility: visible;
+		max-height: 500px;
 	}
 	.tooltip-header {
 		display: flex;
