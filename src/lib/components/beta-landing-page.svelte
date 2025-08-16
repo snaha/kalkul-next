@@ -82,7 +82,7 @@
 		--vertical-justify-content="center"
 		--vertical-align-items="center"
 	>
-		<img src={`${base}/images/beta-landing-page.svg`} alt="Intro img" />
+		<img src={`${base}/images/beta-landing-page.svg`} alt="Intro" />
 		{#if isMobile}
 			<Typography variant="h2">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->

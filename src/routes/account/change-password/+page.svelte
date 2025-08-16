@@ -89,7 +89,11 @@
 
 <main>
 	{#if success}
-		<img class="main-image" src={`${base}/images/hand-success.svg`} alt="Change password" />
+		<img
+			class="main-image"
+			src={`${base}/images/hand-success.svg`}
+			alt={$_('common.changePassword')}
+		/>
 		<Typography variant="h4" class="center-align"
 			>{$_('page.changePassword.successChangePassword')}</Typography
 		>

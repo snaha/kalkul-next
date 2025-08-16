@@ -146,7 +146,7 @@
 				<Typography>{$_('common.loading')}</Typography><Loader />
 			{:else if portfolios.length === 0}
 				<section class="empty">
-					<img src={`${base}/images/no-portfolio.svg`} alt="No portfolio yet" />
+					<img src={`${base}/images/no-portfolio.svg`} alt={$_('common.noPortfolioYet')} />
 					<div class="spacer"></div>
 					<Typography variant="h4">{$_('page.client.noPortfoliosYet')}</Typography>
 					<Typography>{$_('page.client.createYourFirstPortfolio')}</Typography>

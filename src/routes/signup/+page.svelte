@@ -203,7 +203,11 @@
 			--vertical-gap="var(--double-padding)"
 			--vertical-align-items="center"
 		>
-			<img src={`${base}/images/email-link.svg`} alt="Verification link sent" class="image" />
+			<img
+				src={`${base}/images/email-link.svg`}
+				alt={$_('common.verificationLinkSent')}
+				class="image"
+			/>
 			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="center">
 				<Typography variant="h4">{$_('page.signUp.checkEmail')}</Typography>
 				<Typography variant="large">

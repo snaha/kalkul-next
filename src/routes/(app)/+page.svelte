@@ -175,10 +175,10 @@
 		{#if showWelcome}
 			{@render welcomeDesktop()}
 		{:else if clientStore.loading}
-			<Typography>Loading...</Typography><Loader />
+			<Typography>{$_('common.loading')}</Typography><Loader />
 		{:else if clientStore.data.length === 0}
 			<section class="empty">
-				<img src={`${base}/images/no-client.svg`} alt="No client yet" />
+				<img src={`${base}/images/no-client.svg`} alt={$_('common.noClientYet')} />
 				<Typography variant="h4">{$_('page.home.noClientsYet')}</Typography>
 				<Typography>{$_('page.home.createYourFirstClient')}</Typography>
 				<div class="spacer"></div>
@@ -213,7 +213,7 @@
 						bind:value={searchQuery}
 						dimension="compact"
 						variant="solid"
-						placeholder="Search"
+						placeholder={$_('common.search')}
 					></SearchInput>
 					{#if searchQuery.length > 0}
 						<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}

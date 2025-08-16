@@ -100,7 +100,7 @@
 	{/if}
 	{#if investments.length === 0}
 		<section class="empty">
-			<img src={`${base}/images/no-investment.svg`} alt="No investments yet" />
+			<img src={`${base}/images/no-investment.svg`} alt={$_('common.noInvestmentsYet')} />
 			<div class="spacer"></div>
 			<Typography variant="h4">{$_('page.portfolio.noInvestmentYet')}</Typography>
 			<Typography>{$_('page.portfolio.createYourFirstInvestment')}</Typography>

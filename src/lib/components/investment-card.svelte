@@ -163,7 +163,7 @@
 		</Horizontal>
 		{#if transactions.length === 0}
 			<section class="centered">
-				<img src={`${base}/images/no-transaction.svg`} alt="No transaction yet" />
+				<img src={`${base}/images/no-transaction.svg`} alt={$_('common.noTransactionYet')} />
 				<Typography variant="h5">{$_('component.investmentCard.noTransactionsYet')}</Typography>
 				{#if !viewOnly}
 					<Typography variant="small"

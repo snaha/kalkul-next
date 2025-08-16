@@ -78,7 +78,7 @@
 
 <main>
 	{#if success}
-		<img class="main-image" src={`${base}/images/email-link.svg`} alt="Change email" />
+		<img class="main-image" src={`${base}/images/email-link.svg`} alt={$_('common.changeEmail')} />
 		<div class="confirm-information">
 			<Typography variant="h4">{$_('page.changeEmail.header')}</Typography>
 			<Typography variant="large">

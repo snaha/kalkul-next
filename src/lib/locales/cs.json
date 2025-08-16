@@ -416,7 +416,22 @@
 		"totalInterestEarned": "Kumulativní výnos do {date}",
 		"cancelBeforeTrialEnd": "Zrušte před {firstPaymentFormattedDate} a nebude vám nic účtováno. E-mailem vám připomeneme 7 dní před koncem zkušební doby.",
 		"subscriptionAutoRenew": "Vaše předplatné se automaticky obnovuje každý rok na opakující se základě.",
-		"manageSubscriptionDetails": "Detaily svého předplatného můžete zobrazit a spravovat na stránce {accountPaymentsLink}, která je kdykoli dostupná v nastavení vašeho účtu."
+		"manageSubscriptionDetails": "Detaily svého předplatného můžete zobrazit a spravovat na stránce {accountPaymentsLink}, která je kdykoli dostupná v nastavení vašeho účtu.",
+		"noData": "Žádná data",
+		"noTransactionYet": "Zatím žádné transakce",
+		"noClientYet": "Zatím žádní klienti",
+		"resetPasswordLink": "Odkaz k obnovení hesla",
+		"introImg": "Úvodní obrázek",
+		"verificationLinkSent": "Ověřovací odkaz odeslán",
+		"noPortfolioYet": "Zatím žádné portfolio",
+		"noInvestmentsYet": "Zatím žádné investice",
+		"changeEmail": "Změnit e-mail",
+		"changePassword": "Změnit heslo",
+		"byProceedingYouAgree": "Pokračováním souhlasíte s",
+		"termsOfUse": "Podmínkami použití",
+		"privacyPolicy": "Zásadami ochrany soukromí.",
+		"reload": "Znovu načíst",
+		"search": "Hledat"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",

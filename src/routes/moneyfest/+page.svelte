@@ -28,8 +28,8 @@
 		--vertical-align-items="center"
 	>
 		<Vertical --vertical-gap="var(--padding)">
-			<img src={`${base}/images/manifest-kalkul.svg`} alt="Intro img" />
-			<img src={`${base}/images/manifest-kalkul-collaboration.svg`} alt="Intro img" />
+			<img src={`${base}/images/manifest-kalkul.svg`} alt={$_('common.introImg')} />
+			<img src={`${base}/images/manifest-kalkul-collaboration.svg`} alt={$_('common.introImg')} />
 		</Vertical>
 		<Vertical --vertical-gap="var(--half-padding)">
 			<Banner --banner-padding="var(--half-padding)" --banner-border-radius="1000px" {icon}>

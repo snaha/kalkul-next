@@ -409,7 +409,22 @@
 		"startUsingKalkul": "Start using Kalkul",
 		"cancelBeforeTrialEnd": "Cancel before {firstPaymentFormattedDate} and you won't be charged. We will remind you 7 days before your trial period ends.",
 		"subscriptionAutoRenew": "Your subscription will automatically renew annually on a recurring basis.",
-		"manageSubscriptionDetails": "You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings."
+		"manageSubscriptionDetails": "You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.",
+		"noData": "No data",
+		"noTransactionYet": "No transaction yet",
+		"noClientYet": "No client yet",
+		"resetPasswordLink": "Reset password link",
+		"introImg": "Intro img",
+		"verificationLinkSent": "Verification link sent",
+		"noPortfolioYet": "No portfolio yet",
+		"noInvestmentsYet": "No investments yet",
+		"changeEmail": "Change email",
+		"changePassword": "Change password",
+		"byProceedingYouAgree": "By proceeding you agree to the",
+		"termsOfUse": "Terms of use",
+		"privacyPolicy": "Privacy Policy.",
+		"reload": "Reload",
+		"search": "Search"
 	},
 	"error": {
 		"emailError": "This doesn’t look like a correct email",

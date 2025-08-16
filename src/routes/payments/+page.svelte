@@ -127,7 +127,7 @@
 				<Typography variant="large">{$_('common.pleaseTryReloadingThePage')}</Typography>
 			</Vertical>
 			<Button variant="strong" dimension="compact" onclick={reload}
-				><WatsonHealthRotate_360 size={24} />Reload</Button
+				><WatsonHealthRotate_360 size={24} />{$_('common.reload')}</Button
 			>
 		</Vertical>
 	</ContentLayout>
@@ -222,8 +222,8 @@
 					><ArrowRight size={24} />
 				</Button>
 				<Typography variant="small"
-					>By proceeding you agree to the <a href="/terms">Terms of use</a> and
-					<a href="/privacy">Privacy Policy.</a></Typography
+					>{$_('common.byProceedingYouAgree')} <a href="/terms">{$_('common.termsOfUse')}</a> and
+					<a href="/privacy">{$_('common.privacyPolicy')}</a></Typography
 				>
 			</Vertical>
 		{:else}

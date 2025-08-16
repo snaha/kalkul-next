@@ -134,7 +134,7 @@
 
 {#if investments.length === 0 || data.length === 0}
 	<section class="graph">
-		<Typography variant="h1">No data</Typography>
+		<Typography variant="h1">{$_('common.noData')}</Typography>
 	</section>
 {:else}
 	<section

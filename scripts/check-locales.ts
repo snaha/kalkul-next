@@ -4,6 +4,39 @@ const SOURCE_DIR = 'src'
 const LOCALE_DIR = `${SOURCE_DIR}/lib/locales`
 const DEFAULT_LOCALE = 'cs'
 
+// Patterns for detecting hardcoded user-facing text (generic Unicode patterns)
+const HARDCODED_TEXT_PATTERNS = [
+	// Text between HTML/Svelte tags that starts with uppercase letter and contains spaces
+	{
+		pattern: />(\p{Lu}\p{L}*(?:\s+\p{L}+)*[\s,.'!?„"]*)</gu,
+		description: 'Text content between HTML tags',
+	},
+	// Hardcoded strings in user-facing attributes
+	{
+		pattern: /(?:placeholder|title|alt)=["'](\p{Lu}[\p{L}\s,.'!?„"]{2,})["']/gu,
+		description: 'Hardcoded text in HTML attributes',
+	},
+	// Direct text content that might be user-facing (like "Made with")
+	{
+		pattern: /(?<!\/\/\s*)(?<!\*\s+)(\p{Lu}\p{L}*(?:\s+\p{L}+)*)\s+<a/gu,
+		description: 'Text followed by links (like "Made with <a>")',
+	},
+]
+
+// Text patterns to exclude (technical terms, single words, etc.)
+const EXCLUDE_PATTERNS = [
+	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP)$/i,
+	/^\p{Lu}{2,4}$/u, // Acronyms (any uppercase letters)
+	/^\d+$/, // Pure numbers
+	/^\p{Ll}+$/u, // Single lowercase words (likely technical)
+	/^[\w.-]+@[\w.-]+$/, // Email addresses
+	/^https?:\/\//, // URLs
+	/^\/[/\w-]*$/, // File paths
+	/^#[0-9a-fA-F]{3,8}$/, // Color codes
+	/^[\d.]+%$/, // Percentages
+	/^[\d.,]+$/, // Numbers with formatting
+]
+
 function scanSourceFiles() {
 	const localizedTextSet = new Set<string>()
 
@@ -41,6 +74,82 @@ function scanSourceFiles() {
 		}
 	})
 	return localizedTextSet
+}
+
+function scanForHardcodedText() {
+	const hardcodedTextFound: Array<{ file: string; text: string; pattern: string; line?: number }> =
+		[]
+
+	const filenames = fs.readdirSync(SOURCE_DIR, { recursive: true })
+	filenames.forEach((filename) => {
+		const filePath = `${SOURCE_DIR}/${filename}`
+		const stat = fs.statSync(filePath)
+		if (stat.isDirectory()) {
+			return
+		}
+
+		// Only check .svelte files for hardcoded text
+		if (!filePath.endsWith('.svelte')) {
+			return
+		}
+
+		const file = fs.readFileSync(filePath, { encoding: 'utf8' })
+		const lines = file.split('\n')
+
+		// Check if file has exclusion comment in the first line
+		if (lines[0] && lines[0].trim().startsWith('<!-- localization-exclude -->')) {
+			return
+		}
+
+		// Check each pattern
+		HARDCODED_TEXT_PATTERNS.forEach(({ pattern, description }) => {
+			const regex = new RegExp(pattern.source, pattern.flags)
+			let match
+
+			while ((match = regex.exec(file)) !== null) {
+				// Extract the actual text content (usually in capture group 1 or 2)
+				const textContent = match[2] || match[1]
+				if (!textContent) continue
+
+				// Skip if text matches any exclude pattern
+				const shouldExclude = EXCLUDE_PATTERNS.some((excludePattern) =>
+					excludePattern.test(textContent.trim()),
+				)
+				if (shouldExclude) continue
+
+				// Skip very short text or single words without spaces
+				if (textContent.trim().length < 3 || !textContent.includes(' ')) {
+					// Allow some exceptions like "BETA", "OK", etc. that are commonly translated
+					const commonTranslatables = [
+						'BETA',
+						'OK',
+						'Cancel',
+						'Save',
+						'Delete',
+						'Edit',
+						'New',
+						'Close',
+					]
+					if (!commonTranslatables.includes(textContent.trim())) {
+						continue
+					}
+				}
+
+				// Find line number
+				const beforeMatch = file.substring(0, match.index)
+				const lineNumber = beforeMatch.split('\n').length
+
+				hardcodedTextFound.push({
+					file: filePath,
+					text: textContent.trim(),
+					pattern: description,
+					line: lineNumber,
+				})
+			}
+		})
+	})
+
+	return hardcodedTextFound
 }
 
 type Json = { [property: string]: Json }
@@ -138,6 +247,9 @@ function checkTranslations() {
 	const localizedTextSet = scanSourceFiles()
 	const localeData = readLocaleData(locale)
 
+	// Check for hardcoded user-facing text
+	const hardcodedText = scanForHardcodedText()
+
 	// Check for duplicate keys in all locale files
 	const allDuplicates: string[] = []
 	const localeFiles = fs.readdirSync(LOCALE_DIR).filter((file) => file.endsWith('.json'))
@@ -179,7 +291,19 @@ function checkTranslations() {
 		unusedTexts.forEach((text) => console.log(`'${text}'`))
 	}
 
-	if (missingTexts.length > 0 || unusedTexts.length > 0 || allDuplicates.length > 0) {
+	if (hardcodedText.length > 0) {
+		console.log('\nPotential hardcoded user-facing text found:\n')
+		hardcodedText.forEach((item) => {
+			console.log(`${item.file}:${item.line} - "${item.text}" (${item.pattern})`)
+		})
+	}
+
+	if (
+		missingTexts.length > 0 ||
+		unusedTexts.length > 0 ||
+		allDuplicates.length > 0 ||
+		hardcodedText.length > 0
+	) {
 		process.exit(1)
 	}
 }

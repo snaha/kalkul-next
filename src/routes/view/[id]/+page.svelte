@@ -63,7 +63,7 @@
 		onclick={() => {
 			showInvetments = !showInvetments
 			isGraphFullscreened = false
-		}}><Menu size={16} />Investments</Button
+		}}><Menu size={16} />{$_('common.investments')}</Button
 	>
 {/snippet}
 

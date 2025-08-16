@@ -1,3 +1,4 @@
+<!-- localization-exclude -->
 <script lang="ts">
 	import CustomHeader from '$lib/components/custom-header.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
