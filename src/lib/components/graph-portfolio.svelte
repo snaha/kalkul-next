@@ -204,6 +204,16 @@
 			<div class="graph-main">
 				<Horizontal --horizontal-gap="var(--half-padding)" --padding-left="0">
 					<Typography variant="h5">{title}</Typography>
+					{#if investments && investments.length > 0}
+						<Toggle
+							label={$_('common.showInflation')}
+							dimension="small"
+							bind:checked={adjustWithInflation}
+						></Toggle>
+						{#if adjustWithInflation}
+							<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
+						{/if}
+					{/if}
 					<FlexItem />
 					{@render fullscreenButton('value')}
 				</Horizontal>

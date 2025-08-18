@@ -134,8 +134,7 @@
 	}
 	.topbar {
 		padding: var(--double-padding);
-		border-top: 1px solid var(--colors-low);
-		border-bottom: 1px solid var(--colors-low);
+		padding-bottom: 0;
 	}
 	.horizontal {
 		display: flex;
