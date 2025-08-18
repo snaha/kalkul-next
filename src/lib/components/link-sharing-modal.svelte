@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Close, SendAlt } from 'carbon-icons-svelte'
+	import { Close } from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Modal, { type ModalProps } from './ui/modal.svelte'
 	import Typography from './ui/typography.svelte'
@@ -26,10 +26,10 @@
 		</section>
 		<section class="buttons">
 			<Button variant="strong" dimension="compact" onclick={confirm}
-				><SendAlt size={24} />{$_('component.linkSharingConfirmation.confirmButton')}</Button
+				>{$_('component.linkSharingConfirmation.confirmButton')}</Button
 			>
 			<Button variant="secondary" dimension="compact" onclick={oncancel}
-				><Close size={24} />{$_('component.linkSharingConfirmation.cancelButton')}</Button
+				>{$_('component.linkSharingConfirmation.cancelButton')}</Button
 			>
 			<div class="grower"></div>
 		</section>
