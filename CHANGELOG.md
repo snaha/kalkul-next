@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.9.0](https://github.com/snaha/kalkul/compare/v0.8.1...v0.9.0) (2025-08-18)
+
+
+### Features
+
+* animate tooltip ([#805](https://github.com/snaha/kalkul/issues/805)) ([57a1a35](https://github.com/snaha/kalkul/commit/57a1a3574bda0a8e20f777abce5a2e8ecf4f65b9))
+* formatting in inputs as users type ([#772](https://github.com/snaha/kalkul/issues/772)) ([a715795](https://github.com/snaha/kalkul/commit/a715795b771238138a89e1a6ed77cf49482ff23f))
+* isin cache ([#777](https://github.com/snaha/kalkul/issues/777)) ([e717dea](https://github.com/snaha/kalkul/commit/e717dea4971d67b06e049a5ba885eee7fdb0c655))
+* more demo clients ([#804](https://github.com/snaha/kalkul/issues/804)) ([ec87dee](https://github.com/snaha/kalkul/commit/ec87dee5680865ab70bd710bf6a13a89f7ea1cd9))
+* pdf export ([#790](https://github.com/snaha/kalkul/issues/790)) ([b46fff2](https://github.com/snaha/kalkul/commit/b46fff22f29a08aa18756e60cd4838b6356f0309))
+* playwright basic setup ([#774](https://github.com/snaha/kalkul/issues/774)) ([b34bd62](https://github.com/snaha/kalkul/commit/b34bd62f26754106cfc59c3d009f3934670e88af))
+* show cumulative data on breakdown chart ([#784](https://github.com/snaha/kalkul/issues/784)) ([cc3809a](https://github.com/snaha/kalkul/commit/cc3809aeed7fd521d18ed15e94a9d92d97bebb1e))
+
+
+### Bug Fixes
+
+* authorizedFetch refresh ([#799](https://github.com/snaha/kalkul/issues/799)) ([0310679](https://github.com/snaha/kalkul/commit/03106799b1e61308de39e5ad4719d68b29ef1f38)), closes [#798](https://github.com/snaha/kalkul/issues/798)
+* body layout when modal is visible ([#812](https://github.com/snaha/kalkul/issues/812)) ([cdfd506](https://github.com/snaha/kalkul/commit/cdfd506d2c008224b040dff0b75d0e461be3b0f2)), closes [#811](https://github.com/snaha/kalkul/issues/811)
+* database security + warnings ([#785](https://github.com/snaha/kalkul/issues/785)) ([1038443](https://github.com/snaha/kalkul/commit/103844376661b66625b346bcfeb19e953ec9f870))
+* find non localized text ([#810](https://github.com/snaha/kalkul/issues/810)) ([b10711c](https://github.com/snaha/kalkul/commit/b10711ceb61cd7a897cd0b54e5286a9993e07499))
+* import APL symbol ([#795](https://github.com/snaha/kalkul/issues/795)) ([1d41766](https://github.com/snaha/kalkul/commit/1d417668145e559b22ac4dd8b5a09c9f0c14489c))
+* isin errors ([#773](https://github.com/snaha/kalkul/issues/773)) ([4bd4104](https://github.com/snaha/kalkul/commit/4bd410408799db2141c4aadb1590c7817d2dd224))
+* isin errors migration ([#775](https://github.com/snaha/kalkul/issues/775)) ([952b0ca](https://github.com/snaha/kalkul/commit/952b0ca232eefc4a988035500ea6872818645e37))
+* missing what is this translation ([#769](https://github.com/snaha/kalkul/issues/769)) ([6f6bfd5](https://github.com/snaha/kalkul/commit/6f6bfd588a6a1e20351fdc438d3f890d7240ab42))
+* show correct todays investment value in client overview table ([#788](https://github.com/snaha/kalkul/issues/788)) ([1c5104a](https://github.com/snaha/kalkul/commit/1c5104ade54c4e19d64de2b244ccb84c47b9c233))
+* update help modal ([#797](https://github.com/snaha/kalkul/issues/797)) ([fb0a5ac](https://github.com/snaha/kalkul/commit/fb0a5ac1805a773d67b410f49becba0c625917e7))
+* use period end for data visualization (end of month, end of year) ([#791](https://github.com/snaha/kalkul/issues/791)) ([a74da63](https://github.com/snaha/kalkul/commit/a74da6341123466ee15399f01b403083c0e9633f))
+
 ## [0.8.1](https://github.com/snaha/kalkul/compare/v0.8.0...v0.8.1) (2025-08-01)
 
 
