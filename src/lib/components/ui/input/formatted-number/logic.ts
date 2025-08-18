@@ -324,7 +324,7 @@ export function validateDigitLimits(
 	return true
 }
 
-// Apply min/max constraints
+// Apply min/max constraints, returning undefined for violations
 export function applyConstraints(value: number, min?: number, max?: number): number | undefined {
 	if (value === 0 && min !== undefined && min > 0) {
 		// Special case: if value is 0 and there's a positive min constraint,
@@ -332,13 +332,14 @@ export function applyConstraints(value: number, min?: number, max?: number): num
 		return undefined
 	}
 
-	let constrainedValue = value
-	if (min !== undefined && constrainedValue < min) {
-		constrainedValue = min
+	// Check constraints and return undefined if violated
+	if (min !== undefined && value < min) {
+		return undefined
 	}
-	if (max !== undefined && constrainedValue > max) {
-		constrainedValue = max
+	if (max !== undefined && value > max) {
+		return undefined
 	}
 
-	return constrainedValue
+	// Value is within constraints
+	return value
 }

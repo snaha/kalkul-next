@@ -46,6 +46,82 @@ LOCALES.forEach((locale) => {
 				await expect(input).toHaveValue(formatExpected('1T234D56', locale))
 			})
 
+			test('should properly display default value when provided', async ({ mount }) => {
+				// This test ensures that when editing a transaction, the existing amount value
+				// is properly pre-populated in the input field
+				const defaultValue = 5000
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: defaultValue,
+						locale: locale.code,
+						maximumFractionDigits: 2,
+					},
+				})
+				const input = component.locator('input')
+
+				// The input should display the formatted default value immediately
+				await expect(input).toHaveValue(formatExpected('5T000', locale))
+
+				// Focus should maintain the formatted value
+				await input.focus()
+				await expect(input).toHaveValue(formatExpected('5T000', locale))
+
+				// After blur, the value should still be there
+				await input.blur()
+				await expect(input).toHaveValue(formatExpected('5T000', locale))
+			})
+
+			test('should update display value when prop changes dynamically', async ({ mount }) => {
+				// This test simulates the edit transaction scenario where the value prop
+				// changes after the component is mounted (e.g., when switching between transactions)
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: undefined,
+						locale: locale.code,
+						maximumFractionDigits: 2,
+					},
+				})
+				const input = component.locator('input')
+
+				// Initially should be empty
+				await expect(input).toHaveValue('')
+
+				// Update the value prop to simulate editing a transaction
+				await component.update({
+					props: {
+						value: 2500,
+						locale: locale.code,
+						maximumFractionDigits: 2,
+					},
+				})
+
+				// The input should now display the new value
+				await expect(input).toHaveValue(formatExpected('2T500', locale))
+
+				// Update again to simulate switching to another transaction
+				await component.update({
+					props: {
+						value: 7890.12,
+						locale: locale.code,
+						maximumFractionDigits: 2,
+					},
+				})
+
+				// Should show the new value
+				await expect(input).toHaveValue(formatExpected('7T890D12', locale))
+
+				// Setting back to undefined should clear the input
+				await component.update({
+					props: {
+						value: undefined,
+						locale: locale.code,
+						maximumFractionDigits: 2,
+					},
+				})
+
+				await expect(input).toHaveValue('')
+			})
+
 			test('should format digits as user types', async ({ mount }) => {
 				const component = await mount(FormattedNumberInput, {
 					props: {
@@ -115,7 +191,7 @@ LOCALES.forEach((locale) => {
 				await expect(input).toHaveValue(formatExpected('123D5', locale))
 			})
 
-			test('should apply min constraint on blur', async ({ mount }) => {
+			test('should preserve user input when below min constraint', async ({ mount }) => {
 				const component = await mount(FormattedNumberInput, {
 					props: {
 						value: undefined,
@@ -130,11 +206,11 @@ LOCALES.forEach((locale) => {
 				await input.fill('5')
 				await input.blur()
 
-				// Should apply min constraint
-				await expect(input).toHaveValue('10')
+				// Should preserve user input
+				await expect(input).toHaveValue('5')
 			})
 
-			test('should apply max constraint on blur', async ({ mount }) => {
+			test('should preserve user input when above max constraint', async ({ mount }) => {
 				const component = await mount(FormattedNumberInput, {
 					props: {
 						value: undefined,
@@ -149,8 +225,8 @@ LOCALES.forEach((locale) => {
 				await input.fill('150')
 				await input.blur()
 
-				// Should apply max constraint
-				await expect(input).toHaveValue('100')
+				// Should preserve user input
+				await expect(input).toHaveValue('150')
 			})
 		})
 
@@ -561,7 +637,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type number with period as decimal separator
-				await input.pressSequentially('123.45')
+				await input.pressSequentially('123.45', { delay: 10 })
 
 				// Should be formatted correctly for the locale
 				await expect(input).toHaveValue(formatExpected('123D45', locale))
@@ -580,7 +656,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type number with comma as decimal separator
-				await input.pressSequentially('123,45')
+				await input.pressSequentially('123,45', { delay: 10 })
 
 				// For en-US, comma is thousand separator, so "123,45" becomes "12,345"
 				// For cs-CZ, comma is decimal separator, so "123,45" becomes "123,45"

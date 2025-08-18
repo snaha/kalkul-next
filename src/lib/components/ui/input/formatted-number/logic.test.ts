@@ -346,19 +346,19 @@ describe('shouldPreventChar', () => {
 })
 
 describe('applyConstraints', () => {
-	it('should apply min constraint', () => {
-		expect(applyConstraints(5, 10, undefined)).toBe(10)
+	it('should invalidate value when below min constraint', () => {
+		expect(applyConstraints(5, 10, undefined)).toBeUndefined()
 		expect(applyConstraints(15, 10, undefined)).toBe(15)
 	})
 
-	it('should apply max constraint', () => {
-		expect(applyConstraints(15, undefined, 10)).toBe(10)
+	it('should invalidate value when above max constraint', () => {
+		expect(applyConstraints(15, undefined, 10)).toBeUndefined()
 		expect(applyConstraints(5, undefined, 10)).toBe(5)
 	})
 
-	it('should apply both constraints', () => {
-		expect(applyConstraints(5, 10, 20)).toBe(10)
-		expect(applyConstraints(25, 10, 20)).toBe(20)
+	it('should invalidate value when outside both constraints', () => {
+		expect(applyConstraints(5, 10, 20)).toBeUndefined()
+		expect(applyConstraints(25, 10, 20)).toBeUndefined()
 		expect(applyConstraints(15, 10, 20)).toBe(15)
 	})
 

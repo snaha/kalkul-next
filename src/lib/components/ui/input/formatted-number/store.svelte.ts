@@ -57,11 +57,14 @@ export function withInputStore(initialValue?: number): InputStore {
 			displayValue = newDisplayValue
 		},
 
+		// Update display value from a numeric value
 		updateDisplayValue(
 			newValue: number | undefined,
 			locale: string | null | undefined,
 			options: FormatOptions,
 		) {
+			value = newValue
+
 			if (!isFocused) {
 				if (newValue !== undefined && newValue !== null) {
 					displayValue = formatNumber(newValue, locale, {

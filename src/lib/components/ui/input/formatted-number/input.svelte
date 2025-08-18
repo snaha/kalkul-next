@@ -5,12 +5,11 @@
 	import { DEFAULT_MAXIMUM_FRACTION_DIGITS } from './logic'
 	import { withInputStore } from './store.svelte'
 	import {
-		createFocusHandler,
-		createBlurHandler,
 		createKeyDownHandler,
 		createPasteHandler,
 		createInputHandler,
-		createEventHandlerState,
+		createBlurHandler,
+		createFocusHandler,
 	} from './events'
 
 	type Props = Omit<InputProps & HTMLInputAttributes, 'type' | 'value'> & {
@@ -37,19 +36,19 @@
 	// Create store instance for this input
 	const store = withInputStore(value)
 
-	// Create event handler state for this input
-	const eventState = createEventHandlerState()
-
-	// Sync store value with bound prop
-	$effect(() => {
-		if (store.value !== value) {
-			value = store.value
-		}
-	})
+	// Simple state for event coordination
+	let eventState = $state({ isPasteInProgress: false })
 
 	// Update display value when value prop changes from outside
 	$effect(() => {
 		store.updateDisplayValue(value, locale, { maximumFractionDigits })
+	})
+
+	// Sync store value with bound prop (for user input changes)
+	$effect(() => {
+		if (store.value !== value) {
+			value = store.value
+		}
 	})
 
 	// Shared config object for all event handlers
@@ -60,21 +59,12 @@
 		constraints: { min, max },
 	})
 
-	// Helper functions for event handlers
-	const getInputElement = () => inputElement
-	const setDisplayValue = (newValue: string) => {
-		store.setDisplayValue(newValue)
-	}
-
-	// Create event handlers using shared config
-	const handleFocus = createFocusHandler(store, getInputElement)
-	const handleBlur = () => createBlurHandler(config)()
-	const handleKeyDown = (event: KeyboardEvent) =>
-		createKeyDownHandler(config, getInputElement, setDisplayValue)(event)
-	const handlePaste = (event: ClipboardEvent) =>
-		createPasteHandler(config, eventState, getInputElement, setDisplayValue)(event)
-	const handleInput = (event: Event) =>
-		createInputHandler(config, eventState, getInputElement, setDisplayValue)(event)
+	// Create event handlers
+	const handleFocus = $derived(createFocusHandler(store, () => inputElement))
+	const handleBlur = $derived(createBlurHandler(config))
+	const handleKeyDown = $derived(createKeyDownHandler(config, () => inputElement))
+	const handlePaste = $derived(createPasteHandler(config, eventState, () => inputElement))
+	const handleInput = $derived(createInputHandler(config, eventState, () => inputElement))
 
 	// Reactive display value from store
 	let displayValue = $state(store.displayValue)

@@ -63,9 +63,8 @@ function updateValues(
 	newCursorPos: number,
 	inputElement: HTMLInputElement | undefined,
 	config: EventHandlerConfig,
-	setDisplayValue: (value: string) => void,
 ): void {
-	setDisplayValue(formattedValue)
+	config.store.setDisplayValue(formattedValue)
 	config.store.updateValue(formattedValue, config.locale)
 	setCursorPosition(inputElement, newCursorPos)
 }
@@ -82,7 +81,6 @@ function handleSelectionOperation(
 	replacement: string,
 	config: EventHandlerConfig,
 	inputElement: HTMLInputElement | undefined,
-	setDisplayValue: (value: string) => void,
 ): void {
 	// Work in unformatted space to avoid separator complications
 	const unformattedValue = toUnformatted(config.store.displayValue, config.locale)
@@ -108,7 +106,7 @@ function handleSelectionOperation(
 		config.formatOptions.maximumFractionDigits,
 	)
 
-	updateValues(formattedValue, newCursorPos, inputElement, config, setDisplayValue)
+	updateValues(formattedValue, newCursorPos, inputElement, config)
 }
 
 /**
@@ -124,7 +122,6 @@ function handleSeparatorDeletion(
 	direction: 'before' | 'after',
 	config: EventHandlerConfig,
 	inputElement: HTMLInputElement | undefined,
-	setDisplayValue: (value: string) => void,
 ): boolean {
 	const { groupSeparator } = getLocaleSeparators(config.locale)
 	const charToCheck =
@@ -172,7 +169,7 @@ function handleSeparatorDeletion(
 		config.formatOptions.maximumFractionDigits,
 	)
 
-	updateValues(formattedValue, newCursorPos, inputElement, config, setDisplayValue)
+	updateValues(formattedValue, newCursorPos, inputElement, config)
 	return true
 }
 
@@ -215,30 +212,6 @@ export function createFocusHandler(
 	}
 }
 
-export function createBlurHandler(config: EventHandlerConfig) {
-	return function handleBlur() {
-		config.store.setFocus(false)
-
-		// Only apply min/max constraints if value is defined and not empty/incomplete
-		if (
-			config.store.value !== undefined &&
-			config.store.displayValue !== '' &&
-			config.store.displayValue !== '-'
-		) {
-			const constrainedValue = applyConstraints(
-				config.store.value,
-				config.constraints?.min,
-				config.constraints?.max,
-			)
-
-			// Update the bound value if constrained or cleared
-			if (constrainedValue !== config.store.value) {
-				config.store.setValue(constrainedValue)
-			}
-		}
-	}
-}
-
 /**
  * Creates the keydown event handler for the formatted number input.
  *
@@ -251,7 +224,6 @@ export function createBlurHandler(config: EventHandlerConfig) {
 export function createKeyDownHandler(
 	config: EventHandlerConfig,
 	getInputElement: () => HTMLInputElement | undefined,
-	setDisplayValue: (value: string) => void,
 ) {
 	return function handleKeyDown(event: KeyboardEvent) {
 		const inputElement = getInputElement()
@@ -267,12 +239,12 @@ export function createKeyDownHandler(
 			if (hasSelection) {
 				// Delete selected text
 				event.preventDefault()
-				handleSelectionOperation(selStart, selEnd, '', config, inputElement, setDisplayValue)
+				handleSelectionOperation(selStart, selEnd, '', config, inputElement)
 				return
 			}
 
 			// Handle backspace on thousand separators (skip over separator, delete actual number)
-			if (handleSeparatorDeletion(cursorPos, 'before', config, inputElement, setDisplayValue)) {
+			if (handleSeparatorDeletion(cursorPos, 'before', config, inputElement)) {
 				event.preventDefault()
 				return
 			}
@@ -281,7 +253,7 @@ export function createKeyDownHandler(
 		// Handle delete key
 		if (event.key === 'Delete') {
 			// Handle delete on thousand separators (skip over separator, delete actual number)
-			if (handleSeparatorDeletion(cursorPos, 'after', config, inputElement, setDisplayValue)) {
+			if (handleSeparatorDeletion(cursorPos, 'after', config, inputElement)) {
 				event.preventDefault()
 				return
 			}
@@ -325,9 +297,9 @@ export function createKeyDownHandler(
 
 			// Use direct replacement if result is valid, otherwise use full formatting
 			if (!isNaN(numericValue) && numericValue >= 0) {
-				updateValues(newFormattedValue, selStart + 1, inputElement, config, setDisplayValue)
+				updateValues(newFormattedValue, selStart + 1, inputElement, config)
 			} else {
-				handleSelectionOperation(selStart, selEnd, event.key, config, inputElement, setDisplayValue)
+				handleSelectionOperation(selStart, selEnd, event.key, config, inputElement)
 			}
 			return
 		}
@@ -352,7 +324,6 @@ export function createPasteHandler(
 	config: EventHandlerConfig,
 	state: EventHandlerState,
 	getInputElement: () => HTMLInputElement | undefined,
-	setDisplayValue: (value: string) => void,
 ) {
 	return function handlePaste(event: ClipboardEvent) {
 		state.isPasteInProgress = true
@@ -420,7 +391,7 @@ export function createPasteHandler(
 			config.formatOptions.maximumFractionDigits,
 		)
 
-		updateValues(formattedValue, finalCursorPos, inputElement, config, setDisplayValue)
+		updateValues(formattedValue, finalCursorPos, inputElement, config)
 
 		setTimeout(() => {
 			state.isPasteInProgress = false
@@ -432,7 +403,6 @@ export function createInputHandler(
 	config: EventHandlerConfig,
 	state: EventHandlerState,
 	getInputElement: () => HTMLInputElement | undefined,
-	setDisplayValue: (value: string) => void,
 ) {
 	return function handleInput(event: Event) {
 		// If paste is in progress, ignore this input event as it's being handled by paste handler
@@ -452,6 +422,30 @@ export function createInputHandler(
 			config.formatOptions.maximumFractionDigits,
 		)
 
-		updateValues(formattedValue, newCursorPos, getInputElement(), config, setDisplayValue)
+		updateValues(formattedValue, newCursorPos, getInputElement(), config)
+	}
+}
+
+export function createBlurHandler(config: EventHandlerConfig) {
+	return function handleBlur() {
+		config.store.setFocus(false)
+
+		// Only apply min/max constraints if value is defined and not empty/incomplete
+		if (
+			config.store.value !== undefined &&
+			config.store.displayValue !== '' &&
+			config.store.displayValue !== '-'
+		) {
+			const constrainedValue = applyConstraints(
+				config.store.value,
+				config.constraints?.min,
+				config.constraints?.max,
+			)
+
+			// Apply constraint validation - set bound value to undefined for violations
+			if (constrainedValue !== config.store.value) {
+				config.store.setValue(constrainedValue)
+			}
+		}
 	}
 }
