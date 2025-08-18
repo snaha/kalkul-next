@@ -253,7 +253,6 @@
 		"portfolioHeader": {
 			"addInvestment": "Add investment",
 			"editPortfolio": "Edit portfolio details",
-			"addPortfolio": "Add portfolio",
 			"duplicatePortfolio": "Duplicate portfolio",
 			"deletePortfolio": "Delete portfolio",
 			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo.",

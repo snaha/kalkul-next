@@ -260,7 +260,6 @@
 		"portfolioHeader": {
 			"addInvestment": "Přidat investici",
 			"editPortfolio": "Upravit detaily portfolia",
-			"addPortfolio": "Přidat portfolio",
 			"duplicatePortfolio": "Duplikovat portfolio",
 			"deletePortfolio": "Smazat portfolio",
 			"deletePortfolioWarning": "Toto portfolio a všechny investice v něm budou nenávratně smazány. Operaci nelze vrátit zpět.",

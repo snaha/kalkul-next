@@ -8,12 +8,12 @@
 		Add,
 		Share,
 		OverflowMenuVertical,
-		FolderDetails,
 		Copy,
 		TrashCan,
 		ArrowLeft,
 		DocumentExport,
 		Link,
+		Edit,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
@@ -100,10 +100,7 @@
 			{/snippet}
 			<List>
 				<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(client.id, portfolio.id))}
-					><FolderDetails size={24} />{$_('component.portfolioHeader.editPortfolio')}</ListItem
-				>
-				<ListItem onclick={() => goto(routes.CLIENT_NEW_PORTFOLIO(client.id))}
-					><Add size={24} />{$_('component.portfolioHeader.addPortfolio')}</ListItem
+					><Edit size={24} />{$_('component.portfolioHeader.editPortfolio')}</ListItem
 				>
 				<ListItem
 					onclick={async () => {
