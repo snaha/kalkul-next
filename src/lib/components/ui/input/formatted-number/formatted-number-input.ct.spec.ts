@@ -135,7 +135,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type digits one by one
-				await input.pressSequentially('1234')
+				await input.pressSequentially('1234', { delay: 10 })
 
 				// Should format with thousand separator
 				await expect(input).toHaveValue(formatExpected('1T234', locale))
@@ -154,7 +154,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type decimal number - use appropriate decimal separator for locale
-				await input.pressSequentially(formatInput('123D45', locale))
+				await input.pressSequentially(formatInput('123D45', locale), { delay: 10 })
 
 				await expect(input).toHaveValue(formatExpected('123D45', locale))
 			})
@@ -296,7 +296,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type number with trailing zeros
-				await input.pressSequentially(formatInput('123D40', locale))
+				await input.pressSequentially(formatInput('123D40', locale), { delay: 10 })
 
 				// Should preserve trailing zeros while typing
 				await expect(input).toHaveValue(formatExpected('123D40', locale))
@@ -523,7 +523,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type 5 digits sequentially
-				await input.pressSequentially('12345')
+				await input.pressSequentially('12345', { delay: 10 })
 
 				// Should format correctly with thousand separator
 				await expect(input).toHaveValue(formatExpected('12T345', locale))
@@ -549,7 +549,7 @@ LOCALES.forEach((locale) => {
 				await prepareInputForTyping(input)
 
 				// Type 4 digits
-				await input.pressSequentially('1234')
+				await input.pressSequentially('1234', { delay: 10 })
 				await expect(input).toHaveValue(formatExpected('1T234', locale))
 
 				// Type decimal separator appropriate for locale
@@ -605,7 +605,7 @@ LOCALES.forEach((locale) => {
 
 				// Type maximum integer digits
 				await prepareInputForTyping(input)
-				await input.pressSequentially('123456789012345')
+				await input.pressSequentially('123456789012345', { delay: 10 })
 				await expect(input).toHaveValue(formatExpected('123T456T789T012T345', locale))
 
 				// Try to paste more digits
