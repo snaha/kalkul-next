@@ -14,7 +14,7 @@
 	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
-	import { notImplemented } from '$lib/not-implemented'
+	import DeleteAccountModal from '$lib/components/delete-account-modal.svelte'
 	import routes, { apiRoutes } from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { subscriptionStore } from '$lib/stores/subscription.svelte'
@@ -34,6 +34,7 @@
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 
 	let error: string | undefined = $state()
+	let showDeleteModal = $state(false)
 	const subscription: Stripe.Subscription | undefined = $derived(subscriptionStore.data[0])
 	const isTrial = $derived(subscription?.status === 'trialing')
 	const currency = $derived(subscription?.currency.toUpperCase())
@@ -160,10 +161,7 @@
 							>{$_('page.account.changePassword')}</Button
 						>
 						<FlexItem />
-						<Button
-							dimension="compact"
-							variant="ghost"
-							onclick={(e: Event) => notImplemented(e, $_('page.account.deleteAccountWarning'))}
+						<Button dimension="compact" variant="ghost" onclick={() => (showDeleteModal = true)}
 							>{$_('page.account.deleteAccountButton')}</Button
 						>
 					</Horizontal>
@@ -257,6 +255,8 @@
 		</TabBar>
 	</Vertical>
 </ContentLayout>
+
+<DeleteAccountModal bind:open={showDeleteModal} />
 
 <style lang="postcss">
 	:global(.fit-content) {
