@@ -29,7 +29,7 @@
 		class: className,
 		open = $bindable(false),
 		mode = 'auto',
-		stopPropagation = true,
+		stopPropagation = false,
 	}: Props = $props()
 
 	let dropdownElement: HTMLElement
@@ -71,6 +71,7 @@
 		if (stopPropagation) {
 			e.stopPropagation()
 		}
+		e.preventDefault()
 	}
 
 	function onKeyPress() {

@@ -117,7 +117,7 @@
 			<div class="dropdown">
 				<Dropdown left buttonDimension="compact">
 					{#snippet button()}
-						<OverflowMenuVertical size={16} />
+						<OverflowMenuVertical size={24} />
 					{/snippet}
 					<List>
 						<ListItem onclick={toggleFocus}
@@ -207,19 +207,14 @@
 		}
 	}
 	.dropdown {
-		opacity: 0;
-		transition: opacity 0.2s ease-in;
-		visibility: hidden;
+		opacity: 1;
+		transition: opacity 0.2s ease-out;
+		visibility: visible;
 	}
 	.card:hover {
 		border: 1px solid var(--colors-ultra-high);
 		transition: border 0.2s;
 		transition-timing-function: ease-out;
-		.dropdown {
-			opacity: 1;
-			transition: opacity 0.2s ease-out;
-			visibility: visible;
-		}
 	}
 	.chevron {
 		padding: var(--half-padding);
