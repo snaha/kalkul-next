@@ -35,28 +35,68 @@
 
 	// Store locale for use in callbacks
 	const currentLocale = $derived($locale)
+
+	// Pre-calculate datasets to avoid complex logic in template
+	const chartDatasets = $derived.by(() => {
+		const datasets = []
+
+		// Extract inflation items if needed
+		const withdrawalInflation =
+			adjustWithInflation && showWithdrawals
+				? graphTransactionsData.withdrawalsWithInflation.at(-1)
+				: null
+		const feeInflation =
+			adjustWithInflation && showFees ? graphTransactionsData.feesWithInflation.at(-1) : null
+
+		// Add withdrawals (excluding inflation)
+		if (showWithdrawals) {
+			const data = adjustWithInflation
+				? graphTransactionsData.withdrawalsWithInflation.slice(0, -1)
+				: graphTransactionsData.withdrawals
+			datasets.push(...data)
+		}
+
+		// Add deposits
+		if (showDeposits) {
+			const data = adjustWithInflation
+				? graphTransactionsData.depositsWithInflation
+				: graphTransactionsData.deposits
+			datasets.push(...data)
+		}
+
+		// Add fees (excluding inflation)
+		if (showFees) {
+			const data = adjustWithInflation
+				? graphTransactionsData.feesWithInflation.slice(0, -1)
+				: graphTransactionsData.fees
+			datasets.push(...data)
+		}
+
+		// Add combined inflation as last item
+		if (withdrawalInflation && feeInflation) {
+			// Combine both inflations
+			datasets.push({
+				...withdrawalInflation,
+				data: withdrawalInflation.data.map((val, i) => {
+					const w = typeof val === 'number' ? val : 0
+					const f = typeof feeInflation.data[i] === 'number' ? feeInflation.data[i] : 0
+					return w + f
+				}),
+			})
+		} else if (withdrawalInflation) {
+			datasets.push(withdrawalInflation)
+		} else if (feeInflation) {
+			datasets.push(feeInflation)
+		}
+
+		return datasets
+	})
 </script>
 
 <Chart
 	type="bar"
 	labels={graphTransactionsData.data[0]?.graphLabels}
-	datasets={[
-		...(showWithdrawals
-			? adjustWithInflation
-				? graphTransactionsData.withdrawalsWithInflation
-				: graphTransactionsData.withdrawals
-			: []),
-		...(showDeposits
-			? adjustWithInflation
-				? graphTransactionsData.depositsWithInflation
-				: graphTransactionsData.deposits
-			: []),
-		...(showFees
-			? adjustWithInflation
-				? graphTransactionsData.feesWithInflation
-				: graphTransactionsData.fees
-			: []),
-	]}
+	datasets={chartDatasets}
 	options={{
 		interaction: {
 			intersect: false,
