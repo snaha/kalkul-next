@@ -58,9 +58,6 @@ services:
       - key: HOST
         scope: RUN_TIME
         value: 0.0.0.0
-      - key: COREPACK_INTEGRITY_KEYS
-        scope: RUN_AND_BUILD_TIME
-        value: 0
     github:
       branch: main
       deploy_on_push: true
