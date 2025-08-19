@@ -130,21 +130,17 @@
 					{isGraphFullscreened}
 					{isSidebarOpen}
 				>
-					<dialog bind:this={dialog}>
-						<div class="dialog-background">
-							<section class="vertical dialog">
-								{#if selectedInvestment !== undefined}
-									<EditTransaction
-										investment={selectedInvestment}
-										{portfolio}
-										{client}
-										transaction={editedTransaction}
-										close={closeDialog}
-									/>
-								{/if}
-							</section>
-						</div>
-					</dialog>
+					{#if selectedInvestment !== undefined}
+						<section class="vertical dialog">
+							<EditTransaction
+								investment={selectedInvestment}
+								{portfolio}
+								{client}
+								transaction={editedTransaction}
+								close={closeDialog}
+							/>
+						</section>
+					{/if}
 					<section class="investments" class:hidden={selectedInvestment !== undefined}>
 						{#each investments as investment, i}
 							<InvestmentCard
@@ -277,24 +273,6 @@
 		border-radius: var(--border-radius);
 		background-color: var(--colors-ultra-low);
 		border: 1px solid var(--colors-low);
-	}
-	dialog {
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		position: relative;
-		border: 0;
-		margin: 0;
-		z-index: 1;
-		padding: 0;
-		width: 0;
-		height: 100%;
-	}
-	.dialog-background {
-		position: absolute;
-		width: var(--sidebar-width);
-		height: 100%;
 	}
 	.vertical {
 		display: flex;
