@@ -427,7 +427,9 @@
 		"search": "Search"
 	},
 	"error": {
-		"emailError": "This doesn’t look like a correct email",
+		"emailError": "This doesn't look like a correct email",
+		"passwordLengthError": "Password must be at least 6 characters",
+		"confirmPasswordError": "Passwords don't match",
 		"birthDateError": "Birthdate cannot be in the future.",
 		"birthDateUndefined": "Please set valid birthdate",
 		"invalidYear": "Invalide year",

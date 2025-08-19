@@ -435,6 +435,8 @@
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",
+		"passwordLengthError": "Heslo musí mít alespoň 6 znaků",
+		"confirmPasswordError": "Hesla se neshodují",
 		"birthDateError": "Datum narození nemůže být v budoucnosti.",
 		"birthDateUndefined": "Zadejte platné datum narození",
 		"invalidYear": "Neplatný rok",

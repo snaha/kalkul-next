@@ -72,6 +72,25 @@ function scanSourceFiles() {
 				console.log(`⚠️  Logic detected in $_() call in ${filePath}: ${match[0]}`)
 			}
 		}
+
+		// Scan for zod schema error messages
+		if (filePath.endsWith('.ts') || filePath.endsWith('.js')) {
+			// Find zod schema error messages like: message: 'error.key'
+			const zodMessages = file.matchAll(/message:\s*['"`]([^'"`]+)['"`]/gim)
+			for (const zodMessage of zodMessages) {
+				if (!localizedTextSet.has(zodMessage[1])) {
+					localizedTextSet.add(zodMessage[1])
+				}
+			}
+
+			// Also find zod addIssue calls with message property
+			const zodIssueMessages = file.matchAll(/message:\s*['"`]([^'"`]+)['"`]/gim)
+			for (const issueMessage of zodIssueMessages) {
+				if (!localizedTextSet.has(issueMessage[1])) {
+					localizedTextSet.add(issueMessage[1])
+				}
+			}
+		}
 	})
 	return localizedTextSet
 }
