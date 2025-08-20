@@ -129,12 +129,12 @@
 			"editClient": "Upravit údaje klienta"
 		},
 		"share": {
-			"linkSharingToggle": "Sdílení odkazu (pouze pro čtení)",
-			"sharePortfolio": "Sdílet portfolio",
+			"linkSharingToggle": "Sdílet portfolio pomocí odkazu (pouze pro čtení)",
+			"linkSharing": "Sdílení odkazu",
 			"linkCopied": "Odkaz zkopírován",
-			"activateLinkText": "Aktivujte sdílení odkazu pro snadné sdílení této stránky portfolia s klientem.",
-			"deactivateLinkText": "Klient nebude moci upravovat ani měnit žádná data portfolia",
-			"dontShare": "Nesdílet"
+			"linkSharingExplanation1": "Kdokoli s odkazem může zobrazit portfolio – ale pouze vy ho můžete upravovat.",
+			"linkSharingExplanation2": "Změny, které provedete, budou viditelné pod stejným odkazem.",
+			"dontShare": "Ponechat sdílení odkazu vypnuté"
 		},
 		"changeEmail": {
 			"changeEmailAddress": "Změnit e-mailovou adresu",

@@ -4,6 +4,7 @@
 	import adapters from '$lib/adapters'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import CopyButton from '$lib/components/copy-button.svelte'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import LinkSharingModal from '$lib/components/link-sharing-modal.svelte'
 	import Button from '$lib/components/ui/button.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
@@ -68,55 +69,60 @@
 	}
 </script>
 
-<ContentLayout>
-	<Vertical
-		--vertical-align-items="stretch"
-		--vertical-gap="var(--double-padding)"
-		class="max560 stretch"
-	>
-		<Typography variant="h3">{$_('page.share.sharePortfolio')}</Typography>
+<Fullscreen>
+	<ContentLayout>
+		<Vertical
+			--vertical-align-items="stretch"
+			--vertical-gap="var(--double-padding)"
+			class="max560 stretch"
+		>
+			<Typography variant="h3">{$_('page.share.linkSharing')}</Typography>
 
-		<Vertical --vertical-gap="var(--padding)">
-			<Toggle
-				label={$_('page.share.linkSharingToggle')}
-				checked={linkSharing}
-				onclick={(e) => handleToggleClick(e)}
-			></Toggle>
-			{#if linkValue}
-				<section class="horizontal">
-					<Input
-						value={linkValue}
-						inert
-						class="stretch max560"
-						label={$_('common.portfolioLink')}
-					/>
-					<CopyButton
-						variant="ghost"
-						position="bottom"
-						helperText={$_('page.share.linkCopied')}
-						copyText={linkValue}
-					/>
-				</section>
-			{:else}
+			<Vertical --vertical-gap="var(--padding)">
 				<Vertical --vertical-gap="var(--half-padding)">
-					<Typography>{$_('page.share.activateLinkText')}</Typography>
-					<Typography variant="small">{$_('page.share.deactivateLinkText')}</Typography>
+					<Toggle
+						label={$_('page.share.linkSharingToggle')}
+						checked={linkSharing}
+						onclick={(e) => handleToggleClick(e)}
+					></Toggle>
+					<Vertical --vertical-gap="0">
+						<Typography variant="small">{$_('page.share.linkSharingExplanation1')}</Typography>
+						<Typography variant="small">{$_('page.share.linkSharingExplanation2')}</Typography>
+					</Vertical>
 				</Vertical>
-			{/if}
+				{#if linkValue}
+					<section class="horizontal">
+						<Input
+							value={linkValue}
+							dimension="compact"
+							disabled
+							class="stretch max560"
+							label={$_('common.portfolioLink')}
+						/>
+						<CopyButton
+							variant="ghost"
+							dimension="compact"
+							position="bottom"
+							helperText={$_('page.share.linkCopied')}
+							copyText={linkValue}
+						/>
+					</section>
+				{/if}
+			</Vertical>
+			<Horizontal>
+				{#if portfolio?.link}
+					<Button variant="secondary" dimension="compact" onclick={cancel}
+						><Checkmark size={24} />{$_('common.done')}</Button
+					>
+				{:else}
+					<Button variant="secondary" dimension="compact" onclick={cancel}
+						><Close size={24} />{$_('page.share.dontShare')}</Button
+					>
+				{/if}
+			</Horizontal>
 		</Vertical>
-		<Horizontal>
-			{#if portfolio?.link}
-				<Button variant="secondary" dimension="compact" onclick={cancel}
-					><Checkmark size={24} />{$_('common.done')}</Button
-				>
-			{:else}
-				<Button variant="secondary" dimension="compact" onclick={cancel}
-					><Close size={24} />{$_('page.share.dontShare')}</Button
-				>
-			{/if}
-		</Horizontal>
-	</Vertical>
-</ContentLayout>
+	</ContentLayout>
+</Fullscreen>
 <LinkSharingModal bind:open={showSharingOffModal} confirm={confirmModal} oncancel={cancelModal} />
 
 <style lang="postcss">

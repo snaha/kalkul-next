@@ -122,12 +122,12 @@
 			"editClient": "Edit client details"
 		},
 		"share": {
-			"linkSharingToggle": "Link sharing (view only)",
-			"sharePortfolio": "Share portfolio",
+			"linkSharingToggle": "Share portfolio with a link (view-only)",
+			"linkSharing": "Link sharing",
 			"linkCopied": "Link copied",
-			"activateLinkText": "Activate link sharing to easily share this portfolio page with your client.",
-			"deactivateLinkText": "The client will not be able to edit or make any changes to the portfolio data",
-			"dontShare": "Don't share"
+			"linkSharingExplanation1": "Anyone with the link can view the portfolio — but only you can edit.",
+			"linkSharingExplanation2": "Changes you make will be visible under the same link.",
+			"dontShare": "Keep link sharing off"
 		},
 		"changeEmail": {
 			"changeEmailAddress": "Change email address",
