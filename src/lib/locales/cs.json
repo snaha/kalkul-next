@@ -195,7 +195,14 @@
 			"listingName": "Název",
 			"listingType": "Typ",
 			"listingSymbol": "Symbol",
-			"listingExchange": "Burza"
+			"listingExchange": "Burza",
+			"terHelper": "Roční celkový náklad fondu – zahrnuje správu, provoz a administraci.",
+			"entryFeeHelper": "Poplatek zaplacený při vstupu do investice – obvykle jednorázově nebo průběžně.",
+			"exitFeeHelper": "Poplatek účtovaný při výběru investice – může být pevný nebo procentuální.",
+			"successFeeHelper": "Poplatek za dosažení nadstandardního výnosu",
+			"managementFeeHelper": "Pravidelný poplatek za správu investice – obvykle roční procento z hodnoty aktiv.",
+			"noProductAlt": "Žádný produkt",
+			"noProductInCurrencyAlt": "Žádný produkt v měně"
 		},
 		"editPortfolio": {
 			"addPortfolio": "Přidat portfolio",
@@ -296,6 +303,9 @@
 		},
 		"welcome": {
 			"startUsingKalkul": "Začít používat Kalkul"
+		},
+		"youtubeIntroVideo": {
+			"title": "Úvodní video"
 		}
 	},
 	"helpBox": {

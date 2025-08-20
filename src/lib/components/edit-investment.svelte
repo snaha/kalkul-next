@@ -26,6 +26,7 @@
 	import Vertical from './ui/vertical.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import ImportInvestmentModal from './import-investment-modal.svelte'
+	import HelperTooltip from './helper-tooltip.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -58,6 +59,12 @@
 
 	let advancedFees = $state(false)
 	let isImportInvestmentModalOpen = $state(false)
+
+	let showTERHelper = $state(false)
+	let showEntryFeeHelper = $state(false)
+	let showExitFeeHelper = $state(false)
+	let showSuccessFeeHelper = $state(false)
+	let showManagementFeeHelper = $state(false)
 
 	$effect(() => {
 		if (!investment) {
@@ -224,16 +231,23 @@
 			></Toggle>
 		</Horizontal>
 		{#if advancedFees}
-			<Input
-				variant="solid"
-				dimension="compact"
-				placeholder={'0'}
-				label={$_('common.successFee')}
-				unit="%"
-				min={0}
-				step={0.001}
-				bind:value={successFee}
-			></Input>
+			<section class="horizontal">
+				<Input
+					variant="solid"
+					dimension="compact"
+					placeholder={'0'}
+					label={$_('common.successFee')}
+					unit="%"
+					min={0}
+					step={0.001}
+					bind:value={successFee}
+					class="grower"
+				></Input>
+				<HelperTooltip
+					bind:show={showSuccessFeeHelper}
+					helperText={$_('component.editInvestment.successFeeHelper')}
+				/>
+			</section>
 
 			<section class="horizontal">
 				<Select
@@ -258,19 +272,30 @@
 					min={0}
 					class="grower"
 				></Input>
+				<HelperTooltip
+					bind:show={showManagementFeeHelper}
+					helperText={$_('component.editInvestment.managementFeeHelper')}
+				/>
 			</section>
 		{:else}
-			<Input
-				type="number"
-				variant="solid"
-				dimension="compact"
-				placeholder={'0'}
-				label={$_('common.ter')}
-				unit="%"
-				min={0}
-				step={'0.001'}
-				bind:value={ter}
-			></Input>
+			<section class="horizontal">
+				<Input
+					type="number"
+					variant="solid"
+					dimension="compact"
+					placeholder={'0'}
+					label={$_('common.ter')}
+					unit="%"
+					min={0}
+					step={'0.001'}
+					bind:value={ter}
+					class="grower"
+				></Input>
+				<HelperTooltip
+					bind:show={showTERHelper}
+					helperText={$_('component.editInvestment.terHelper')}
+				/>
+			</section>
 		{/if}
 		<section class="horizontal">
 			<Input
@@ -283,7 +308,6 @@
 				unit="%"
 				step={'.001'}
 				min={0}
-				class="grower"
 			></Input>
 			<Select
 				variant="solid"
@@ -297,6 +321,10 @@
 					{ value: 'upfront', label: $_('common.upfront') },
 				]}
 			></Select>
+			<HelperTooltip
+				bind:show={showEntryFeeHelper}
+				helperText={$_('component.editInvestment.entryFeeHelper')}
+			/>
 		</section>
 
 		<section class="horizontal">
@@ -322,6 +350,10 @@
 				min={0}
 				class="grower"
 			></Input>
+			<HelperTooltip
+				bind:show={showExitFeeHelper}
+				helperText={$_('component.editInvestment.exitFeeHelper')}
+			/>
 		</section>
 	</Vertical>
 
@@ -381,10 +413,10 @@
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-end;
-		gap: var(--padding);
+		gap: var(--half-padding);
 	}
 	.horizontal :global(.grower) {
-		flex: 1;
+		flex-grow: 1;
 	}
 	.half-gap {
 		gap: var(--half-padding);

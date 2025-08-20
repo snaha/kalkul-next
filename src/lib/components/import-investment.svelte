@@ -302,7 +302,12 @@
 
 		{#if figiValues.length === 0}
 			<Horizontal --horizontal-justify-content="center">
-				<img src="/images/no-client.svg" width="180" height="180" alt="no product" />
+				<img
+					src="/images/no-client.svg"
+					width="180"
+					height="180"
+					alt={$_('component.editInvestment.noProductAlt')}
+				/>
 			</Horizontal>
 			<Vertical --vertical-align-items="center" --vertical-gap="0">
 				<Typography --typography-color="var(--colors-high)"
@@ -324,7 +329,12 @@
 			</Horizontal>
 		{:else if filteredFigiValues.length === 0}
 			<Horizontal --horizontal-justify-content="center">
-				<img src="/images/currencies.svg" width="200" height="200" alt="no product in currency" />
+				<img
+					src="/images/currencies.svg"
+					width="200"
+					height="200"
+					alt={$_('component.editInvestment.noProductInCurrencyAlt')}
+				/>
 			</Horizontal>
 			<Vertical --vertical-align-items="center" --vertical-gap="0">
 				<Typography style="text-align: center"

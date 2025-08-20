@@ -188,7 +188,14 @@
 			"listingName": "Name",
 			"listingType": "Type",
 			"listingSymbol": "Symbol",
-			"listingExchange": "Exchange"
+			"listingExchange": "Exchange",
+			"terHelper": "Annual total fund cost – includes management, operation and administration.",
+			"entryFeeHelper": "Fee paid when entering the investment – usually once or ongoing.",
+			"exitFeeHelper": "Fee charged when withdrawing the investment – can be fixed or percentage.",
+			"successFeeHelper": "Fee for achieving above-standard returns",
+			"managementFeeHelper": "Regular fee for investment management – usually annual percentage of asset value.",
+			"noProductAlt": "No product",
+			"noProductInCurrencyAlt": "No product in currency"
 		},
 		"editPortfolio": {
 			"addPortfolio": "Add portfolio",
@@ -289,6 +296,9 @@
 		},
 		"welcome": {
 			"startUsingKalkul": "Start using Kalkul"
+		},
+		"youtubeIntroVideo": {
+			"title": "Intro video"
 		}
 	},
 	"helpBox": {

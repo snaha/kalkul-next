@@ -13,7 +13,7 @@ const HARDCODED_TEXT_PATTERNS = [
 	},
 	// Hardcoded strings in user-facing attributes
 	{
-		pattern: /(?:placeholder|title|alt)=["'](\p{Lu}[\p{L}\s,.'!?„"]{2,})["']/gu,
+		pattern: /(?:placeholder|title|alt|helperText)=["']([^"']+)["']/gu,
 		description: 'Hardcoded text in HTML attributes',
 	},
 	// Direct text content that might be user-facing (like "Made with")

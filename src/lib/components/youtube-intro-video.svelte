@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n'
+
 	type Props = {
 		autoplay?: boolean
 	}
@@ -12,7 +14,7 @@
 	<iframe
 		src={`https://www.youtube.com/embed/${VIDEO_ID}${autoplay ? '?autoplay=1' : ''}`}
 		class="video"
-		title="intro video"
+		title={$_('component.youtubeIntroVideo.title')}
 	>
 	</iframe>
 </div>
