@@ -8,14 +8,73 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
-  e2e-tests:
-    name: E2E Tests
-    timeout-minutes: 60
+  playwright-tests:
+    name: Playwright Tests
+    timeout-minutes: 30
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    concurrency:
+      group: playwright-tests-${{ github.repository }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for component changes
+        id: changes
+        shell: bash
+        run: |
+          # Ensure we have git configuration
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+
+          # For PRs, fetch the base branch to ensure we have the base SHA
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            
+            echo "Fetching base branch: $BASE_REF"
+            git fetch origin $BASE_REF:refs/remotes/origin/$BASE_REF || true
+            
+            # Also fetch the specific base SHA if not available
+            if ! git cat-file -e $BASE_SHA 2>/dev/null; then
+              echo "Base SHA not found, fetching it specifically"
+              git fetch origin $BASE_SHA || true
+            fi
+          else
+            BASE_SHA="HEAD~1"
+          fi
+
+          echo "Event: ${{ github.event_name }}"
+          echo "Base SHA: $BASE_SHA"
+          echo "Current SHA: ${{ github.sha }}"
+
+          # Get changed files with better error handling
+          if git cat-file -e $BASE_SHA 2>/dev/null; then
+            CHANGED_FILES=$(git diff --name-only $BASE_SHA ${{ github.sha }})
+          else
+            echo "⚠️ Base SHA not available, using origin/main as fallback"
+            git fetch origin main:refs/remotes/origin/main || true
+            CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }} || echo "")
+          fi
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -E "(src/lib/components/|playwright-ct\.config\.ts|\.ct\.spec\.ts)" > /dev/null; then
+            echo "run_component_tests=true" >> $GITHUB_OUTPUT
+            echo "✅ Component changes detected - will run component tests"
+          else
+            echo "run_component_tests=false" >> $GITHUB_OUTPUT
+            echo "⏭️ No component changes detected - skipping component tests"
+          fi
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -29,108 +88,60 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps
-
-      - name: Install Playwright system dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps
-
-      - name: Cache Supabase CLI
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/bin
-          key: ${{ runner.os }}-supabase-cli-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-supabase-cli-
-
-      - name: Set up Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Cache Supabase Docker images
-        uses: actions/cache@v4
-        id: docker-cache
-        with:
-          path: ~/.cache/docker-images
-          key: ${{ runner.os }}-supabase-docker-v3-${{ hashFiles('supabase/config.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-supabase-docker-v3-
-
-      - name: Load cached Docker images
-        if: steps.docker-cache.outputs.cache-hit == 'true'
+      - name: Reset test database
         run: |
-          echo "Loading cached Docker images..."
-          if [ -d "$HOME/.cache/docker-images" ]; then
-            for image in $HOME/.cache/docker-images/*.tar; do
-              if [ -f "$image" ]; then
-                echo "Loading $(basename "$image")"
-                docker load -i "$image"
-              fi
-            done
-            echo "Finished loading cached images"
-          else
-            echo "No cached images directory found"
+          if [ -z "$TEST_DATABASE_URL" ]; then
+            echo "❌ TEST_DATABASE_URL is not set. This secret is required for running tests."
+            echo "   Please add TEST_DATABASE_URL to your GitHub repository secrets."
+            exit 1
           fi
 
-      - name: Start Supabase local development setup
-        run: pnpm supabase start
+          echo "🔄 Resetting test database..."
 
-      - name: Save Docker images to cache
-        if: steps.docker-cache.outputs.cache-hit != 'true'
+          # Reset database using Supabase CLI with database URL (--yes to skip confirmation)
+          pnpx supabase db reset --db-url "$TEST_DATABASE_URL" --yes
+
+          echo "✅ Database reset complete"
+        env:
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+
+      - name: Run Component Tests
+        if: steps.changes.outputs.run_component_tests == 'true'
         run: |
-          echo "Saving Docker images to cache..."
-          mkdir -p $HOME/.cache/docker-images
-
-          # Get all supabase and related images
-          docker images --format "{{.Repository}}:{{.Tag}}" | grep -E "(supabase|postgrest|kong|inbucket)" | while read image; do
-            if [ "$image" != "<none>:<none>" ]; then
-              filename=$(echo "$image" | tr '/' '_' | tr ':' '_')
-              echo "Saving $image as $filename.tar"
-              docker save "$image" -o "$HOME/.cache/docker-images/$filename.tar"
-            fi
-          done
-
-          echo "Docker images saved to cache:"
-          ls -la $HOME/.cache/docker-images/
-
-      - name: Run Playwright integration tests
-        run: pnpm test:integration
+          echo "🧩 Running component tests..."
+          pnpm test:ct
         env:
           CI: true
-          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Run Integration Tests
+        run: |
+          echo "🔄 Running integration tests..."
+          pnpm test:integration
+        env:
+          CI: true
+          # Use dedicated Supabase test project
+          PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
           PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN }}
           PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
 
-      - name: Run Playwright component tests
-        run: pnpm test:ct
-        env:
-          CI: true
-
-      - name: Upload Playwright Report
+      - name: Upload Test Reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-test-reports
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 30
-
-      - name: Stop Supabase
-        if: always()
-        run: pnpm supabase stop
