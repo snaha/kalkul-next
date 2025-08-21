@@ -116,6 +116,9 @@ jobs:
         env:
           TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
 
+      - name: Generate SvelteKit files
+        run: pnpm exec svelte-kit sync
+
       - name: Run Component Tests
         if: steps.changes.outputs.run_component_tests == 'true'
         run: |
