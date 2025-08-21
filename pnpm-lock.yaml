@@ -97,8 +97,8 @@ importers:
         specifier: 17.6.0
         version: 17.6.0
       supabase:
-        specifier: ^2.6.8
-        version: 2.6.8
+        specifier: ^2.34.3
+        version: 2.34.3
       svelte:
         specifier: 5.19.2
         version: 5.19.2
@@ -2116,6 +2116,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch@3.3.2:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
@@ -2443,8 +2444,8 @@ packages:
   summary@2.1.0:
     resolution: {integrity: sha512-nMIjMrd5Z2nuB2RZCKJfFMjgS3fygbeyGk9PxPPaJR1RIcyN9yn4A63Isovzm3ZtQuEkLBVgMdPup8UeLH7aQw==}
 
-  supabase@2.6.8:
-    resolution: {integrity: sha512-rgz9DVLso6LQ9VLKYXPDkvKgyFCYi6os1+3QS439yKkq4etbYn3KsedFBen0m4lgrHylBNL6W2qOB4+J/kgOLQ==}
+  supabase@2.34.3:
+    resolution: {integrity: sha512-nMO7MFkw3ze/ScRt8S7AssNuBDbFeEsu2MTF2hol5T8HoAz5WgoLhhwCL5NUh8G0Jigpg88QIaDEPhHdNvv9TQ==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -4446,7 +4447,7 @@ snapshots:
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
@@ -4960,7 +4961,7 @@ snapshots:
 
   summary@2.1.0: {}
 
-  supabase@2.6.8:
+  supabase@2.34.3:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6
