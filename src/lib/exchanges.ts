@@ -89,6 +89,7 @@ export const EXCHANGE_CODE_TO_CURRENCY: Record<string, string> = {
 	SN: 'EUR',
 	SQ: 'EUR',
 	SA: 'EUR',
+	ID: 'EUR',
 }
 
 export type Exchange = {
@@ -772,5 +773,13 @@ export const EXCHANGES: Record<string, Exchange> = {
 		operatingMic: 'BMEX',
 		micExchangeName: 'BOLSA DE VALENCIA',
 		country: 'ES',
+	},
+	ID: {
+		currency: 'EUR',
+		exchange: 'DUBLIN',
+		mic: 'XDUB',
+		operatingMic: 'XDUB',
+		micExchangeName: 'IRISH STOCK EXCHANGE - MAIN MARKET',
+		country: 'IE',
 	},
 }

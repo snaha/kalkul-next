@@ -88,7 +88,7 @@
 			if (values.length === 0) {
 				figiValues = []
 				page = 'listing'
-				await reportISINError(identifier, { error: 'not found' })
+				await reportISINError(identifier, { error: 'empty result' })
 				return
 			}
 
@@ -96,11 +96,12 @@
 				if (values[0].warning === 'No identifier found.') {
 					figiValues = []
 					page = 'listing'
+					await reportISINError(identifier, { error: 'no identifier found' })
 					return
 				} else {
 					isinImportError = $_('component.editInvestment.noInvestmentFound')
+					await reportISINError(identifier, { error: 'no investment found' })
 				}
-				await reportISINError(identifier, { error: 'not found' })
 				return
 			}
 
@@ -125,6 +126,11 @@
 					)
 
 				page = 'listing'
+
+				if (figiValues.length === 0) {
+					await reportISINError(identifier, { error: 'no valid exchange' })
+					return
+				}
 
 				await fetchAPY()
 			}

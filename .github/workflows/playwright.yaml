@@ -39,10 +39,10 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             BASE_SHA="${{ github.event.pull_request.base.sha }}"
             BASE_REF="${{ github.event.pull_request.base.ref }}"
-            
+
             echo "Fetching base branch: $BASE_REF"
             git fetch origin $BASE_REF:refs/remotes/origin/$BASE_REF || true
-            
+
             # Also fetch the specific base SHA if not available
             if ! git cat-file -e $BASE_SHA 2>/dev/null; then
               echo "Base SHA not found, fetching it specifically"
@@ -97,7 +97,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --dangerously-allow-all-builds
 
       - name: Reset test database
         run: |
@@ -126,6 +126,7 @@ jobs:
           pnpm test:ct
         env:
           CI: true
+          HOME: /root
 
       - name: Run Integration Tests
         run: |
