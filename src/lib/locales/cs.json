@@ -281,9 +281,9 @@
 			"exportTitle": "Export PDF",
 			"exportDescription": "Graf \"Hodnota\" je zahrnut ve výchozím nastavení. Pomocí možností níže si můžete přizpůsobit svůj PDF soubor.",
 			"exportButton": "Exportovat PDF",
-			"includeBreakdown": "Zahrnout rozdělení portfolia v klíčových datech",
+			"includeBreakdown": "Zahrnout rozdělení portfolia ve vybraných datech",
 			"breakdownExplanation": "Zobrazit rozdělení hodnoty portfolia ke konkrétním datům.",
-			"addKeyDate": "Přidat klíčové datum"
+			"addKeyDate": "Přidat vybrané datum"
 		},
 		"tooltipTransaction": {
 			"totalDeposits": "Celkem vkladů",
