@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.10.0](https://github.com/snaha/kalkul/compare/v0.9.0...v0.10.0) (2025-08-22)
+
+
+### Features
+
+* graph visualization options ([#835](https://github.com/snaha/kalkul/issues/835)) ([cec6cd7](https://github.com/snaha/kalkul/commit/cec6cd75facebfe1fd36e8833135b7e2e5c3e671)), closes [#576](https://github.com/snaha/kalkul/issues/576)
+* investment fee helper texts ([#826](https://github.com/snaha/kalkul/issues/826)) ([c145d0f](https://github.com/snaha/kalkul/commit/c145d0f79e0c1167acca75275242002f131d6329))
+
+
+### Bug Fixes
+
+* client email improvements ([#834](https://github.com/snaha/kalkul/issues/834)) ([3b3dcaf](https://github.com/snaha/kalkul/commit/3b3dcaf09faf0ff8ad7b8eaff0f5c3f1788b867a))
+* consolidate withdrawal and fees inflation on the transaction chart into single value ([#822](https://github.com/snaha/kalkul/issues/822)) ([5d8978c](https://github.com/snaha/kalkul/commit/5d8978cb7e88c0bee19a3d7530297cdd2e413208))
+* czech translation for key dates ([#836](https://github.com/snaha/kalkul/issues/836)) ([5272d26](https://github.com/snaha/kalkul/commit/5272d2664ef1a49d8ee5d472fff55d3b52f702de))
+* delete your account modal ([#817](https://github.com/snaha/kalkul/issues/817)) ([1aade41](https://github.com/snaha/kalkul/commit/1aade4119fb2267e8bf6a1ac384c8e429d6f09fb)), closes [#585](https://github.com/snaha/kalkul/issues/585)
+* edit transaction sidebar scrolling issues ([#814](https://github.com/snaha/kalkul/issues/814)) ([641268d](https://github.com/snaha/kalkul/commit/641268d8c1f7000e4c126c9b8264a3654c7a1efc)), closes [#763](https://github.com/snaha/kalkul/issues/763)
+* editing transaction and formatted input validation should not overwrite input content ([#809](https://github.com/snaha/kalkul/issues/809)) ([5cd2d6e](https://github.com/snaha/kalkul/commit/5cd2d6e364503e50f66ddabb091dc70d1b0ae637))
+* investment card menu dropdown ([#818](https://github.com/snaha/kalkul/issues/818)) ([ac52e1e](https://github.com/snaha/kalkul/commit/ac52e1e6f80418ad27d3f73312370a20fdc8c106))
+* isin fixes ([#830](https://github.com/snaha/kalkul/issues/830)) ([d7d6bda](https://github.com/snaha/kalkul/commit/d7d6bdabf02e8b472e8bc48bba4dceb10e46bdb3))
+* missing login localizations ([#825](https://github.com/snaha/kalkul/issues/825)) ([8f148a9](https://github.com/snaha/kalkul/commit/8f148a9d3aab39083372bfdddbc30830167c70ac))
+* portfolio header update ([#821](https://github.com/snaha/kalkul/issues/821)) ([618b1f6](https://github.com/snaha/kalkul/commit/618b1f64dfdb74ab60190f0df19d0160104698e1)), closes [#560](https://github.com/snaha/kalkul/issues/560)
+* remove add portfolio option from menu ([#815](https://github.com/snaha/kalkul/issues/815)) ([3ee2a39](https://github.com/snaha/kalkul/commit/3ee2a39beea4197f718560e690851c6ede7cc7bf))
+* remove icons from link sharing modal ([#816](https://github.com/snaha/kalkul/issues/816)) ([380993a](https://github.com/snaha/kalkul/commit/380993afd65ccc39f0bf0e954b7d6bd98ba5e022)), closes [#736](https://github.com/snaha/kalkul/issues/736)
+* update content for link sharing ([#827](https://github.com/snaha/kalkul/issues/827)) ([ab7b0a3](https://github.com/snaha/kalkul/commit/ab7b0a328f2a82dbd1625ed3182c5e24e9749821)), closes [#735](https://github.com/snaha/kalkul/issues/735)
+* update supabase to 2.34.3 ([#832](https://github.com/snaha/kalkul/issues/832)) ([3d7eacd](https://github.com/snaha/kalkul/commit/3d7eacd3303b65e4ebc4398f51e42273da983258))
+
 ## [0.9.0](https://github.com/snaha/kalkul/compare/v0.8.1...v0.9.0) (2025-08-18)
 
 
