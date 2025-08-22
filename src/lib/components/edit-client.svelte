@@ -99,7 +99,7 @@
 		showConfirmModal = true
 	}
 
-	$effect(() => {
+	function validateEmailAddress() {
 		if (email !== '') {
 			const res = emailFormSchema.safeParse({ email })
 			if (res.success) {
@@ -111,7 +111,7 @@
 				emailValid = false
 			}
 		}
-	})
+	}
 </script>
 
 {#snippet birthDateError()}
@@ -163,7 +163,8 @@
 			error={emailTouched && email.trim() !== '' && emailError?.email?._errors
 				? emailErrorSnippet
 				: undefined}
-			oninput={() => (emailTouched = true)}>{$_('page.client.clientEmailExplanation')}</Input
+			oninput={() => (emailTouched = true)}
+			onblur={validateEmailAddress}>{$_('page.client.clientEmailExplanation')}</Input
 		>
 		<section class="profile-picture">
 			<Typography>{$_('page.client.profilePicture')}</Typography>

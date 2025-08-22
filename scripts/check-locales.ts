@@ -280,9 +280,45 @@ function checkTranslations() {
 		allDuplicates.push(...duplicates)
 	}
 
+	// Check consistency between locale files
+	const localeConsistencyErrors: string[] = []
+	const allLocaleData: { [locale: string]: Json } = {}
+	const allLocaleKeys: { [locale: string]: string[] } = {}
+
+	// Load all locale data
+	for (const localeFile of localeFiles) {
+		const localeName = localeFile.replace('.json', '')
+		allLocaleData[localeName] = readLocaleData(localeName)
+		allLocaleKeys[localeName] = flattenLocale(allLocaleData[localeName])
+	}
+
+	// Check if all keys exist in all locales
+	const allUniqueKeys = new Set<string>()
+	Object.values(allLocaleKeys).forEach((keys) => keys.forEach((key) => allUniqueKeys.add(key)))
+
+	for (const key of allUniqueKeys) {
+		const localesWithKey = Object.entries(allLocaleKeys).filter(([, keys]) => keys.includes(key))
+		const localesWithoutKey = Object.entries(allLocaleKeys).filter(
+			([, keys]) => !keys.includes(key),
+		)
+
+		if (localesWithoutKey.length > 0) {
+			const withKeyLocales = localesWithKey.map(([locale]) => locale).join(', ')
+			const withoutKeyLocales = localesWithoutKey.map(([locale]) => locale).join(', ')
+			localeConsistencyErrors.push(
+				`Key '${key}' exists in [${withKeyLocales}] but missing in [${withoutKeyLocales}]`,
+			)
+		}
+	}
+
 	if (allDuplicates.length > 0) {
 		console.log('\nDuplicate keys found:\n')
 		allDuplicates.forEach((dup) => console.log(dup))
+	}
+
+	if (localeConsistencyErrors.length > 0) {
+		console.log('\nLocale consistency errors:\n')
+		localeConsistencyErrors.forEach((error) => console.log(error))
 	}
 
 	const missingTexts: string[] = []
@@ -321,6 +357,7 @@ function checkTranslations() {
 		missingTexts.length > 0 ||
 		unusedTexts.length > 0 ||
 		allDuplicates.length > 0 ||
+		localeConsistencyErrors.length > 0 ||
 		hardcodedText.length > 0
 	) {
 		process.exit(1)
