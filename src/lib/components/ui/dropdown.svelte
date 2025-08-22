@@ -36,6 +36,18 @@
 	let dropdownMenu: HTMLElement
 	let dropdownId: string = Math.random().toString(16).substring(10)
 
+	const dropdownBottom = $derived(up ? `${buttonSize() + 2 + 4}px` : 'auto')
+
+	function buttonSize() {
+		return buttonDimension === 'small'
+			? 32
+			: buttonDimension === 'compact'
+				? 40
+				: buttonDimension === 'default'
+					? 40
+					: 48
+	}
+
 	function close(ev: MouseEvent) {
 		const target = ev.target as unknown as Node
 		if (dropdownElement.contains(target)) {
@@ -109,6 +121,7 @@
 			role="listbox"
 			aria-labelledby="dropdown-button"
 			tabindex={-1}
+			style={`bottom: ${dropdownBottom}`}
 		>
 			{@render children()}
 		</div>
@@ -134,13 +147,14 @@
 			}
 
 			&.up {
-				inset: auto 0 50px auto;
+				top: auto;
+				right: 0;
+				left: auto;
 			}
 
 			&.left {
 				top: 4px;
 				right: 0;
-				bottom: auto;
 				left: auto;
 			}
 		}

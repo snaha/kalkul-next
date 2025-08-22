@@ -21,6 +21,11 @@
 		lowColor: string
 		baseColor: string
 		clientBirthDate?: Date
+		showInvestmentValue: boolean
+		showInterestEarned: boolean
+		showDeposited: boolean
+		showWithdrawn: boolean
+		showFees: boolean
 	}
 
 	let {
@@ -34,6 +39,11 @@
 		lowColor,
 		baseColor,
 		clientBirthDate,
+		showInvestmentValue,
+		showInterestEarned,
+		showDeposited,
+		showWithdrawn,
+		showFees,
 	}: Props = $props()
 
 	// Utility function to calculate cumulative sum up to selectedIndex
@@ -224,6 +234,31 @@
 		$_('common.total'),
 	]
 	let cursorX = $state(0)
+
+	function filterByIndex(i: number) {
+		switch (i) {
+			case 0:
+				return showInvestmentValue
+			case 1:
+				return showInterestEarned
+			case 2:
+				return showDeposited
+			case 3:
+				return showWithdrawn
+			case 4:
+				return showFees
+		}
+	}
+
+	function filterLabels() {
+		return dataLabels.filter((label, i) => filterByIndex(i))
+	}
+
+	function filterChartData() {
+		return (adjustWithInflation ? breakdownInflationChartData : breakdownChartData).filter(
+			(chartData, i) => filterByIndex(i),
+		)
+	}
 </script>
 
 <Horizontal>
@@ -251,8 +286,8 @@
 	<div class="breakdown">
 		<Chart
 			type="bar"
-			labels={dataLabels}
-			datasets={adjustWithInflation ? breakdownInflationChartData : breakdownChartData}
+			labels={filterLabels()}
+			datasets={filterChartData()}
 			options={{
 				interaction: {
 					intersect: false,

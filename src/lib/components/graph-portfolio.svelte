@@ -7,7 +7,7 @@
 	import FlexItem from './ui/flex-item.svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
-	import { Maximize } from 'carbon-icons-svelte'
+	import { Maximize, SettingsView } from 'carbon-icons-svelte'
 	import Checkbox from './ui/checkbox.svelte'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import Toggle from './ui/toggle.svelte'
@@ -19,6 +19,8 @@
 	import GraphPortfolioBreakdown from './graph-portfolio-breakdown.svelte'
 	import { deriveGraphPortfolioTransactions, deriveGraphValueData } from '$lib/graph'
 	import { getCSSVariableValue } from '$lib/css-vars'
+	import Dropdown from './ui/dropdown.svelte'
+	import List from './ui/list/list.svelte'
 
 	interface Props {
 		portfolio: Portfolio
@@ -52,7 +54,13 @@
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
 	let showFees = $state(true)
+	let showBreakdownInvestmentValue = $state(true)
+	let showBreakdownInterestEarned = $state(true)
+	let showBreakdownDeposited = $state(true)
+	let showBreakdownWithdrawn = $state(true)
+	let showBreakdownFees = $state(true)
 	let selectedIndex = $state(0)
+
 	const { total, data } = $derived(
 		getGraphDataForPortfolio(transactionStore, investments, portfolio),
 	)
@@ -110,15 +118,44 @@
 </script>
 
 {#snippet controlsTransaction()}
-	<Checkbox dimension="small" bind:checked={showDeposits}>{$_('common.deposits')}</Checkbox>
-	<Checkbox dimension="small" bind:checked={showWithdrawals}>{$_('common.withdrawals')}</Checkbox>
-	<Checkbox dimension="small" bind:checked={showFees}>{$_('common.fees')}</Checkbox>
+	<Dropdown left buttonDimension="small" buttonVariant="ghost" autoClose={false}>
+		{#snippet button()}
+			<SettingsView size={16} />
+		{/snippet}
+		<List>
+			<Checkbox dimension="small" bind:checked={showDeposits}>{$_('common.deposits')}</Checkbox>
+			<Checkbox dimension="small" bind:checked={showWithdrawals}
+				>{$_('common.withdrawals')}</Checkbox
+			>
+			<Checkbox dimension="small" bind:checked={showFees}>{$_('common.fees')}</Checkbox>
+		</List>
+	</Dropdown>
 {/snippet}
 
 {#snippet controlsBreakdown()}
 	<Button dimension="small" variant="solid" onclick={() => (selectedIndex = breakdownSelectToday())}
 		>{$_('common.showToday')}</Button
 	>
+	<Dropdown buttonDimension="small" buttonVariant="ghost" autoClose={false} up>
+		{#snippet button()}
+			<SettingsView size={16} />
+		{/snippet}
+		<List>
+			<Checkbox dimension="small" bind:checked={showBreakdownInvestmentValue}
+				>{$_('common.investmentValue')}</Checkbox
+			>
+			<Checkbox dimension="small" bind:checked={showBreakdownInterestEarned}
+				>{$_('common.interestEarned')}</Checkbox
+			>
+			<Checkbox dimension="small" bind:checked={showBreakdownDeposited}
+				>{$_('common.deposited')}</Checkbox
+			>
+			<Checkbox dimension="small" bind:checked={showBreakdownWithdrawn}
+				>{$_('common.withdrawn')}</Checkbox
+			>
+			<Checkbox dimension="small" bind:checked={showBreakdownFees}>{$_('common.fees')}</Checkbox>
+		</List>
+	</Dropdown>
 {/snippet}
 
 {#snippet fullscreenButton(graph: FullscreenGraphType)}
@@ -197,6 +234,11 @@
 						{lowColor}
 						{baseColor}
 						{clientBirthDate}
+						showInvestmentValue={showBreakdownInvestmentValue}
+						showInterestEarned={showBreakdownInterestEarned}
+						showDeposited={showBreakdownDeposited}
+						showWithdrawn={showBreakdownWithdrawn}
+						showFees={showBreakdownFees}
 					/>
 				{/if}
 			</FullscreenGraph>
@@ -284,6 +326,11 @@
 					{lowColor}
 					{baseColor}
 					{clientBirthDate}
+					showInvestmentValue={showBreakdownInvestmentValue}
+					showInterestEarned={showBreakdownInterestEarned}
+					showDeposited={showBreakdownDeposited}
+					showWithdrawn={showBreakdownWithdrawn}
+					showFees={showBreakdownFees}
 				/>
 			</div>
 		{/if}
