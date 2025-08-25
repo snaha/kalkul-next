@@ -37,6 +37,7 @@
 	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import VideoModal from '$lib/components/video-modal.svelte'
 	import YoutubeIntroVideo from '$lib/components/youtube-intro-video.svelte'
+	import { investmentStore } from '$lib/stores/investment.svelte'
 
 	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
 
@@ -238,6 +239,7 @@
 				</li>
 				{#each filteredClient as client}
 					{@const birtDate = new Date(client.birth_date)}
+					{@const portfolioIds = portfolioStore.filter(client.id).map((portfolio) => portfolio.id)}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<li
@@ -257,8 +259,11 @@
 						>
 						<span>{formatDate(new Date(client.birth_date))}</span>
 						<span class="right-aligned">{formatAge(birtDate)}</span>
-						<span class="right-aligned">{portfolioStore.filter(client.id).length}</span>
-						<span class="right-aligned">{0}</span>
+						<span class="right-aligned">{portfolioIds.length}</span>
+						<span class="right-aligned"
+							>{portfolioIds.flatMap((portfolioId) => investmentStore.filter(portfolioId))
+								.length}</span
+						>
 						<span class="right-aligned">{@render clientDropdown(client.id)}</span>
 					</li>
 				{/each}
