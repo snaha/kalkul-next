@@ -200,6 +200,13 @@ test('should handle text selection replacement', async ({ mount }) => {
 - Check TypeScript types before committing
 - Reference README.md for commands and setup
 
+### Testing Commands
+
+**Unit Tests**: Use `pnpm test:unit run [test-file]` to run unit tests once (without watch mode)
+
+- Example: `pnpm test:unit run graph-data.test.ts`
+- `pnpm test:unit` without "run" starts watch mode and runs indefinitely
+
 ### Pre-commit Requirements
 
 **IMPORTANT**: Before committing any changes, you MUST run and pass:

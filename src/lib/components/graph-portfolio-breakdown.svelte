@@ -3,6 +3,7 @@
 	import Chart from '$lib/components/chart.svelte'
 	import type { InvestmentWithColorIndex, Portfolio, TooltipData, CustomDataset } from '$lib/types'
 	import type { GraphData } from '$lib/@snaha/kalkul-maths'
+	import { getCumulativeValues } from '$lib/@snaha/kalkul-maths'
 	import Horizontal from './ui/horizontal.svelte'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import Slider from './ui/slider.svelte'
@@ -45,38 +46,6 @@
 		showWithdrawn,
 		showFees,
 	}: Props = $props()
-
-	// Utility function to calculate cumulative sum up to selectedIndex
-	function getCumulativeSum(array: number[], index: number): number {
-		return array.slice(0, index + 1).reduce((acc, val) => acc + val, 0)
-	}
-
-	// Utility function to calculate all cumulative values for a dataset
-	function getCumulativeValues(graphData: GraphData, index: number, useInflation = false) {
-		const deposits = useInflation ? graphData.graphInflationDeposits : graphData.graphDeposits
-		const withdrawals = useInflation
-			? graphData.graphInflationWithdrawals
-			: graphData.graphWithdrawals
-		const fees = useInflation ? graphData.graphInflationFeeValues : graphData.graphFeeValues
-		const values = useInflation
-			? graphData.graphInflationInvestmentValues
-			: graphData.graphInvestmentValues
-
-		const cumulativeDeposits = getCumulativeSum(deposits, index)
-		const cumulativeWithdrawals = getCumulativeSum(withdrawals, index)
-		const cumulativeFees = getCumulativeSum(fees, index)
-		const currentValue = values[index]
-		const cumulativeInterest =
-			currentValue - cumulativeDeposits + cumulativeWithdrawals + cumulativeFees
-
-		return {
-			cumulativeDeposits,
-			cumulativeWithdrawals,
-			cumulativeFees,
-			currentValue,
-			cumulativeInterest,
-		}
-	}
 
 	const breakdownChartData = $derived(
 		data.map((r, i) => {
@@ -138,7 +107,11 @@
 
 	const totalValue = $derived.by(() => {
 		const totals = data.reduce(
-			(acc, r) => {
+			(acc, r, i) => {
+				// Only include visible investments
+				if (investmentsViewStore.isHidden(investments[i].id)) {
+					return acc
+				}
 				const values = getCumulativeValues(r, selectedIndex)
 				return {
 					currentValue: acc.currentValue + values.currentValue,
@@ -167,7 +140,11 @@
 	})
 	const totalValueWithInflation = $derived.by(() => {
 		const totals = data.reduce(
-			(acc, r) => {
+			(acc, r, i) => {
+				// Only include visible investments
+				if (investmentsViewStore.isHidden(investments[i].id)) {
+					return acc
+				}
 				const values = getCumulativeValues(r, selectedIndex, true)
 				return {
 					currentValue: acc.currentValue + values.currentValue,

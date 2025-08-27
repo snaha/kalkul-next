@@ -130,6 +130,57 @@ export function getRateAdjustment(rate: number, period: Period, count: number): 
 	}
 }
 
+function getCumulativeSum(array: number[], index: number): number {
+	return array.slice(0, index + 1).reduce((acc, val) => acc + val, 0)
+}
+
+export interface CumulativeValues {
+	cumulativeDeposits: number
+	cumulativeWithdrawals: number
+	cumulativeFees: number
+	currentValue: number
+	cumulativeInterest: number
+}
+
+export function getCumulativeValues(
+	graphData: GraphData,
+	index: number,
+	useInflation = false,
+): CumulativeValues {
+	const deposits = useInflation ? graphData.graphInflationDeposits : graphData.graphDeposits
+	const withdrawals = useInflation
+		? graphData.graphInflationWithdrawals
+		: graphData.graphWithdrawals
+	const fees = useInflation ? graphData.graphInflationFeeValues : graphData.graphFeeValues
+	const values = useInflation
+		? graphData.graphInflationInvestmentValues
+		: graphData.graphInvestmentValues
+
+	const cumulativeDeposits = getCumulativeSum(deposits, index)
+	const cumulativeWithdrawals = getCumulativeSum(withdrawals, index)
+	const cumulativeFees = getCumulativeSum(fees, index)
+	const currentValue = values[index]
+
+	let cumulativeInterest = 0
+	for (let i = 0; i <= index; i++) {
+		const valueChange = i === 0 ? values[i] : values[i] - values[i - 1]
+		const periodDeposits = deposits[i] || 0
+		const periodWithdrawals = withdrawals[i] || 0
+		const periodFees = fees[i] || 0
+
+		const periodInterest = valueChange - periodDeposits - periodWithdrawals - periodFees
+		cumulativeInterest += periodInterest
+	}
+
+	return {
+		cumulativeDeposits,
+		cumulativeWithdrawals,
+		cumulativeFees,
+		currentValue,
+		cumulativeInterest,
+	}
+}
+
 export function getGraphDataForPortfolio(
 	transactionStore: TransactionStore,
 	investments: Investment[],
