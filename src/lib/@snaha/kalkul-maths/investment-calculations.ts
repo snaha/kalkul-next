@@ -24,6 +24,13 @@ import { PERCENTAGE_DIVISOR, DAYS_PER_YEAR, MONTHS_PER_YEAR } from './constants'
 
 Decimal.set({ precision: 30 })
 
+type InvestmentErrorType = 'managementFee' | 'withdrawal'
+
+export type InvestmentError = {
+	type: InvestmentErrorType
+	date: Date
+}
+
 function toPercentage(n: number): number {
 	return n / PERCENTAGE_DIVISOR
 }
@@ -114,6 +121,8 @@ function calculateDailyInvestmentUpdate(
 	dailyTERFeeMulitplier: Decimal,
 	totalDepositAmount: number,
 ) {
+	const investmentCalculationErrors: InvestmentErrorType[] = []
+
 	const depositFee = calculateEntryFee(
 		depositsOnDate,
 		stringToEntryFeeType(investment.entry_fee_type || DEFAULT_ENTRY_FEE_TYPE),
@@ -147,21 +156,41 @@ function calculateDailyInvestmentUpdate(
 	currentFeeBreakdown.TERFee = currentFeeBreakdown.TERFee.add(TERFee)
 
 	// Calculate new current value
-	const newCurrentValue = currentValue
+	const multilpliedValue = currentValue
 		.mul(dailyAPYWithSuccessFee)
 		.mul(dailyTERFeeMulitplier)
 		.mul(dailyManagementFeeMultiplier)
-		.sub(dailyManagementFee)
-		.add(depositsOnDate - depositFee) // Deposit fee is subtracted from the deposit
-		.sub(withdrawalsOnDate + withdrawalFee) // The exit fee is taken from the withdrawn amount
+
+	const depositedValue = multilpliedValue.add(depositsOnDate - depositFee) // Deposit fee is subtracted from the deposit
+
+	const valueAfterDailyManagementFee = depositedValue.sub(
+		depositedValue.greaterThanOrEqualTo(dailyManagementFee) ? dailyManagementFee : depositedValue,
+	)
+
+	if (depositedValue.lessThan(dailyManagementFee)) {
+		investmentCalculationErrors.push('managementFee')
+	}
+
+	const totalWithdrawalNeeded = new Decimal(withdrawalsOnDate + withdrawalFee) // The exit fee is taken from the withdrawn amount
+	const actualWithdrawal = valueAfterDailyManagementFee.greaterThanOrEqualTo(totalWithdrawalNeeded)
+		? totalWithdrawalNeeded
+		: valueAfterDailyManagementFee
+
+	if (valueAfterDailyManagementFee.lessThan(totalWithdrawalNeeded)) {
+		investmentCalculationErrors.push('withdrawal')
+	}
+
+	const newCurrentValue = valueAfterDailyManagementFee.sub(actualWithdrawal)
 
 	return {
 		newCurrentValue,
 		depositFee,
+		actualWithdrawal,
 		withdrawalFee,
 		successFee,
 		managementFee,
 		TERFee,
+		investmentCalculationErrors,
 	}
 }
 
@@ -187,11 +216,13 @@ export function getInvestmentValues(
 	feeValues: FeeBreakdown[]
 	withdrawalValues: number[]
 	depositValues: number[]
+	errors: InvestmentError[]
 } {
 	const investmentValues: number[] = []
 	const feeValues: FeeBreakdown[] = []
 	const withdrawalValues: number[] = []
 	const depositValues: number[] = []
+	const errors: InvestmentError[] = []
 
 	let currentValue = new Decimal(0)
 	let currentFeeBreakdown: FeeBreakdown<Decimal> = resetFeeBreakdown(new Decimal(0))
@@ -223,23 +254,28 @@ export function getInvestmentValues(
 		const depositsOnDate = deposits.get(formatDate(date)) ?? 0
 		const withdrawalsOnDate = withdrawals.get(formatDate(date)) ?? 0
 
-		const { newCurrentValue } = calculateDailyInvestmentUpdate(
-			currentValue,
-			currentFeeBreakdown,
-			depositsOnDate,
-			withdrawalsOnDate,
-			investment,
-			dailyAPY,
-			dailyAPYWithSuccessFee,
-			dailyManagementFee,
-			dailyManagementFeeMultiplier,
-			dailyTERFeeMulitplier,
-			totalDepositAmount,
-		)
+		const { newCurrentValue, actualWithdrawal, investmentCalculationErrors } =
+			calculateDailyInvestmentUpdate(
+				currentValue,
+				currentFeeBreakdown,
+				depositsOnDate,
+				withdrawalsOnDate,
+				investment,
+				dailyAPY,
+				dailyAPYWithSuccessFee,
+				dailyManagementFee,
+				dailyManagementFeeMultiplier,
+				dailyTERFeeMulitplier,
+				totalDepositAmount,
+			)
+
+		if (investmentCalculationErrors.length > 0) {
+			errors.push(...investmentCalculationErrors.map((type) => ({ date, type })))
+		}
 
 		currentValue = newCurrentValue
 		deposit = deposit.add(depositsOnDate)
-		withdrawal = withdrawal.add(withdrawalsOnDate)
+		withdrawal = withdrawal.add(actualWithdrawal)
 
 		if (date >= nextRecordDate) {
 			if (period === 'year') {
@@ -281,7 +317,7 @@ export function getInvestmentValues(
 		depositValues.push(deposit.toNumber())
 	}
 
-	return { investmentValues, feeValues, withdrawalValues, depositValues }
+	return { investmentValues, feeValues, withdrawalValues, depositValues, errors }
 }
 
 export function getBaseData(transactions: Transaction[]): InvestmentData {

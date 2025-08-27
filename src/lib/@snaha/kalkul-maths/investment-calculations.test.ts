@@ -36,13 +36,14 @@ describe('#getInvestmentValues', () => {
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		// Monthly periods: should have one entry per month
 		expect(feeValues.length).toBeGreaterThan(0)
 		expect(investmentValues.length).toEqual(feeValues.length)
@@ -62,13 +63,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues } = getInvestmentValues(
+		const { investmentValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		// With 10% APY for a full year, 100 should become 110
 		expect(investmentValues[0]).toBeCloseTo(110, 1)
 	})
@@ -86,13 +88,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		// 100 deposit - 10 entry fee = 90 invested, with 10% growth = 99
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].entryFee).toEqual(10)
@@ -111,13 +114,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		// 100 grows to 110, then 10 withdrawn + 10 exit fee = 90 remaining
 		expect(investmentValues[0]).toBeCloseTo(90, 1)
 		expect(feeValues[0].exitFee).toEqual(10)
@@ -136,13 +140,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		// 100 grows to 110, then 10 withdrawn + 1 exit fee (10% of 10) = 99 remaining
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].exitFee).toEqual(1)
@@ -160,13 +165,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].TERFee).toBeGreaterThan(0)
 	})
@@ -184,13 +190,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].managementFee).toBeGreaterThan(0)
 	})
@@ -208,13 +215,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues } = getInvestmentValues(
+		const { investmentValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(99.479)
 	})
 
@@ -230,15 +238,209 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues } = getInvestmentValues(
+		const { investmentValues, feeValues, errors } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			NUM_DAYS_PER_YEAR,
 		)
 
+		expect(errors.length).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(109, 1)
 		expect(feeValues[0].successFee).toBeGreaterThan(0)
+	})
+
+	it('should report managementFee error when daily management fee exceeds investment value', () => {
+		const periodCount = { count: 1, period: 'year' as const }
+		const initialDepositValue = 100
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([])
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: 0,
+			management_fee_type: 'fixed',
+			management_fee: 120, // Daily management fee will be 120/365 ≈ 0.328 per day
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-12-31')
+		const { investmentValues, errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toBeGreaterThan(0)
+		expect(errors.some((error) => error.type === 'managementFee')).toBe(true)
+		// Investment value should not go negative
+		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
+	})
+
+	it('should report withdrawal error when withdrawal exceeds available investment value', () => {
+		const periodCount = { count: 1, period: 'year' as const }
+		const initialDepositValue = 100
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([['2025-06-01', 150]]) // Withdraw more than available
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: 0, // No growth to ensure withdrawal exceeds value
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-12-31')
+		const { investmentValues, withdrawalValues, errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toBeGreaterThan(0)
+		expect(errors.some((error) => error.type === 'withdrawal')).toBe(true)
+		// Investment value should not go negative
+		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
+		// Actual withdrawal should be limited to available amount
+		expect(Math.abs(withdrawalValues[0])).toBeLessThan(150)
+	})
+
+	it('should report withdrawal error with exit fees when total needed exceeds value', () => {
+		const periodCount = { count: 1, period: 'year' as const }
+		const initialDepositValue = 100
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([['2025-06-01', 95]]) // Withdraw + exit fee = 95 + 10 = 105 > 100
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: 0,
+			exit_fee_type: 'fixed',
+			exit_fee: 10,
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-12-31')
+		const { investmentValues, errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toBeGreaterThan(0)
+		expect(errors.some((error) => error.type === 'withdrawal')).toBe(true)
+		// Investment value should not go negative
+		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
+	})
+
+	it('should report both managementFee and withdrawal errors in extreme scenario', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const initialDepositValue = 50
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([['2025-02-01', 60]]) // Withdraw more than deposited
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: -5, // Negative return
+			management_fee_type: 'fixed',
+			management_fee: 20, // High daily management fee
+			exit_fee_type: 'fixed',
+			exit_fee: 5,
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-03-31')
+		const { investmentValues, errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toBeGreaterThan(0)
+		const errorTypes = errors.map((error) => error.type)
+		// Should report both types of errors
+		expect(errorTypes.includes('managementFee')).toBe(true)
+		expect(errorTypes.includes('withdrawal')).toBe(true)
+		// Investment value should never go negative
+		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
+	})
+
+	it('should limit daily management fee to available value when value is insufficient', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const initialDepositValue = 10
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([])
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: 0,
+			management_fee_type: 'fixed',
+			management_fee: 20, // Daily fee ≈ 0.055, but small initial value means it will hit zero quickly
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-12-31')
+		const { investmentValues, errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toBeGreaterThan(0)
+		expect(errors.some((error) => error.type === 'managementFee')).toBe(true)
+		// With high management fees, the value should drop to zero but not negative
+		expect(investmentValues[investmentValues.length - 1]).toEqual(0)
+	})
+
+	it('should limit actual withdrawal to available value when insufficient funds', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const initialDepositValue = 100
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([['2025-01-15', 200]]) // Try to withdraw double
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: 0,
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-02-28')
+		const { investmentValues, withdrawalValues, errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toBeGreaterThan(0)
+		expect(errors.some((error) => error.type === 'withdrawal')).toBe(true)
+		// Investment value should become 0, not negative
+		expect(investmentValues[0]).toEqual(0) // January value after withdrawal
+		// Actual withdrawal should be limited to the available 100
+		expect(Math.abs(withdrawalValues[0])).toEqual(100)
+	})
+
+	it('should report errors with correct dates', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const initialDepositValue = 100
+		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
+		const withdrawals = new Map<string, number>([
+			['2025-02-15', 150], // First problematic withdrawal
+			['2025-03-20', 50], // Second problematic withdrawal
+		])
+		const investment: Investment = {
+			...DEFAULT_INVESTMENT,
+			apy: 0,
+		}
+		const startDate = new Date('2025-01-01')
+		const endDate = new Date('2025-04-30')
+		const { errors } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			NUM_DAYS_PER_YEAR,
+		)
+
+		expect(errors.length).toEqual(2)
+
+		// Check that error dates match the problematic transaction dates
+		const errorDates = errors.map((error) => error.date.toISOString().split('T')[0])
+		expect(errorDates).toContain('2025-02-15')
+		expect(errorDates).toContain('2025-03-20')
+
+		// All errors should be withdrawal type in this scenario
+		expect(errors.every((error) => error.type === 'withdrawal')).toBe(true)
 	})
 })
 
