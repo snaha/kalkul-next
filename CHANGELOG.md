@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.11.0](https://github.com/snaha/kalkul/compare/v0.10.0...v0.11.0) (2025-08-28)
+
+
+### Features
+
+* email images ([#846](https://github.com/snaha/kalkul/issues/846)) ([42f9dd8](https://github.com/snaha/kalkul/commit/42f9dd89a73a2a1dc90aa64d4e50de93605203fa))
+
+
+### Bug Fixes
+
+* cumulative interest ([#843](https://github.com/snaha/kalkul/issues/843)) ([5948595](https://github.com/snaha/kalkul/commit/5948595ea2ad08bbd4b98971b84ea638d04e7575))
+* number of invesments on the All clients page ([#837](https://github.com/snaha/kalkul/issues/837)) ([ddab241](https://github.com/snaha/kalkul/commit/ddab241154f6299414a50c104d85b432a44c1abc))
+* withdraw below zero ([#842](https://github.com/snaha/kalkul/issues/842)) ([26ec551](https://github.com/snaha/kalkul/commit/26ec5517c2c61abfa47fef6cec036c94bf6637e8))
+
 ## [0.10.0](https://github.com/snaha/kalkul/compare/v0.9.0...v0.10.0) (2025-08-22)
 
 
