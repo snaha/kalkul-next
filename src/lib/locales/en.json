@@ -24,12 +24,10 @@
 			"title": "Make {colorHigh} Financial Plans",
 			"titleHigh": "Outstanding",
 			"subtitle": "Kalkul helps professional advisors create, visualise and share financial plans with their clients.",
-			"betaDisclaimer": "Kalkul is currently available as limited free beta. Interested in joining our early community? Add your email below and we’ll be in touch soon!",
-			"ctaEmailPlaceholder": "Business email",
-			"ctaEmailSubmit": "Subscribe",
-			"ctaEmailSubmitLoading": "Subscribing...",
-			"ctaDisclaimer": "By subscribing you agree to receive emails from Kalkul to get notified about product releases, updates and news. We won't spam you. Unsubscribe anytime.",
-			"subscribedText": "Thanks for subscribing! You’ll get an email at {colorHigh} as soon as we have some exciting news to share!"
+			"getStarted": "Get started",
+			"betaAccessTitle": "Get early and free access to Kalkul Beta today!",
+			"betaAccessDescription": "Join an exclusive group of forward-thinking professionals who are helping us shape the future of independent finance.",
+			"betaDiscountText": "Beta users will receive an exclusive discount at public launch."
 		},
 		"account": {
 			"settings": "Settings",
@@ -441,7 +439,8 @@
 		"termsOfUse": "Terms of use",
 		"privacyPolicy": "Privacy Policy.",
 		"reload": "Reload",
-		"search": "Search"
+		"search": "Search",
+		"signup": "Sign up"
 	},
 	"error": {
 		"emailError": "This doesn't look like a correct email",

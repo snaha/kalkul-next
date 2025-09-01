@@ -29,9 +29,6 @@
 		width: 100%;
 		max-width: 100%;
 		padding: var(--quadruple-padding) 152px;
-		flex: 1;
-		max-height: 100%;
-		height: 100%;
 	}
 	:global(.footer.mobile) {
 		padding: var(--quadruple-padding) var(--double-padding);

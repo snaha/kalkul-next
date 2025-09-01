@@ -24,12 +24,10 @@
 			"title": "Vytvářejte {colorHigh} finanční plány",
 			"titleHigh": "výjimečné",
 			"subtitle": "Kalkul pomáhá profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s jejich klienty.",
-			"betaDisclaimer": "Kalkul je momentálně dostupný jako omezená bezplatná beta verze. Chcete se připojit k naší rané komunitě? Zadejte svůj e-mail níže a brzy se vám ozveme!",
-			"ctaEmailPlaceholder": "Firemní e-mail",
-			"ctaEmailSubmit": "Přihlásit k odběru",
-			"ctaEmailSubmitLoading": "Přihlašování...",
-			"ctaDisclaimer": "Přihlášením k odběru souhlasíte s tím, že vám Kalkul bude zasílat e-maily s informacemi o spuštění produktu, novinkách a aktualizacích. Nebudeme vás zahlcovat spamem. Odhlásit se můžete kdykoliv.",
-			"subscribedText": "Děkujeme za odběr! Jakmile budeme mít zajímavé novinky, pošleme vám e-mail na adresu {colorHigh}."
+			"getStarted": "Začít",
+			"betaAccessTitle": "Získejte již dnes přístup k Kalkul Beta zdarma a jako první!",
+			"betaAccessDescription": "Přidejte se k exkluzivní skupině prozíravých profesionálů, kteří nám pomáhají formovat budoucnost nezávislých financí.",
+			"betaDiscountText": "Beta uživatelé obdrží exkluzivní slevu při veřejném spuštění."
 		},
 		"account": {
 			"settings": "Nastavení",
@@ -441,7 +439,8 @@
 		"termsOfUse": "Podmínkami použití",
 		"privacyPolicy": "Zásadami ochrany soukromí.",
 		"reload": "Znovu načíst",
-		"search": "Hledat"
+		"search": "Hledat",
+		"signup": "Zaregistrovat se"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",
