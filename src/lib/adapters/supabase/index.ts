@@ -17,6 +17,7 @@ import { clientStore } from '$lib/stores/clients.svelte'
 import { portfolioStore } from '$lib/stores/portfolio.svelte'
 import { investmentStore } from '$lib/stores/investment.svelte'
 import { transactionStore } from '$lib/stores/transaction.svelte'
+import { apiRoutes } from '$lib/routes'
 
 const POSTGRES_NO_ROWS_ERROR_CODE = 'PGRST116'
 
@@ -122,6 +123,19 @@ export default class Supabase implements Adapter {
 		this.subscriptions.forEach((subscription) => subscription.unsubscribe())
 	}
 
+	private async subscribeToNewsletter(email: string) {
+		const res = await fetch(apiRoutes.NEWSLETTER_SUBSCRIBE, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email }),
+		})
+		if (!res.ok) {
+			console.error('Failed to subscribe to newsletter', res.statusText, res)
+		}
+	}
+
 	async signUp(email: string, password: string, language: string, newsletterConsent: boolean) {
 		const data: TypedUserMetadata = {
 			prefer_language: language,
@@ -136,6 +150,9 @@ export default class Supabase implements Adapter {
 		if (error) {
 			console.error('Failed to register', error)
 			throw new Error(error.message)
+		}
+		if (newsletterConsent) {
+			await this.subscribeToNewsletter(email)
 		}
 		this.start()
 	}
