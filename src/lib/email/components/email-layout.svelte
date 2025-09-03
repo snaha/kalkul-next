@@ -16,5 +16,8 @@
 		}
 	</style>
 	<Preview preview={previewText} />
+	<!-- Turn off Cloudflare email obfuscation: https://www.digitalocean.com/community/questions/appplatform-email-protection-performance-issue -->
+	<!--email_off-->
 	{@render children()}
+	<!--/email_off-->
 </Html>
