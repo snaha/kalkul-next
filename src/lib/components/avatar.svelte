@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createAvatar } from '@dicebear/core'
 	import { initials } from '@dicebear/collection'
+	import { _ } from 'svelte-i18n'
 
 	type Props = {
 		name: string
@@ -22,4 +23,4 @@
 	)
 </script>
 
-<img src={imageURI || avatar} alt="avatar" width={size} height={size} />
+<img src={imageURI || avatar} alt={$_('common.avatar')} width={size} height={size} />

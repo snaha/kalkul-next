@@ -221,7 +221,7 @@
 			"clientAgeAtStart": "Věk klienta na začátku",
 			"repeatLabel": "Opakuje se každých",
 			"clientAgeAtEnd": "Věk klienta na konci",
-			"occurences": "opakování",
+			"occurrences": "opakování",
 			"for": "Po dobu",
 			"totalDeposits": "celkem vkladů",
 			"totalWithdrawals": "celkem výběrů",
@@ -440,7 +440,12 @@
 		"privacyPolicy": "Zásadami ochrany soukromí.",
 		"reload": "Znovu načíst",
 		"search": "Hledat",
-		"signup": "Zaregistrovat se"
+		"signup": "Zaregistrovat se",
+		"avatar": "Avatar",
+		"logo": "Logo",
+		"preview": "Náhled",
+		"error": "Chyba",
+		"success": "Úspěch"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state'
+	import { _ } from 'svelte-i18n'
 
 	const template = page.url.searchParams.get('template') || 'welcome'
 	const language = page.url.searchParams.get('language') || 'en' // Default to English for preview
@@ -8,7 +9,7 @@
 
 <iframe
 	src={`/api/email/preview?template=${template}&language=${language}&unsubscribe=${unsubscribeLink}`}
-	title="preview"
+	title={$_('common.preview')}
 ></iframe>
 
 <style>

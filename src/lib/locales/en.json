@@ -221,7 +221,7 @@
 			"clientAgeAtStart": "Client´s age at start",
 			"repeatLabel": "Repeats every",
 			"clientAgeAtEnd": "Client´s age at end",
-			"occurences": "occurences",
+			"occurrences": "occurrences",
 			"for": "For",
 			"totalDeposits": "total deposits",
 			"totalWithdrawals": "total withdrawals",
@@ -440,7 +440,12 @@
 		"privacyPolicy": "Privacy Policy.",
 		"reload": "Reload",
 		"search": "Search",
-		"signup": "Sign up"
+		"signup": "Sign up",
+		"avatar": "Avatar",
+		"logo": "Logo",
+		"preview": "Preview",
+		"error": "Error",
+		"success": "Success"
 	},
 	"error": {
 		"emailError": "This doesn't look like a correct email",

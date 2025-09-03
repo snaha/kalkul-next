@@ -21,14 +21,18 @@ const HARDCODED_TEXT_PATTERNS = [
 		pattern: /(?<!\/\/\s*)(?<!\*\s+)(\p{Lu}\p{L}*(?:\s+\p{L}+)*)\s+<a/gu,
 		description: 'Text followed by links (like "Made with <a>")',
 	},
+	// Hardcoded text after template expressions in HTML/Svelte elements
+	{
+		pattern: /<[^/>]+[^>]*>\s*\{[^}]+\}\s+([a-z]+(?:\s+[a-z]+)*)\s*<\/[^>]+>/g,
+		description: 'Hardcoded text after template expressions in HTML/Svelte elements',
+	},
 ]
 
 // Text patterns to exclude (technical terms, single words, etc.)
 const EXCLUDE_PATTERNS = [
-	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP)$/i,
+	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord)$/i,
 	/^\p{Lu}{2,4}$/u, // Acronyms (any uppercase letters)
 	/^\d+$/, // Pure numbers
-	/^\p{Ll}+$/u, // Single lowercase words (likely technical)
 	/^[\w.-]+@[\w.-]+$/, // Email addresses
 	/^https?:\/\//, // URLs
 	/^\/[/\w-]*$/, // File paths
@@ -136,22 +140,9 @@ function scanForHardcodedText() {
 				)
 				if (shouldExclude) continue
 
-				// Skip very short text or single words without spaces
-				if (textContent.trim().length < 3 || !textContent.includes(' ')) {
-					// Allow some exceptions like "BETA", "OK", etc. that are commonly translated
-					const commonTranslatables = [
-						'BETA',
-						'OK',
-						'Cancel',
-						'Save',
-						'Delete',
-						'Edit',
-						'New',
-						'Close',
-					]
-					if (!commonTranslatables.includes(textContent.trim())) {
-						continue
-					}
+				// Skip very short text
+				if (textContent.trim().length < 3) {
+					continue
 				}
 
 				// Find line number

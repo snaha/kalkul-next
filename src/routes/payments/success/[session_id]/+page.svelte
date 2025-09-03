@@ -94,7 +94,12 @@
 	{:else}
 		{#if isTrial}
 			<Horizontal --horizontal-justify-content="center">
-				<img src={`${base}/images/hand-success.svg`} alt="success" width="256" height="256" />
+				<img
+					src={`${base}/images/hand-success.svg`}
+					alt={$_('common.success')}
+					width="256"
+					height="256"
+				/>
 			</Horizontal>
 			<Horizontal --horizontal-justify-content="center">
 				<Typography variant="large" bold class="green"
@@ -141,7 +146,12 @@
 		{:else}
 			<Vertical --vertical-gap="var(--half-padding)">
 				<Horizontal --horizontal-justify-content="center">
-					<img src={`${base}/images/payment-success.svg`} alt="success" width="256" height="256" />
+					<img
+						src={`${base}/images/payment-success.svg`}
+						alt={$_('common.success')}
+						width="256"
+						height="256"
+					/>
 				</Horizontal>
 				<Horizontal --horizontal-justify-content="center">
 					<Typography variant="large" bold class="green"

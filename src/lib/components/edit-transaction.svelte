@@ -359,7 +359,7 @@
 		></DateAge>
 		<div class="spacer"></div>
 		<Vertical --vertical-gap="var(--quarter-padding)">
-			<Typography>{numOccurrences} {$_('component.editTransaction.occurences')}</Typography>
+			<Typography>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography>
 			<Typography
 				>{formatCurrency(totalAmount, portfolio.currency, $locale)} ({transactionType === 'deposit'
 					? $_('component.editTransaction.totalDeposits')

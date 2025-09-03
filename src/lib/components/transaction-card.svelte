@@ -130,7 +130,9 @@
 			)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
 		>
 		{#if transaction.repeat}
-			<Typography variant="small">{numOccurrences} occurrences</Typography>
+			<Typography variant="small"
+				>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography
+			>
 		{/if}
 		<Typography variant="small"
 			>{transaction.type === 'deposit'
