@@ -3,12 +3,7 @@
 	import EmailLayout from '../components/email-layout.svelte'
 	import EmailHeader from '../components/email-header.svelte'
 	import Section from '../components/section.svelte'
-	import {
-		LAYOUT_STYLES,
-		TYPOGRAPHY_STYLES,
-		LINK_STYLES,
-		UNSUBSCRIBE_LINK,
-	} from '../utils/constants'
+	import { LAYOUT_STYLES, TYPOGRAPHY_STYLES, LINK_STYLES } from '../utils/constants'
 	import EmailFooter from '../components/email-footer.svelte'
 	import Container from '../components/container.svelte'
 	import { _ } from 'svelte-i18n'
@@ -18,9 +13,7 @@
 
 	let { origin = 'http://kalkul.app', template, language }: TemplateProps = $props()
 
-	const viewLink = $derived(
-		`${origin}${routes.EMAIL}?template=${template}&language=${language}&unsubscribe=${UNSUBSCRIBE_LINK}`,
-	)
+	const viewLink = $derived(`${origin}${routes.EMAIL}?template=${template}&language=${language}`)
 </script>
 
 <EmailLayout
@@ -133,7 +126,7 @@
 
 		<Text style={TYPOGRAPHY_STYLES.bodyTextCentered}>{$_('email.templates.welcome.thankYou')}</Text>
 	</EmailCard>
-	<EmailFooter withUnsubscribeLink={false}>
+	<EmailFooter>
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html $_('email.common.footerText', {
 			values: {

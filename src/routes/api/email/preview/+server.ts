@@ -3,13 +3,14 @@ import { renderEmailTemplate } from '$lib/email/utils/render'
 import WelcomeEmail from '$lib/email/templates/welcome-email.svelte'
 import { init, register } from 'svelte-i18n'
 import Newsletter_2025September from '$lib/email/templates/newsletter-2025-september.svelte'
+import { UNSUBSCRIBE_LINK_PLACEHOLDER } from '$lib/email/utils/constants'
 
 export const GET: RequestHandler = async ({ url }) => {
 	const origin = 'https://kalkul.app'
 	const template = url.searchParams.get('template') || 'welcome'
 	const language = url.searchParams.get('language') || 'en' // Default to English for preview
 	const format = url.searchParams.get('format') || 'html' // html or text
-	const unsubscribeLink = url.searchParams.get('unsubscribe') || ''
+	const unsubscribeLink = url.searchParams.get('unsubscribe') || UNSUBSCRIBE_LINK_PLACEHOLDER
 
 	// Register translations and initialize i18n for server-side rendering
 	register('en', () => import('$lib/locales/en.json'))
@@ -25,6 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			origin,
 			template,
 			language,
+			unsubscribeLink,
 		}
 
 		let renderResult

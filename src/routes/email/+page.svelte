@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state'
+	import { UNSUBSCRIBE_LINK_PLACEHOLDER } from '$lib/email/utils/constants'
 	import { _ } from 'svelte-i18n'
 
 	const template = page.url.searchParams.get('template') || 'welcome'
 	const language = page.url.searchParams.get('language') || 'en' // Default to English for preview
-	const unsubscribeLink = page.url.searchParams.get('unsubscribe') || ''
+	const unsubscribeLink = page.url.searchParams.get('unsubscribe') || UNSUBSCRIBE_LINK_PLACEHOLDER
 </script>
 
 <iframe

@@ -7,19 +7,19 @@
 	import EmailFooter from '../components/email-footer.svelte'
 	import EmailHeader from '../components/email-header.svelte'
 	import EmailLayout from '../components/email-layout.svelte'
-	import {
-		TYPOGRAPHY_STYLES,
-		LAYOUT_STYLES,
-		LINK_STYLES,
-		UNSUBSCRIBE_LINK,
-	} from '../utils/constants'
+	import { TYPOGRAPHY_STYLES, LAYOUT_STYLES, LINK_STYLES } from '../utils/constants'
 	import routes from '$lib/routes'
 	import type { TemplateProps } from '../utils/render'
 
-	let { origin = 'http://kalkul.app', template, language }: TemplateProps = $props()
+	let {
+		origin = 'http://kalkul.app',
+		template,
+		language,
+		unsubscribeLink,
+	}: TemplateProps = $props()
 
 	const viewLink = $derived(
-		`${origin}${routes.EMAIL}?template=${template}&language=${language}&unsubscribe=${UNSUBSCRIBE_LINK}`,
+		`${origin}${routes.EMAIL}?template=${template}&language=${language}&unsubscribe=${unsubscribeLink}`,
 	)
 </script>
 
@@ -109,7 +109,7 @@
 				src={`${origin}/images/email/screenshot-2025-september.png`}
 				alt={$_('email.templates.newsletter2025September.importDataAlt')}
 				width="560"
-				height="540"
+				height="472"
 			/>
 		</Section>
 
@@ -136,5 +136,5 @@
 			{$_('email.templates.newsletter2025September.thanksText')}
 		</Text>
 	</EmailCard>
-	<EmailFooter withUnsubscribeLink={true}></EmailFooter>
+	<EmailFooter {unsubscribeLink}></EmailFooter>
 </EmailLayout>

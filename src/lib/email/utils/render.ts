@@ -5,6 +5,7 @@ export type TemplateProps = {
 	origin: string
 	template: string
 	language: string
+	unsubscribeLink: string
 }
 
 function cleanTextOutput(text: string): string {

@@ -1,4 +1,4 @@
-export const UNSUBSCRIBE_LINK = '{{{RESEND_UNSUBSCRIBE_URL}}}'
+export const UNSUBSCRIBE_LINK_PLACEHOLDER = '{{{RESEND_UNSUBSCRIBE_URL}}}'
 
 // Kalkul Email Colors
 export const EMAIL_COLORS = {

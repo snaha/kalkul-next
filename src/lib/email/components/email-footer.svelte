@@ -1,10 +1,5 @@
 <script lang="ts">
-	import {
-		TYPOGRAPHY_STYLES,
-		LINK_STYLES,
-		LAYOUT_STYLES,
-		UNSUBSCRIBE_LINK,
-	} from '../utils/constants'
+	import { TYPOGRAPHY_STYLES, LINK_STYLES, LAYOUT_STYLES } from '../utils/constants'
 	import { Text, styleToString } from 'svelte-email'
 	import Container from './container.svelte'
 	import Section from './section.svelte'
@@ -12,11 +7,11 @@
 	import type { Snippet } from 'svelte'
 
 	type Props = {
-		withUnsubscribeLink: boolean
+		unsubscribeLink?: string
 		children?: Snippet
 	}
 
-	let { withUnsubscribeLink, children = undefined }: Props = $props()
+	let { unsubscribeLink = undefined, children = undefined }: Props = $props()
 </script>
 
 <Section style={LAYOUT_STYLES.footerContainer}>
@@ -32,9 +27,9 @@
 			<br />
 			{$_('email.common.companyAddress')}
 			<br />
-			{#if withUnsubscribeLink}
+			{#if unsubscribeLink}
 				<br />
-				<a href={UNSUBSCRIBE_LINK} style={styleToString(LINK_STYLES.secondary)}
+				<a href={unsubscribeLink} style={styleToString(LINK_STYLES.secondary)}
 					>{$_('email.common.unsubscribe')}</a
 				>
 			{/if}
