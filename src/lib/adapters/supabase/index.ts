@@ -137,6 +137,9 @@ export default class Supabase implements Adapter {
 	}
 
 	async signUp(email: string, password: string, language: string, newsletterConsent: boolean) {
+		// Convert email address to lower-case
+		email = email.toLowerCase()
+
 		const data: TypedUserMetadata = {
 			prefer_language: language,
 			newsletter_consent: newsletterConsent,
@@ -158,6 +161,9 @@ export default class Supabase implements Adapter {
 	}
 
 	async signIn(email: string, password: string) {
+		// Convert email address to lower-case
+		email = email.toLowerCase()
+
 		const { error } = await this.supabase.auth.signInWithPassword({ email, password })
 		if (error) {
 			console.error('Failed to sign in', error)
