@@ -98,7 +98,7 @@
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html $_('email.common.contactSupport', {
 				values: {
-					supportEmail: `<a href="mailto:support@kalkul.app" style="${styleToString(LINK_STYLES.secondary)}">support@kalkul.app</a>`,
+					supportEmail: `<!--email_off--><a href="mailto:support@kalkul.app" style="${styleToString(LINK_STYLES.secondary)}">support@kalkul.app</a><!--/email_off-->`,
 				},
 			})}
 		</Text>
