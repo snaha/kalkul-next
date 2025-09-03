@@ -640,7 +640,11 @@ VALUES
     '2025-08-14 13:55:00.000000+00'
   );
 
-SELECT setval('client_id_seq', (SELECT MAX(id) FROM client) + 1, false);
-SELECT setval('portfolio_id_seq', (SELECT MAX(id) FROM portfolio) + 1, false);
-SELECT setval('investment_id_seq', (SELECT MAX(id) FROM investment) + 1, false);
-SELECT setval('transaction_id_seq', (SELECT MAX(id) FROM transaction) + 1, false);
+-- Reset sequences to ensure proper ID generation
+DO $$
+BEGIN
+  PERFORM setval('client_id_seq', (SELECT COALESCE(MAX(id), 0) FROM client) + 1, false);
+  PERFORM setval('portfolio_id_seq', (SELECT COALESCE(MAX(id), 0) FROM portfolio) + 1, false);
+  PERFORM setval('investment_id_seq', (SELECT COALESCE(MAX(id), 0) FROM investment) + 1, false);
+  PERFORM setval('transaction_id_seq', (SELECT COALESCE(MAX(id), 0) FROM transaction) + 1, false);
+END $$;
