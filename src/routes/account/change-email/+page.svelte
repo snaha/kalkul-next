@@ -136,8 +136,10 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		height: 100vh;
+		flex: 1;
+		max-height: 100dvh;
 		max-width: 560px;
+		width: 100%;
 		margin: 0 auto;
 		gap: var(--double-padding);
 	}

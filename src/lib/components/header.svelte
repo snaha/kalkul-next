@@ -9,11 +9,21 @@
 	import { _ } from 'svelte-i18n'
 	import HelpModal from './help-modal.svelte'
 	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { notImplemented } from '$lib/not-implemented'
 	import BetaBadge from './beta-badge.svelte'
 	import DesktopOnly from './desktop-only.svelte'
 
 	let showHelpModal = $state(false)
+
+	function openSettings() {
+		// Don't store return location if already on account page
+		if ($page.url.pathname === routes.ACCOUNT) {
+			return
+		}
+		sessionStorage.setItem('settingsReturnTo', $page.url.pathname + $page.url.search)
+		goto(routes.ACCOUNT)
+	}
 
 	async function logout() {
 		await adapter.signOut()
@@ -36,7 +46,7 @@
 					<UserAvatarFilled size={16} />{authStore.user?.email}
 				{/snippet}
 				<ul class="dropdown-menu">
-					<Button variant="ghost" dimension="compact" href={routes.ACCOUNT} leftAlign>
+					<Button variant="ghost" dimension="compact" onclick={openSettings} leftAlign>
 						<SettingsEdit size={24} />
 						{$_('component.header.accountSettings')}
 					</Button>

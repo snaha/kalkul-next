@@ -89,6 +89,16 @@
 	function isPaymentEnabled() {
 		return PUBLIC_DISABLE_PAYWALL !== 'true'
 	}
+
+	function handleBack() {
+		const returnTo = sessionStorage.getItem('settingsReturnTo')
+		if (returnTo && returnTo !== '/account') {
+			sessionStorage.removeItem('settingsReturnTo')
+			goto(returnTo)
+		} else {
+			goto(routes.HOME)
+		}
+	}
 </script>
 
 {#snippet nextPayment()}
@@ -122,7 +132,7 @@
 <ContentLayout>
 	<Vertical class="max560" --vertical-gap="var(--double-padding)">
 		<Horizontal --horizontal-gap="var(--half-padding)">
-			<Button variant="ghost" dimension="compact" onclick={() => goto(routes.HOME)}
+			<Button variant="ghost" dimension="compact" onclick={handleBack}
 				><ArrowLeft size={24} /></Button
 			>
 			<Typography variant="h4">{$_('page.account.settings')}</Typography>

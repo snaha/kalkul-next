@@ -154,9 +154,12 @@
 	main {
 		display: flex;
 		flex-direction: column;
+		flex: 1;
 		justify-content: center;
-		height: 100vh;
+		max-height: 100dvh;
+		height: 100%;
 		max-width: 560px;
+		width: 100%;
 		margin: 0 auto;
 		gap: var(--double-padding);
 	}
