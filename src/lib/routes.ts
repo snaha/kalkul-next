@@ -40,6 +40,8 @@ export default {
 	TERMS: `${routePrefix}/terms`,
 	PRIVACY: `${routePrefix}/privacy`,
 	WELCOME: `${routePrefix}/welcome`,
+	DISCORD: `${routePrefix}/discord`,
+	EMAIL: `${routePrefix}/email`,
 }
 
 export const apiRoutes = {
@@ -53,4 +55,6 @@ export const apiRoutes = {
 	SUBSCRIPTIONS: `${routeApiPrefix}/api/payments/subscriptions`,
 	SUCCESS: (sessionId: string) => `${routeApiPrefix}/api/payments/success/${sessionId}`,
 	NEWSLETTER_SUBSCRIBE: `${routeApiPrefix}/api/newsletter/subscribe`,
+	NEWSLETTER_UNSUBSCRIBE: (subscriptionId: string) =>
+		`${routeApiPrefix}/api/newsletter/unsubscribe/${subscriptionId}`,
 }

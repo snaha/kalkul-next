@@ -453,5 +453,51 @@
 		"invalidDay": "Invalid day",
 		"invalidDate": "Invalid date",
 		"emailAlreadyAssociated": "This email is already associated with an account"
+	},
+	"email": {
+		"common": {
+			"companyName": "Kalkul.app s.r.o.",
+			"companyAddress": "Stará silnice 2314/3, Předměstí, 746 01 Opava, Česká Republika",
+			"unsubscribe": "Unsubscribe",
+			"contactSupport": "You can also reach us anytime at {supportEmail}",
+			"footerText": "You're receiving this email because you signed up for Kalkul. If you have any concerns, please contact us at {supportEmail}",
+			"viewInBrowser": "View in browser"
+		},
+		"templates": {
+			"welcome": {
+				"subject": "Welcome to Kalkul!",
+				"previewText": "Thank you for being an early adopter of Kalkul! 🚀",
+				"title": "Thank you for being an early adopter of Kalkul! 🚀",
+				"introText": "You're joining an exclusive group of forward-thinking professionals who are helping us build the future of independent financial planning.",
+				"expertiseHeading": "Your expertise matters",
+				"expertiseText": "As one of our first users, your feedback directly shapes our product—helping us fix bugs, prioritize features, and build exactly what independent advisors need. Found an issue or something that could be better? Love something in particular? Have a feature idea or request? Tell us!",
+				"rewardsHeading": "Exclusive rewards for beta users",
+				"rewardsText": "As a beta user, you're getting early and free access to our financial planning tool. Yes, we're still polishing things up, but that's exactly why your presence here is so valuable. As a thank you for being an early adopter and helping us make Kalkul better, you will receive an exclusive discount at public launch.",
+				"getStartedHeading": "Get started!",
+				"step1": "Login to your account at {loginUrl}",
+				"step2": "Create your first client portfolio and explore our features",
+				"step3": "Join our {discordLink} community to share your first impressions and feedback",
+				"discordButton": "Join us on Discord",
+				"thankYou": "Thank you for believing in what we're building."
+			},
+			"newsletter2025September": {
+				"subject": "Back to business with Kalkul",
+				"previewText": "Summer's over – back to business! 🚀",
+				"title": "Summer's over – back to business! 🚀",
+				"introText": "While you were (hopefully) taking a well-deserved break, our team has been hard at work making Kalkul even better for you.",
+				"betaSignupHeading": "Beta sign up is now open!",
+				"betaSignupText": "We're excited to announce that beta sign-ups are now open to everybody! If you've been waiting to get early access and help shape the future of our product, now's your chance.",
+				"signupButton": "Sign up today",
+				"expertiseHeading": "Your expertise matters",
+				"expertiseText": "As one of our first users, your feedback directly shapes our product—helping us fix bugs, prioritize features, and build exactly what independent advisors need. Found an issue or something that could be better? Love something in particular? Have a feature idea or request? Tell us!",
+				"discordButton": "Join the conversation on Discord",
+				"importDataHeading": "Import investment data",
+				"importDataText": "We just added an \"Import data\" feature when adding investments to portfolios. Simply search by ISIN or ticker symbol to automatically populate the investment name and APY. Give it a try and let us know what you think!",
+				"tryItButton": "Try it on kalkul.app",
+				"closingText": "Wishing you a wonderful summer as we continue building Kalkul together!",
+				"thanksText": "Thanks!",
+				"importDataAlt": "Import investment data"
+			}
+		}
 	}
 }

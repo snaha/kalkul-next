@@ -70,6 +70,15 @@ See `README.md` for development commands, project structure, and conventions.
    - **Never use `null` in your code** - always use `undefined` instead for optional/missing values
    - The only exception is when `null` comes from external libraries or APIs (e.g., DOM methods that return `null`)
    - When checking for missing values, use `!value` or `value === undefined`, not `value === null`
+   - **Never use `any` type** - always use proper TypeScript types for type safety
+   - Use generic types, union types, or `unknown` instead of `any` when needed
+   - If you must accept any type, use `unknown` and type guards for safety
+
+### Naming Conventions
+
+- **File naming**: Use kebab-case for all file names (e.g., `user-profile.ts`, `email-template.svelte`)
+- **Directory naming**: Use kebab-case for directory names (e.g., `email-templates/`, `user-settings/`)
+- **Component naming**: Svelte components should use PascalCase for the component name but kebab-case for the file name (e.g., `UserProfile.svelte` → `user-profile.svelte`)
 
 2. **Testing Financial Logic**
 
@@ -206,6 +215,14 @@ test('should handle text selection replacement', async ({ mount }) => {
 
 - Example: `pnpm test:unit run graph-data.test.ts`
 - `pnpm test:unit` without "run" starts watch mode and runs indefinitely
+
+### Package Management
+
+**Installing Packages**: Always use `pnpm add -D [package]` for development dependencies
+
+- Example: `pnpm add -D html-to-text`
+- Use `pnpm add [package]` only for runtime dependencies that users need
+- Most packages for development, testing, and build tools should be dev dependencies
 
 ### Pre-commit Requirements
 

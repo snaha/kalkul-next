@@ -45,7 +45,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 		})
 	}
 
-	if (event.url.pathname !== apiRoutes.NEWSLETTER_SUBSCRIBE) {
+	if (
+		event.url.pathname !== apiRoutes.NEWSLETTER_SUBSCRIBE &&
+		!event.url.pathname.startsWith('/api/email')
+	) {
 		// For API routes, enforce Authorization header
 		const auth = event.request.headers.get('Authorization')
 		if (!auth) {

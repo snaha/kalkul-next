@@ -453,5 +453,51 @@
 		"invalidDay": "Neplatný den",
 		"invalidDate": "Neplatné datum",
 		"emailAlreadyAssociated": "Tento e-mail je již přiřazen k účtu"
+	},
+	"email": {
+		"common": {
+			"companyName": "Kalkul.app s.r.o.",
+			"companyAddress": "Stará silnice 2314/3, Předměstí, 746 01 Opava, Česká Republika",
+			"unsubscribe": "Odhlásit odběr",
+			"contactSupport": "Také nás můžete kdykoli kontaktovat na {supportEmail}",
+			"footerText": "Tento e-mail jste obdrželi, protože jste se zaregistrovali do Kalkul. Pokud máte jakékoli obavy, kontaktujte nás na {supportEmail}",
+			"viewInBrowser": "Zobrazit v prohlížeči"
+		},
+		"templates": {
+			"welcome": {
+				"subject": "Vítejte v Kalkul!",
+				"previewText": "Děkujeme, že jste se stali prvními uživateli Kalkul! 🚀",
+				"title": "Děkujeme, že jste se stali prvními uživateli Kalkul! 🚀",
+				"introText": "Připojujete se k exkluzivní skupině pokrokových profesionálů, kteří nám pomáhají budovat budoucnost nezávislého finančního plánování.",
+				"expertiseHeading": "Vaše odbornost je důležitá",
+				"expertiseText": "Jako jeden z našich prvních uživatelů přímo ovlivňujete vývoj našeho produktu – pomáháte nám opravovat chyby, stanovovat priority funkcí a vytvářet přesně to, co nezávislí poradci potřebují. Našli jste problém nebo něco, co by mohlo být lepší? Líbí se vám něco konkrétního? Máte nápad na funkci nebo požadavek? Řekněte nám to!",
+				"rewardsHeading": "Exkluzivní výhody pro beta uživatele",
+				"rewardsText": "Jako beta uživatel získáváte brzký a bezplatný přístup k našemu nástroju pro finanční plánování. Ano, stále některé věci dolaďujeme, ale právě proto je vaše přítomnost zde tak cenná. Jako poděkování za to, že jste prvním uživatelem a pomáháte nám vylepšit Kalkul, obdržíte exkluzivní slevu při veřejném spuštění.",
+				"getStartedHeading": "Začněte!",
+				"step1": "Přihlaste se ke svému účtu na {loginUrl}",
+				"step2": "Vytvořte své první klientské portfolio a prozkoumejte naše funkce",
+				"step3": "Připojte se k naší {discordLink} komunitě a podělte se o své první dojmy a zpětnou vazbu",
+				"discordButton": "Připojit se na Discord",
+				"thankYou": "Děkujeme, že věříte v to, co budujeme."
+			},
+			"newsletter2025September": {
+				"subject": "Zpět k práci s Kalkul",
+				"previewText": "Léto je za námi – zpět k práci! 🚀",
+				"title": "Léto je za námi – zpět k práci! 🚀",
+				"introText": "Zatímco jste si (snad) užívali zasloužený odpočinek, náš tým tvrdě pracoval na tom, aby byl Kalkul pro vás ještě lepší.",
+				"betaSignupHeading": "Beta registrace je nyní otevřená!",
+				"betaSignupText": "S radostí oznamujeme, že beta registrace jsou nyní otevřené pro všechny! Pokud jste čekali na brzký přístup a chcete pomoci formovat budoucnost našeho produktu, nyní je vaše šance.",
+				"signupButton": "Zaregistrujte se ještě dnes",
+				"expertiseHeading": "Vaše odbornost je důležitá",
+				"expertiseText": "Jako jeden z našich prvních uživatelů přímo ovlivňujete vývoj našeho produktu – pomáháte nám opravovat chyby, stanovovat priority funkcí a vytvářet přesně to, co nezávislí poradci potřebují. Našli jste problém nebo něco, co by mohlo být lepší? Líbí se vám něco konkrétního? Máte nápad na funkci nebo požadavek? Řekněte nám to!",
+				"discordButton": "Zapojte se do diskuse na Discordu",
+				"importDataHeading": "Import investičních dat",
+				"importDataText": "Právě jsme přidali funkci \"Importovat data\" při přidávání investic do portfolií. Jednoduše vyhledejte podle ISIN nebo ticker symbolu a automaticky se vyplní název investice a roční výnosnost. Vyzkoušejte to a dejte nám vědět, co si myslíte!",
+				"tryItButton": "Vyzkoušet na kalkul.app",
+				"closingText": "Přejeme vám krásné léto a pokračujeme ve společném budování Kalkul!",
+				"thanksText": "Děkujeme!",
+				"importDataAlt": "Import investičních dat"
+			}
+		}
 	}
 }
