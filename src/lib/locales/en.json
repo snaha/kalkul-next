@@ -29,6 +29,137 @@
 			"betaAccessDescription": "Join an exclusive group of forward-thinking professionals who are helping us shape the future of independent finance.",
 			"betaDiscountText": "Beta users will receive an exclusive discount at public launch."
 		},
+		"getStarted": {
+			"title": "Getting started with Kalkul",
+			"subtitle": "This guide covers all the essentials to get you started quickly and confidently.",
+			"openApp": "Open Kalkul app",
+			"joinDiscord": "Join Discord",
+			"keepPageOpen": "The Kalkul app and Discord links will open in a new tab, we recommend keeping this page open so you can come back here for guidance.",
+			"whatIsKalkul": {
+				"title": "What is Kalkul?",
+				"content": "Kalkul is a financial planning application designed specifically for independent financial advisors. It empowers you to create, manage, and share comprehensive portfolios with your clients. Unlike institution-tied platforms, Kalkul's independence allows you to add investments from any source, giving you the freedom to build truly unified, platform-independent portfolios tailored to each client's needs."
+			},
+			"isFree": {
+				"title": "Is Kalkul free to use?",
+				"content": "Kalkul is currently in free Beta while we put the finishing touches on the platform. As an early user, you'll get free access and your feedback will directly shape our product—helping us fix bugs, prioritize features, and build exactly what independent financial advisors need.",
+				"laterNote": "→ Later this year, we'll introduce paid plans to support Kalkul's continued development as truly independent software. As a thank you for your valuable input, all Beta users will receive an exclusive discount when we launch publicly."
+			},
+			"whyDiscord": {
+				"title": "Why should I join Discord?",
+				"content": "Discord is a communication platform that allows people in our growing community to interact through text, voice, and video. It's the best place to ask questions, share insights with fellow advisors, and provide feedback that shapes Kalkul's development. Plus, our team is active daily to help solve any issues you encounter.",
+				"newToDiscord": "→ New to Discord? No problem—creating a free account takes just seconds.",
+				"joinButton": "Join Kalkul on Discord"
+			},
+			"createClient": {
+				"title": "Create your first client",
+				"intro": "To get started, you'll need to create a client profile. It's quick and easy—just provide:",
+				"requirements": {
+					"name": "Your client's name",
+					"birthdate": "Your client's birthdate (used for age calculations)",
+					"email": "Your client's email address (optional, for portfolio sharing)",
+					"picture": "A profile picture (optional)"
+				},
+				"afterCreation": "Once this is done, the client profile will appear on the homepage when you're logged in. You can create as many clients as you need."
+			},
+			"createPortfolio": {
+				"title": "Create your first portfolio",
+				"intro": "Now that you've created a client profile, it's time to create a portfolio. Think of a portfolio as a collection of investments with key parameters like currency and time horizon.",
+				"tip": "→ Use portfolios to organize investments for each of your clients. For example, you can create separate portfolios organized by investment goals, time horizons, or currencies.",
+				"requirements": "To create a new portfolio, you'll need to:",
+				"steps": {
+					"name": "Provide a portfolio name",
+					"currency": "Choose the default currency (with corresponding inflation rate)",
+					"horizon": "Define the investment horizon using either specific dates, a set time period (like 20 or 30 years) or based on your client's age"
+				},
+				"multiplePortfolios": "You can create as many portfolios as you want for each client. All the portfolios for a specific client will be listed on the client's page."
+			},
+			"addInvestment": {
+				"title": "Add your first investment",
+				"intro": "Now that you've created a portfolio for your client, it's time to add your first investment. An investment can be any security or financial instrument.",
+				"requirements": "To add a new investment, you'll need to set:",
+				"steps": {
+					"name": "Investment name - used to identify the investment in charts and reports",
+					"type": "Type (optional) - such as 'Common Stock', 'ETF', 'Bonds', 'Mutual Fund', etc.",
+					"apy": "APY (Annual Percentage Yield) - the expected annual return rate for this investment",
+					"fees": "Investment fees structure - any associated costs or management fees"
+				},
+				"importTip": "→ For faster setup, you can use the \"Import data\" function to automatically populate certain investment details using an ISIN number or ticker symbol.",
+				"afterCreation": "Once you've entered these details, the investment will be added to your client's portfolio."
+			},
+			"addTransactions": {
+				"title": "Add transactions in each investment",
+				"intro": "Once you've set up an investment, the final step is to add transactions (deposits or withdrawals) for that investment.",
+				"requirements": "To add a new transaction, you'll need to:",
+				"steps": {
+					"type": "Select the transaction type - deposit or withdrawal",
+					"frequency": "Choose frequency - one-time (default) or recurring using the \"Recurring\" switch",
+					"amount": "Enter the transaction amount",
+					"label": "Add a label - used to identify the transaction in charts and reports",
+					"date": "Set the transaction date - either using the calendar or based on your client's age"
+				},
+				"afterCreation": "Once you've entered these details, the transaction will appear in the corresponding investment card on the portfolio page sidebar."
+			},
+			"reviewPresent": {
+				"title": "Review and present a portfolio",
+				"intro": "Once you've built a complete portfolio with investments and transactions, Kalkul offers multiple visualization options to present compelling insights to your clients, whether in person or during online meetings.",
+				"focusSection": {
+					"title": "Focus on what matters",
+					"focusChart": "Under the menu button, select \"Focus in chart\" for any investment to hide all others and spotlight that specific investment in the visualization.",
+					"hideInvestments": "Alternatively, you can hide a specific investment from the chart when it's not relevant to your presentation.",
+					"hideTransactions": "You can also hide individual transactions and watch the chart update in real-time, making it easy to show clients how specific contributions or withdrawals impact their overall portfolio performance."
+				},
+				"inflationSection": {
+					"title": "Adjust for inflation",
+					"description": "Use the \"Show inflation\" switch to automatically adjust all investment and transaction values for inflation (based on the portfolio settings), showing real purchasing power over time.",
+					"note": "→ Note: When enabled, all charts show inflation-adjusted values with a subtle grey line indicating the original, non-adjusted amounts."
+				},
+				"fullscreenSection": {
+					"title": "Go fullscreen",
+					"description": "Each chart has a fullscreen mode, allowing you to use all available screen space to visualize the details of a specific chart. You can even show or hide the sidebar while in fullscreen mode.",
+					"tip": "→ This feature is particularly useful for presentations on smaller screens, projectors, or in online meetings."
+				}
+			},
+			"sharePortfolio": {
+				"title": "Share a portfolio",
+				"intro": "Kalkul provides two powerful sharing options for your client portfolios: online links or custom PDF exports.",
+				"linkSharing": {
+					"title": "Link sharing",
+					"description": "Enable link sharing to generate a view-only portfolio link for your client (no sign up required). Any portfolio updates you make will automatically update in real-time under the same link.",
+					"note": "→ People with the link can view and interact with the portfolio (show/hide data, hover for details, use fullscreen mode, etc.) but cannot make any changes."
+				},
+				"pdfExport": {
+					"title": "PDF export",
+					"description": "For offline presentations, export a customized PDF file. Kalkul creates a professionally formatted horizontal A4 layout optimized for both printing and digital viewing.",
+					"note": "→ You can include portfolio breakdown charts at specific key dates of your choice."
+				}
+			},
+			"conclusion": {
+				"thanks": "That's it—thanks for following along! We hope Kalkul makes your financial planning more efficient and effective.",
+				"feedback": {
+					"title": "Let us know your thoughts!",
+					"description": "As one of our first users, your feedback directly shapes our product—helping us fix bugs, prioritize features, and build exactly what independent advisors need. Found an issue or something that could be better? Love something in particular? Have a feature idea or request? Tell us!",
+					"button": "Give us feedback on Discord"
+				}
+			},
+			"altTexts": {
+				"illustration": "Illustration of business startup and new product launch",
+				"createClient": "Screenshot of create client form",
+				"clientList": "Screenshot of client list page",
+				"createPortfolio": "Screenshot of create portfolio form",
+				"portfolioList": "Screenshot of portfolio list page",
+				"createInvestment": "Screenshot of create investment form",
+				"portfolio": "Screenshot of portfolio page",
+				"createTransaction": "Screenshot of create transaction form",
+				"transactionCard": "Screenshot of transaction card in portfolio",
+				"investmentMenu": "Screenshot of investment menu options",
+				"hiddenInvestments": "Screenshot of portfolio with hidden investments",
+				"portfolioInflation": "Screenshot of portfolio with inflation adjustment enabled",
+				"portfolioFullscreen": "Screenshot of portfolio in fullscreen mode",
+				"shareOptions": "Screenshot of portfolio share options",
+				"shareWithLink": "Screenshot of share portfolio with link dialog",
+				"pdfExport": "Screenshot of PDF export options"
+			}
+		},
 		"account": {
 			"settings": "Settings",
 			"account": "Account",

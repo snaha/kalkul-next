@@ -82,13 +82,13 @@
 	--focus-outline-offset: -4px;
 
 	--print-multiplier: 1.3325;
+	--header-height: 106px;
 }
 *,
 *::before,
 *::after {
 	box-sizing: border-box;
 	font-feature-settings: 'tnum';
-	font-synthesis: none;
 }
 html,
 body {
@@ -110,7 +110,11 @@ a {
 @font-face {
 	src: url('/fonts/RedditSans-VariableFont.ttf') format('truetype');
 	font-family: 'Reddit Sans';
+	font-weight: 200 900;
+	font-style: normal;
 	font-feature-settings: 'tnum';
+	font-optical-sizing: auto;
+	font-display: swap;
 }
 .green {
 	color: var(--colors-high);

@@ -1,12 +1,10 @@
 <!-- localization-exclude -->
 <script lang="ts">
-	import CustomHeader from '$lib/components/custom-header.svelte'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 </script>
 
-<CustomHeader />
-
-<main>
+<Fullscreen>
 	<div class="content">
 		<Typography variant="h2">Všeobecné obchodní podmínky</Typography>
 
@@ -518,15 +516,9 @@
 			</ol>
 		</ol>
 	</div>
-</main>
+</Fullscreen>
 
 <style>
-	main {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: var(--padding);
-	}
 	.content {
 		max-width: 560px;
 		width: 100%;

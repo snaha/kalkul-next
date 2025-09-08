@@ -29,6 +29,137 @@
 			"betaAccessDescription": "Přidejte se k exkluzivní skupině prozíravých profesionálů, kteří nám pomáhají formovat budoucnost nezávislých financí.",
 			"betaDiscountText": "Beta uživatelé obdrží exkluzivní slevu při veřejném spuštění."
 		},
+		"getStarted": {
+			"title": "Začínáme s Kalkulem",
+			"subtitle": "Tento průvodce pokrývá všechny základy, abyste mohli začít rychle a s jistotou.",
+			"openApp": "Otevřít aplikaci Kalkul",
+			"joinDiscord": "Připojit se na Discord",
+			"keepPageOpen": "Odkazy na aplikaci Kalkul a Discord se otevřou v novém okně. Doporučujeme ponechat tuto stránku otevřenou, abyste se k ní mohli vrátit pro další pokyny.",
+			"whatIsKalkul": {
+				"title": "Co je Kalkul?",
+				"content": "Kalkul je aplikace pro finanční plánování navržená speciálně pro nezávislé finanční poradce. Umožňuje vytvářet, spravovat a sdílet komplexní portfolia s klienty. Na rozdíl od platforem vázaných na instituce vám nezávislost Kalkulu umožňuje přidávat investice z jakéhokoli zdroje, což vám dává svobodu vytvářet skutečně sjednocená, na platformě nezávislá portfolia přizpůsobená potřebám každého klienta."
+			},
+			"isFree": {
+				"title": "Je Kalkul zdarma?",
+				"content": "Kalkul je v současné době v bezplatné Beta verzi, zatímco dokončujeme finální úpravy platformy. Jako early user získáte bezplatný přístup a vaše zpětná vazba bude přímo ovlivňovat náš produkt – pomůžete nám opravovat chyby, stanovovat priority funkcí a budovat přesně to, co nezávislí finanční poradci potřebují.",
+				"laterNote": "→ Ještě letos představíme placené plány na podporu pokračujícího vývoje Kalkulu jako skutečně nezávislého softwaru. Jako poděkování za vaší cennou zpětnou vazbu všichni Beta uživatelé obdrží exkluzivní slevu při veřejném spuštění."
+			},
+			"whyDiscord": {
+				"title": "Proč se připojit na Discord?",
+				"content": "Discord je komunikační platforma, která umožňuje lidem v naší rostoucí komunitě komunikovat prostřednictvím textu, hlasu a videa. Je to nejlepší místo pro dotazy, sdílení poznatků s ostatními poradci a poskytování zpětné vazby, která formuje vývoj Kalkulu. Navíc náš tým je aktivní denně a pomáhá řešit jakékoliv problémy, na které narazíte.",
+				"newToDiscord": "→ Nový na Discordu? Žádný problém – vytvoření bezplatného účtu zabere jen pár sekund.",
+				"joinButton": "Připojit se ke Kalkulu na Discordu"
+			},
+			"createClient": {
+				"title": "Vytvořte svého prvního klienta",
+				"intro": "Pro začátek budete potřebovat vytvořit profil klienta. Je to rychlé a jednoduché – stačí uvést:",
+				"requirements": {
+					"name": "Jméno vašeho klienta",
+					"birthdate": "Datum narození vašeho klienta (používá se pro výpočty věku)",
+					"email": "E-mailovou adresu vašeho klienta (volitelné, pro sdílení portfolia)",
+					"picture": "Profilový obrázek (volitelné)"
+				},
+				"afterCreation": "Jakmile bude hotovo, profil klienta se zobrazí na hlavní stránce, když jste přihlášeni. Můžete vytvořit tolik klientů, kolik potřebujete."
+			},
+			"createPortfolio": {
+				"title": "Vytvořte své první portfolio",
+				"intro": "Nyní, když jste vytvořili profil klienta, je čas vytvořit portfolio. Portfolio si představte jako kolekci investic s klíčovými parametry jako měna a časový horizont.",
+				"tip": "→ Používejte portfolia k organizování investic pro každého ze svých klientů. Například můžete vytvořit samostatná portfolia organizovaná podle investičních cílů, časových horizontů nebo měn.",
+				"requirements": "Pro vytvoření nového portfolia budete potřebovat:",
+				"steps": {
+					"name": "Zadat název portfolia",
+					"currency": "Vybrat výchozí měnu (s odpovídající mírou inflace)",
+					"horizon": "Definovat investiční horizont pomocí konkrétních dat, nastaveného časového období (například 20 nebo 30 let) nebo na základě věku vašeho klienta"
+				},
+				"multiplePortfolios": "Můžete vytvořit tolik portfolií, kolik chcete pro každého klienta. Všechna portfolia pro konkrétního klienta budou uvedena na stránce klienta."
+			},
+			"addInvestment": {
+				"title": "Přidejte svou první investici",
+				"intro": "Nyní, když jste vytvořili portfolio pro svého klienta, je čas přidat svou první investici. Investice může být jakýkoliv cenný papír nebo finanční instrument.",
+				"requirements": "Pro přidání nové investice budete potřebovat nastavit:",
+				"steps": {
+					"name": "Název investice - používá se k identifikaci investice v grafech a sestavách",
+					"type": "Typ (volitelné) - například 'Kmenové akcie', 'ETF', 'Dluhopisy', 'Podílový fond', atd.",
+					"apy": "APY (Roční procentuální výnos) - očekávaná roční míra návratnosti této investice",
+					"fees": "Struktura poplatků investice - jakékoliv související náklady nebo správní poplatky"
+				},
+				"importTip": "→ Pro rychlejší nastavení můžete použít funkci \"Import dat\" k automatickému vyplnění určitých detailů investice pomocí ISIN čísla nebo ticker symbolu.",
+				"afterCreation": "Jakmile zadáte tyto údaje, investice bude přidána do portfolia vašeho klienta."
+			},
+			"addTransactions": {
+				"title": "Přidejte transakce v každé investici",
+				"intro": "Jakmile nastavíte investici, posledním krokem je přidat transakce (vklady nebo výběry) pro tuto investici.",
+				"requirements": "Pro přidání nové transakce budete potřebovat:",
+				"steps": {
+					"type": "Vybrat typ transakce - vklad nebo výběr",
+					"frequency": "Vybrat frekvenci - jednorázově (výchozí) nebo opakovaně pomocí přepínače \"Opakující se\"",
+					"amount": "Zadat částku transakce",
+					"label": "Přidat označení - používá se k identifikaci transakce v grafech a sestavách",
+					"date": "Nastavit datum transakce - buď pomocí kalendáře nebo na základě věku vašeho klienta"
+				},
+				"afterCreation": "Jakmile zadáte tyto údaje, transakce se zobrazí v odpovídající kartě investice na postranním panelu stránky portfolia."
+			},
+			"reviewPresent": {
+				"title": "Prohlédněte a prezentujte portfolio",
+				"intro": "Jakmile vytvoříte kompletní portfolio s investicemi a transakcemi, Kalkul nabízí několik možností vizualizace pro prezentaci přesvědčivých poznatků vašim klientům, ať už osobně nebo během online schůzek.",
+				"focusSection": {
+					"title": "Zaměřte se na důležité",
+					"focusChart": "Pod tlačítkem menu vyberte \"Zaměřit v grafu\" pro libovolnou investici, aby se skryly všechny ostatní a vyzdvihla se konkrétní investice ve vizualizaci.",
+					"hideInvestments": "Alternativně můžete skrýt konkrétní investici z grafu, když není relevantní pro vaši prezentaci.",
+					"hideTransactions": "Můžete také skrýt jednotlivé transakce a sledovat, jak se graf aktualizuje v reálném čase, což usnadňuje ukázat klientům, jak konkrétní příspěvky nebo výběry ovlivňují celkový výkon portfolia."
+				},
+				"inflationSection": {
+					"title": "Úprava pro inflaci",
+					"description": "Použijte přepínač \"Zobrazit inflaci\" k automatické úpravě všech hodnot investic a transakcí pro inflaci (na základě nastavení portfolia), zobrazující skutečnou kupní sílu v čase.",
+					"note": "→ Poznámka: Když je povoleno, všechny grafy zobrazují hodnoty upravené o inflaci s jemnou šedou čarou označující původní, neupravené částky."
+				},
+				"fullscreenSection": {
+					"title": "Přejít na celou obrazovku",
+					"description": "Každý graf má režim celé obrazovky, který vám umožňuje použít veškerý dostupný prostor obrazovky k vizualizaci detailů konkrétního grafu. Můžete dokonce zobrazit nebo skrýt postranní panel v režimu celé obrazovky.",
+					"tip": "→ Tato funkce je obzvláště užitečná pro prezentace na menších obrazovkách, projektorech nebo při online schůzkách."
+				}
+			},
+			"sharePortfolio": {
+				"title": "Sdílejte portfolio",
+				"intro": "Kalkul poskytuje dvě výkonné možnosti sdílení pro portfolia vašich klientů: online odkazy nebo vlastní PDF exporty.",
+				"linkSharing": {
+					"title": "Sdílení odkazem",
+					"description": "Povolte sdílení odkazem pro vygenerování odkazu na portfolio pouze pro čtení pro vašeho klienta (není nutná registrace). Jakékoliv aktualizace portfolia, které provedete, se automaticky aktualizují v reálném čase pod stejným odkazem.",
+					"note": "→ Lidé s odkazem mohou prohlížet a interagovat s portfoliem (zobrazovat/skrývat data, najíždět pro detaily, používat režim celé obrazovky atd.), ale nemohou provádět žádné změny."
+				},
+				"pdfExport": {
+					"title": "PDF export",
+					"description": "Pro offline prezentace exportujte přizpůsobený PDF soubor. Kalkul vytváří profesionálně formátované horizontální rozvržení A4 optimalizované pro tisk i digitální prohlížení.",
+					"note": "→ Můžete zahrnout grafy rozpisu portfolia ke konkrétním klíčovým datům podle vašeho výběru."
+				}
+			},
+			"conclusion": {
+				"thanks": "To je vše – děkujeme, že jste sledovali návod! Doufáme, že Kalkul učiní vaše finanční plánování efektivnějším a účinnějším.",
+				"feedback": {
+					"title": "Dejte nám vědět, co si myslíte!",
+					"description": "Jako jeden z našich prvních uživatelů vaše zpětná vazba přímo formuje náš produkt – pomáháte nám opravovat chyby, stanovovat priority funkcí a budovat přesně to, co nezávislí poradci potřebují. Našli jste problém nebo něco, co by se dalo zlepšit? Líbí se vám něco konkrétního? Máte nápad na funkci nebo požadavek? Řekněte nám to!",
+					"button": "Dejte nám zpětnou vazbu na Discordu"
+				}
+			},
+			"altTexts": {
+				"illustration": "Ilustrace spuštění podnikání a nového produktu",
+				"createClient": "Screenshot formuláře pro vytvoření klienta",
+				"clientList": "Screenshot stránky se seznamem klientů",
+				"createPortfolio": "Screenshot formuláře pro vytvoření portfolia",
+				"portfolioList": "Screenshot stránky se seznamem portfolií",
+				"createInvestment": "Screenshot formuláře pro vytvoření investice",
+				"portfolio": "Screenshot stránky portfolia",
+				"createTransaction": "Screenshot formuláře pro vytvoření transakce",
+				"transactionCard": "Screenshot karty transakce v portfoliu",
+				"investmentMenu": "Screenshot možností menu investice",
+				"hiddenInvestments": "Screenshot portfolia se skrytými investicemi",
+				"portfolioInflation": "Screenshot portfolia se zapnutou úpravou inflace",
+				"portfolioFullscreen": "Screenshot portfolia v režimu celé obrazovky",
+				"shareOptions": "Screenshot možností sdílení portfolia",
+				"shareWithLink": "Screenshot dialogu pro sdílení portfolia odkazem",
+				"pdfExport": "Screenshot možností PDF exportu"
+			}
+		},
 		"account": {
 			"settings": "Nastavení",
 			"account": "Účet",

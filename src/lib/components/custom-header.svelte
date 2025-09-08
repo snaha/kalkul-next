@@ -3,31 +3,55 @@
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
 	import routes from '$lib/routes'
+
+	let { hasCloseButton = true } = $props()
 </script>
 
 <header>
-	<a class="logo-link" href={routes.HOME}>
+	<a class="logo-link clickable" href={routes.HOME}>
 		<Logo size={40} />
 	</a>
-	<Button dimension="compact" variant="ghost" onclick={() => history.back()}>
-		<Close size={24} />
-	</Button>
+	{#if hasCloseButton}
+		<Button dimension="compact" variant="ghost" class="clickable" onclick={() => history.back()}>
+			<Close size={24} />
+		</Button>
+	{:else}
+		<div class="spacer"></div>
+	{/if}
 </header>
 
 <style>
+	:root {
+		--header-height: 106px;
+	}
 	header {
 		width: 100%;
 		padding: var(--double-padding);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		position: sticky;
+		position: var(--header-position, fixed);
 		top: 0;
-		background-color: var(--colors-ultra-low);
+		background-color: var(--header-background-color, var(--colors-ultra-low));
+		pointer-events: var(--header-pointer-events, initial);
 		z-index: 1;
+	}
+	@media screen and (max-width: 760px) {
+		header {
+			position: var(--header-position, sticky);
+			background-color: var(--colors-ultra-low);
+			padding: var(--padding);
+			pointer-events: initial;
+		}
 	}
 	.logo-link {
 		display: flex;
 		color: var(--colors-ultra-high);
+	}
+	:global(.clickable) {
+		pointer-events: initial;
+	}
+	.spacer {
+		flex: 1;
 	}
 </style>
