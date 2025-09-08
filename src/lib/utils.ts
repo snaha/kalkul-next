@@ -37,7 +37,7 @@ export function formatCurrency(
 ) {
 	const intl = new Intl.NumberFormat(locale || undefined, {
 		currencyDisplay: 'code',
-		maximumFractionDigits: 2,
+		maximumFractionDigits: 0,
 		...options,
 	})
 	return `${intl.format(value)} ${currency}`
