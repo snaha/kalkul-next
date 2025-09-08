@@ -92,10 +92,10 @@
 			type: transactionType,
 			amount,
 			label,
-			date: date.toDateString(),
+			date: formatDate(date),
 			repeat: isRecurring ? repeat : null,
 			repeat_unit: isRecurring ? repeatUnit : null,
-			end_date: isRecurring ? endDate.toDateString() : null,
+			end_date: isRecurring ? formatDate(endDate) : null,
 		})
 		close()
 	}
@@ -110,10 +110,10 @@
 			type: transactionType,
 			amount,
 			label,
-			date: date.toDateString(),
+			date: formatDate(date),
 			repeat: isRecurring ? repeat : null,
 			repeat_unit: isRecurring ? repeatUnit : null,
-			end_date: isRecurring ? endDate.toDateString() : null,
+			end_date: isRecurring ? formatDate(endDate) : null,
 		})
 		close()
 	}
