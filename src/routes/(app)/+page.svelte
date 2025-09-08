@@ -45,7 +45,11 @@
 	let showWelcome = $derived(authStore.user?.user_metadata.first_visit ? true : false)
 	let clientToBeDeleted: number | undefined = $state()
 	let searchQuery = $state('')
-	let filteredClient = $derived(searchByName(searchQuery))
+	let filteredClient = $derived(
+		searchByName(searchQuery).toSorted(
+			(a, b) => new Date(a.created_at).getDate() - new Date(b.created_at).getDate(),
+		),
+	)
 	let isVideoPlayer = $state(false)
 
 	async function hideWelcome() {
