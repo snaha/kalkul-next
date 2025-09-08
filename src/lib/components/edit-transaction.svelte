@@ -290,7 +290,7 @@
 	<DateAge
 		dimension="compact"
 		dateInputLabel={$_('common.startDate')}
-		ageLabel={$_('component.editTransaction.clientAgeAtStart')}
+		ageLabel={$_('common.clientAge')}
 		agePlaceholder={'0'}
 		bind:date
 		birthDate={new Date(client.birth_date)}
@@ -351,7 +351,7 @@
 		<DateAge
 			dimension="compact"
 			dateInputLabel={$_('common.endDate')}
-			ageLabel={$_('component.editTransaction.clientAgeAtEnd')}
+			ageLabel={$_('common.clientAge')}
 			agePlaceholder={'0'}
 			bind:date={endDate}
 			birthDate={new Date(client.birth_date)}
