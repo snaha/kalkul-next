@@ -37,6 +37,9 @@ services:
       - key: PUBLIC_DISCORD_LINK
         scope: RUN_AND_BUILD_TIME
         value: ${PUBLIC_DISCORD_LINK}
+      - key: PUBLIC_INSTAGRAM_LINK
+        scope: RUN_AND_BUILD_TIME
+        value: ${PUBLIC_INSTAGRAM_LINK}
       - key: RESEND_API_KEY
         scope: RUN_AND_BUILD_TIME
         value: ${RESEND_API_KEY}
