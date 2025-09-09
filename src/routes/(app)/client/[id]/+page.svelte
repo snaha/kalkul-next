@@ -34,6 +34,13 @@
 	import { base } from '$app/paths'
 	import { getCurrentPortfolioValue } from '$lib/@snaha/kalkul-maths'
 	import HelpBox from '$lib/components/help-box.svelte'
+	import {
+		differenceInDays,
+		differenceInMonths,
+		differenceInWeeks,
+		differenceInYears,
+	} from 'date-fns'
+	import type { Portfolio } from '$lib/types'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -65,6 +72,23 @@
 	function portfolioValue(portfolioId: number): number {
 		const investments = investmentStore.filter(portfolioId)
 		return getCurrentPortfolioValue(transactionStore, investments)
+	}
+
+	function portfolioPeriod(portfolio: Portfolio) {
+		const yearDiff = differenceInYears(portfolio.end_date, portfolio.start_date)
+		if (yearDiff > 0) {
+			return `${yearDiff}${$_('common.abbreviations.year')}`
+		}
+		const monthDiff = differenceInMonths(portfolio.end_date, portfolio.start_date)
+		if (monthDiff > 0) {
+			return `${monthDiff}${$_('common.abbreviations.month')}`
+		}
+		const weekDiff = differenceInWeeks(portfolio.end_date, portfolio.start_date)
+		if (weekDiff > 0) {
+			return `${weekDiff}${$_('common.abbreviations.week')}`
+		}
+		const dayDiff = differenceInDays(portfolio.end_date, portfolio.start_date)
+		return `${dayDiff}${$_('common.abbreviations.day')}`
 	}
 </script>
 
@@ -161,7 +185,7 @@
 						<span>{$_('common.portfolioName')}</span>
 						<span>{$_('common.currency')}</span>
 						<span>{$_('common.startDate')}</span>
-						<span>{$_('common.endDate')}</span>
+						<span>{$_('common.period')}</span>
 						<span class="right-aligned">{$_('common.inflation')}</span>
 						<span class="right-aligned">{$_('common.currentValue')}</span>
 						<span></span>
@@ -181,7 +205,7 @@
 							<span>{portfolio.name}</span>
 							<span>{portfolio.currency}</span>
 							<span>{formatDate(new Date(portfolio.start_date))}</span>
-							<span>{formatDate(new Date(portfolio.end_date))}</span>
+							<span>{portfolioPeriod(portfolio)}</span>
 							<span class="right-aligned">{portfolio.inflation_rate * 100}%</span>
 							<span class="right-aligned"
 								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency, $locale, {

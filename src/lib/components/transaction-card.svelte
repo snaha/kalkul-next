@@ -15,7 +15,11 @@
 	import adapter from '$lib/adapters'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
-	import { calculateTotalAmount, calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
+	import {
+		calculateTotalAmount,
+		calculateNumOccurrences,
+		type Period,
+	} from '$lib/@snaha/kalkul-maths'
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
@@ -60,6 +64,19 @@
 		}
 		await adapter.addTransaction(duplicatedTransaction)
 	}
+
+	function localisedAbbreviatedPeriod(period: Period) {
+		switch (period) {
+			case 'year':
+				return $_('common.abbreviations.year')
+			case 'month':
+				return $_('common.abbreviations.month')
+			case 'week':
+				return $_('common.abbreviations.week')
+			case 'day':
+				return $_('common.abbreviations.day')
+		}
+	}
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -78,7 +95,7 @@
 		</div>
 		<Typography class={`transaction ${transaction.type === 'deposit' ? 'deposit' : 'withdrawal'}`}>
 			{#if transaction.repeat}
-				{`${formatCurrency(transaction.amount, currency, $locale)} / ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${transaction.repeat_unit ? transaction.repeat_unit.substring(0, 1) : ''}`}
+				{`${formatCurrency(transaction.amount, currency, $locale)} / ${transaction.repeat > 1 ? transaction.repeat + ' ' : ''}${transaction.repeat_unit ? localisedAbbreviatedPeriod(transaction.repeat_unit) : ''}`}
 			{:else}
 				{formatCurrency(transaction.amount, currency, $locale)}
 			{/if}

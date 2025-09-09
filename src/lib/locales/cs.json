@@ -452,6 +452,12 @@
 		"viewSamplePortfolio": "Zobrazit ukázkové portfolio"
 	},
 	"common": {
+		"abbreviations": {
+			"year": "r",
+			"month": "m",
+			"week": "t",
+			"day": "d"
+		},
 		"paymentAndBilling": "Platby a fakturace",
 		"notFound": "Nenalezeno",
 		"withoutInflation": "Bez inflace",
@@ -570,6 +576,7 @@
 		"reload": "Znovu načíst",
 		"search": "Hledat",
 		"signup": "Zaregistrovat se",
+		"period": "Období",
 		"avatar": "Avatar",
 		"logo": "Logo",
 		"preview": "Náhled",

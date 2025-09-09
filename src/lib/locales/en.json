@@ -452,6 +452,12 @@
 		"viewSamplePortfolio": "View sample portfolio"
 	},
 	"common": {
+		"abbreviations": {
+			"year": "y",
+			"month": "m",
+			"week": "w",
+			"day": "d"
+		},
 		"paymentAndBilling": "Payment & billing",
 		"notFound": "Not found",
 		"withoutInflation": "Without inflation",
@@ -570,6 +576,7 @@
 		"reload": "Reload",
 		"search": "Search",
 		"signup": "Sign up",
+		"period": "Period",
 		"avatar": "Avatar",
 		"logo": "Logo",
 		"preview": "Preview",
