@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { ArrowRight, ChatBot, Close } from 'carbon-icons-svelte'
+	import { ChatBot, Close, Rocket } from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Modal, { type ModalProps } from './ui/modal.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 	import Discord from './icons/discord.svelte'
+	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import routes from '$lib/routes'
 
 	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
 
@@ -32,14 +34,27 @@
 				},
 			})}
 		</Typography>
-		<Button variant="strong" dimension="compact" href={PUBLIC_DISCORD_LINK} target="_blank"
-			><Discord size={24} />
-			{$_('component.help.joinTheConversation')}<ArrowRight size={24} /></Button
-		>
 
-		<Typography variant="small">
-			{$_('component.help.discordInfo')}
+		<Typography italic>
+			{$_('component.help.newToKalkulTip')}
 		</Typography>
+
+		<ResponsiveLayout --responsive-justify-content="stretch" --responsive-align-items="stretch">
+			<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
+				><Rocket size={24} />
+				{$_('component.help.checkQuickStartGuide')}</Button
+			>
+
+			<Button
+				variant="secondary"
+				dimension="compact"
+				href={PUBLIC_DISCORD_LINK}
+				target="_blank"
+				flexGrow
+				><Discord size={24} />
+				{$_('component.help.joinTheConversation')}</Button
+			>
+		</ResponsiveLayout>
 	</section>
 </Modal>
 

@@ -358,9 +358,10 @@
 		},
 		"help": {
 			"title": "Nápověda",
-			"text": "Pokud potřebujete pomoct, máte dotazy, návrhy nebo zpětnou vazbu, doporučujeme nás kontaktovat prostřednictvím našeho Discord serveru. Alternativně nás můžete kontaktovat e-mailem na {email}.",
-			"joinTheConversation": "Připojte se ke Kalkulu na Discordu",
-			"discordInfo": "Na Discordu také sdílíme novinky, aktualizace produktu a oznámení, nenechte si to ujít!"
+			"text": "Pokud potřebujete pomoct, máte dotazy, návrhy nebo zpětnou vazbu, připojte se na náš Discord server pro nejrychlejší podporu, nebo nám napište e-mail na {email}.",
+			"joinTheConversation": "Připojte se na Discord",
+			"newToKalkulTip": "→ Nový v Kalkulu? Doporučujeme zkontrolovat náš rychlý průvodce. Najdete v něm vše potřebné pro začátek.",
+			"checkQuickStartGuide": "Podívejte se na náš rychlý průvodce"
 		},
 		"footer": {
 			"termsOfService": "Podmínky služby",

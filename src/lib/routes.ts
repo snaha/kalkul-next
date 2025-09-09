@@ -43,6 +43,7 @@ export default {
 	DISCORD: `${routePrefix}/discord`,
 	EMAIL: `${routePrefix}/email`,
 	SAMPLE_PORTFOLIO_LINK: `${routePrefix}/view/au0ts392wixhshz0unsmf7fnl`,
+	GET_STARTED: `${routePrefix}/get-started`,
 }
 
 export const apiRoutes = {

@@ -6,10 +6,20 @@ const DEFAULT_LOCALE = 'cs'
 
 // Patterns for detecting hardcoded user-facing text (generic Unicode patterns)
 const HARDCODED_TEXT_PATTERNS = [
-	// Text between HTML/Svelte tags that starts with uppercase letter and contains spaces
+	// Text between HTML/Svelte tags that contains letters and spaces (likely user-facing)
 	{
-		pattern: />(\p{Lu}\p{L}*(?:\s+\p{L}+)*[\s,.'!?„"]*)</gu,
+		pattern: />(\p{L}\p{L}*(?:\s+\p{L}+)*[\s,.'!?„"]*)<(?:\/|\w)/gu,
 		description: 'Text content between HTML tags',
+	},
+	// Text starting with special symbols or arrows followed by letters
+	{
+		pattern: />\s*([\p{So}\p{Sm}][\p{L}\s\p{P}]+)\s*</gu,
+		description: 'Text content starting with symbols or arrows',
+	},
+	// Text that comes after self-closing tags or components
+	{
+		pattern: /\/>\s*(\p{L}[\p{L}\s\p{P}]*)<(?:\/|\w)/gu,
+		description: 'Text content after self-closing tags',
 	},
 	// Hardcoded strings in user-facing attributes
 	{
@@ -23,14 +33,14 @@ const HARDCODED_TEXT_PATTERNS = [
 	},
 	// Hardcoded text after template expressions in HTML/Svelte elements
 	{
-		pattern: /<[^/>]+[^>]*>\s*\{[^}]+\}\s+([a-z]+(?:\s+[a-z]+)*)\s*<\/[^>]+>/g,
+		pattern: /<[^/>]+[^>]*>\s*\{[^}]+\}\s+([\p{L}\p{So}]+(?:\s+[\p{L}\p{So}]+)*)\s*<\/[^>]+>/gu,
 		description: 'Hardcoded text after template expressions in HTML/Svelte elements',
 	},
 ]
 
 // Text patterns to exclude (technical terms, single words, etc.)
 const EXCLUDE_PATTERNS = [
-	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord|Instagram)$/i,
+	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord|Instagram|beta|and|kalkul\.app|inbucket)$/i,
 	/^\p{Lu}{2,4}$/u, // Acronyms (any uppercase letters)
 	/^\d+$/, // Pure numbers
 	/^[\w.-]+@[\w.-]+$/, // Email addresses
@@ -39,6 +49,13 @@ const EXCLUDE_PATTERNS = [
 	/^#[0-9a-fA-F]{3,8}$/, // Color codes
 	/^[\d.]+%$/, // Percentages
 	/^[\d.,]+$/, // Numbers with formatting
+	/^\s*$/, // Whitespace only
+	/^\{[^}]+\}$/, // Template expressions
+	/^\|\s*\w+/, // TypeScript union types
+	/^&[a-zA-Z][a-zA-Z0-9]*;$/, // HTML entities
+	/^[a-zA-Z_$][a-zA-Z0-9_$]*\s*[=(){}]/, // Code patterns (variable assignments, function calls)
+	/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/, // Simple variable names or property access
+	/^\w+\s*[<>]=?\s*\w+/, // Comparisons
 ]
 
 function scanSourceFiles() {
@@ -99,13 +116,13 @@ function scanSourceFiles() {
 	return localizedTextSet
 }
 
-function scanForHardcodedText() {
+function scanForHardcodedText(scanDir: string = SOURCE_DIR) {
 	const hardcodedTextFound: Array<{ file: string; text: string; pattern: string; line?: number }> =
 		[]
 
-	const filenames = fs.readdirSync(SOURCE_DIR, { recursive: true })
+	const filenames = fs.readdirSync(scanDir, { recursive: true })
 	filenames.forEach((filename) => {
-		const filePath = `${SOURCE_DIR}/${filename}`
+		const filePath = `${scanDir}/${filename}`
 		const stat = fs.statSync(filePath)
 		if (stat.isDirectory()) {
 			return
@@ -253,6 +270,24 @@ function checkRecursively(text: string, keys: Json): boolean {
 }
 
 function checkTranslations() {
+	// Check if --test flag is passed
+	if (process.argv.includes('--test')) {
+		console.log('Running check-locales tests against scripts/test-locales-examples.svelte...\n')
+		const hardcodedText = scanForHardcodedText('scripts')
+
+		if (hardcodedText.length > 0) {
+			console.log('Test results - Found hardcoded text:\n')
+			hardcodedText.forEach((item) => {
+				console.log(`${item.file}:${item.line} - "${item.text}" (${item.pattern})`)
+			})
+		} else {
+			console.log('No hardcoded text found in test file.')
+		}
+
+		console.log(`\nTest completed. Found ${hardcodedText.length} matches.`)
+		return
+	}
+
 	const locale = process.argv[2] || DEFAULT_LOCALE
 	const localizedTextSet = scanSourceFiles()
 	const localeData = readLocaleData(locale)

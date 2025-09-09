@@ -358,9 +358,10 @@
 		},
 		"help": {
 			"title": "Help",
-			"text": "If you need help, have questions, suggestions, or feedback, we recommend contacting us through our Discord server. Alternatively, you can contact us via email at {email}.",
-			"joinTheConversation": "Join Kalkul on Discord",
-			"discordInfo": "We also share news, product updates and announcements on Discord, don't miss out!"
+			"text": "If you need help, have questions, suggestions, or feedback, join our Discord server for the fastest support, or email us at {email}.",
+			"joinTheConversation": "Join our Discord",
+			"newToKalkulTip": "→ New to Kalkul? We recommend checking our quick start guide. You'll find everything you need to get started.",
+			"checkQuickStartGuide": "Check out our quick start guide"
 		},
 		"footer": {
 			"termsOfService": "Terms of service",

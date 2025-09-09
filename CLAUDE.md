@@ -232,6 +232,8 @@ test('should handle text selection replacement', async ({ mount }) => {
 2. `pnpm lint` - Checks code style and quality with ESLint and Prettier
 3. `pnpm check` - Runs Svelte Kit sync and TypeScript type checking
 4. `pnpm knip` - Finds unused files, dependencies, and exports
-5. `pnpm check-locales` Checks for missing, unused or duplicate translations
+5. `pnpm check-locales` - Checks for missing, unused or duplicate translations
 
 All commands must pass successfully before committing. This ensures code quality and prevents CI/CD failures.
+
+**Testing check-locales patterns**: Use `pnpm check-locales --test` to validate the hardcoded text detection patterns against test cases in `scripts/test-locales-examples.svelte`. This helps ensure the regex patterns correctly identify user-facing text that should be localized while properly excluding code snippets and technical content.

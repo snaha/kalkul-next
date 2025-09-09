@@ -7,7 +7,7 @@ const config: KnipConfig = {
 		'$env/*': ['.svelte-kit/ambient.d.ts'],
 		'$lib/*': ['src/lib/*'],
 	},
-	ignore: ['src/lib/typesdb.ts', 'playwright/index.ts'],
+	ignore: ['src/lib/typesdb.ts', 'playwright/index.ts', 'scripts/test-locales-examples.svelte'],
 	ignoreExportsUsedInFile: true,
 	'playwright-ct': false,
 }
