@@ -7,11 +7,10 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@castlenine/svelte-qrcode':
         specifier: ^2.3.0
         version: 2.3.0(svelte@5.19.2)
-    devDependencies:
       '@dicebear/collection':
         specifier: ^9.2.2
         version: 9.2.2(@dicebear/core@9.2.2)
