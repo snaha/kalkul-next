@@ -35,6 +35,7 @@
 
 	let error: string | undefined = $state()
 	let showDeleteModal = $state(false)
+	let language = $state($locale?.slice(0, 2) ?? 'cs')
 	const subscription: Stripe.Subscription | undefined = $derived(subscriptionStore.data[0])
 	const isTrial = $derived(subscription?.status === 'trialing')
 	const currency = $derived(subscription?.currency.toUpperCase())
@@ -99,6 +100,10 @@
 			goto(routes.HOME)
 		}
 	}
+
+	function selectLanguage() {
+		$locale = language
+	}
 </script>
 
 {#snippet nextPayment()}
@@ -151,11 +156,15 @@
 					<Vertical --vertical-gap="var(--quarter-padding)">
 						{#if $locale}
 							<Select
-								bind:value={$locale}
+								bind:value={language}
 								label={$_('page.account.language')}
 								dimension="compact"
 								layout="vertical"
-								items={$locales.map((locale) => ({ value: locale, label: languageName[locale] }))}
+								items={$locales.map((locale) => ({
+									value: locale,
+									label: languageName[locale],
+								}))}
+								onchange={selectLanguage}
 							></Select>
 							{#if error}
 								<ErrorComponent>{error}</ErrorComponent>
