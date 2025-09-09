@@ -125,8 +125,11 @@
 				--horizontal-align-items="stretch"
 				class="max560"
 			>
-				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
-					>{$_('common.viewSamplePortfolio')}</Button
+				<Button
+					variant="secondary"
+					href={routes.SAMPLE_PORTFOLIO_LINK}
+					target="_blank"
+					class="max560">{$_('common.viewSamplePortfolio')}</Button
 				>
 				<Button variant="strong" onclick={hideWelcome} target="_blank" class="max560">
 					{$_('component.welcome.startUsingKalkul')}

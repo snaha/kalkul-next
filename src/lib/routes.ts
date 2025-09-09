@@ -42,6 +42,7 @@ export default {
 	WELCOME: `${routePrefix}/welcome`,
 	DISCORD: `${routePrefix}/discord`,
 	EMAIL: `${routePrefix}/email`,
+	SAMPLE_PORTFOLIO_LINK: `${routePrefix}/view/au0ts392wixhshz0unsmf7fnl`,
 }
 
 export const apiRoutes = {

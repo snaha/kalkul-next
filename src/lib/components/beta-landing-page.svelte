@@ -9,6 +9,8 @@
 	import Vertical from './ui/vertical.svelte'
 	import Footer from './footer.svelte'
 	import YoutubeIntroVideo from './youtube-intro-video.svelte'
+	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	type Props = {
 		isMobile: boolean
@@ -62,9 +64,21 @@
 		<Typography variant="large">{$_('page.landing.subtitle')}</Typography>
 
 		<Vertical --vertical-gap="var(--double-padding)">
-			<Button variant="strong" dimension="large" href={routes.SIGNUP}
-				>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+			<ResponsiveLayout
+				--responsive-align-items="stretch"
+				--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
+				class="max-width560"
 			>
+				<Button
+					variant="secondary"
+					dimension="large"
+					href={routes.SAMPLE_PORTFOLIO_LINK}
+					target="_blank">{$_('common.viewSamplePortfolio')}</Button
+				>
+				<Button variant="strong" dimension="large" href={routes.SIGNUP}
+					>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+				>
+			</ResponsiveLayout>
 			<Vertical --vertical-gap="var(--half-padding)">
 				<BetaBadge>beta</BetaBadge>
 				<Typography class="color-high">
@@ -113,6 +127,7 @@
 	}
 	:global(.max-width560) {
 		max-width: 560px;
+		width: 100%;
 		text-align: center;
 	}
 	:global(.flex) {
