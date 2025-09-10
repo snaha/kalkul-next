@@ -4,6 +4,7 @@
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
 	import { _, locale } from 'svelte-i18n'
+	import { LOCALE_STORAGE_KEY } from '$lib/locales'
 	import routes from '$lib/routes'
 	import Typography from './ui/typography.svelte'
 	import Vertical from './ui/vertical.svelte'
@@ -11,12 +12,20 @@
 	import YoutubeIntroVideo from './youtube-intro-video.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import { browser } from '$app/environment'
 
 	type Props = {
 		isMobile: boolean
 	}
 
 	const { isMobile }: Props = $props()
+
+	function setLocale(language: 'en' | 'cs') {
+		if (browser) {
+			localStorage.setItem(LOCALE_STORAGE_KEY, language)
+		}
+		$locale = language
+	}
 </script>
 
 <header class:mobile={isMobile}>
@@ -25,7 +34,7 @@
 		<BetaBadge>beta</BetaBadge>
 	</div>
 	<div class="right">
-		<Button variant="ghost" onclick={() => ($locale = $locale?.startsWith('en') ? 'cs' : 'en')}>
+		<Button variant="ghost" onclick={() => setLocale($locale?.startsWith('en') ? 'cs' : 'en')}>
 			{#if $locale?.startsWith('en')}
 				CZ
 			{:else}

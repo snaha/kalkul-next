@@ -29,6 +29,7 @@
 	} from 'carbon-icons-svelte'
 	import { differenceInDays } from 'date-fns'
 	import { locale, _, locales } from 'svelte-i18n'
+	import { LOCALE_STORAGE_KEY } from '$lib/locales'
 	import Stripe from 'stripe'
 	import { authorizedFetch } from '$lib/auth'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
@@ -66,6 +67,10 @@
 			})
 			// FIXME: handle the case when the user is not logged in
 			if (authStore.user) authStore.user.user_metadata.prefer_language = newLocale
+
+			if (browser) {
+				localStorage.setItem(LOCALE_STORAGE_KEY, newLocale)
+			}
 		}
 	})
 
