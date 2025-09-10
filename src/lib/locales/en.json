@@ -185,7 +185,9 @@
 			"cancelReminder": "We will remind you via email 7 days before your trial period ends. To review your payment & billing details or manage anything about your subscription, please use the button below.",
 			"changeEmailAddress": "Change email address",
 			"changePassword": "Change password",
-			"language": "Language"
+			"language": "Language",
+			"subscribeToNewsletter": "Subscribe to newsletter",
+			"newsletterDescription": "Check if you'd like to receive product updates and news from Kalkul via email"
 		},
 		"home": {
 			"allClients": "All clients",

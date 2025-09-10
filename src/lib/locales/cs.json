@@ -185,7 +185,9 @@
 			"cancelReminder": "E-mailem vám připomeneme 7 dní před koncem zkušební doby. Pro správu fakturace a předplatného použijte tlačítko níže.",
 			"changeEmailAddress": "Změnit e-mailovou adresu",
 			"changePassword": "Změnit heslo",
-			"language": "Jazyk"
+			"language": "Jazyk",
+			"subscribeToNewsletter": "Odebírat newsletter",
+			"newsletterDescription": "Zaškrtněte, pokud chcete dostávat produktové novinky a aktuality od Kalkulu e-mailem"
 		},
 		"home": {
 			"allClients": "Všichni klienti",

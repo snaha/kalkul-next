@@ -66,6 +66,5 @@ export const apiRoutes = {
 	SUBSCRIPTIONS: `${routeApiPrefix}/api/payments/subscriptions`,
 	SUCCESS: (sessionId: string) => `${routeApiPrefix}/api/payments/success/${sessionId}`,
 	NEWSLETTER_SUBSCRIBE: `${routeApiPrefix}/api/newsletter/subscribe`,
-	NEWSLETTER_UNSUBSCRIBE: (subscriptionId: string) =>
-		`${routeApiPrefix}/api/newsletter/unsubscribe/${subscriptionId}`,
-}
+	NEWSLETTER_UNSUBSCRIBE: `${routeApiPrefix}/api/newsletter/unsubscribe`,
+} as const

@@ -3,6 +3,7 @@ import { CORS_ALLOWED_ORIGIN } from '$env/static/private'
 import { apiRoutes } from '$lib/routes'
 import { createServerClient } from '@supabase/ssr'
 import { json, type Handle } from '@sveltejs/kit'
+import { jsonError } from '$lib/error'
 
 const headers =
 	typeof CORS_ALLOWED_ORIGIN === 'string' && CORS_ALLOWED_ORIGIN !== ''
@@ -52,10 +53,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		// For API routes, enforce Authorization header
 		const auth = event.request.headers.get('Authorization')
 		if (!auth) {
-			return json('missing Authorization header', {
-				status: 400,
-				headers,
-			})
+			return jsonError('Missing Authorization header', 400, headers)
 		}
 
 		const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {

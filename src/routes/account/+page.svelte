@@ -32,6 +32,7 @@
 	import Stripe from 'stripe'
 	import { authorizedFetch } from '$lib/auth'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
+	import Checkbox from '$lib/components/ui/checkbox.svelte'
 
 	let error: string | undefined = $state()
 	let showDeleteModal = $state(false)
@@ -103,6 +104,44 @@
 
 	function selectLanguage() {
 		$locale = language
+	}
+
+	async function manageNewsletterSubscription(subscribe: boolean) {
+		const route = subscribe ? apiRoutes.NEWSLETTER_SUBSCRIBE : apiRoutes.NEWSLETTER_UNSUBSCRIBE
+		const res = await authorizedFetch(route, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email: authStore.user?.email }),
+		})
+
+		const data = await res.json()
+
+		if (!res.ok) {
+			throw new Error(data?.error || 'Something went wrong.')
+		}
+	}
+
+	async function onNewsletterSubscriptionChange() {
+		const newsletter_consent = !authStore.user?.user_metadata.newsletter_consent
+		await adapters.updateUserMetadata({
+			newsletter_consent,
+		})
+
+		try {
+			if (newsletter_consent) {
+				await manageNewsletterSubscription(true)
+			} else {
+				await manageNewsletterSubscription(false)
+			}
+		} catch (e) {
+			console.error(`Error while ${newsletter_consent ? '' : 'un'}subscribing the newsletter`, e)
+			// Restore original state
+			await adapters.updateUserMetadata({
+				newsletter_consent: !newsletter_consent,
+			})
+		}
 	}
 </script>
 
@@ -184,6 +223,14 @@
 							>{$_('page.account.deleteAccountButton')}</Button
 						>
 					</Horizontal>
+					<Vertical --vertical-gap="var(--half-padding)">
+						<Checkbox
+							checked={authStore.user?.user_metadata.newsletter_consent}
+							onchange={onNewsletterSubscriptionChange}
+							>{$_('page.account.subscribeToNewsletter')}</Checkbox
+						>
+						<Typography variant="small">{$_('page.account.newsletterDescription')}</Typography>
+					</Vertical>
 				</Vertical>
 			</TabContent>
 			<TabContent>

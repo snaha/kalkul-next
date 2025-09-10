@@ -1,4 +1,5 @@
 import { CORS_ALLOWED_ORIGIN, RESEND_API_KEY, RESEND_AUDIENCE_ID } from '$env/static/private'
+import { jsonError } from '$lib/error'
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { Resend } from 'resend'
 import { z } from 'zod'
@@ -20,14 +21,46 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!res.success) {
 			return json({ error: 'Invalid email' }, { status: 400 })
 		}
-		const data = await resend.contacts.create({
-			email: res.data,
+
+		const email = res.data
+
+		const getContactResponse = await resend.contacts.get({
+			email,
+			audienceId: AUDIENCE_ID,
+		})
+		if (getContactResponse.error) {
+			return jsonError(getContactResponse.error)
+		}
+		const contact = getContactResponse.data
+
+		// Contact already exist
+		if (contact) {
+			// Contact is already subscribed
+			if (contact.unsubscribed === false) {
+				return json({ success: true })
+			}
+
+			const updateContactResponse = await resend.contacts.update({
+				email,
+				audienceId: AUDIENCE_ID,
+				unsubscribed: false,
+			})
+
+			if (updateContactResponse.error) {
+				return jsonError(updateContactResponse.error)
+			}
+
+			return json({ success: true })
+		}
+
+		const createContactResponse = await resend.contacts.create({
+			email,
 			audienceId: AUDIENCE_ID,
 			unsubscribed: false,
 		})
 
-		if (data.error) {
-			return json({ error: data.error.message }, { status: 400 })
+		if (createContactResponse.error) {
+			return json({ error: createContactResponse.error.message }, { status: 400 })
 		} else {
 			return json({ success: true })
 		}

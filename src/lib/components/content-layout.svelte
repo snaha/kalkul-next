@@ -16,7 +16,7 @@
 
 <style lang="postcss">
 	:root {
-		--content-layout-margin: auto;
+		--content-layout-margin: 0;
 	}
 	.centered {
 		display: flex;

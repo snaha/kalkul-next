@@ -9,11 +9,13 @@ export async function authorizedFetch(input: string | URL | Request, init?: Requ
 		throw new Error('Authentication required')
 	}
 
+	console.debug('authorizedFetch', { authStore, init })
+
 	return fetch(input, {
+		...init,
 		headers: {
 			Authorization: `${authStore.session.token_type} ${authStore.session.access_token}`,
 			...init?.headers,
 		},
-		...init,
 	})
 }
