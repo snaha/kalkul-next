@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import FaqBox from '$lib/components/faq-box.svelte'
 	import Footer from '$lib/components/footer.svelte'
@@ -11,9 +11,19 @@
 	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
-	import routes from '$lib/routes'
+	import routes, { getStartedSections } from '$lib/routes'
 	import { _ } from 'svelte-i18n'
 	import { Launch } from 'carbon-icons-svelte'
+	import { page } from '$app/state'
+
+	const hash = $derived(page.url.hash)
+
+	function isExpanded(s: string) {
+		if (hash === '') {
+			return true
+		}
+		return `#${s}` === hash
+	}
 </script>
 
 <Fullscreen
@@ -70,7 +80,11 @@
 				</FaqBox>
 			</Vertical>
 
-			<GetStartedBox title={$_('page.getStarted.createClient.title')}>
+			<GetStartedBox
+				title={$_('page.getStarted.createClient.title')}
+				expanded={isExpanded(getStartedSections.CREATE_CLIENT)}
+				id={getStartedSections.CREATE_CLIENT}
+			>
 				{#snippet text()}
 					<Typography>
 						{$_('page.getStarted.createClient.intro')}
@@ -100,7 +114,11 @@
 				<Divider class="max-560" --margin="0" />
 			</GetStartedBox>
 
-			<GetStartedBox title={$_('page.getStarted.createPortfolio.title')}>
+			<GetStartedBox
+				title={$_('page.getStarted.createPortfolio.title')}
+				expanded={isExpanded(getStartedSections.CREATE_PORTFOLIO)}
+				id={getStartedSections.CREATE_PORTFOLIO}
+			>
 				{#snippet text()}
 					<Typography>{$_('page.getStarted.createPortfolio.intro')}</Typography>
 					<Typography italic>{$_('page.getStarted.createPortfolio.tip')}</Typography>
@@ -131,7 +149,11 @@
 				<Divider class="max-560" --margin="0" />
 			</GetStartedBox>
 
-			<GetStartedBox title={$_('page.getStarted.addInvestment.title')}>
+			<GetStartedBox
+				title={$_('page.getStarted.addInvestment.title')}
+				expanded={isExpanded(getStartedSections.ADD_INVESTMENT)}
+				id={getStartedSections.ADD_INVESTMENT}
+			>
 				{#snippet text()}
 					<Typography>{$_('page.getStarted.addInvestment.intro')}</Typography>
 					<Typography>
@@ -163,7 +185,11 @@
 				<Divider class="max-560" --margin="0" />
 			</GetStartedBox>
 
-			<GetStartedBox title={$_('page.getStarted.addTransactions.title')}>
+			<GetStartedBox
+				title={$_('page.getStarted.addTransactions.title')}
+				expanded={isExpanded(getStartedSections.ADD_TRANSACTION)}
+				id={getStartedSections.ADD_TRANSACTION}
+			>
 				{#snippet text()}
 					<Typography>{$_('page.getStarted.addTransactions.intro')}</Typography>
 					<Typography>
@@ -195,7 +221,11 @@
 				<Divider class="max-560" --margin="0" />
 			</GetStartedBox>
 
-			<GetStartedBox title={$_('page.getStarted.reviewPresent.title')}>
+			<GetStartedBox
+				title={$_('page.getStarted.reviewPresent.title')}
+				expanded={isExpanded(getStartedSections.REVIEW_AND_PRESENT)}
+				id={getStartedSections.REVIEW_AND_PRESENT}
+			>
 				{#snippet text()}
 					<Typography>{$_('page.getStarted.reviewPresent.intro')}</Typography>
 					<Typography variant="h5"
@@ -256,7 +286,11 @@
 				<Divider class="max-560" --margin="0" />
 			</GetStartedBox>
 
-			<GetStartedBox title={$_('page.getStarted.sharePortfolio.title')}>
+			<GetStartedBox
+				title={$_('page.getStarted.sharePortfolio.title')}
+				expanded={isExpanded(getStartedSections.SHARE_PORTFOLIO)}
+				id={getStartedSections.SHARE_PORTFOLIO}
+			>
 				{#snippet text()}
 					<Typography>{$_('page.getStarted.sharePortfolio.intro')}</Typography>
 				{/snippet}

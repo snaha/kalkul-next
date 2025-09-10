@@ -46,6 +46,15 @@ export default {
 	GET_STARTED: `${routePrefix}/get-started`,
 }
 
+export const getStartedSections = {
+	CREATE_CLIENT: 'create-client',
+	CREATE_PORTFOLIO: 'create-portfolio',
+	ADD_INVESTMENT: 'add-investment',
+	ADD_TRANSACTION: 'add-transaction',
+	REVIEW_AND_PRESENT: 'review-and-present',
+	SHARE_PORTFOLIO: 'share-portfolio',
+}
+
 export const apiRoutes = {
 	ROOT: '/api',
 	CHECKOUT: `${routeApiPrefix}/api/payments/checkout`,

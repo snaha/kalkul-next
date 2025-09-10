@@ -10,14 +10,14 @@
 		title: string
 		text: Snippet
 		children: Snippet
+		expanded?: boolean
+		id?: string
 	}
 
-	let { title, text, children }: Props = $props()
-
-	let expanded = $state(true)
+	let { title, text, children, expanded = $bindable(true), id }: Props = $props()
 </script>
 
-<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center">
+<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center" {id}>
 	<Vertical class="max-560" --vertical-gap="var(--padding)" --vertical-align-items="stretch">
 		<Horizontal
 			--horizontal-justify-content="stretch"

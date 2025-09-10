@@ -9,6 +9,7 @@
 		FolderDetails,
 		Launch,
 		OverflowMenuVertical,
+		Rocket,
 		Share,
 		TrashCan,
 		UserFollow,
@@ -19,7 +20,7 @@
 	import Avatar from '$lib/components/avatar.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'
-	import routes from '$lib/routes'
+	import routes, { getStartedSections } from '$lib/routes'
 	import { page } from '$app/state'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { clientStore } from '$lib/stores/clients.svelte'
@@ -228,7 +229,14 @@
 		title={$_('helpBox.addPortfolioTitle')}
 		boxText={$_('helpBox.addPortfolioText')}
 		text={$_('helpBox.portfolioExplanation')}
-	></HelpBox>
+	>
+		<Button
+			variant="strong"
+			dimension="compact"
+			href={`${routes.GET_STARTED}#${getStartedSections.CREATE_PORTFOLIO}`}
+			target="_blank"><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+		>
+	</HelpBox>
 {/if}
 
 <DeleteModal

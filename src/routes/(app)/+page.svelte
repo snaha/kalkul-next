@@ -11,6 +11,7 @@
 		LogoYoutube,
 		Launch,
 		ArrowRight,
+		Rocket,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge, formatDate } from '$lib/utils'
@@ -201,6 +202,9 @@
 				text={$_('helpBox.clientListExplanation')}
 			>
 				<Vertical --vertical-gap="var(--half-padding)">
+					<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
+						><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+					>
 					<Button
 						variant="solid"
 						dimension="compact"

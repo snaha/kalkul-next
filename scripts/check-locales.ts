@@ -6,19 +6,19 @@ const DEFAULT_LOCALE = 'cs'
 
 // Patterns for detecting hardcoded user-facing text (generic Unicode patterns)
 const HARDCODED_TEXT_PATTERNS = [
-	// Text between HTML/Svelte tags that contains letters and spaces (likely user-facing)
+	// Text between regular HTML/Svelte tags (not after self-closing tags)
 	{
-		pattern: />(\p{L}\p{L}*(?:\s+\p{L}+)*[\s,.'!?„"]*)<(?:\/|\w)/gu,
+		pattern: /(?<!\/)>(\p{L}\p{L}*(?:\s+\p{L}+)*[\s,.'!?„"]*)<(?:\/|\w)/gu,
 		description: 'Text content between HTML tags',
 	},
-	// Text starting with special symbols or arrows followed by letters
+	// Text starting with special symbols or arrows (multiline support)
 	{
-		pattern: />\s*([\p{So}\p{Sm}][\p{L}\s\p{P}]+)\s*</gu,
+		pattern: />\s*([\p{So}\p{Sm}][\p{L}\s\p{P}\n\r]+)\s*</gsu,
 		description: 'Text content starting with symbols or arrows',
 	},
-	// Text that comes after self-closing tags or components
+	// Text that comes after self-closing tags or components (avoid duplication with first pattern)
 	{
-		pattern: /\/>\s*(\p{L}[\p{L}\s\p{P}]*)<(?:\/|\w)/gu,
+		pattern: /\/>\s*([^\p{So}\p{Sm}]\p{L}[\p{L}\s\p{P}]*)<(?:\/|\w)/gu,
 		description: 'Text content after self-closing tags',
 	},
 	// Hardcoded strings in user-facing attributes
@@ -30,11 +30,6 @@ const HARDCODED_TEXT_PATTERNS = [
 	{
 		pattern: /(?<!\/\/\s*)(?<!\*\s+)(\p{Lu}\p{L}*(?:\s+\p{L}+)*)\s+<a/gu,
 		description: 'Text followed by links (like "Made with <a>")',
-	},
-	// Hardcoded text after template expressions in HTML/Svelte elements
-	{
-		pattern: /<[^/>]+[^>]*>\s*\{[^}]+\}\s+([\p{L}\p{So}]+(?:\s+[\p{L}\p{So}]+)*)\s*<\/[^>]+>/gu,
-		description: 'Hardcoded text after template expressions in HTML/Svelte elements',
 	},
 ]
 
@@ -50,7 +45,7 @@ const EXCLUDE_PATTERNS = [
 	/^[\d.]+%$/, // Percentages
 	/^[\d.,]+$/, // Numbers with formatting
 	/^\s*$/, // Whitespace only
-	/^\{[^}]+\}$/, // Template expressions
+	/^\{[^}]+\}/, // Template expressions (with or without newlines)
 	/^\|\s*\w+/, // TypeScript union types
 	/^&[a-zA-Z][a-zA-Z0-9]*;$/, // HTML entities
 	/^[a-zA-Z_$][a-zA-Z0-9_$]*\s*[=(){}]/, // Code patterns (variable assignments, function calls)

@@ -1,9 +1,15 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
-	import { Add, SidePanelCloseFilled, SidePanelOpenFilled, UserFollow } from 'carbon-icons-svelte'
+	import {
+		Add,
+		Rocket,
+		SidePanelCloseFilled,
+		SidePanelOpenFilled,
+		UserFollow,
+	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Loader from '$lib/components/ui/loader.svelte'
-	import routes from '$lib/routes'
+	import routes, { getStartedSections } from '$lib/routes'
 	import { page } from '$app/state'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { goto } from '$app/navigation'
@@ -186,14 +192,28 @@
 			title={$_('helpBox.addInvestmentTitle')}
 			boxText={$_('helpBox.addInvestmentText')}
 			text={$_('helpBox.investmentExplanation')}
-		></HelpBox>
+		>
+			<Button
+				variant="strong"
+				dimension="compact"
+				href={`${routes.GET_STARTED}#${getStartedSections.ADD_INVESTMENT}`}
+				target="_blank"><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+			>
+		</HelpBox>
 	{:else if transactions.length === 0}
 		<HelpBox
 			open={true}
 			title={$_('helpBox.addTransactionTitle')}
 			boxText={$_('helpBox.addTransactionText')}
 			text={$_('helpBox.transactionExplanation')}
-		></HelpBox>
+		>
+			<Button
+				variant="strong"
+				dimension="compact"
+				href={`${routes.GET_STARTED}#${getStartedSections.ADD_TRANSACTION}`}
+				target="_blank"><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+			>
+		</HelpBox>
 	{/if}
 {/if}
 
