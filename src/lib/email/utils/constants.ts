@@ -22,17 +22,18 @@ export const EMAIL_COLORS = {
 export const TYPOGRAPHY_STYLES = {
 	mainHeading: {
 		margin: '32px 0 32px 0',
-		fontSize: '28px',
-		fontWeight: '600',
+		fontSize: '24px',
+		lineHeight: '32px',
+		fontWeight: '700',
 		color: EMAIL_COLORS.darkText,
 		textAlign: 'center' as const,
-		lineHeight: '1.2',
 	},
 
 	sectionHeading: {
 		margin: '48px 0 24px 0',
-		fontSize: '24px',
-		fontWeight: '600',
+		fontSize: '20px',
+		lineHeight: '28px',
+		fontWeight: '700',
 		color: EMAIL_COLORS.darkText,
 		textAlign: 'center' as const,
 	},
@@ -53,10 +54,18 @@ export const TYPOGRAPHY_STYLES = {
 
 	introText: {
 		margin: '0 0 48px 0',
-		fontSize: '18px',
-		lineHeight: '1.5',
+		fontSize: '20px',
+		lineHeight: '28px',
+		fontWeight: '400',
 		color: EMAIL_COLORS.darkText,
 		textAlign: 'center' as const,
+	},
+
+	quoteText: {
+		fontSize: '16px',
+		lineHeight: '24px',
+		color: EMAIL_COLORS.darkText,
+		fontWeight: '700',
 	},
 
 	listText: {
@@ -138,8 +147,20 @@ export const LAYOUT_STYLES = {
 		color: EMAIL_COLORS.backgroundBeige,
 		borderRadius: '4px',
 		fontSize: '16px',
-		lineHeight: '150%',
+		lineHeight: '24px',
 		fontWeight: 'bold',
+	},
+
+	secondaryButtonContainer: {
+		padding: '12px',
+		textAlign: 'center' as const,
+		outline: `1px solid ${EMAIL_COLORS.darkText}`,
+		borderRadius: '4px',
+		backgroundColor: EMAIL_COLORS.cardBackground,
+		color: EMAIL_COLORS.darkText,
+		fontSize: '16px',
+		lineHeight: '24px',
+		fontWeight: '400',
 	},
 
 	footerSection: {

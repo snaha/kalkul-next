@@ -602,6 +602,7 @@
 		"common": {
 			"companyName": "Kalkul.app s.r.o.",
 			"companyAddress": "Stará silnice 2314/3, Předměstí, 746 01 Opava, Česká Republika",
+			"madeWithLove": "Made with 💚 in 🇨🇿 Czech Republic",
 			"unsubscribe": "Unsubscribe",
 			"contactSupport": "You can also reach us anytime at {supportEmail}",
 			"footerText": "You're receiving this email because you signed up for Kalkul. If you have any concerns, please contact us at {supportEmail}",
@@ -625,22 +626,21 @@
 				"thankYou": "Thank you for believing in what we're building."
 			},
 			"newsletter2025September": {
-				"subject": "Back to business with Kalkul",
-				"previewText": "Summer's over – back to business! 🚀",
-				"title": "Summer's over – back to business! 🚀",
-				"introText": "While you were (hopefully) taking a well-deserved break, our team has been hard at work making Kalkul even better for you.",
-				"betaSignupHeading": "Beta sign up is now open!",
-				"betaSignupText": "We're excited to announce that beta sign-ups are now open to everybody! If you've been waiting to get early access and help shape the future of our product, now's your chance.",
+				"subject": "For independent advisors: A simpler way forward",
+				"previewText": "Independent advisors deserve better tools",
+				"title": "Independent advisors deserve better tools",
+				"introText": "Introducing Kalkul — the platform-agnostic financial planning app for advisors who cherish independence.",
+				"betaSignupHeading": "Beta access is now open to everyone",
+				"betaSignupText": "Ready to break free from platform limitations? Beta sign-ups are now open to all independent advisors who refuse to compromise on investment choices.",
 				"signupButton": "Sign up today",
-				"expertiseHeading": "Your expertise matters",
-				"expertiseText": "As one of our first users, your feedback directly shapes our product—helping us fix bugs, prioritize features, and build exactly what independent advisors need. Found an issue or something that could be better? Love something in particular? Have a feature idea or request? Tell us!",
-				"discordButton": "Join the conversation on Discord",
-				"importDataHeading": "Import investment data",
-				"importDataText": "We just added an \"Import data\" feature when adding investments to portfolios. Simply search by ISIN or ticker symbol to automatically populate the investment name and APY. Give it a try and let us know what you think!",
-				"tryItButton": "Try it on kalkul.app",
-				"closingText": "Wishing you a wonderful summer as we continue building Kalkul together!",
-				"thanksText": "Thanks!",
-				"importDataAlt": "Import investment data"
+				"requestDemoButton": "Request a demo",
+				"bodyText1": "If you're an independent financial advisor, you know the trade-off too well: More independence often means more tools, more admin work, and less time for what really matters — your clients. We've heard the frustration over and over.",
+				"quoteText": "Independent advisors need complete independence when planning their clients' financial futures.",
+				"bodyText2": "That's why we're building a platform-agnostic solution that puts control back in your hands. Unlike institution-tied platforms, Kalkul allows you to add investments from any source, giving you the freedom to build truly unified, platform-independent portfolios tailored to each client's needs.",
+				"closingText": "Thanks,",
+				"teamText": "the Kalkul team.",
+				"kalkulDemoRequest": "Kalkul demo request",
+				"kalkulDemoRequestBody": "Hi, I am interested in Kalkul and would like to request a demo."
 			}
 		}
 	}

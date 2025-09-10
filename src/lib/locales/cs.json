@@ -602,6 +602,7 @@
 		"common": {
 			"companyName": "Kalkul.app s.r.o.",
 			"companyAddress": "Stará silnice 2314/3, Předměstí, 746 01 Opava, Česká Republika",
+			"madeWithLove": "Vyrobeno s 💚 v 🇨🇿 České republice",
 			"unsubscribe": "Odhlásit odběr",
 			"contactSupport": "Také nás můžete kdykoli kontaktovat na {supportEmail}",
 			"footerText": "Tento e-mail jste obdrželi, protože jste se zaregistrovali do Kalkul. Pokud máte jakékoli obavy, kontaktujte nás na {supportEmail}",
@@ -625,22 +626,21 @@
 				"thankYou": "Děkujeme, že věříte v to, co budujeme."
 			},
 			"newsletter2025September": {
-				"subject": "Zpět k práci s Kalkul",
-				"previewText": "Léto je za námi – zpět k práci! 🚀",
-				"title": "Léto je za námi – zpět k práci! 🚀",
-				"introText": "Zatímco jste si (snad) užívali zasloužený odpočinek, náš tým mezitím pracoval na tom, aby byl Kalkul pro vás ještě lepší.",
-				"betaSignupHeading": "Beta je nyní otevřená všem!",
-				"betaSignupText": "Doteď byla beta verze jen pro omezený okruh uživatelů, ale od teď se může zapojit každý. Pokud chcete mít brzký přístup a pomoci nám formovat budoucnost Kalkulu, teď je ta pravá chvíle.",
+				"subject": "Pro nezávislé poradce: Jednodušší cesta kupředu",
+				"previewText": "Nezávislí poradci si zaslouží lepší nástroje",
+				"title": "Nezávislí poradci si zaslouží lepší nástroje",
+				"introText": "Představujeme Kalkul — aplikaci pro finanční plánování nezávislou na platformě, určenou pro poradce, kteří si cení nezávislosti.",
+				"betaSignupHeading": "Beta přístup je nyní otevřený všem",
+				"betaSignupText": "Jste připraveni se osvobodit od omezení platforem? Registrace do beta verze je nyní otevřená všem nezávislým poradcům, kteří nechtějí dělat kompromisy v investičních možnostech.",
 				"signupButton": "Zaregistrujte se ještě dnes",
-				"expertiseHeading": "Vaše zkušenosti jsou pro nás klíčové",
-				"expertiseText": "Jako jeden z prvních uživatelů můžete přímo ovlivnit vývoj Kalkulu – pomůžete nám opravovat chyby, nastavovat priority funkcí a dotvářet přesně to, co nezávislí poradci potřebují. Našli jste něco, co by šlo zlepšit? Líbí se vám konkrétní funkce? Máte nápad na novou? Dejte nám vědět!",
-				"discordButton": "Zapojte se do diskuse na Discordu",
-				"importDataHeading": "Novinka: Import investičních dat",
-				"importDataText": "Při přidávání investic do portfolia nyní stačí zadat ISIN nebo ticker, a Kalkul vám sám doplní název investice a roční výnos. Vyzkoušejte to a dejte nám vědět, co si myslíte!",
-				"tryItButton": "Vyzkoušet na kalkul.app",
-				"closingText": "Přejeme vám hezký konec léta a těšíme se na společné budování Kalkulu!",
-				"thanksText": "Děkujeme!",
-				"importDataAlt": "Import investičních dat"
+				"requestDemoButton": "Požádat o demo",
+				"bodyText1": "Pokud jste nezávislý finanční poradce, znáte tento kompromis až příliš dobře: Větší nezávislost často znamená více nástrojů, více administrativy a méně času na to, co opravdu záleží — vaše klienty. Slyšíme tuto frustraci stále dokola.",
+				"quoteText": "Nezávislí poradci potřebují úplnou nezávislost při plánování finanční budoucnosti svých klientů.",
+				"bodyText2": "Proto budujeme řešení nezávislé na platformě, které vrací kontrolu zpět do vašich rukou. Na rozdíl od platforem vázaných na instituce vám Kalkul umožňuje přidávat investice z jakéhokoli zdroje, což vám dává svobodu vytvářet skutečně sjednocená, na platformě nezávislá portfolia přizpůsobená potřebám každého klienta.",
+				"closingText": "Děkujeme,",
+				"teamText": "tým Kalkul.",
+				"kalkulDemoRequest": "Žádost o demo Kalkul",
+				"kalkulDemoRequestBody": "Dobrý den, zajímá mě Kalkul a rád bych si požádal o demo."
 			}
 		}
 	}

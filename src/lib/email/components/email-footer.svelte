@@ -15,6 +15,19 @@
 </script>
 
 <Section style={LAYOUT_STYLES.footerContainer}>
+	<Container
+		style={{
+			backgroundColor: '#e5dfd5',
+			borderRadius: '12px',
+			padding: '4px 8px',
+			fontSize: '12px',
+			margin: '0 auto 16px auto',
+			maxWidth: '217px',
+		}}
+	>
+		{$_('email.common.madeWithLove')}
+	</Container>
+
 	<Container>
 		<!-- Footer -->
 		<Text style={TYPOGRAPHY_STYLES.footerText}>
