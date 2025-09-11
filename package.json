@@ -51,7 +51,7 @@
 		"prettier-plugin-svelte": "^3.3.3",
 		"resend": "^4.5.1",
 		"stripe": "17.6.0",
-		"supabase": "^2.34.3",
+		"supabase": "^2.40.7",
 		"svelte": "5.19.2",
 		"svelte-check": "^4.1.4",
 		"svelte-email": "^0.0.4",
