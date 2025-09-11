@@ -10,7 +10,6 @@
 		TrashCan,
 		LogoYoutube,
 		Launch,
-		ArrowRight,
 		Rocket,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
@@ -34,16 +33,15 @@
 	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 	import HelpBox from '$lib/components/help-box.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
-	import Horizontal from '$lib/components/ui/horizontal.svelte'
-	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import VideoModal from '$lib/components/video-modal.svelte'
 	import YoutubeIntroVideo from '$lib/components/youtube-intro-video.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
+	import GetStarted from '$lib/components/get-started.svelte'
 
 	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
 
 	let showConfirmModal = $state(false)
-	let showWelcome = $derived(authStore.user?.user_metadata.first_visit ? true : false)
+	let showWelcome = $state(authStore.user?.user_metadata.first_visit ? true : false)
 	let clientToBeDeleted: number | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(
@@ -52,10 +50,6 @@
 		),
 	)
 	let isVideoPlayer = $state(false)
-
-	async function hideWelcome() {
-		await adapter.updateUserMetadata({ first_visit: false })
-	}
 
 	function hideVideoPlayer() {
 		isVideoPlayer = false
@@ -107,46 +101,6 @@
 	</Dropdown>
 {/snippet}
 
-{#snippet welcomeDesktop()}
-	<Vertical --vertical-gap="0" --vertical-align-items="center">
-		<Vertical
-			--vertical-gap="var(--double-padding)"
-			style="padding-top: var(--padding)"
-			class="max560"
-		>
-			<YoutubeIntroVideo />
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
-				<Typography class="text-center" variant="large"
-					>{$_('page.home.kalkulExplanation')}</Typography
-				>
-			</Vertical>
-			<Horizontal
-				--horizontal-gap="var(--half-padding)"
-				--horizontal-align-items="stretch"
-				class="max560"
-			>
-				<Button
-					variant="secondary"
-					href={routes.SAMPLE_PORTFOLIO_LINK}
-					target="_blank"
-					class="max560">{$_('common.viewSamplePortfolio')}</Button
-				>
-				<Button variant="strong" onclick={hideWelcome} target="_blank" class="max560">
-					{$_('component.welcome.startUsingKalkul')}
-					<ArrowRight size={24} />
-				</Button>
-			</Horizontal>
-			<Horizontal --horizontal-gap="var(--half-padding)" --horizontal-align-items="center">
-				<BetaBadge>beta</BetaBadge>
-				<Typography variant="small" --typography-color="var(--colors-high)">
-					{$_('page.home.kalkulIsBeta')}
-				</Typography>
-			</Horizontal>
-		</Vertical>
-	</Vertical>
-{/snippet}
-
 {#snippet welcomeMobile()}
 	<Vertical --vertical-gap="0" --vertical-align-items="center">
 		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
@@ -182,7 +136,11 @@
 <DesktopOnly>
 	<main>
 		{#if showWelcome}
-			{@render welcomeDesktop()}
+			<GetStarted
+				onPrimaryActionClick={async () => {
+					adapter.updateUserMetadata({ first_visit: false })
+				}}
+			/>
 		{:else if clientStore.loading}
 			<Typography>{$_('common.loading')}</Typography><Loader />
 		{:else if clientStore.data.length === 0}
