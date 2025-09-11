@@ -18,6 +18,7 @@
 	import Badge from './ui/badge.svelte'
 	import { UserAvatarFilledAlt } from 'carbon-icons-svelte'
 	import Horizontal from './ui/horizontal.svelte'
+	import InflationBadge from './inflation-badge.svelte'
 
 	const {
 		tooltipData,
@@ -51,9 +52,7 @@
 			<Horizontal --horizontal-gap="var(--half-padding)">
 				<Typography variant="h5" class="color-light">{year}</Typography>
 				{#if adjustWithInflation}
-					<Typography variant="small" --typography-color="var(--colors-dark-high)"
-						>{$_('common.inflationAdjusted')}</Typography
-					>
+					<InflationBadge>{$_('common.inflationAdjusted')}</InflationBadge>
 				{/if}
 			</Horizontal>
 

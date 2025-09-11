@@ -6,7 +6,6 @@ import Decimal from 'decimal.js'
 
 // Time-related constants
 export const DAYS_PER_YEAR = 365.25
-export const DAYS_PER_WEEK = 7
 export const MONTHS_PER_YEAR = 12
 
 // Percentage calculations

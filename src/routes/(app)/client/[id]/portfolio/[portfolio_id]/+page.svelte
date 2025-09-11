@@ -143,6 +143,7 @@
 								{portfolio}
 								{client}
 								transaction={editedTransaction}
+								showInflation={adjustWithInflation}
 								close={closeDialog}
 							/>
 						</section>
@@ -155,6 +156,7 @@
 								index={i}
 								hidden={investmentsViewStore.isHidden(investment.id)}
 								focused={investmentsViewStore.isFocused(investment.id) && investments.length > 1}
+								showInflation={adjustWithInflation}
 								{openTransaction}
 								toggleHide={() => {
 									investmentsViewStore.toggleHide(investment.id)

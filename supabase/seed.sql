@@ -91,6 +91,14 @@ VALUES
     'Elena Müller',
     '1985-06-12',
     '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249'
+  ),
+  (
+    '4',
+    'inflation.demo@kalkul.app',
+    '2025-08-23 15:00:00.000000+00',
+    'Inflation Demo Client',
+    '1990-01-01',
+    '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249'
   );
 
 INSERT INTO
@@ -142,6 +150,18 @@ VALUES
     '3',
     'EUR',
     'mueller-berlin-plan-2025'
+  ),
+  (
+    '4',
+    '2025-08-23 15:00:00.000000+00',
+    'Inflation Adjustment Demo Portfolio',
+    '2025-08-23 15:00:00.000000+00',
+    '2024-01-01',
+    '2044-01-01',
+    '0.03',
+    '4',
+    'USD',
+    'inflation-demo-portfolio-2025'
   );
 
 INSERT INTO
@@ -310,6 +330,36 @@ VALUES
     'percentage',
     'ongoing',
     'Berlin Real Estate Fund'
+  ),
+  (
+    '11',
+    '2025-08-23 15:10:00.000000+00',
+    '2025-08-23 15:10:00.000000+00',
+    '4',
+    '7.0',
+    '0',
+    '0',
+    '0',
+    '0.75',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Long-term Investment - No Inflation Adjustment'
+  ),
+  (
+    '12',
+    '2025-08-23 15:15:00.000000+00',
+    '2025-08-23 15:15:00.000000+00',
+    '4',
+    '7.0',
+    '0',
+    '0',
+    '0',
+    '0.75',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Long-term Investment - With Inflation Adjustment'
   );
 
 INSERT INTO
@@ -324,7 +374,8 @@ INSERT INTO
     "repeat",
     "repeat_unit",
     "type",
-    "last_edited_at"
+    "last_edited_at",
+    "inflation_adjusted"
   )
 VALUES
   (
@@ -338,7 +389,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2024-11-26 14:33:47.871286+00'
+    '2024-11-26 14:33:47.871286+00',
+    false
   ),
   (
     '2',
@@ -351,7 +403,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2024-11-26 14:34:23.764254+00'
+    '2024-11-26 14:34:23.764254+00',
+    false
   ),
   (
     '3',
@@ -364,7 +417,8 @@ VALUES
     '1',
     'month',
     'withdrawal',
-    '2024-11-26 14:37:03.608032+00'
+    '2024-11-26 14:37:03.608032+00',
+    false
   ),
   (
     '4',
@@ -377,7 +431,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 10:45:00.000000+00'
+    '2025-08-14 10:45:00.000000+00',
+    false
   ),
   (
     '5',
@@ -390,7 +445,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 10:50:00.000000+00'
+    '2025-08-14 10:50:00.000000+00',
+    false
   ),
   (
     '6',
@@ -403,7 +459,8 @@ VALUES
     null,
     null,
     'withdrawal',
-    '2025-08-14 10:55:00.000000+00'
+    '2025-08-14 10:55:00.000000+00',
+    false
   ),
   (
     '7',
@@ -416,7 +473,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 11:25:00.000000+00'
+    '2025-08-14 11:25:00.000000+00',
+    false
   ),
   (
     '11',
@@ -429,7 +487,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 11:00:00.000000+00'
+    '2025-08-14 11:00:00.000000+00',
+    false
   ),
   (
     '12',
@@ -442,7 +501,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 11:05:00.000000+00'
+    '2025-08-14 11:05:00.000000+00',
+    false
   ),
   (
     '13',
@@ -455,7 +515,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 11:10:00.000000+00'
+    '2025-08-14 11:10:00.000000+00',
+    false
   ),
   (
     '14',
@@ -468,7 +529,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 11:15:00.000000+00'
+    '2025-08-14 11:15:00.000000+00',
+    false
   ),
   (
     '15',
@@ -481,7 +543,8 @@ VALUES
     '1',
     'month',
     'withdrawal',
-    '2025-08-14 11:20:00.000000+00'
+    '2025-08-14 11:20:00.000000+00',
+    false
   ),
   (
     '16',
@@ -494,7 +557,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 13:00:00.000000+00'
+    '2025-08-14 13:00:00.000000+00',
+    false
   ),
   (
     '17',
@@ -507,7 +571,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 13:05:00.000000+00'
+    '2025-08-14 13:05:00.000000+00',
+    false
   ),
   (
     '18',
@@ -520,7 +585,8 @@ VALUES
     null,
     null,
     'withdrawal',
-    '2025-08-14 13:10:00.000000+00'
+    '2025-08-14 13:10:00.000000+00',
+    false
   ),
   (
     '19',
@@ -533,7 +599,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 13:15:00.000000+00'
+    '2025-08-14 13:15:00.000000+00',
+    false
   ),
   (
     '20',
@@ -546,7 +613,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 13:20:00.000000+00'
+    '2025-08-14 13:20:00.000000+00',
+    false
   ),
   (
     '21',
@@ -559,7 +627,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 13:25:00.000000+00'
+    '2025-08-14 13:25:00.000000+00',
+    false
   ),
   (
     '22',
@@ -572,7 +641,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 13:30:00.000000+00'
+    '2025-08-14 13:30:00.000000+00',
+    false
   ),
   (
     '23',
@@ -585,7 +655,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 13:35:00.000000+00'
+    '2025-08-14 13:35:00.000000+00',
+    false
   ),
   (
     '24',
@@ -598,7 +669,8 @@ VALUES
     null,
     null,
     'deposit',
-    '2025-08-14 13:40:00.000000+00'
+    '2025-08-14 13:40:00.000000+00',
+    false
   ),
   (
     '25',
@@ -611,7 +683,8 @@ VALUES
     '1',
     'month',
     'deposit',
-    '2025-08-14 13:45:00.000000+00'
+    '2025-08-14 13:45:00.000000+00',
+    false
   ),
   (
     '26',
@@ -624,7 +697,8 @@ VALUES
     null,
     null,
     'withdrawal',
-    '2025-08-14 13:50:00.000000+00'
+    '2025-08-14 13:50:00.000000+00',
+    false
   ),
   (
     '27',
@@ -637,7 +711,190 @@ VALUES
     '1',
     'month',
     'withdrawal',
-    '2025-08-14 13:55:00.000000+00'
+    '2025-08-14 13:55:00.000000+00',
+    false
+  ),
+  -- Demo transactions for inflation adjustment showcase - Perfect Matching Pairs
+  -- Both investments get identical transactions at identical times, only inflation_adjusted differs
+  
+  -- Initial Investments (Portfolio Start Date)
+  (
+    '28',
+    '2025-08-23 15:20:00.000000+00',
+    '50000',
+    '2024-01-01 00:00:00+00',
+    null,
+    '11',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-08-23 15:20:00.000000+00',
+    false
+  ),
+  (
+    '29',
+    '2025-08-23 15:20:00.000000+00',
+    '50000',
+    '2024-01-01 00:00:00+00',
+    null,
+    '12',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-08-23 15:20:00.000000+00',
+    true
+  ),
+  
+  -- Monthly Contributions for 10 Years (Accumulation Phase)
+  (
+    '30',
+    '2025-08-23 15:25:00.000000+00',
+    '2000',
+    '2024-02-01 00:00:00+00',
+    '2034-01-01 00:00:00+00',
+    '11',
+    'Monthly Contributions - Accumulation Phase',
+    '1',
+    'month',
+    'deposit',
+    '2025-08-23 15:25:00.000000+00',
+    false
+  ),
+  (
+    '31',
+    '2025-08-23 15:25:00.000000+00',
+    '2000',
+    '2024-02-01 00:00:00+00',
+    '2034-01-01 00:00:00+00',
+    '12',
+    'Monthly Contributions - Accumulation Phase',
+    '1',
+    'month',
+    'deposit',
+    '2025-08-23 15:25:00.000000+00',
+    true
+  ),
+  
+  -- Mid-term Lump Sum Additions
+  (
+    '32',
+    '2025-08-23 15:30:00.000000+00',
+    '25000',
+    '2029-01-01 00:00:00+00',
+    null,
+    '11',
+    'Mid-Career Bonus Investment',
+    null,
+    null,
+    'deposit',
+    '2025-08-23 15:30:00.000000+00',
+    false
+  ),
+  (
+    '33',
+    '2025-08-23 15:30:00.000000+00',
+    '25000',
+    '2029-01-01 00:00:00+00',
+    null,
+    '12',
+    'Mid-Career Bonus Investment',
+    null,
+    null,
+    'deposit',
+    '2025-08-23 15:30:00.000000+00',
+    true
+  ),
+  
+  -- Emergency Withdrawal
+  (
+    '34',
+    '2025-08-23 15:35:00.000000+00',
+    '15000',
+    '2032-06-15 00:00:00+00',
+    null,
+    '11',
+    'Emergency Fund Withdrawal',
+    null,
+    null,
+    'withdrawal',
+    '2025-08-23 15:35:00.000000+00',
+    false
+  ),
+  (
+    '35',
+    '2025-08-23 15:35:00.000000+00',
+    '15000',
+    '2032-06-15 00:00:00+00',
+    null,
+    '12',
+    'Emergency Fund Withdrawal',
+    null,
+    null,
+    'withdrawal',
+    '2025-08-23 15:35:00.000000+00',
+    true
+  ),
+  
+  -- Retirement Phase - Monthly Withdrawals
+  (
+    '36',
+    '2025-08-23 15:40:00.000000+00',
+    '2000',
+    '2034-02-01 00:00:00+00',
+    '2044-01-01 00:00:00+00',
+    '11',
+    'Monthly Retirement Income',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-08-23 15:40:00.000000+00',
+    false
+  ),
+  (
+    '37',
+    '2025-08-23 15:40:00.000000+00',
+    '2000',
+    '2034-02-01 00:00:00+00',
+    '2044-01-01 00:00:00+00',
+    '12',
+    'Monthly Retirement Income',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-08-23 15:40:00.000000+00',
+    true
+  ),
+  
+  -- Large Retirement Lump Sum
+  (
+    '38',
+    '2025-08-23 15:45:00.000000+00',
+    '100000',
+    '2039-01-01 00:00:00+00',
+    null,
+    '11',
+    'Major Retirement Expense (House/Travel)',
+    null,
+    null,
+    'withdrawal',
+    '2025-08-23 15:45:00.000000+00',
+    false
+  ),
+  (
+    '39',
+    '2025-08-23 15:45:00.000000+00',
+    '100000',
+    '2039-01-01 00:00:00+00',
+    null,
+    '12',
+    'Major Retirement Expense (House/Travel)',
+    null,
+    null,
+    'withdrawal',
+    '2025-08-23 15:45:00.000000+00',
+    true
   );
 
 -- Reset sequences to ensure proper ID generation

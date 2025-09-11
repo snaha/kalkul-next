@@ -353,9 +353,8 @@
 			"repeatLabel": "Repeats every",
 			"occurrences": "occurrences",
 			"for": "For",
-			"totalDeposits": "total deposits",
-			"totalWithdrawals": "total withdrawals",
-			"deleteTransaction": "Delete transaction"
+			"deleteTransaction": "Delete transaction",
+			"inflationAdjusted": "Adjust for inflation"
 		},
 		"help": {
 			"title": "Help",
@@ -427,8 +426,9 @@
 			"editTransaction": "Edit transaction",
 			"duplicateTransaction": "Duplicate transaction",
 			"deleteTransaction": "Delete transaction",
-			"totalDeposit": "Total deposits: {amount} {currency}",
-			"totalWithdrawal": "Total withdrawals: {amount} {currency}"
+			"totalDeposited": "Total deposited: {amount}",
+			"totalWithdrawn": "Total withdrawn: {amount}",
+			"inflationAdjustmentTooltip": "Adjust the transaction amount to preserve purchasing power over time."
 		},
 		"welcome": {
 			"startUsingKalkul": "Start using Kalkul"
@@ -462,7 +462,7 @@
 		},
 		"paymentAndBilling": "Payment & billing",
 		"notFound": "Not found",
-		"withoutInflation": "Without inflation",
+		"nominal": "Nominal",
 		"total": "Total",
 		"share": "Share",
 		"add": "Add",
@@ -583,7 +583,8 @@
 		"logo": "Logo",
 		"preview": "Preview",
 		"error": "Error",
-		"success": "Success"
+		"success": "Success",
+		"realValue": "Real value"
 	},
 	"error": {
 		"emailError": "This doesn't look like a correct email",

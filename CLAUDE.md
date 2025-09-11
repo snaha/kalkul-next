@@ -208,6 +208,7 @@ test('should handle text selection replacement', async ({ mount }) => {
 - Test UI interactions comprehensively (component tests)
 - Check TypeScript types before committing
 - Reference README.md for commands and setup
+- Run `pnpm test:unit --run` (non-watch mode) to validate changes without blocking the terminal
 
 ### Testing Commands
 

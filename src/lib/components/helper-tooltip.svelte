@@ -2,21 +2,40 @@
 	import { Information } from 'carbon-icons-svelte'
 	import Button from '$lib/components/ui/button.svelte'
 	import Tooltip from '$lib/components/ui/tooltip.svelte'
+	import type { Snippet } from 'svelte'
 
 	type Props = {
-		show: boolean
+		show?: boolean
 		helperText: string
+		size?: 16 | 20 | 24 | 32
+		position?: 'top' | 'bottom' | 'left' | 'right'
+		icon?: Snippet<[{ size: 16 | 20 | 24 | 32 }]>
 	}
 
-	let { show = $bindable(), helperText }: Props = $props()
+	let {
+		show = $bindable(false),
+		helperText,
+		size = 24,
+		position = 'bottom',
+		icon,
+	}: Props = $props()
 </script>
 
-<Tooltip {show} large position="bottom" {helperText}
+<Tooltip {show} large {position} {helperText}
 	><Button
 		dimension="compact"
 		variant="ghost"
-		onclick={() => (show = !show)}
+		onclick={(e: MouseEvent) => {
+			e.stopPropagation()
+			show = !show
+		}}
 		onmouseenter={() => (show = true)}
-		onmouseleave={() => (show = false)}><Information size={24} /></Button
-	></Tooltip
+		onmouseleave={() => (show = false)}
+	>
+		{#if icon}
+			{@render icon({ size })}
+		{:else}
+			<Information {size} />
+		{/if}
+	</Button></Tooltip
 >

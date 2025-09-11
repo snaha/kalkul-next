@@ -31,6 +31,11 @@ const HARDCODED_TEXT_PATTERNS = [
 		pattern: /(?<!\/\/\s*)(?<!\*\s+)(\p{Lu}\p{L}*(?:\s+\p{L}+)*)\s+<a/gu,
 		description: 'Text followed by links (like "Made with <a>")',
 	},
+	// Text inside Svelte if blocks or other template syntax
+	{
+		pattern: /\}([A-Z][a-zA-Z\s]+)(?:\{|\s*<)/gu,
+		description: 'Text content inside Svelte template blocks',
+	},
 ]
 
 // Text patterns to exclude (technical terms, single words, etc.)

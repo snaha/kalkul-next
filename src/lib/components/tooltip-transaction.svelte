@@ -74,9 +74,7 @@
 					>
 				</div>
 				<div class="total opacity">
-					<Typography class="color-light" variant="small"
-						>{$_('common.withoutInflation')}</Typography
-					>
+					<Typography class="color-light" variant="small">{$_('common.nominal')}</Typography>
 					<Typography variant="small" class="color-light"
 						>{formatCurrency(totalDeposits[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,
@@ -138,9 +136,7 @@
 					>
 				</div>
 				<div class="total opacity">
-					<Typography class="color-light" variant="small"
-						>{$_('common.withoutInflation')}</Typography
-					>
+					<Typography class="color-light" variant="small">{$_('common.nominal')}</Typography>
 					<Typography variant="small" class="color-light"
 						>{formatCurrency(totalWithdrawals[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,
@@ -178,9 +174,7 @@
 					>
 				</div>
 				<div class="total opacity">
-					<Typography class="color-light" variant="small"
-						>{$_('common.withoutInflation')}</Typography
-					>
+					<Typography class="color-light" variant="small">{$_('common.nominal')}</Typography>
 					<Typography variant="small" class="color-light"
 						>{formatCurrency(totalFees[tooltipData[0].dataIndex], currency, $locale, {
 							maximumFractionDigits: 0,

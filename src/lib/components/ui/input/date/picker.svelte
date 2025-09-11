@@ -3,7 +3,7 @@
 	import type { Dimension } from '../../button.svelte'
 	import Typography from '../../typography.svelte'
 	import Calendar from './calendar.svelte'
-	import { formatDate } from '$lib/utils'
+	import { formatDate } from '$lib/@snaha/kalkul-maths/date'
 
 	type Props = {
 		label?: string

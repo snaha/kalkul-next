@@ -50,7 +50,7 @@
 				>
 			</div>
 			<div class="total opacity">
-				<Typography class="color-light" variant="small">{$_('common.withoutInflation')}</Typography>
+				<Typography class="color-light" variant="small">{$_('common.nominal')}</Typography>
 				<Typography variant="small" class="color-light"
 					>{formatCurrency(totalValue[tooltipData[0].dataIndex], currency, $locale, {
 						maximumFractionDigits: 0,

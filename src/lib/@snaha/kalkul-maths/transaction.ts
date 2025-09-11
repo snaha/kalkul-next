@@ -1,18 +1,59 @@
 import type { Transaction } from './types'
-import {
-	differenceInDays,
-	differenceInMonths,
-	differenceInWeeks,
-	differenceInYears,
-} from 'date-fns'
+import { calculateInflationAdjustedAmount, calculateBothTerms } from './calculation-utils'
+import { formatDate, incrementDate, calculatePeriodDifference } from './date'
 
-export function calculateTotalAmount(transactions: Transaction[], type: string) {
+export function calculateTotalAmount(
+	transactions: Transaction[],
+	type: string,
+	inflationRate = 0,
+	portfolioStartDate?: string,
+) {
 	return transactions
 		.filter((transaction) => transaction.type === type)
 		.reduce((prev, transaction) => {
-			const periods = calculateNumOccurrences(transaction)
+			// If not inflation-adjusted or no portfolio context, use original calculation
+			if (!transaction.inflation_adjusted || !portfolioStartDate) {
+				const periods = calculateNumOccurrences(transaction)
+				return prev + transaction.amount * periods
+			}
 
-			return prev + transaction.amount * periods
+			// For inflation-adjusted transactions, calculate each occurrence
+			if (!transaction.repeat || !transaction.end_date) {
+				// Single transaction
+				const adjustedAmount = calculateInflationAdjustedAmount(
+					transaction.amount,
+					transaction.date,
+					portfolioStartDate,
+					inflationRate,
+				)
+				return prev + adjustedAmount
+			}
+
+			// Recurring transaction - calculate each occurrence with its own inflation adjustment
+			let totalForTransaction = 0
+			const startDate = new Date(transaction.date)
+			const endDate = new Date(transaction.end_date)
+
+			if (!transaction.repeat_unit || !transaction.repeat) {
+				return prev + transaction.amount
+			}
+
+			let currentDate = new Date(startDate)
+			while (currentDate <= endDate) {
+				const currentDateString = formatDate(currentDate)
+				const adjustedAmount = calculateInflationAdjustedAmount(
+					transaction.amount,
+					currentDateString,
+					portfolioStartDate,
+					inflationRate,
+				)
+				totalForTransaction += adjustedAmount
+
+				// Move to next occurrence
+				currentDate = incrementDate(currentDate, transaction.repeat_unit, transaction.repeat)
+			}
+
+			return prev + totalForTransaction
 		}, 0)
 }
 
@@ -30,16 +71,107 @@ export function calculateNumOccurrences({
 	const startDate = new Date(date)
 	const endDate = new Date(end_date)
 
-	switch (repeat_unit) {
-		case 'day':
-			return (differenceInDays(endDate, startDate) + 1) / repeat
-		case 'week':
-			return (differenceInWeeks(endDate, startDate) + 1) / repeat
-		case 'month':
-			return (differenceInMonths(endDate, startDate) + 1) / repeat
-		case 'year':
-			return (differenceInYears(endDate, startDate) + 1) / repeat
-		default:
-			throw new Error('invalidTransactionRepeatUnit')
-	}
+	return (calculatePeriodDifference(endDate, startDate, repeat_unit) + 1) / repeat
+}
+
+/**
+ * Calculate both inflation-adjusted and nominal total amounts in a single pass.
+ * This is the main function that should be used for performance-critical calculations.
+ *
+ * @param transactions Array of transactions to calculate
+ * @param type Transaction type to filter by
+ * @param inflationRate Annual inflation rate (e.g., 0.03 for 3%)
+ * @param portfolioStartDate Portfolio start date for inflation calculations
+ * @returns Object with { adjusted: inflation-adjusted total, nominal: nominal total }
+ */
+export function calculateTotalDisplayAmount(
+	transactions: Transaction[],
+	type: string,
+	inflationRate = 0,
+	portfolioStartDate?: string,
+): { adjusted: number; nominal: number } {
+	let adjustedTotal = 0
+	let nominalTotal = 0
+
+	transactions
+		.filter((transaction) => transaction.type === type)
+		.forEach((transaction) => {
+			// If no portfolio context, use original calculation
+			if (!portfolioStartDate) {
+				const periods = calculateNumOccurrences(transaction)
+				const amount = transaction.amount * periods
+				adjustedTotal += amount
+				nominalTotal += amount
+				return
+			}
+
+			// For all transactions, calculate each occurrence with display adjustments
+			if (!transaction.repeat || !transaction.end_date) {
+				// Single transaction - use optimized calculation
+				const adjustedAmount = transaction.inflation_adjusted
+					? calculateInflationAdjustedAmount(
+							transaction.amount,
+							transaction.date,
+							portfolioStartDate,
+							inflationRate,
+						)
+					: transaction.amount
+
+				// Calculate both terms in one operation for better performance
+				const { real, nominal } = calculateBothTerms(
+					adjustedAmount,
+					transaction.date,
+					portfolioStartDate,
+					inflationRate,
+				)
+
+				adjustedTotal += real
+				nominalTotal += nominal
+				return
+			}
+
+			// Recurring transaction - calculate each occurrence with its own inflation adjustment
+			let adjustedForTransaction = 0
+			let nominalForTransaction = 0
+			const startDate = new Date(transaction.date)
+			const endDate = new Date(transaction.end_date)
+
+			if (!transaction.repeat_unit || !transaction.repeat) {
+				adjustedTotal += transaction.amount
+				nominalTotal += transaction.amount
+				return
+			}
+
+			let currentDate = new Date(startDate)
+			while (currentDate <= endDate) {
+				const currentDateString = formatDate(currentDate)
+				const adjustedAmount = transaction.inflation_adjusted
+					? calculateInflationAdjustedAmount(
+							transaction.amount,
+							currentDateString,
+							portfolioStartDate,
+							inflationRate,
+						)
+					: transaction.amount
+
+				// Calculate both terms in one operation for better performance
+				const { real, nominal } = calculateBothTerms(
+					adjustedAmount,
+					currentDateString,
+					portfolioStartDate,
+					inflationRate,
+				)
+
+				adjustedForTransaction += real
+				nominalForTransaction += nominal
+
+				// Move to next occurrence
+				currentDate = incrementDate(currentDate, transaction.repeat_unit, transaction.repeat)
+			}
+
+			adjustedTotal += adjustedForTransaction
+			nominalTotal += nominalForTransaction
+		})
+
+	return { adjusted: adjustedTotal, nominal: nominalTotal }
 }

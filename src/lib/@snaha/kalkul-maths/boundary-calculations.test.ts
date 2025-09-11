@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getInvestmentValues } from './investment-calculations'
 import type { Investment } from '$lib/types'
+import { DAYS_PER_YEAR } from './constants'
 
 const DEFAULT_INVESTMENT: Investment = {
 	apy: 0,
@@ -20,7 +21,6 @@ const DEFAULT_INVESTMENT: Investment = {
 	ter: null,
 	type: '',
 }
-const NUM_DAYS_PER_YEAR = 365
 
 describe('Year boundary investment value calculation bug', () => {
 	it('should fix the year boundary issue - values should be recorded at calendar year ends', () => {
@@ -39,7 +39,7 @@ describe('Year boundary investment value calculation bug', () => {
 			yearlyPeriod,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		// After the fix, values should now be recorded at calendar year-ends:
@@ -66,7 +66,7 @@ describe('Year boundary investment value calculation bug', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		// A deposit on 2025-12-31 should be counted in 2025's value, not 2026's
@@ -74,8 +74,7 @@ describe('Year boundary investment value calculation bug', () => {
 		expect(investmentValues[2]).toEqual(depositValue) // Should remain 50000 for year 2026
 	})
 
-	it('should handle deposits made in the middle of investment period correctly with growth', () => {
-		// Test the exact scenario with APY to verify growth calculations
+	it('should handle deposits made mid-period with growth (precise values)', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const depositValue = 100000
 		const deposits = new Map<string, number>([['2025-05-14', depositValue]])
@@ -91,19 +90,14 @@ describe('Year boundary investment value calculation bug', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
-		// After fix, values are recorded at calendar year-ends:
 		// Index 0: 2024-12-31 - should be 0 (no deposits yet)
 		expect(investmentValues[0]).toEqual(0)
 
-		// Index 1: 2025-12-31 - should have deposit + growth from May 14 to Dec 31
-		// That's about 7.5 months of growth on 100k at 5% APY
-		expect(investmentValues[1]).toBeGreaterThan(100000) // Should be > 100000 due to growth
-
-		// Index 2: 2026-12-31 - should have full year of additional growth
-		expect(investmentValues[2]).toBeGreaterThan(investmentValues[1])
+		expect(investmentValues[1]).toBeCloseTo(103133.80364952929, 6)
+		expect(investmentValues[2]).toBeCloseTo(108286.87752622103, 6)
 	})
 })
 
@@ -122,7 +116,7 @@ describe('Monthly boundary investment value calculation', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		// After fix, values should be recorded at calendar month-ends:
@@ -153,7 +147,7 @@ describe('Monthly boundary investment value calculation', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		// Values recorded at end of each calendar month:
@@ -168,8 +162,8 @@ describe('Monthly boundary investment value calculation', () => {
 		expect(investmentValues[3]).toEqual(50000) // No change in Apr
 	})
 
-	it('should handle monthly periods with growth correctly', () => {
-		// Test monthly with APY to verify growth calculations
+	it('should handle monthly periods with growth (precise values)', () => {
+		// With positive APY, compute exact month-end values
 		const periodCount = { count: 1, period: 'month' as const }
 		const depositValue = 60000
 		const deposits = new Map<string, number>([['2025-02-15', depositValue]])
@@ -185,20 +179,15 @@ describe('Monthly boundary investment value calculation', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
-		// Values with growth:
-		// Index 0: 2025-01-31 (0 - no deposits yet)
-		// Index 1: 2025-02-28 (60k + ~2 weeks growth)
-		// Index 2: 2025-03-31 (previous + 1 month growth)
-		// Index 3: 2025-04-30 (previous + 1 month growth)
-		// Index 4: 2025-05-31 (previous + 1 month growth)
+		// Month-ends:
+		expect(investmentValues[0]).toEqual(0)
 
-		expect(investmentValues[0]).toEqual(0) // No deposits yet
-		expect(investmentValues[1]).toBeGreaterThan(depositValue) // Deposit + ~2 weeks growth
-		expect(investmentValues[2]).toBeGreaterThan(investmentValues[1]) // Additional month growth
-		expect(investmentValues[3]).toBeGreaterThan(investmentValues[2]) // Additional month growth
-		expect(investmentValues[4]).toBeGreaterThan(investmentValues[3]) // Additional month growth
+		expect(investmentValues[1]).toBeCloseTo(60242.50483874539, 6)
+		expect(investmentValues[2]).toBeCloseTo(60824.74836047031, 6)
+		expect(investmentValues[3]).toBeCloseTo(61393.56729377448, 6)
+		expect(investmentValues[4]).toBeCloseTo(61986.935828633155, 6)
 	})
 })

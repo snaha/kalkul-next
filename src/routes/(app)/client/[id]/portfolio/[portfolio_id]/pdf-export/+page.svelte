@@ -48,7 +48,7 @@
 
 	let adjustWithInflation = $state(false)
 	const { total, data } = $derived(
-		getGraphDataForPortfolio(transactionStore, investments, portfolio!),
+		getGraphDataForPortfolio(transactionStore.data, investments, portfolio!),
 	)
 
 	const lowColor = getCSSVariableValue('--colors-low')

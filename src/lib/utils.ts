@@ -5,16 +5,6 @@ export function capitalizeFirstLetter(s: string) {
 	return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-export function formatDate(date: Date): string {
-	// Extract year, month, and day components
-	const year = date.getFullYear().toFixed()
-	const month = (date.getMonth() + 1).toFixed().padStart(2, '0')
-	const day = date.getDate().toFixed().padStart(2, '0')
-
-	// Format the date components into "yyyy-MM-dd" format
-	return `${year}-${month}-${day}`
-}
-
 export function formatAge(birthDate: Date, currentDate = new Date()): string {
 	// Extract year, month, and day components
 	const birthYear = birthDate.getFullYear()

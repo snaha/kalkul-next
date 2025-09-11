@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { getCumulativeValues } from './graph-data'
+import { getCumulativeValues, getGraphData } from './graph-data'
+import { getBaseData } from './investment-calculations'
+import type { Investment, Portfolio } from '$lib/types'
 import type { GraphData } from './types'
 
 describe('getCumulativeValues', () => {
@@ -211,5 +213,218 @@ describe('getCumulativeValues', () => {
 			// Total: 75 + (-335) + (-540) = -800
 			expect(result.cumulativeInterest).toBe(-800)
 		})
+	})
+})
+
+describe('inflation-adjusted transactions on graph', () => {
+	const DEFAULT_INVESTMENT: Investment = {
+		apy: 0,
+		entry_fee: 0,
+		entry_fee_type: 'upfront',
+		exit_fee: 0,
+		exit_fee_type: 'upfront',
+		id: 1,
+		advanced_fees: false,
+		created_at: '2024-01-01',
+		last_edited_at: '2024-01-01',
+		management_fee: 0,
+		management_fee_type: 'upfront',
+		name: 'Test',
+		portfolio_id: 1,
+		success_fee: 0,
+		ter: null,
+		type: '',
+	}
+
+	const portfolio: Portfolio = {
+		client: 1,
+		created_at: '2024-01-01',
+		currency: 'USD',
+		end_date: '2030-12-31',
+		id: 1,
+		inflation_rate: 0.03,
+		last_edited_at: '2024-01-01',
+		link: null,
+		name: 'P',
+		start_date: '2024-01-01',
+	}
+
+	it('shows ~$24,000 real sum per year for $2k/mo withdrawals when showInflation=true', () => {
+		const transactions = [
+			// Seed portfolio with enough funds to realize withdrawals
+			{
+				amount: 100000,
+				date: '2024-01-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 0,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'deposit' as const,
+			},
+			{
+				amount: 2000,
+				date: '2024-01-01',
+				end_date: '2024-12-01',
+				repeat: 1,
+				repeat_unit: 'month' as const,
+				inflation_adjusted: true,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 1,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'withdrawal' as const,
+			},
+		]
+
+		const base = getBaseData(transactions, portfolio.inflation_rate, portfolio.start_date)
+		const graph = getGraphData(
+			{ ...base, startDate: new Date(portfolio.start_date), endDate: new Date(portfolio.end_date) },
+			DEFAULT_INVESTMENT,
+			portfolio,
+		)
+
+		// Yearly periods: first year's withdrawal sum should be ~ -24000, others ~0
+		const idx2024 = graph.graphLabels.findIndex((l) => l === '2024')
+		expect(idx2024).toBeGreaterThanOrEqual(0)
+		expect(graph.graphInflationWithdrawals[idx2024]).toBeCloseTo(-24000, 1)
+		const later = graph.graphInflationWithdrawals.slice(idx2024 + 1)
+		for (const v of later) expect(Math.abs(v)).toBeLessThan(1e-6)
+	})
+
+	it('should handle simple inflation-adjusted transactions with 10% inflation', () => {
+		const transactions = [
+			// Regular deposit (no inflation adjustment)
+			{
+				amount: 5000,
+				date: '2024-01-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 0,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'deposit' as const,
+			},
+			// Inflation-adjusted deposit 1 year later
+			{
+				amount: 1000,
+				date: '2025-01-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: true,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 1,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'deposit' as const,
+			},
+		]
+
+		const base = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
+
+		// Verify the base data calculations
+		expect(base.deposits.get('2024-01-01')).toBe(5000.0) // No adjustment
+		expect(base.deposits.get('2025-01-01')).toBeCloseTo(1100.22, 2) // compound calculation
+
+		const graph = getGraphData(
+			{ ...base, startDate: new Date('2024-01-01'), endDate: new Date('2026-12-31') },
+			DEFAULT_INVESTMENT,
+			portfolio,
+		)
+
+		// Verify graph has inflation data structures
+		expect(graph.graphInflationDeposits).toBeDefined()
+		expect(graph.graphInflationWithdrawals).toBeDefined()
+		expect(graph.graphInflationInvestmentValues).toBeDefined()
+		expect(graph.graphInflationFeeValues).toBeDefined()
+	})
+
+	it('should demonstrate inflation-adjusted vs nominal values in graph data', () => {
+		const transactions = [
+			{
+				amount: 5000,
+				date: '2024-01-01',
+				end_date: '2027-01-01',
+				repeat: 1,
+				repeat_unit: 'year' as const,
+				inflation_adjusted: true,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 0,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'deposit' as const,
+			},
+		]
+
+		const base = getBaseData(transactions, 0.04, '2024-01-01')
+		const graph = getGraphData(
+			{ ...base, startDate: new Date('2024-01-01'), endDate: new Date('2028-12-31') },
+			DEFAULT_INVESTMENT,
+			portfolio,
+		)
+
+		// Find first year index
+		const idx2024 = graph.graphLabels.findIndex((l) => l.includes('2024'))
+		expect(idx2024).toBeGreaterThanOrEqual(0)
+
+		// Should have both nominal and inflation-adjusted values
+		expect(graph.graphDeposits[idx2024]).toBeGreaterThan(0)
+		expect(graph.graphInflationDeposits[idx2024]).toBeGreaterThan(0)
+
+		// Graph should contain inflation-adjusted data structures
+		expect(graph.graphInflationDeposits).toBeDefined()
+		expect(graph.graphInflationWithdrawals).toBeDefined()
+		expect(graph.graphInflationInvestmentValues).toBeDefined()
+		expect(graph.graphInflationFeeValues).toBeDefined()
+	})
+
+	it('should handle yearly deposits with 20% inflation', () => {
+		const transactions = [
+			{
+				amount: 1000,
+				date: '2024-01-01',
+				end_date: '2026-01-01', // 3 yearly deposits
+				repeat: 1,
+				repeat_unit: 'year' as const,
+				inflation_adjusted: true,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 0,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'deposit' as const,
+			},
+		]
+
+		const base = getBaseData(transactions, 0.2, '2024-01-01') // 20% inflation
+
+		// Verify the base data calculations
+		expect(base.deposits.get('2024-01-01')).toBe(1000.0) // Year 1: 1000
+		expect(base.deposits.get('2025-01-01')).toBeCloseTo(1200.45, 2) // Year 2: compound calculation
+		expect(base.deposits.get('2026-01-01')).toBeCloseTo(1440.36, 2) // Year 3: compound calculation
+
+		const graph = getGraphData(
+			{ ...base, startDate: new Date('2024-01-01'), endDate: new Date('2027-12-31') },
+			DEFAULT_INVESTMENT,
+			{ ...portfolio, inflation_rate: 0.2 },
+		)
+
+		// Verify graph structures exist and have data
+		expect(graph.graphInflationDeposits).toBeDefined()
+		expect(graph.graphDeposits).toBeDefined()
+		expect(graph.graphInflationDeposits.length).toBeGreaterThan(0)
+		expect(graph.graphDeposits.length).toBeGreaterThan(0)
 	})
 })

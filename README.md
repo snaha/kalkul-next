@@ -42,12 +42,51 @@ pnpm test:integration # Run e2e tests (Playwright)
 
 ## Database Commands
 
+### Local Development
+
 ```bash
-pnpm supabase start/stop/status        # Manage local Supabase
-pnpm supabase db reset                 # Reset database with migrations
-pnpm supabase migration new <name>     # Create new migration
-pnpm supabase gen types --lang=typescript --local > src/lib/typesdb.ts  # Generate types
+pnpm supabase start           # Start local Supabase instance
+pnpm supabase stop            # Stop local Supabase instance
+pnpm supabase status          # Check Supabase service status
 ```
+
+### Database Management
+
+```bash
+pnpm supabase db reset        # Reset database and apply all migrations
+pnpm supabase db push         # Push local schema changes to database
+pnpm supabase db diff         # Show differences between migrations and database
+```
+
+### Migrations
+
+```bash
+pnpm supabase migration new <name>     # Create new migration file
+pnpm supabase migration list            # List all migrations
+pnpm supabase migration up              # Apply pending migrations
+```
+
+### Type Generation
+
+Generate TypeScript types after schema changes:
+
+```bash
+# Generate types from local database (recommended)
+supabase gen types --lang=typescript --local > src/lib/typesdb.ts
+
+# Alternative: Generate from project ID
+supabase gen types --lang=typescript --project-id=<project-id> > src/lib/typesdb.ts
+```
+
+**Workflow for schema changes:**
+
+1. Create migration: `pnpm supabase migration new <descriptive-name>`
+2. Edit migration file in `supabase/migrations/`
+3. Apply migrations: `pnpm supabase db reset`
+4. Generate types: `supabase gen types --lang=typescript --local > src/lib/typesdb.ts`
+5. Verify types compile: `pnpm check`
+
+> **⚠️ Important**: Use `supabase` directly (not `pnpm supabase`) for type generation. The pnpm wrapper can mix command output with the generated TypeScript, corrupting the file.
 
 ## Project Structure
 

@@ -9,6 +9,7 @@ export type Transaction = {
 	end_date?: string | null
 	amount: number
 	type: TransactionType
+	inflation_adjusted?: boolean
 }
 
 export interface InvestmentData {

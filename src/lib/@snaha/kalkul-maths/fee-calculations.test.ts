@@ -6,6 +6,7 @@ import {
 	calculateDailyFees,
 } from './fee-calculations'
 import type { Investment } from '$lib/types'
+import { DAYS_PER_YEAR } from './constants'
 
 const DEFAULT_INVESTMENT: Investment = {
 	apy: 0,
@@ -25,7 +26,6 @@ const DEFAULT_INVESTMENT: Investment = {
 	ter: null,
 	type: '',
 }
-const NUM_DAYS_PER_YEAR = 365
 
 describe('#calculateEntryFee', () => {
 	it('should calculate ongoing fee as amount * fee', () => {
@@ -79,11 +79,11 @@ describe('#calculateDailyManagementFees', () => {
 
 		const { dailyFee: dailyManagementFee, dailyFeeMultiplier } = calculateDailyManagementFees(
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(dailyFeeMultiplier.toNumber()).toEqual(1)
-		expect(dailyManagementFee.mul(NUM_DAYS_PER_YEAR).toNumber()).toEqual(managementFee)
+		expect(dailyManagementFee.mul(DAYS_PER_YEAR).toNumber()).toEqual(managementFee)
 	})
 
 	it('should calculate percentage daily fee', () => {
@@ -96,11 +96,11 @@ describe('#calculateDailyManagementFees', () => {
 
 		const { dailyFee: dailyManagementFee, dailyFeeMultiplier } = calculateDailyManagementFees(
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(dailyManagementFee.toNumber()).toEqual(0)
-		expect(dailyFeeMultiplier.toNumber()).toEqual(0.9997113827109777)
+		expect(dailyFeeMultiplier.toNumber()).toEqual(0.9997115802302546)
 	})
 })
 
@@ -110,10 +110,10 @@ describe('#calculateDailyFees', () => {
 		const { dailyFee: dailyManagementFee, dailyFeeMultiplier } = calculateDailyFees(
 			terFee,
 			'percentage',
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(dailyManagementFee.toNumber()).toEqual(0)
-		expect(dailyFeeMultiplier.toNumber()).toEqual(0.9997113827109777)
+		expect(dailyFeeMultiplier.toNumber()).toEqual(0.9997115802302546)
 	})
 })

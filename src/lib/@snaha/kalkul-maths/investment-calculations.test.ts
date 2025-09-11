@@ -3,9 +3,11 @@ import {
 	getInvestmentValues,
 	getCurrentInvestmentValue,
 	getCurrentPortfolioValue,
+	getBaseData,
 } from './investment-calculations'
 import type { Investment } from '$lib/types'
 import type { Transaction } from './types'
+import { DAYS_PER_YEAR } from './constants'
 
 const DEFAULT_INVESTMENT: Investment = {
 	apy: 0,
@@ -25,7 +27,6 @@ const DEFAULT_INVESTMENT: Investment = {
 	ter: null,
 	type: '',
 }
-const NUM_DAYS_PER_YEAR = 365
 
 describe('#getInvestmentValues', () => {
 	it('should calculate default investment', () => {
@@ -40,7 +41,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -67,7 +68,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -92,7 +93,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -118,7 +119,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -144,7 +145,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -169,7 +170,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -194,7 +195,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -219,7 +220,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -242,7 +243,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBe(0)
@@ -267,7 +268,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBeGreaterThan(0)
@@ -291,7 +292,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBeGreaterThan(0)
@@ -319,7 +320,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBeGreaterThan(0)
@@ -347,7 +348,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBeGreaterThan(0)
@@ -376,7 +377,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBeGreaterThan(0)
@@ -400,7 +401,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toBeGreaterThan(0)
@@ -429,7 +430,7 @@ describe('#getInvestmentValues', () => {
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
-			NUM_DAYS_PER_YEAR,
+			DAYS_PER_YEAR,
 		)
 
 		expect(errors.length).toEqual(2)
@@ -871,5 +872,396 @@ describe('#getCurrentPortfolioValue', () => {
 
 		expect(typeof value).toBe('number')
 		expect(value).toBeGreaterThanOrEqual(0)
+	})
+})
+
+describe('#auto-inflation integration tests', () => {
+	const createMockTransactionStore = (transactionMap: Map<number, Transaction[]>) => ({
+		filter: (investmentId: number) => transactionMap.get(investmentId) || [],
+	})
+
+	it('should calculate investment value with auto-inflated deposits', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2024-01-01',
+				inflation_adjusted: false,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01',
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.03, '2024-01-01')
+
+		// First deposit should remain 1000
+		expect(baseData.deposits.get('2024-01-01')).toBe(1000)
+
+		// Second deposit should be inflation-adjusted (~1030)
+		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(1030, 0)
+
+		// Investment calculation should work with these inflated amounts
+		const investment = { ...DEFAULT_INVESTMENT, apy: 5 }
+		const currentValue = getCurrentInvestmentValue(baseData, investment, new Date('2025-12-31'))
+
+		// Should reflect both deposits: 1000 invested for 2 years + 1030 for 1 year, all with 5% APY
+		expect(currentValue).toBeGreaterThan(2100) // Sanity check
+	})
+
+	it('should handle recurring auto-inflated transactions', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 100,
+				date: '2024-01-01',
+				inflation_adjusted: true,
+				repeat: 1,
+				repeat_unit: 'year',
+				end_date: '2026-01-01',
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.03, '2024-01-01')
+
+		// Check that each occurrence is properly inflation-adjusted
+		expect(baseData.deposits.get('2024-01-01')).toBe(100) // Base amount
+		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(103, 0) // 3% inflation
+		expect(baseData.deposits.get('2026-01-01')).toBeCloseTo(106, 0) // 6% inflation over 2 years
+	})
+
+	it('should handle portfolio-level calculations with mixed auto-inflation', () => {
+		const transactions1: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2024-01-01',
+				inflation_adjusted: false,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const transactions2: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2024-01-01',
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const transactionStore = createMockTransactionStore(
+			new Map([
+				[1, transactions1],
+				[2, transactions2],
+			]),
+		)
+
+		const investments = [
+			{ ...DEFAULT_INVESTMENT, id: 1, apy: 5 },
+			{ ...DEFAULT_INVESTMENT, id: 2, apy: 5 },
+		]
+
+		// Calculate value 1 year after portfolio start
+		const portfolioValue = getCurrentPortfolioValue(
+			transactionStore,
+			investments,
+			new Date('2025-01-01'),
+			0.03,
+			'2024-01-01',
+		)
+
+		// Investment 1: 1000 * 1.05 = 1050 (no inflation adjustment on deposit)
+		// Investment 2: 1000 * 1.05 = 1050 (deposit amount stays same since investment date = portfolio start)
+		// Total should be approximately 2100
+		expect(portfolioValue).toBeCloseTo(2100, 0)
+	})
+})
+
+describe('#comprehensive inflation-adjusted transaction tests', () => {
+	const createMockTransactionStore = (transactionMap: Map<number, Transaction[]>) => ({
+		filter: (investmentId: number) => transactionMap.get(investmentId) || [],
+	})
+
+	it('should handle simple inflation-adjusted monthly withdrawals with 2% inflation', () => {
+		const transactions: Transaction[] = [
+			// Initial seed deposit
+			{
+				type: 'deposit',
+				amount: 12000,
+				date: '2024-01-01',
+				inflation_adjusted: false,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+			// Inflation-adjusted monthly withdrawals of $1000
+			{
+				type: 'withdrawal',
+				amount: 1000,
+				date: '2024-01-01',
+				inflation_adjusted: true,
+				repeat: 1,
+				repeat_unit: 'month',
+				end_date: '2024-03-01', // Just 3 months for simplicity
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.02, '2024-01-01') // 2% annual inflation
+
+		// Verify initial deposit
+		expect(baseData.deposits.get('2024-01-01')).toBe(12000.0)
+
+		// Verify monthly withdrawals are inflation-adjusted
+		// January (base): 1000.00
+		expect(baseData.withdrawals.get('2024-01-01')).toBe(1000.0)
+
+		// February (1 month later): compound interest calculation
+		expect(baseData.withdrawals.get('2024-02-01')).toBeCloseTo(1001.68, 2)
+
+		// March (2 months later): compound interest calculation
+		expect(baseData.withdrawals.get('2024-03-01')).toBeCloseTo(1003.26, 2)
+
+		// Test investment value calculation with these withdrawals
+		const investment = { ...DEFAULT_INVESTMENT, apy: 10 } // 10% APY for easy calculation
+		const finalValue = getCurrentInvestmentValue(baseData, investment, new Date('2024-12-31'))
+
+		// Started with 12000, withdrew ~3005, with 10% growth over 1 year
+		// Compound calculation result
+		expect(finalValue).toBeCloseTo(9919.94, 2)
+	})
+
+	it('should correctly handle zero inflation rate on inflation-adjusted transactions', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01',
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0, '2024-01-01') // Zero inflation
+
+		// With zero inflation, even inflation-adjusted amounts should remain unchanged
+		expect(baseData.deposits.get('2025-01-01')).toBe(1000)
+	})
+
+	it('should handle 2% deflation correctly', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01', // 1 year after portfolio start
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, -0.02, '2024-01-01') // -2% deflation
+
+		// With 2% deflation over 1 year: compound calculation
+		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(979.96, 2)
+	})
+
+	it('should handle mixed adjusted and non-adjusted transactions with 12% inflation', () => {
+		const transactions: Transaction[] = [
+			// Non-inflation adjusted deposit
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01',
+				inflation_adjusted: false,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+			// Inflation adjusted deposit (same date for easy comparison)
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01',
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.12, '2024-01-01') // 12% inflation
+
+		// Non-adjusted should remain 1000.00
+		// Adjusted should be compound calculation ~1120.26
+		// Total deposits for the date should be ~2120.26
+		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(2120.26, 2)
+	})
+
+	it('should handle 10% inflation over 2 years', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2026-01-01', // 2 years after portfolio start
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
+
+		// After 2 years of 10% inflation: compound calculation
+		expect(baseData.deposits.get('2026-01-01')).toBeCloseTo(1210.16, 2)
+	})
+
+	it('should handle 10-year inflation-adjusted transaction with 2% inflation', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'withdrawal',
+				amount: 10000,
+				date: '2034-01-01', // 10 years after portfolio start
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.02, '2024-01-01') // 2% inflation
+
+		// After 10 years of 2% inflation: compound calculation
+		expect(baseData.withdrawals.get('2034-01-01')).toBeCloseTo(12190.27, 2)
+	})
+
+	it('should handle portfolio-level calculation with simple 10% APY and 5% inflation', () => {
+		const transactions1: Transaction[] = [
+			// Investment 1: Regular deposit - no inflation adjustment
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2024-01-01',
+				inflation_adjusted: false,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const transactions2: Transaction[] = [
+			// Investment 2: Inflation-adjusted deposit
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01', // 1 year later
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const transactionStore = createMockTransactionStore(
+			new Map([
+				[1, transactions1],
+				[2, transactions2],
+			]),
+		)
+
+		const investments = [
+			{ ...DEFAULT_INVESTMENT, id: 1, apy: 10 },
+			{ ...DEFAULT_INVESTMENT, id: 2, apy: 10 },
+		]
+
+		// Calculate value after 2 years
+		const portfolioValue = getCurrentPortfolioValue(
+			transactionStore,
+			investments,
+			new Date('2026-01-01'),
+			0.05, // 5% inflation
+			'2024-01-01',
+		)
+
+		// Investment 1: compound calculation ~1210.00
+		// Investment 2: compound calculation ~1155.20
+		// Total: ~2365.20
+		expect(portfolioValue).toBeCloseTo(2365.2, 2)
+	})
+
+	it('should handle same date multiple inflation-adjusted transactions with 10% inflation', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2025-01-01', // 1 year after portfolio start
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+			{
+				type: 'withdrawal',
+				amount: 500,
+				date: '2025-01-01', // Same date
+				inflation_adjusted: true,
+				repeat: null,
+				repeat_unit: null,
+				end_date: null,
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
+
+		// Both transactions should be inflated by 10% over 1 year
+		// 1000 * compound = ~1100.22, 500 * compound = ~550.11
+		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(1100.22, 2)
+		expect(baseData.withdrawals.get('2025-01-01')).toBeCloseTo(550.11, 2)
+	})
+
+	it('should handle yearly recurring deposits with 10% inflation', () => {
+		const transactions: Transaction[] = [
+			{
+				type: 'deposit',
+				amount: 1000,
+				date: '2024-01-01',
+				inflation_adjusted: true,
+				repeat: 1, // Every year
+				repeat_unit: 'year',
+				end_date: '2027-01-01', // 4 deposits total
+			},
+		]
+
+		const baseData = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
+
+		// Year 1 - base amount
+		expect(baseData.deposits.get('2024-01-01')).toBe(1000.0)
+
+		// Year 2 - compound calculation ~1100.22
+		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(1100.22, 2)
+
+		// Year 3 - compound calculation ~1210.16
+		expect(baseData.deposits.get('2026-01-01')).toBeCloseTo(1210.16, 2)
+
+		// Year 4 - compound calculation
+		expect(baseData.deposits.get('2027-01-01')).toBeCloseTo(1331.09, 2)
 	})
 })

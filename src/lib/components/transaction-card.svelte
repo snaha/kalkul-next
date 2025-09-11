@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Transaction } from '$lib/types'
+	import type { Transaction, Portfolio } from '$lib/types'
 	import {
 		ChevronRight,
 		Edit,
@@ -16,7 +16,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
 	import {
-		calculateTotalAmount,
+		calculateTotalDisplayAmount,
 		calculateNumOccurrences,
 		type Period,
 	} from '$lib/@snaha/kalkul-maths'
@@ -24,21 +24,39 @@
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
 	import { notImplemented } from '$lib/not-implemented'
+	import InflationBadge from './inflation-badge.svelte'
 
 	type Props = {
 		transaction: Transaction
+		portfolio: Portfolio
 		currency: string
 		viewOnly: boolean
+		showInflation?: boolean
 		editTransaction?: (transaction: Transaction) => void
 	}
 
-	let { transaction, currency, viewOnly, editTransaction }: Props = $props()
+	let {
+		transaction,
+		portfolio,
+		currency,
+		viewOnly,
+		showInflation = false,
+		editTransaction,
+	}: Props = $props()
 
 	let openTransaction = $state(false)
 
 	const numOccurrences = $derived(calculateNumOccurrences(transaction))
 
-	const totalAmount = $derived(calculateTotalAmount([transaction], transaction.type))
+	const totalAmounts = $derived(
+		calculateTotalDisplayAmount(
+			[transaction],
+			transaction.type,
+			portfolio.inflation_rate,
+			portfolio.start_date,
+		),
+	)
+	const totalAmount = $derived(showInflation ? totalAmounts.adjusted : totalAmounts.nominal)
 	async function deleteTransaction(e: Event) {
 		e.stopPropagation()
 
@@ -100,7 +118,12 @@
 				{formatCurrency(transaction.amount, currency, $locale)}
 			{/if}
 		</Typography>
+		{#if transaction.inflation_adjusted && !openTransaction}
+			<InflationBadge />
+		{/if}
+
 		<FlexItem />
+		<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
 		<div class="control-buttons">
 			<Button
 				variant="solid"
@@ -137,9 +160,12 @@
 				</div>
 			{/if}
 		</div>
-		<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
 	</Horizontal>
 	<section class="transaction-info" class:modalShow={!openTransaction}>
+		{#if transaction.inflation_adjusted}
+			<InflationBadge>{$_('common.inflationAdjusted')}</InflationBadge>
+		{/if}
+
 		<Typography variant="small"
 			>{transaction.date.substring(
 				0,
@@ -151,13 +177,30 @@
 				>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography
 			>
 		{/if}
-		<Typography variant="small"
-			>{transaction.type === 'deposit'
-				? $_('component.viewHeader.totalDeposit', { values: { amount: totalAmount, currency } })
-				: $_('component.viewHeader.totalWithdrawal', {
-						values: { amount: totalAmount, currency },
-					})}</Typography
-		>
+		{#if showInflation}
+			<Typography variant="small" class="total-amount">
+				{transaction.type === 'deposit'
+					? $_('component.viewHeader.totalDeposited', {
+							values: { amount: formatCurrency(totalAmounts.nominal, currency, $locale) },
+						})
+					: $_('component.viewHeader.totalWithdrawn', {
+							values: { amount: formatCurrency(totalAmounts.nominal, currency, $locale) },
+						})}
+			</Typography>
+			<Typography variant="small" class="total-amount real">
+				{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+			</Typography>
+		{:else}
+			<Typography variant="small"
+				>{transaction.type === 'deposit'
+					? $_('component.viewHeader.totalDeposited', {
+							values: { amount: formatCurrency(totalAmount, currency, $locale) },
+						})
+					: $_('component.viewHeader.totalWithdrawn', {
+							values: { amount: formatCurrency(totalAmount, currency, $locale) },
+						})}</Typography
+			>
+		{/if}
 	</section>
 </div>
 
@@ -175,12 +218,19 @@
 			transform: rotate(0deg);
 			transition: transform 0.2s ease-out;
 		}
+		:global(.transaction-label) {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			visibility: visible;
+		}
 		&:hover {
 			background-color: var(--colors-ultra-low);
 			transition: background-color 0.2s ease-out;
 			.control-buttons {
+				display: flex;
 				opacity: 1;
-				content-visibility: visible;
+				visibility: visible;
 				animation: fadeInFromNone 0.2s ease-in;
 			}
 			:global(.transaction-label) {
@@ -200,7 +250,7 @@
 		}
 	}
 	:global(.transaction) {
-		overflow-wrap: anywhere;
+		white-space: nowrap;
 	}
 	:global(.deposit) {
 		color: var(--colors-high) !important;
@@ -218,11 +268,15 @@
 		display: flex;
 		gap: var(--quarter-padding);
 		opacity: var(--card-control-opacity);
-		content-visibility: hidden;
+		display: none;
+		position: relative;
+		right: 0;
 	}
 	.transaction-info {
 		display: flex;
 		flex-direction: column;
+		align-items: start;
+		gap: var(--quarter-padding);
 		padding-left: 42px;
 		&.modalShow {
 			display: none;
@@ -235,5 +289,12 @@
 		100% {
 			opacity: 1;
 		}
+	}
+	:global(.total-amount) {
+		color: var(--colors-high);
+	}
+	:global(.real) {
+		color: var(--colors-ultra-high);
+		opacity: 0.5;
 	}
 </style>

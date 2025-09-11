@@ -114,6 +114,7 @@
 								index={i}
 								hidden={investmentsViewStore.isHidden(investment.id)}
 								focused={investmentsViewStore.isFocused(investment.id)}
+								showInflation={adjustWithInflation}
 								toggleHide={() => {
 									investmentsViewStore.toggleHide(investment.id)
 								}}
@@ -190,6 +191,7 @@
 							index={i}
 							hidden={investmentsViewStore.isHidden(investment.id)}
 							focused={investmentsViewStore.isFocused(investment.id)}
+							showInflation={adjustWithInflation}
 							toggleHide={() => {
 								investmentsViewStore.toggleHide(investment.id)
 							}}

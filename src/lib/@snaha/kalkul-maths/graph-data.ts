@@ -1,17 +1,15 @@
 import Decimal from 'decimal.js'
-import { type Investment, type Portfolio } from '$lib/types'
+import { type Investment, type Portfolio, type Transaction } from '$lib/types'
 import {
 	type PortfolioPeriodCount,
 	type PortfolioPeriod,
 	type GraphData,
-	type Period,
 	type InvestmentData,
 } from './types'
-import { differenceInYears } from 'date-fns'
-import type { TransactionStore } from '$lib/stores/transaction.svelte'
+import { differenceInDays, differenceInYears } from 'date-fns'
 import { getInvestmentValues, getBaseData } from './investment-calculations'
 import type { FeeBreakdown } from './investment-calculations'
-import { DECIMAL_1, DAYS_PER_YEAR, DAYS_PER_WEEK, MONTHS_PER_YEAR } from './constants'
+import { DECIMAL_1, DAYS_PER_YEAR, MONTHS_PER_YEAR } from './constants'
 
 Decimal.set({ precision: 30 })
 
@@ -79,22 +77,89 @@ export function getGraphData(
 
 	const graphFeeValues = fees.map((fee) => -getTotalFeeValue(fee))
 
-	const inflationPerPeriod = getRateAdjustment(portfolio.inflation_rate, period, count)
+	// Build record dates aligned with getInvestmentValues snapshots (calendar period ends)
+	const recordDates: Date[] = []
+	if (period === 'year') {
+		let rd = new Date(startDate.getFullYear(), MONTHS_PER_YEAR - 1, 31)
+		while (rd <= endDate) {
+			recordDates.push(rd)
+			const nextYear = rd.getFullYear() + count
+			rd = new Date(nextYear, MONTHS_PER_YEAR - 1, 31)
+		}
+	} else {
+		// month
+		let rd = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0)
+		while (rd <= endDate) {
+			recordDates.push(rd)
+			let nextMonth = rd.getMonth() + count
+			let nextYear = rd.getFullYear()
+			while (nextMonth > 11) {
+				nextYear += 1
+				nextMonth -= MONTHS_PER_YEAR
+			}
+			rd = new Date(nextYear, nextMonth + 1, 0)
+		}
+	}
+	const baseDate = new Date(portfolio.start_date)
 
+	// Pre-calculate both nominal and real terms in single pass for optimal performance
 	const graphInflationDeposits: number[] = []
 	const graphInflationWithdrawals: number[] = []
 	const graphInflationInvestmentValues: number[] = []
 	const graphInflationFeeValues: number[] = []
 
-	for (let i = 0; i < graphLabels.length; i++) {
-		const inflation = inflationPerPeriod.pow(i)
+	const depositEntries = Array.from(deposits.entries())
+	const withdrawalEntries = Array.from(withdrawals.entries())
 
-		graphInflationDeposits.push(new Decimal(graphDeposits[i] ?? 0).div(inflation).toNumber())
-		graphInflationWithdrawals.push(new Decimal(graphWithdrawals[i] ?? 0).div(inflation).toNumber())
+	for (let i = 0; i < graphLabels.length; i++) {
+		const rd = recordDates[i] ?? endDate
+		const years = differenceInDays(rd, baseDate) / DAYS_PER_YEAR
+		const inflationAtRecord = DECIMAL_1.add(portfolio.inflation_rate).pow(years)
+
+		// Calculate period boundaries for deposits/withdrawals
+		let periodStart: Date
+		let periodEnd: Date
+		if (period === 'year') {
+			periodStart = new Date(rd.getFullYear(), 0, 1)
+			periodEnd = new Date(rd.getFullYear(), MONTHS_PER_YEAR - 1, 31)
+		} else {
+			periodStart = new Date(rd.getFullYear(), rd.getMonth(), 1)
+			periodEnd = new Date(rd.getFullYear(), rd.getMonth() + 1, 0)
+		}
+
+		// Process deposits for this period (real terms)
+		let depSum = 0
+		for (const [date, amount] of depositEntries) {
+			const d = new Date(date)
+			if (d >= periodStart && d <= periodEnd) {
+				const yearsAtEvent = differenceInDays(d, baseDate) / DAYS_PER_YEAR
+				const inflationAtEvent = DECIMAL_1.add(portfolio.inflation_rate).pow(yearsAtEvent)
+				depSum += new Decimal(amount).div(inflationAtEvent).toNumber()
+			}
+		}
+
+		// Process withdrawals for this period (real terms)
+		let wdSum = 0
+		for (const [date, amount] of withdrawalEntries) {
+			const d = new Date(date)
+			if (d >= periodStart && d <= periodEnd) {
+				const yearsAtEvent = differenceInDays(d, baseDate) / DAYS_PER_YEAR
+				const inflationAtEvent = DECIMAL_1.add(portfolio.inflation_rate).pow(yearsAtEvent)
+				wdSum += new Decimal(amount).div(inflationAtEvent).toNumber()
+			}
+		}
+
+		// Store both nominal and inflation-adjusted values
+		graphInflationDeposits.push(depSum)
+		graphInflationWithdrawals.push(-wdSum) // Graph withdrawals are negative by convention
+
+		// Investment value and fees: deflate at the snapshot date
 		graphInflationInvestmentValues.push(
-			new Decimal(graphInvestmentValues[i] ?? 0).div(inflation).toNumber(),
+			new Decimal(graphInvestmentValues[i] ?? 0).div(inflationAtRecord).toNumber(),
 		)
-		graphInflationFeeValues.push(new Decimal(graphFeeValues[i] ?? 0).div(inflation).toNumber())
+		graphInflationFeeValues.push(
+			new Decimal(graphFeeValues[i] ?? 0).div(inflationAtRecord).toNumber(),
+		)
 	}
 
 	return {
@@ -111,24 +176,7 @@ export function getGraphData(
 	}
 }
 
-export function getRateAdjustment(rate: number, period: Period, count: number): Decimal {
-	switch (period) {
-		case 'day':
-			return DECIMAL_1.add(rate)
-				.pow(1 / DAYS_PER_YEAR)
-				.pow(count)
-		case 'week':
-			return DECIMAL_1.add(rate)
-				.pow(1 / DAYS_PER_YEAR)
-				.pow(count * DAYS_PER_WEEK)
-		case 'month':
-			return DECIMAL_1.add(rate)
-				.pow(1 / MONTHS_PER_YEAR)
-				.pow(count)
-		case 'year':
-			return DECIMAL_1.add(rate).pow(count)
-	}
-}
+// (removed) getRateAdjustment: superseded by day-accurate deflation logic
 
 function getCumulativeSum(array: number[], index: number): number {
 	return array.slice(0, index + 1).reduce((acc, val) => acc + val, 0)
@@ -181,17 +229,63 @@ export function getCumulativeValues(
 	}
 }
 
+// Simple hash function for cache keys
+function createHash(data: unknown): string {
+	const dataToHash = JSON.stringify(data)
+
+	// Simple string hash function - more reliable than btoa for large data
+	let hash = 0
+	for (let i = 0; i < dataToHash.length; i++) {
+		const char = dataToHash.charCodeAt(i)
+		hash = (hash << 5) - hash + char
+		hash = hash & hash // Convert to 32-bit integer
+	}
+
+	return Math.abs(hash).toString(36)
+}
+
+// Cache for computed graph data to avoid recalculation on inflation toggle
+const portfolioDataCache = new Map<
+	string,
+	{ data: GraphData[]; total: GraphData; timestamp: number }
+>()
+
+function getPortfolioCacheKey(
+	transactions: Transaction[],
+	investments: Investment[],
+	portfolio: Portfolio,
+): string {
+	// Hash the complete data structures - any new field will automatically invalidate cache
+	return createHash({
+		transactions: transactions,
+		investments: investments,
+		portfolio: portfolio,
+	})
+}
+
 export function getGraphDataForPortfolio(
-	transactionStore: TransactionStore,
+	transactions: Transaction[],
 	investments: Investment[],
 	portfolio: Portfolio,
 ): {
 	total: GraphData
 	data: GraphData[]
 } {
+	const cacheKey = getPortfolioCacheKey(transactions, investments, portfolio)
+	const now = Date.now()
+
+	// Check cache and return if valid (cache for 5 minutes)
+	const cached = portfolioDataCache.get(cacheKey)
+	if (cached && now - cached.timestamp < 5 * 60 * 1000) {
+		return { data: cached.data, total: cached.total }
+	}
+
 	const baseData = investments.map((i) => {
-		const transactions = transactionStore.filter(i.id)
-		return { baseData: getBaseData(transactions), investment: i }
+		const filteredTransactions = transactions.filter((t) => t.investment_id === i.id)
+		return {
+			baseData: getBaseData(filteredTransactions, portfolio.inflation_rate, portfolio.start_date),
+			investment: i,
+		}
 	})
 
 	const { startDate, endDate } = baseData.reduce(
@@ -205,6 +299,8 @@ export function getGraphDataForPortfolio(
 		},
 	)
 
+	// Always calculate both variants - showInflation parameter is now ignored here
+	// The UI will choose which arrays to display
 	const data = baseData.map((d) =>
 		getGraphData({ ...d.baseData, startDate, endDate }, d.investment, portfolio),
 	)
@@ -236,6 +332,9 @@ export function getGraphDataForPortfolio(
 			total.graphInflationFeeValues[j] += data[i].graphInflationFeeValues[j]
 		}
 	}
+
+	// Cache the result
+	portfolioDataCache.set(cacheKey, { data, total, timestamp: now })
 
 	return { data, total }
 }

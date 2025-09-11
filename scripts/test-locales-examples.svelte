@@ -54,6 +54,11 @@
 <!-- 9. Copyright text -->
 <footer>© 2025 Company Name</footer>
 
+<!-- 10. Text inside Svelte if blocks (like inflation-badge.svelte) -->
+<Badge
+	><Growth size={16} />{#if showText}Inflation adjusted{/if}</Badge
+>
+
 <!-- Examples that should NOT be caught -->
 
 <!-- Single words without context -->

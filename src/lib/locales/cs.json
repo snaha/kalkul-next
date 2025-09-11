@@ -353,9 +353,8 @@
 			"repeatLabel": "Opakuje se každých",
 			"occurrences": "opakování",
 			"for": "Po dobu",
-			"totalDeposits": "celkem vkladů",
-			"totalWithdrawals": "celkem výběrů",
-			"deleteTransaction": "Smazat transakci"
+			"deleteTransaction": "Smazat transakci",
+			"inflationAdjusted": "Upravit podle inflace"
 		},
 		"help": {
 			"title": "Nápověda",
@@ -427,8 +426,9 @@
 			"editTransaction": "Upravit transakci",
 			"duplicateTransaction": "Duplikovat transakci",
 			"deleteTransaction": "Smazat transakci",
-			"totalDeposit": "Celkem vkladů: {amount} {currency}",
-			"totalWithdrawal": "Celkem výběrů: {amount} {currency}"
+			"totalDeposited": "Celkem vloženo: {amount}",
+			"totalWithdrawn": "Celkem vybráno: {amount}",
+			"inflationAdjustmentTooltip": "Upravte částku transakce tak, aby se zachovala kupní síla v čase."
 		},
 		"welcome": {
 			"startUsingKalkul": "Začít používat Kalkul"
@@ -462,7 +462,7 @@
 		},
 		"paymentAndBilling": "Platby a fakturace",
 		"notFound": "Nenalezeno",
-		"withoutInflation": "Bez inflace",
+		"nominal": "Nominální",
 		"total": "Celkem",
 		"share": "Sdílet",
 		"add": "Přidat",
@@ -583,7 +583,8 @@
 		"logo": "Logo",
 		"preview": "Náhled",
 		"error": "Chyba",
-		"success": "Úspěch"
+		"success": "Úspěch",
+		"realValue": "Reálná hodnota"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",

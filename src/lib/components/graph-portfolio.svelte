@@ -62,7 +62,7 @@
 	let selectedIndex = $state(0)
 
 	const { total, data } = $derived(
-		getGraphDataForPortfolio(transactionStore, investments, portfolio),
+		getGraphDataForPortfolio(transactionStore.data, investments, portfolio),
 	)
 
 	type FullscreenGraphType = 'value' | 'transactions' | 'breakdown'

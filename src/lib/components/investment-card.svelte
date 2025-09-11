@@ -37,6 +37,7 @@
 		index: number
 		hidden: boolean
 		focused: boolean
+		showInflation?: boolean
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
 		toggleHide: () => void
 		toggleFocus: () => void
@@ -50,6 +51,7 @@
 		index,
 		hidden,
 		focused,
+		showInflation = false,
 		openTransaction,
 		toggleHide,
 		toggleFocus,
@@ -177,10 +179,12 @@
 					<Divider --margin="0" />
 					<TransactionCard
 						{viewOnly}
+						{showInflation}
 						editTransaction={openTransaction
 							? () => openTransaction(investment, transaction)
 							: undefined}
 						{transaction}
+						{portfolio}
 						currency={portfolio.currency}
 					/>
 				{/each}

@@ -13,7 +13,8 @@
 		Rocket,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
-	import { formatAge, formatDate } from '$lib/utils'
+	import { formatAge } from '$lib/utils'
+	import { formatDate } from '$lib/@snaha/kalkul-maths/date'
 	import Avatar from '$lib/components/avatar.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'

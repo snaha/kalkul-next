@@ -9,7 +9,7 @@ import {
 	DEFAULT_FEE_TYPE,
 	type Transaction,
 } from './types'
-import { formatDate } from '$lib/utils'
+import { formatDate } from './date'
 import { addDays } from 'date-fns'
 import { createTransactionMap } from './transaction-map'
 import {
@@ -320,13 +320,23 @@ export function getInvestmentValues(
 	return { investmentValues, feeValues, withdrawalValues, depositValues, errors }
 }
 
-export function getBaseData(transactions: Transaction[]): InvestmentData {
+export function getBaseData(
+	transactions: Transaction[],
+	inflationRate = 0,
+	portfolioStartDate?: string,
+): InvestmentData {
 	const { startDate, endDate } = getInvestmentStartAndEndDates(transactions)
+	const portfolioStart = portfolioStartDate || formatDate(startDate)
+
 	const deposits = createTransactionMap(
 		transactions.filter((transaction) => transaction.type === 'deposit'),
+		portfolioStart,
+		inflationRate,
 	)
 	const withdrawals = createTransactionMap(
 		transactions.filter((transaction) => transaction.type === 'withdrawal'),
+		portfolioStart,
+		inflationRate,
 	)
 
 	return { deposits, withdrawals, startDate, endDate }
@@ -418,12 +428,16 @@ export function getCurrentInvestmentValue(
  * @param transactionStore Transaction store to get transaction data
  * @param investments Array of investments in the portfolio
  * @param asOfDate The date to calculate the value as of (defaults to today)
+ * @param inflationRate Portfolio inflation rate for auto-inflated transactions
+ * @param portfolioStartDate Portfolio start date for inflation calculations
  * @returns The total current value of the portfolio
  */
 export function getCurrentPortfolioValue(
 	transactionStore: { filter: (investmentId: number) => Transaction[] },
 	investments: Investment[],
 	asOfDate: Date = new Date(),
+	inflationRate = 0,
+	portfolioStartDate?: string,
 ): number {
 	let totalValue = 0
 
@@ -433,7 +447,7 @@ export function getCurrentPortfolioValue(
 			continue // Skip investments with no transactions
 		}
 
-		const baseData = getBaseData(transactions)
+		const baseData = getBaseData(transactions, inflationRate, portfolioStartDate)
 		const currentValue = getCurrentInvestmentValue(baseData, investment, asOfDate)
 		totalValue += currentValue
 	}

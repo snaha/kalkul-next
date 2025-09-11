@@ -6,38 +6,41 @@
 	import FormattedNumberInput from '$lib/components/ui/input/formatted-number/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { type Client, type Investment, type Portfolio, type Transaction } from '$lib/types'
-	import { type Period, type TransactionType } from '$lib/@snaha/kalkul-maths'
+	import {
+		type Period,
+		type TransactionType,
+		calculateTotalDisplayAmount,
+		type Transaction as MathTransaction,
+	} from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
-	import { capitalizeFirstLetter, formatCurrency, formatDate } from '$lib/utils'
+	import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
+	import {
+		formatDate,
+		incrementDate,
+		calculatePeriodDifference,
+	} from '$lib/@snaha/kalkul-maths/date'
 	import DateAge from './date-age.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import Toggle from './ui/toggle.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
-	import {
-		addDays,
-		addWeeks,
-		addMonths,
-		addYears,
-		differenceInDays,
-		differenceInWeeks,
-		differenceInMonths,
-		differenceInYears,
-		subDays,
-	} from 'date-fns'
+	import { subDays } from 'date-fns'
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import Horizontal from './ui/horizontal.svelte'
 	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
+	import HelperTooltip from './helper-tooltip.svelte'
 
 	type Props = {
 		investment: Investment
 		portfolio: Portfolio
 		client: Client
 		transaction?: Transaction
+		showInflation?: boolean
 		close: () => void
 	}
 
-	let { investment, portfolio, client, transaction, close }: Props = $props()
+	let { investment, portfolio, client, transaction, showInflation = false, close }: Props = $props()
 
 	let transactionType: TransactionType = $state('deposit')
 	let label = $state(
@@ -48,6 +51,7 @@
 	let isDefaultLabel = $state(true)
 	let amount = $state<number | undefined>(undefined)
 	let date = $state(new Date())
+	let inflationAdjusted = $state(false)
 	let isRecurring = $state(false)
 	let repeat = $state(1)
 	let repeatUnit: Period = $state('month')
@@ -62,9 +66,34 @@
 			repeat,
 		}),
 	)
-	const totalAmount = $derived(amount !== undefined ? numOccurrences * amount : 0)
+	const totalAmounts = $derived.by(() => {
+		if (amount === undefined) return { nominal: 0, adjusted: 0 }
+
+		// Create a mock transaction for calculation
+		const mockTransaction: MathTransaction = {
+			amount,
+			type: transactionType,
+			date: formatDate(date),
+			inflation_adjusted: inflationAdjusted,
+			end_date: isRecurring ? formatDate(endDate) : null,
+			repeat: isRecurring ? repeat : null,
+			repeat_unit: isRecurring ? repeatUnit : null,
+		}
+
+		return calculateTotalDisplayAmount(
+			[mockTransaction],
+			transactionType,
+			portfolio.inflation_rate,
+			portfolio.start_date,
+		)
+	})
+
+	const totalAmount = $derived(showInflation ? totalAmounts.adjusted : totalAmounts.nominal)
 	const createDisabled = $derived(
-		label === '' || amount === undefined || amount <= 0 || (isRecurring && totalAmount === 0),
+		label === '' ||
+			amount === undefined ||
+			amount <= 0 ||
+			(isRecurring && totalAmounts.nominal === 0 && totalAmounts.adjusted === 0),
 	)
 	const formType = $derived(transaction ? 'edit' : 'create')
 
@@ -74,6 +103,7 @@
 			label = transaction.label ?? ''
 			amount = transaction.amount
 			date = new Date(transaction.date)
+			inflationAdjusted = transaction.inflation_adjusted ?? false
 			isRecurring = transaction.end_date !== null
 			repeat = transaction.repeat ? transaction.repeat : 1
 			repeatUnit = transactionRepeatUnit(transaction)
@@ -93,6 +123,7 @@
 			amount,
 			label,
 			date: formatDate(date),
+			inflation_adjusted: inflationAdjusted,
 			repeat: isRecurring ? repeat : null,
 			repeat_unit: isRecurring ? repeatUnit : null,
 			end_date: isRecurring ? formatDate(endDate) : null,
@@ -111,6 +142,7 @@
 			amount,
 			label,
 			date: formatDate(date),
+			inflation_adjusted: inflationAdjusted,
 			repeat: isRecurring ? repeat : null,
 			repeat_unit: isRecurring ? repeatUnit : null,
 			end_date: isRecurring ? formatDate(endDate) : null,
@@ -135,32 +167,6 @@
 		close()
 	}
 
-	function addDateFunction(unit: Period) {
-		switch (unit) {
-			case 'day':
-				return addDays
-			case 'week':
-				return addWeeks
-			case 'month':
-				return addMonths
-			case 'year':
-				return addYears
-		}
-	}
-
-	function dateDifferenceFunction(unit: Period) {
-		switch (unit) {
-			case 'day':
-				return differenceInDays
-			case 'week':
-				return differenceInWeeks
-			case 'month':
-				return differenceInMonths
-			case 'year':
-				return differenceInYears
-		}
-	}
-
 	function transactionRepeatUnit(t: typeof transaction): Period {
 		return t && t.repeat_unit ? t.repeat_unit : 'month'
 	}
@@ -170,7 +176,10 @@
 			return 30
 		}
 
-		return dateDifferenceFunction(transactionRepeatUnit(t))(t.end_date, t.date) + 1
+		return (
+			calculatePeriodDifference(new Date(t.end_date), new Date(t.date), transactionRepeatUnit(t)) +
+			1
+		)
 	}
 
 	function transactionPeriodUnit(t: typeof transaction): Period {
@@ -201,13 +210,11 @@
 	}
 
 	function recalculatePeriod() {
-		const dateDiff = dateDifferenceFunction(periodUnit)
-		period = dateDiff(new Date(formatDate(endDate)), new Date(formatDate(date))) + 1
+		period = calculatePeriodDifference(endDate, date, periodUnit) + 1
 	}
 
 	function recalculateEndDate() {
-		const addDate = addDateFunction(periodUnit)
-		endDate = subDays(addDate(date, period), 1)
+		endDate = subDays(incrementDate(date, periodUnit, period), 1)
 	}
 
 	function checkPeriodInput() {
@@ -279,6 +286,15 @@
 		class="grower"
 		locale={$locale}
 	></FormattedNumberInput>
+	<Horizontal --horizontal-justify-content="space-between">
+		<Toggle
+			class="toggle"
+			dimension="compact"
+			label={$_('component.editTransaction.inflationAdjusted')}
+			bind:checked={inflationAdjusted}
+		></Toggle>
+		<HelperTooltip helperText={$_('component.viewHeader.inflationAdjustmentTooltip')} />
+	</Horizontal>
 	<Input
 		dimension="compact"
 		variant="solid"
@@ -296,6 +312,31 @@
 		birthDate={new Date(client.birth_date)}
 		onchange={onDateChange}
 	></DateAge>
+	{#if showInflation && !isRecurring}
+		<div class="spacer"></div>
+		<Vertical --vertical-gap="var(--quarter-padding)">
+			<Typography class="total-amount">
+				{transactionType === 'deposit'
+					? $_('component.viewHeader.totalDeposited', {
+							values: {
+								amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
+							},
+						})
+					: $_('component.viewHeader.totalWithdrawn', {
+							values: {
+								amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
+							},
+						})}
+			</Typography>
+			<Typography class="total-amount real">
+				{$_('common.realValue')}: {formatCurrency(
+					totalAmounts.adjusted,
+					portfolio.currency,
+					$locale,
+				)}
+			</Typography>
+		</Vertical>
+	{/if}
 	{#if isRecurring}
 		<section class="horizontal inputs">
 			<FormattedNumberInput
@@ -360,11 +401,38 @@
 		<div class="spacer"></div>
 		<Vertical --vertical-gap="var(--quarter-padding)">
 			<Typography>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography>
-			<Typography
-				>{formatCurrency(totalAmount, portfolio.currency, $locale)} ({transactionType === 'deposit'
-					? $_('component.editTransaction.totalDeposits')
-					: $_('component.editTransaction.totalWithdrawals')})</Typography
-			>
+			{#if showInflation}
+				<Typography class="total-amount">
+					{transactionType === 'deposit'
+						? $_('component.viewHeader.totalDeposited', {
+								values: {
+									amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
+								},
+							})
+						: $_('component.viewHeader.totalWithdrawn', {
+								values: {
+									amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
+								},
+							})}
+				</Typography>
+				<Typography class="total-amount real">
+					{$_('common.realValue')}: {formatCurrency(
+						totalAmounts.adjusted,
+						portfolio.currency,
+						$locale,
+					)}
+				</Typography>
+			{:else}
+				<Typography
+					>{transactionType === 'deposit'
+						? $_('component.viewHeader.totalDeposited', {
+								values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
+							})
+						: $_('component.viewHeader.totalWithdrawn', {
+								values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
+							})}</Typography
+				>
+			{/if}
 		</Vertical>
 	{/if}
 	<div class="spacer"></div>
@@ -431,5 +499,12 @@
 		flex-grow: 1 !important;
 	}
 	.spacer {
+	}
+	:global(.total-amount) {
+		color: var(--colors-high);
+	}
+	:global(.real) {
+		opacity: 50%;
+		color: var(--colors-ultra-high);
 	}
 </style>
