@@ -2,10 +2,10 @@
 	import { Html, Head } from 'svelte-email'
 	import Preview from './preview.svelte'
 
-	let { title = 'Kalkul', previewText = '', children } = $props()
+	let { title = 'Kalkul', previewText = '', language = 'cs', children } = $props()
 </script>
 
-<Html lang="en">
+<Html lang={language}>
 	<Head>
 		<meta charset="utf-8" />
 		<title>{title}</title>

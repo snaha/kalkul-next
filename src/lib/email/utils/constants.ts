@@ -149,6 +149,7 @@ export const LAYOUT_STYLES = {
 		fontSize: '16px',
 		lineHeight: '24px',
 		fontWeight: 'bold',
+		margin: '8px',
 	},
 
 	secondaryButtonContainer: {
@@ -161,6 +162,7 @@ export const LAYOUT_STYLES = {
 		fontSize: '16px',
 		lineHeight: '24px',
 		fontWeight: '400',
+		margin: '8px',
 	},
 
 	footerSection: {

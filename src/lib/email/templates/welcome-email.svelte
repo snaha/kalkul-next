@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Text, Heading, styleToString, Button } from 'svelte-email'
+	import { Text, Heading, styleToString } from 'svelte-email'
+	import Button from '../components/button.svelte'
 	import EmailLayout from '../components/email-layout.svelte'
 	import EmailHeader from '../components/email-header.svelte'
 	import Section from '../components/section.svelte'
@@ -17,6 +18,7 @@
 </script>
 
 <EmailLayout
+	{language}
 	title={$_('email.templates.welcome.subject')}
 	previewText={$_('email.templates.welcome.previewText')}
 >
