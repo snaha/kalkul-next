@@ -9,11 +9,12 @@
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
-	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
+	import { asyncTimeout, capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import DeleteModal from './delete-modal.svelte'
 	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import Loader from './ui/loader.svelte'
 
 	type Props = {
 		client: Client
@@ -38,7 +39,8 @@
 	initialEndDate.setFullYear(nowDate.getFullYear() + initialHorizonYears)
 	let endDate = $state(initialEndDate)
 	let showConfirmModal = $state(false)
-	let createDisabled = $derived(name === '')
+	let createClicked = $state(false)
+	let createDisabled = $derived(name === '' || createClicked)
 	let formType: 'edit' | 'create' = $derived(portfolio ? 'edit' : 'create')
 
 	$effect(() => {
@@ -59,6 +61,9 @@
 	})
 
 	async function createPortfolio() {
+		createClicked = true
+		await asyncTimeout(0)
+
 		await adapter.addPortfolio({
 			client: client.id,
 			name,
@@ -75,6 +80,9 @@
 		if (!portfolio) {
 			return
 		}
+
+		createClicked = true
+		await asyncTimeout(0)
 
 		await adapter.updatePortfolio({
 			id: portfolio.id,
@@ -226,14 +234,21 @@
 					dimension="compact"
 					onclick={createPortfolio}
 					disabled={createDisabled}
-					><Checkmark size={24} />{$_('component.editPortfolio.createPortfolio')}</Button
+					busy={createClicked}
+					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
+							size={24}
+						/>{/if}{$_('component.editPortfolio.createPortfolio')}</Button
 				>
 			{:else}
 				<Button
 					variant="strong"
 					dimension="compact"
 					onclick={updatePortfolio}
-					disabled={createDisabled}><Checkmark size={24} />{$_('common.done')}</Button
+					busy={createClicked}
+					disabled={createDisabled}
+					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
+							size={24}
+						/>{/if}{$_('common.done')}</Button
 				>
 			{/if}
 			<Button variant="secondary" dimension="compact" onclick={cancel}

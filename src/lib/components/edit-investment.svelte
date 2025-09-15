@@ -21,12 +21,13 @@
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
-	import { capitalizeFirstLetter } from '$lib/utils'
+	import { asyncTimeout, capitalizeFirstLetter } from '$lib/utils'
 	import Toggle from './ui/toggle.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import ImportInvestmentModal from './import-investment-modal.svelte'
 	import HelperTooltip from './helper-tooltip.svelte'
+	import Loader from './ui/loader.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -53,7 +54,8 @@
 	let managementFee = $state(0)
 	let managementFeeType: FeeType = $state('percentage')
 
-	let createDisabled = $derived(name === '')
+	let createClicked = $state(false)
+	const createDisabled = $derived(name === '' || createClicked)
 	const formType: 'edit' | 'create' = $derived(investment ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
 
@@ -86,6 +88,9 @@
 	})
 
 	async function createInvestment() {
+		createClicked = true
+		await asyncTimeout(0)
+
 		await adapter.addInvestment({
 			portfolio_id: portfolio.id,
 			name,
@@ -108,6 +113,10 @@
 		if (!investment) {
 			return
 		}
+
+		createClicked = true
+		await asyncTimeout(0)
+
 		await adapter.updateInvestment({
 			id: investment.id,
 			portfolio_id: portfolio.id,
@@ -364,14 +373,21 @@
 				dimension="compact"
 				onclick={createInvestment}
 				disabled={createDisabled}
-				><Checkmark size={24} />{$_('component.editInvestment.createInvestment')}</Button
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
+						size={24}
+					/>{/if}{$_('component.editInvestment.createInvestment')}</Button
 			>
 		{:else}
 			<Button
 				variant="strong"
 				dimension="compact"
 				onclick={updateInvestment}
-				disabled={createDisabled}><Checkmark size={24} />{$_('common.done')}</Button
+				disabled={createDisabled}
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
+						size={24}
+					/>{/if}{$_('common.done')}</Button
 			>
 		{/if}
 		<Button variant="secondary" dimension="compact" onclick={cancel}

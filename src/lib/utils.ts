@@ -71,3 +71,9 @@ export function parseLocalizedNumber(value: string, locale: string | null | unde
 
 	return parseFloat(normalized) || 0
 }
+
+export const asyncTimeout = (ms: number) => {
+	return new Promise((resolve) => {
+		setTimeout(resolve, ms)
+	})
+}

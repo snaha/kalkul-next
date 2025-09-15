@@ -30,8 +30,8 @@
 		&.default,
 		&.compact,
 		&.small {
-			width: 1rem;
-			height: 1rem;
+			width: calc(1rem / sqrt(2));
+			height: calc(1rem / sqrt(2));
 		}
 		&.large {
 			width: 1.5rem;

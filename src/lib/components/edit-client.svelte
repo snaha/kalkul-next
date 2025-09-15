@@ -15,6 +15,8 @@
 	import { notImplemented } from '$lib/not-implemented'
 	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
+	import { asyncTimeout } from '$lib/utils'
+	import Loader from './ui/loader.svelte'
 
 	type Props = {
 		close: () => void
@@ -35,7 +37,10 @@
 	let emailError: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state()
 	let emailValid = $state(true)
 	let emailTouched = $state(false)
-	let createDisabled = $derived(name === '' || !birthDate || birthDate > date || !emailValid)
+	let createClicked = $state(false)
+	const createDisabled = $derived(
+		name === '' || !birthDate || birthDate > date || !emailValid || createClicked,
+	)
 
 	$effect(() => {
 		if (client) {
@@ -51,7 +56,11 @@
 			error = $_('error.birthDateUndefined')
 			return
 		}
+
 		try {
+			createClicked = true
+			await asyncTimeout(0)
+
 			const client: ClientNoId = {
 				name,
 				birth_date: birthDate.toDateString(),
@@ -64,6 +73,7 @@
 			close()
 		} catch (e) {
 			error = (e as Error).message
+			createClicked = false
 		}
 	}
 
@@ -77,6 +87,9 @@
 		if (!client || !birthDate) {
 			return
 		}
+
+		createClicked = true
+		await asyncTimeout(0)
 
 		await adapter.updateClient({
 			id: client.id,
@@ -193,8 +206,15 @@
 		{/if}
 		<section class="buttons horizontal">
 			{#if formType === 'create'}
-				<Button variant="strong" dimension="compact" onclick={create} disabled={createDisabled}
-					><Checkmark size={24} />
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={create}
+					disabled={createDisabled}
+					busy={createClicked}
+					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
+							size={24}
+						/>{/if}
 					{$_('page.client.createClient')}
 				</Button>
 			{:else}
@@ -203,7 +223,10 @@
 					dimension="compact"
 					onclick={updateClient}
 					disabled={createDisabled}
-					><Checkmark size={24} />
+					busy={createClicked}
+					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
+							size={24}
+						/>{/if}
 					{$_('common.done')}
 				</Button>
 			{/if}

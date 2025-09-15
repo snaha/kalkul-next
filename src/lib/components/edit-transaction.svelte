@@ -14,7 +14,7 @@
 	} from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
-	import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
+	import { asyncTimeout, capitalizeFirstLetter, formatCurrency } from '$lib/utils'
 	import {
 		formatDate,
 		incrementDate,
@@ -30,6 +30,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
 	import HelperTooltip from './helper-tooltip.svelte'
+	import Loader from './ui/loader.svelte'
 
 	type Props = {
 		investment: Investment
@@ -58,6 +59,8 @@
 	let endDate = $state(new Date())
 	let period = $state(30)
 	let periodUnit: Period = $state('year')
+	let createClicked = $state(false)
+
 	const numOccurrences = $derived(
 		calculateNumOccurrences({
 			date: formatDate(date),
@@ -93,7 +96,8 @@
 		label === '' ||
 			amount === undefined ||
 			amount <= 0 ||
-			(isRecurring && totalAmounts.nominal === 0 && totalAmounts.adjusted === 0),
+			(isRecurring && totalAmounts.nominal === 0 && totalAmounts.adjusted === 0) ||
+			createClicked,
 	)
 	const formType = $derived(transaction ? 'edit' : 'create')
 
@@ -117,6 +121,10 @@
 		if (!authStore.user || amount === undefined || amount <= 0) {
 			return
 		}
+
+		createClicked = true
+		await asyncTimeout(0)
+
 		await adapter.addTransaction({
 			investment_id: investment.id,
 			type: transactionType,
@@ -135,6 +143,10 @@
 		if (!transaction || amount === undefined || amount <= 0) {
 			return
 		}
+
+		createClicked = true
+		await asyncTimeout(0)
+
 		await adapter.updateTransaction({
 			id: transaction.id,
 			investment_id: investment.id,
@@ -442,14 +454,22 @@
 				variant="strong"
 				dimension="compact"
 				onclick={createTransaction}
-				disabled={createDisabled}><Checkmark size={16} />{$_('common.create')}</Button
+				disabled={createDisabled}
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="small" color="low" />{:else}<Checkmark
+						size={16}
+					/>{/if}{$_('common.create')}</Button
 			>
 		{:else}
 			<Button
 				variant="strong"
 				dimension="compact"
 				onclick={editTransaction}
-				disabled={createDisabled}><Checkmark size={16} />{$_('common.done')}</Button
+				disabled={createDisabled}
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="small" color="low" />{:else}<Checkmark
+						size={16}
+					/>{/if}{$_('common.done')}</Button
 			>
 		{/if}
 		<Button variant="secondary" dimension="compact" onclick={cancel}

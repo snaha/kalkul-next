@@ -12,6 +12,7 @@
 		mode?: Mode
 		leftAlign?: boolean
 		flexGrow?: boolean
+		busy?: boolean
 	}
 	interface AnchorElement extends HTMLAnchorAttributes, ButtonProps {
 		href?: HTMLAnchorAttributes['href']
@@ -39,6 +40,7 @@
 		class: className = '',
 		leftAlign = false,
 		flexGrow = false,
+		busy = false,
 		children,
 		mode = 'auto',
 		style,
@@ -46,7 +48,7 @@
 	}: Props = $props()
 </script>
 
-<span class={`root ${className}`} class:disabled {style} class:flexGrow>
+<span class={`root ${className}`} class:disabled {style} class:flexGrow class:busy>
 	<svelte:element
 		this={href ? 'a' : 'button'}
 		class={`${dimension} ${variant} ${mode}`}
@@ -80,6 +82,9 @@
 			button {
 				pointer-events: none;
 			}
+		}
+		&.busy {
+			cursor: wait;
 		}
 	}
 	button,
