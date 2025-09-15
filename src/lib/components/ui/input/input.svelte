@@ -13,7 +13,7 @@
 		dimension?: Dimension
 		layout?: Layout
 		unit?: string
-		error?: Snippet
+		error?: Snippet | string
 		hover?: boolean
 		active?: boolean
 		focus?: boolean
@@ -100,7 +100,11 @@
 		</div>
 		{#if error}
 			<div class="error-message">
-				{@render error()}
+				{#if typeof error === 'string'}
+					{error}
+				{:else}
+					{@render error()}
+				{/if}
 			</div>
 		{/if}
 	</div>

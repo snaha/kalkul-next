@@ -242,7 +242,7 @@
 			"verificationLinkRemote": "E-mail s ověřovacím odkazem byl odeslán na {email}.",
 			"checkEmail": "Zkontrolujte e-mail a dokončete registraci!",
 			"checkSpam": "Nevidíte e-mail? Zkontrolujte složku spamu.",
-			"agreeToTerms": "Souhlasím s {terms} a {privacy} služby Kalkul",
+			"agreeToTerms": "Pokračováním souhlasíte s {terms} a {privacy} Kalkul",
 			"terms": "Podmínkami služby",
 			"privacy": "Zásadami ochrany soukromí"
 		},
@@ -588,7 +588,7 @@
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",
-		"passwordLengthError": "Heslo musí mít alespoň 6 znaků",
+		"passwordLengthError": "Heslo musí mít alespoň 12 znaků",
 		"confirmPasswordError": "Hesla se neshodují",
 		"birthDateError": "Datum narození nemůže být v budoucnosti.",
 		"birthDateUndefined": "Zadejte platné datum narození",

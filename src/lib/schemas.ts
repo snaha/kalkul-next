@@ -5,12 +5,12 @@ export const emailFormSchema = z.object({
 })
 
 export const loginFormSchema = emailFormSchema.extend({
-	password: z.string().min(6, { message: 'error.passwordLengthError' }),
+	password: z.string().min(1),
 })
 
 export const resetPasswordFormSchema = z
 	.object({
-		newPassword: z.string().min(6, { message: 'error.passwordLengthError' }),
+		newPassword: z.string().min(12, { message: 'error.passwordLengthError' }),
 		confirmNewPassword: z.string(),
 	})
 	.superRefine((data, ctx) => {

@@ -12,7 +12,7 @@ test.describe('User Registration', () => {
 		await expect(page.getByRole('button', { name: 'Create account' })).toBeVisible()
 	})
 
-	test('should require terms and conditions acceptance', async ({ page }) => {
+	test('should enable button when valid email and password are provided', async ({ page }) => {
 		await page.goto('/signup')
 
 		const testUser = generateTestUser()
@@ -20,11 +20,7 @@ test.describe('User Registration', () => {
 		await page.locator('input').first().fill(testUser.email)
 		await page.locator('input[type="password"]').fill(testUser.password)
 
-		// Button should be disabled without terms acceptance
-		await expect(page.getByRole('button', { name: 'Create account' })).toBeDisabled()
-
-		// Enable after accepting terms - click the checkbox for terms
-		await page.locator('input[type="checkbox"]').last().click() // Terms checkbox is the last one
+		// Button should be enabled with valid email and password
 		await expect(page.getByRole('button', { name: 'Create account' })).toBeEnabled()
 	})
 
@@ -54,7 +50,7 @@ test.describe('User Registration', () => {
 	test('should handle newsletter subscription option', async ({ page }) => {
 		await page.goto('/signup')
 
-		const newsletterCheckbox = page.locator('input[type="checkbox"]').first() // Newsletter is first checkbox
+		const newsletterCheckbox = page.locator('input[type="checkbox"]') // Newsletter checkbox
 
 		// Should be unchecked by default
 		await expect(newsletterCheckbox).not.toBeChecked()
@@ -71,7 +67,6 @@ test.describe('User Registration', () => {
 
 		await page.locator('input').first().fill(testUser.email)
 		await page.locator('input[type="password"]').fill(testUser.password)
-		await page.locator('input[type="checkbox"]').last().click() // Accept terms
 
 		// Mock the registration to succeed
 		await page.route('**/auth/v1/signup', async (route) => {
@@ -115,7 +110,6 @@ test.describe('User Registration', () => {
 
 		await page.locator('input').first().fill(testUser.email)
 		await page.locator('input[type="password"]').fill(testUser.password)
-		await page.locator('input[type="checkbox"]').last().click() // Accept terms
 
 		// Mock the registration to fail
 		await page.route('**/auth/v1/signup', async (route) => {

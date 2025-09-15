@@ -4,7 +4,7 @@
 	import { z, type ZodFormattedError } from 'zod'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import adapter from '$lib/adapters'
-	import { loginFormSchema as registerFormSchema } from '$lib/schemas'
+	import { emailFormSchema } from '$lib/schemas'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { _ } from 'svelte-i18n'
 	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
@@ -28,19 +28,19 @@
 		}
 	})
 
-	type User = z.infer<typeof registerFormSchema>
+	type User = z.infer<typeof emailFormSchema>
 
 	let formErrors: ZodFormattedError<User> | undefined = $state()
-	let formValid = $state(false)
+	let passwordError: string | undefined = $state($_('error.passwordLengthError'))
+	let password = $state('')
+	let formValid = $derived(formErrors === undefined && passwordError === undefined)
 	let error = $state('')
 	let success = $state(false)
 	let newsletterConsent = $state(false)
-	let termsConsent = $state(false)
 
 	let user: Partial<User> = $state({})
 
 	let emailTouched = $state(false)
-	let passwordTouched = $state(false)
 	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	function onEmailBlur() {
@@ -51,18 +51,10 @@
 		}
 	}
 
-	function onPasswordBlur() {
-		if (user.password?.trim() === '') {
-			passwordTouched = false
-		} else {
-			passwordTouched = true
-		}
-	}
-
 	async function register() {
 		try {
-			if (user.email && user.password && $locale) {
-				await adapter.signUp(user.email, user.password, $locale.split('-')[0], newsletterConsent)
+			if (user.email && $locale) {
+				await adapter.signUp(user.email, password, $locale.split('-')[0], newsletterConsent)
 				success = true
 			}
 		} catch (e) {
@@ -91,13 +83,17 @@
 		}
 	}
 	$effect(() => {
-		const res = registerFormSchema.safeParse(user)
+		const res = emailFormSchema.safeParse(user)
 		if (res.success) {
 			formErrors = undefined
-			formValid = true
 		} else {
 			formErrors = res.error.format()
-			formValid = false
+		}
+
+		if (password.length < 12) {
+			passwordError = $_('error.passwordLengthError')
+		} else {
+			passwordError = undefined
 		}
 	})
 </script>
@@ -105,14 +101,6 @@
 {#snippet emailError()}
 	{#if formErrors?.email?._errors}
 		{#each formErrors?.email?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
-
-{#snippet passwordError()}
-	{#if formErrors?.password?._errors}
-		{#each formErrors?.password?._errors as error}
 			{$_(error)}
 		{/each}
 	{/if}
@@ -137,33 +125,20 @@
 					error={emailTouched && user.email?.trim() !== '' && formErrors?.email?._errors
 						? emailError
 						: undefined}
+					type="email"
 					onblur={onEmailBlur}
 				/>
 				<Input
 					variant="solid"
 					dimension="compact"
-					bind:value={user.password}
+					bind:value={password}
 					label={$_('common.password')}
-					error={passwordTouched && user.password?.trim() !== '' && formErrors?.password?._errors
-						? passwordError
-						: undefined}
+					error={passwordError}
 					type="password"
-					onblur={onPasswordBlur}
 				/>
 				<Checkbox bind:checked={newsletterConsent}>
 					{$_('page.signUp.subscribeToNewsletter')}</Checkbox
 				>
-				<Checkbox bind:checked={termsConsent}>
-					<span>
-						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html $_('page.signUp.agreeToTerms', {
-							values: {
-								terms: `<a href="${routes.TERMS}">${$_('page.signUp.terms')}</a>`,
-								privacy: `<a href="${routes.PRIVACY}">${$_('page.signUp.privacy')}</a>`,
-							},
-						})}
-					</span>
-				</Checkbox>
 				{#if error}
 					<div class="error">
 						<WarningAltFilled size={24} />
@@ -171,18 +146,26 @@
 					</div>
 				{/if}
 				<Vertical --vertical-gap="var(--padding)">
-					<ResponsiveLayout
-						--responsive-gap="var(--padding)"
-						--responsive-justify-content="stretch"
-					>
+					<ResponsiveLayout --responsive-gap="var(--padding)" --responsive-justify-content="start">
 						<Button
 							variant="strong"
 							dimension="compact"
 							type="submit"
-							disabled={!formValid || !termsConsent}
+							disabled={!formValid}
 							onclick={register}><Checkmark size={24} />{$_('page.signUp.createAccount')}</Button
 						>
 					</ResponsiveLayout>
+					{#key $locale}
+						<Typography variant="small"
+							><!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html $_('page.signUp.agreeToTerms', {
+								values: {
+									terms: `<a href="${routes.TERMS}">${$_('page.signUp.terms')}</a>`,
+									privacy: `<a href="${routes.PRIVACY}">${$_('page.signUp.privacy')}</a>`,
+								},
+							})}
+						</Typography>
+					{/key}
 				</Vertical>
 			</Vertical>
 			<Divider --margin="0" />
