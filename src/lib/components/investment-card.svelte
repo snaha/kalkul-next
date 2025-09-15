@@ -29,6 +29,7 @@
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
+	import DeleteModal from './delete-modal.svelte'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
@@ -58,6 +59,8 @@
 		open = $bindable(false),
 	}: Props = $props()
 
+	let selectedTransactionIdForDeletion: number | undefined = $state(undefined)
+	let showDeleteInvestmentModal = $state(false)
 	const transactions = $derived(transactionStore.filter(investment.id))
 
 	function cardOpenInvestment(e: MouseEvent) {
@@ -140,8 +143,11 @@
 								onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
 								><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
 							>
-							<ListItem onclick={() => deleteInvestment(investment.id)}
-								><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
+							<ListItem
+								onclick={() => {
+									selectedTransactionIdForDeletion = investment.id
+									showDeleteInvestmentModal = true
+								}}><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
 							>
 						{/if}
 					</List>
@@ -192,6 +198,18 @@
 		{/if}
 	</div>
 </div>
+
+<DeleteModal
+	confirm={() =>
+		selectedTransactionIdForDeletion && deleteInvestment(selectedTransactionIdForDeletion)}
+	oncancel={() => {
+		showDeleteInvestmentModal = false
+		selectedTransactionIdForDeletion = undefined
+	}}
+	bind:open={showDeleteInvestmentModal}
+	title={$_('component.editInvestment.deleteInvestmentWarningTitle')}
+	text={$_('component.editInvestment.deleteInvestmentWarning')}
+/>
 
 <style type="postcss">
 	.card {
