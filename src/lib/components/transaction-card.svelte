@@ -137,7 +137,7 @@
 			</Button>
 			{#if !viewOnly}
 				<div class="dropdown">
-					<Dropdown left buttonDimension="small" buttonVariant="solid">
+					<Dropdown left buttonDimension="small" buttonVariant="solid" stopPropagation>
 						{#snippet button()}
 							<OverflowMenuVertical size={16} />
 						{/snippet}
