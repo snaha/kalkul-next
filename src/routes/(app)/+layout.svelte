@@ -11,8 +11,14 @@
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import { browser } from '$app/environment'
 
 	let { children } = $props()
+
+	// Check if user is on Instagram's in-app browser
+	let isInstagramBrowser = $derived(
+		browser && navigator.userAgent && navigator.userAgent.includes('Instagram'),
+	)
 
 	$effect(() => {
 		if (
@@ -50,6 +56,27 @@
 	{/if}
 {:else if page.url.pathname !== routes.HOME && !layoutStore.mobile}
 	<Login />
+{:else if isInstagramBrowser}
+	<!-- Simple fallback for Instagram in-app browser -->
+	<div
+		style="padding: 20px; text-align: center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center;"
+	>
+		<h1>Kalkul</h1>
+		<p>Financial Portfolio Management</p>
+		<a
+			href="/signup"
+			style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px;"
+			>Get Started</a
+		>
+		<a
+			href="/login"
+			style="display: inline-block; padding: 10px 20px; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 5px; margin: 10px;"
+			>Login</a
+		>
+		<small style="margin-top: 20px; color: #666;"
+			>For the best experience, open this link in your browser</small
+		>
+	</div>
 {:else}
 	<BetaLandingPage isMobile={layoutStore.mobile} />
 {/if}
