@@ -163,3 +163,21 @@ test('should format numbers correctly', async ({ mount }) => {
 - Financial calculations must use Decimal.js for precision
 - All dates handled through `@snaha/kalkul-maths/date` utilities
 - Run `pnpm check` before committing
+
+## Sending the newsletter
+
+There is a script for sending newsletters. It expects `RESEND_API_KEY` and `RESEND_AUDIENCE_ID` environment variables to be set correctly before invoking the command.
+
+Usage:
+
+```sh
+pnpm send-newsletter <newsletter-template-name> <email-subject>
+```
+
+The `newsletter-template-name` is one of the templates from `src/lib/email/templates`, the `email-subject` is the subject of the newsletter. Currently we send only to Czech audience, so use the Czech localized subject.
+
+The output looks like this if there were no errors:
+
+```sh
+{ data: { id: 'ebd0cb46-4fb9-4c12-9b8d-1111da31abf7' } }
+```
