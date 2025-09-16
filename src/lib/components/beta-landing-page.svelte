@@ -3,7 +3,7 @@
 	import BetaBadge from './beta-badge.svelte'
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
-	import { _, locale, isLoading } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
 	import { LOCALE_STORAGE_KEY } from '$lib/locales'
 	import routes from '$lib/routes'
 	import Typography from './ui/typography.svelte'
@@ -28,102 +28,83 @@
 	}
 </script>
 
-{#if $isLoading}
-	<div class="loading-fallback">
+<header class:mobile={isMobile}>
+	<div class="left">
 		<Logo size={48} />
-		<p>Loading...</p>
+		<BetaBadge>beta</BetaBadge>
 	</div>
-{:else}
-	<header class:mobile={isMobile}>
-		<div class="left">
-			<Logo size={48} />
-			<BetaBadge>beta</BetaBadge>
-		</div>
-		<div class="right">
-			<Button variant="ghost" onclick={() => setLocale($locale?.startsWith('en') ? 'cs' : 'en')}>
-				{#if $locale?.startsWith('en')}
-					CZ
-				{:else}
-					EN
-				{/if}
-			</Button>
-			<Button variant="secondary" href={routes.LOGIN}
-				><UserAvatar size={24} />{$_('common.login')}</Button
-			>
-			<Button variant="strong" href={routes.SIGNUP}>{$_('common.signup')}</Button>
-		</div>
-	</header>
-	<main class:mobile={isMobile}>
-		<Vertical
-			class="max-width560"
-			--vertical-gap="var(--double-padding)"
-			--vertical-justify-content="center"
-			--vertical-align-items="center"
-		>
-			<YoutubeIntroVideo />
-			{#if isMobile}
-				<Typography variant="h2">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('page.landing.title', {
-						values: {
-							colorHigh: `<span class='color-high'>${$_('page.landing.titleHigh')}</span>`,
-						},
-					})}</Typography
-				>
+	<div class="right">
+		<Button variant="ghost" onclick={() => setLocale($locale?.startsWith('en') ? 'cs' : 'en')}>
+			{#if $locale?.startsWith('en')}
+				CZ
 			{:else}
-				<span class="headline">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html $_('page.landing.title', {
-						values: {
-							colorHigh: `<span class='color-high'>${$_('page.landing.titleHigh')}</span>`,
-						},
-					})}
-				</span>
+				EN
 			{/if}
-			<Typography variant="large">{$_('page.landing.subtitle')}</Typography>
+		</Button>
+		<Button variant="secondary" href={routes.LOGIN}
+			><UserAvatar size={24} />{$_('common.login')}</Button
+		>
+		<Button variant="strong" href={routes.SIGNUP}>{$_('common.signup')}</Button>
+	</div>
+</header>
+<main class:mobile={isMobile}>
+	<Vertical
+		class="max-width560"
+		--vertical-gap="var(--double-padding)"
+		--vertical-justify-content="center"
+		--vertical-align-items="center"
+	>
+		<YoutubeIntroVideo />
+		{#if isMobile}
+			<Typography variant="h2">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html $_('page.landing.title', {
+					values: { colorHigh: `<span class='color-high'>${$_('page.landing.titleHigh')}</span>` },
+				})}</Typography
+			>
+		{:else}
+			<span class="headline">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html $_('page.landing.title', {
+					values: { colorHigh: `<span class='color-high'>${$_('page.landing.titleHigh')}</span>` },
+				})}
+			</span>
+		{/if}
+		<Typography variant="large">{$_('page.landing.subtitle')}</Typography>
 
-			<Vertical --vertical-gap="var(--double-padding)">
-				<ResponsiveLayout
-					--responsive-align-items="stretch"
-					--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
-					class="max-width560"
+		<Vertical --vertical-gap="var(--double-padding)">
+			<ResponsiveLayout
+				--responsive-align-items="stretch"
+				--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
+				class="max-width560"
+			>
+				<Button
+					variant="secondary"
+					dimension="large"
+					href={routes.SAMPLE_PORTFOLIO_LINK}
+					target="_blank">{$_('common.viewSamplePortfolio')}</Button
 				>
-					<Button
-						variant="secondary"
-						dimension="large"
-						href={routes.SAMPLE_PORTFOLIO_LINK}
-						target="_blank">{$_('common.viewSamplePortfolio')}</Button
-					>
-					<Button variant="strong" dimension="large" href={routes.SIGNUP}
-						>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
-					>
-				</ResponsiveLayout>
-				<Vertical --vertical-gap="var(--half-padding)">
-					<BetaBadge>beta</BetaBadge>
-					<Typography class="color-high">
-						{$_('page.landing.betaAccessTitle')}
-						<br />
-						{$_('page.landing.betaAccessDescription')}
-					</Typography>
-					<Typography class="color-high" variant="small">
-						{$_('page.landing.betaDiscountText')}
-					</Typography>
-				</Vertical>
+				<Button variant="strong" dimension="large" href={routes.SIGNUP}
+					>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+				>
+			</ResponsiveLayout>
+			<Vertical --vertical-gap="var(--half-padding)">
+				<BetaBadge>beta</BetaBadge>
+				<Typography class="color-high">
+					{$_('page.landing.betaAccessTitle')}
+					<br />
+					{$_('page.landing.betaAccessDescription')}
+				</Typography>
+				<Typography class="color-high" variant="small">
+					{$_('page.landing.betaDiscountText')}
+				</Typography>
 			</Vertical>
 		</Vertical>
-	</main>
-	<Footer />
-{/if}
+	</Vertical>
+</main>
+<Footer />
 
 <style>
-	.loading-fallback {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		gap: var(--padding);
-	}
 	:global(.color-high) {
 		color: var(--colors-high) !important;
 	}

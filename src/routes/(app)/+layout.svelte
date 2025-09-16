@@ -11,14 +11,8 @@
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
-	import { browser } from '$app/environment'
 
 	let { children } = $props()
-
-	// Check if user is on Instagram's in-app browser
-	let isInstagramBrowser = $derived(
-		browser && navigator.userAgent && navigator.userAgent.includes('Instagram'),
-	)
 
 	$effect(() => {
 		if (
@@ -40,28 +34,7 @@
 	})
 </script>
 
-{#if browser && navigator.userAgent?.includes('Instagram')}
-	<!-- Instagram in-app browser - show simple fallback immediately -->
-	<div
-		style="padding: 20px; text-align: center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; font-family: Arial, sans-serif;"
-	>
-		<h1 style="color: #333;">Kalkul</h1>
-		<p style="color: #666; margin: 20px 0;">Financial Portfolio Management</p>
-		<a
-			href="/signup"
-			style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; margin: 8px; font-weight: 500;"
-			>Get Started</a
-		>
-		<a
-			href="/login"
-			style="display: inline-block; padding: 12px 24px; border: 2px solid #007bff; color: #007bff; text-decoration: none; border-radius: 6px; margin: 8px; font-weight: 500;"
-			>Login</a
-		>
-		<small style="margin-top: 30px; color: #999; line-height: 1.4;"
-			>For the best experience, tap the "..." menu<br />and select "Open in Browser"</small
-		>
-	</div>
-{:else if authStore.loading}
+{#if authStore.loading}
 	<ContentLayout>
 		<Loader />
 	</ContentLayout>
