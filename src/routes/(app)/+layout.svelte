@@ -40,7 +40,28 @@
 	})
 </script>
 
-{#if authStore.loading}
+{#if browser && navigator.userAgent?.includes('Instagram')}
+	<!-- Instagram in-app browser - show simple fallback immediately -->
+	<div
+		style="padding: 20px; text-align: center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; font-family: Arial, sans-serif;"
+	>
+		<h1 style="color: #333;">Kalkul</h1>
+		<p style="color: #666; margin: 20px 0;">Financial Portfolio Management</p>
+		<a
+			href="/signup"
+			style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; margin: 8px; font-weight: 500;"
+			>Get Started</a
+		>
+		<a
+			href="/login"
+			style="display: inline-block; padding: 12px 24px; border: 2px solid #007bff; color: #007bff; text-decoration: none; border-radius: 6px; margin: 8px; font-weight: 500;"
+			>Login</a
+		>
+		<small style="margin-top: 30px; color: #999; line-height: 1.4;"
+			>For the best experience, tap the "..." menu<br />and select "Open in Browser"</small
+		>
+	</div>
+{:else if authStore.loading}
 	<ContentLayout>
 		<Loader />
 	</ContentLayout>
@@ -56,27 +77,6 @@
 	{/if}
 {:else if page.url.pathname !== routes.HOME && !layoutStore.mobile}
 	<Login />
-{:else if isInstagramBrowser}
-	<!-- Simple fallback for Instagram in-app browser -->
-	<div
-		style="padding: 20px; text-align: center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center;"
-	>
-		<h1>Kalkul</h1>
-		<p>Financial Portfolio Management</p>
-		<a
-			href="/signup"
-			style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px;"
-			>Get Started</a
-		>
-		<a
-			href="/login"
-			style="display: inline-block; padding: 10px 20px; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 5px; margin: 10px;"
-			>Login</a
-		>
-		<small style="margin-top: 20px; color: #666;"
-			>For the best experience, open this link in your browser</small
-		>
-	</div>
 {:else}
 	<BetaLandingPage isMobile={layoutStore.mobile} />
 {/if}
