@@ -39,8 +39,6 @@
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import GetStarted from '$lib/components/get-started.svelte'
 
-	const samplePortfolioLink = 'https://kalkul.app/view/e9g7fpmpobz23ja8c5zhgogx'
-
 	let showConfirmModal = $state(false)
 	let showWelcome = $state(authStore.user?.user_metadata.first_visit ? true : false)
 	let clientToBeDeleted: number | undefined = $state()
@@ -113,8 +111,11 @@
 				>
 			</Vertical>
 			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Button variant="secondary" href={samplePortfolioLink} target="_blank" class="max560"
-					>{$_('common.viewSamplePortfolio')}</Button
+				<Button
+					variant="secondary"
+					href={routes.SAMPLE_PORTFOLIO_LINK}
+					target="_blank"
+					class="max560">{$_('common.viewSamplePortfolio')}</Button
 				>
 				<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
 					>{$_('page.home.joinCommunity')}</Button
@@ -171,8 +172,11 @@
 							isVideoPlayer = true
 						}}><LogoYoutube size={24} />{$_('helpBox.watchIntroVideo')}</Button
 					>
-					<Button variant="solid" dimension="compact" href={samplePortfolioLink} target="_blank"
-						><Launch size={24} />{$_('helpBox.viewSamplePortfolio')}</Button
+					<Button
+						variant="solid"
+						dimension="compact"
+						href={routes.SAMPLE_PORTFOLIO_LINK}
+						target="_blank"><Launch size={24} />{$_('helpBox.viewSamplePortfolio')}</Button
 					>
 				</Vertical>
 			</HelpBox>
