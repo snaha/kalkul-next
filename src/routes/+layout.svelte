@@ -48,10 +48,14 @@
 	function isProductionEnvironment() {
 		return page.url.origin === 'https://kalkul.app'
 	}
+
+	function isInstagramBrowser() {
+		return browser && navigator.userAgent.includes('Instagram')
+	}
 </script>
 
 <svelte:head>
-	{#if isProductionEnvironment()}
+	{#if isProductionEnvironment() && !isInstagramBrowser()}
 		<script
 			defer
 			src="https://cloud.umami.is/script.js"
