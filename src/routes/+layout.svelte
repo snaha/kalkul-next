@@ -41,6 +41,7 @@
 	onMount(() => {
 		adapter.start()
 	})
+
 	onDestroy(() => {
 		adapter.stop()
 	})
@@ -52,10 +53,15 @@
 	function isInstagramBrowser() {
 		return browser && navigator.userAgent.includes('Instagram')
 	}
+
+	function isiOS() {
+		return browser && navigator.userAgent.includes('iOS')
+	}
 </script>
 
 <svelte:head>
-	{#if isProductionEnvironment() && !isInstagramBrowser()}
+	<!-- Disable Umami Analytics on Instagram in-app browser on iOS -->
+	{#if isProductionEnvironment() && !(isiOS() && isInstagramBrowser())}
 		<script
 			defer
 			src="https://cloud.umami.is/script.js"
