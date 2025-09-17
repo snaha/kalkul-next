@@ -100,9 +100,7 @@ export function getGraphData(
 			rd = new Date(nextYear, nextMonth + 1, 0)
 		}
 	}
-	const baseDate = new Date(portfolio.start_date)
-
-	// Pre-calculate both nominal and real terms in single pass for optimal performance
+	// Calculate inflation-adjusted values alongside nominal values for optimal performance
 	const graphInflationDeposits: number[] = []
 	const graphInflationWithdrawals: number[] = []
 	const graphInflationInvestmentValues: number[] = []
@@ -113,7 +111,7 @@ export function getGraphData(
 
 	for (let i = 0; i < graphLabels.length; i++) {
 		const rd = recordDates[i] ?? endDate
-		const years = differenceInDays(rd, baseDate) / DAYS_PER_YEAR
+		const years = differenceInDays(rd, startDate) / DAYS_PER_YEAR
 		const inflationAtRecord = DECIMAL_1.add(portfolio.inflation_rate).pow(years)
 
 		// Calculate period boundaries for deposits/withdrawals
@@ -127,24 +125,28 @@ export function getGraphData(
 			periodEnd = new Date(rd.getFullYear(), rd.getMonth() + 1, 0)
 		}
 
-		// Process deposits for this period (real terms)
+		// Process deposits for this period (convert to real terms using baseline date)
 		let depSum = 0
 		for (const [date, amount] of depositEntries) {
 			const d = new Date(date)
 			if (d >= periodStart && d <= periodEnd) {
-				const yearsAtEvent = differenceInDays(d, baseDate) / DAYS_PER_YEAR
+				// Calculate inflation from baseline date to transaction date
+				const yearsAtEvent = differenceInDays(d, startDate) / DAYS_PER_YEAR
 				const inflationAtEvent = DECIMAL_1.add(portfolio.inflation_rate).pow(yearsAtEvent)
+				// Convert nominal amount to real value at baseline date
 				depSum += new Decimal(amount).div(inflationAtEvent).toNumber()
 			}
 		}
 
-		// Process withdrawals for this period (real terms)
+		// Process withdrawals for this period (convert to real terms using baseline date)
 		let wdSum = 0
 		for (const [date, amount] of withdrawalEntries) {
 			const d = new Date(date)
 			if (d >= periodStart && d <= periodEnd) {
-				const yearsAtEvent = differenceInDays(d, baseDate) / DAYS_PER_YEAR
+				// Calculate inflation from baseline date to transaction date
+				const yearsAtEvent = differenceInDays(d, startDate) / DAYS_PER_YEAR
 				const inflationAtEvent = DECIMAL_1.add(portfolio.inflation_rate).pow(yearsAtEvent)
+				// Convert nominal amount to real value at baseline date
 				wdSum += new Decimal(amount).div(inflationAtEvent).toNumber()
 			}
 		}
@@ -153,7 +155,7 @@ export function getGraphData(
 		graphInflationDeposits.push(depSum)
 		graphInflationWithdrawals.push(-wdSum) // Graph withdrawals are negative by convention
 
-		// Investment value and fees: deflate at the snapshot date
+		// Convert investment values and fees to real terms at record date
 		graphInflationInvestmentValues.push(
 			new Decimal(graphInvestmentValues[i] ?? 0).div(inflationAtRecord).toNumber(),
 		)

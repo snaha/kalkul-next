@@ -427,4 +427,147 @@ describe('inflation-adjusted transactions on graph', () => {
 		expect(graph.graphInflationDeposits.length).toBeGreaterThan(0)
 		expect(graph.graphDeposits.length).toBeGreaterThan(0)
 	})
+
+	it('should use earliest transaction date as inflation baseline', () => {
+		// Portfolio runs from 2025-2055 but first transaction is from 1997
+		const portfolio: Portfolio = {
+			client: 1,
+			created_at: '2025-01-13',
+			currency: 'EUR',
+			end_date: '2055-01-13',
+			id: 1,
+			inflation_rate: 0.0225,
+			last_edited_at: '2025-01-13',
+			link: null,
+			name: 'Test Portfolio',
+			start_date: '2025-01-13',
+		}
+
+		const transactions = [
+			// Transaction from 1997 (28 years before portfolio start)
+			{
+				amount: 1000,
+				date: '1997-11-09',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '1997-11-09',
+				id: 1,
+				label: null,
+				last_edited_at: '1997-11-09',
+				type: 'deposit' as const,
+			},
+			// Transaction from 2025 (portfolio start date)
+			{
+				amount: 2000,
+				date: '2025-01-13',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2025-01-13',
+				id: 2,
+				label: null,
+				last_edited_at: '2025-01-13',
+				type: 'deposit' as const,
+			},
+		]
+
+		const base = getBaseData(transactions, portfolio.inflation_rate, portfolio.start_date)
+		const graph = getGraphData(
+			{ ...base, startDate: new Date('1997-11-09'), endDate: new Date('2055-01-13') },
+			DEFAULT_INVESTMENT,
+			portfolio,
+		)
+
+		// Find the year containing the early transaction (1997)
+		const idx1997 = graph.graphLabels.findIndex((l) => l === '1997')
+		// Find the year containing the later transaction (2025)
+		const idx2025 = graph.graphLabels.findIndex((l) => l === '2025')
+
+		if (idx1997 >= 0 && idx2025 >= 0) {
+			// 1997 transaction has no inflation adjustment (baseline year)
+			expect(graph.graphInflationDeposits[idx1997]).toBeCloseTo(1000, 0)
+
+			// 2025 transaction is deflated by 28 years of 2.25% inflation
+			expect(graph.graphInflationDeposits[idx2025]).toBeLessThan(1500)
+			expect(graph.graphInflationDeposits[idx2025]).toBeGreaterThan(800)
+		}
+	})
+
+	it('should use portfolio start date when it is earlier than first transaction', () => {
+		// Portfolio starts in 1990, first transaction is in 2000
+		const portfolio: Portfolio = {
+			client: 1,
+			created_at: '1990-01-01',
+			currency: 'USD',
+			end_date: '2030-01-01',
+			id: 1,
+			inflation_rate: 0.05,
+			last_edited_at: '1990-01-01',
+			link: null,
+			name: 'Early Portfolio',
+			start_date: '1990-01-01',
+		}
+
+		const transactions = [
+			// First transaction is 10 years after portfolio start
+			{
+				amount: 1000,
+				date: '2000-01-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2000-01-01',
+				id: 1,
+				label: null,
+				last_edited_at: '2000-01-01',
+				type: 'deposit' as const,
+			},
+			// Second transaction is 5 years later with same amount
+			{
+				amount: 1000,
+				date: '2005-01-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2005-01-01',
+				id: 2,
+				label: null,
+				last_edited_at: '2005-01-01',
+				type: 'deposit' as const,
+			},
+		]
+
+		const base = getBaseData(transactions, portfolio.inflation_rate, portfolio.start_date)
+		const graph = getGraphData(
+			{ ...base, startDate: new Date('1990-01-01'), endDate: new Date('2030-01-01') },
+			DEFAULT_INVESTMENT,
+			portfolio,
+		)
+
+		// Find years containing transactions
+		const idx2000 = graph.graphLabels.findIndex((l) => l === '2000')
+		const idx2005 = graph.graphLabels.findIndex((l) => l === '2005')
+
+		if (idx2000 >= 0 && idx2005 >= 0) {
+			// 2000 transaction is deflated by 10 years of 5% inflation from 1990 baseline
+			expect(graph.graphInflationDeposits[idx2000]).toBeLessThan(1000)
+			expect(graph.graphInflationDeposits[idx2000]).toBeGreaterThan(500)
+
+			// 2005 transaction (same nominal amount) is deflated by 15 years of 5% inflation from 1990 baseline
+			// Should be more deflated (smaller real value) than 2000 transaction
+			expect(graph.graphInflationDeposits[idx2005]).toBeLessThan(
+				graph.graphInflationDeposits[idx2000],
+			)
+			expect(graph.graphInflationDeposits[idx2005]).toBeLessThan(500)
+		}
+	})
 })
