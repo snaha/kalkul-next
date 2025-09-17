@@ -375,7 +375,8 @@
 			></Select>
 		</section>
 		<section class="horizontal inputs">
-			<FormattedNumberInput
+			<Input
+				type="number"
 				variant="solid"
 				dimension="compact"
 				placeholder={'30'}
@@ -386,8 +387,28 @@
 				style="max-width: 100%"
 				oninput={onPeriodChange}
 				onblur={checkPeriodInput}
-				locale={$locale}
-			></FormattedNumberInput>
+				onkeydown={(e) => {
+					// Prevent decimal separator (. and ,) and negative sign (-)
+					if (e.key === '.' || e.key === ',' || e.key === '-' || e.key === 'e' || e.key === 'E') {
+						e.preventDefault()
+					}
+				}}
+				onpaste={(e) => {
+					// Clean pasted content to only allow positive integers
+					e.preventDefault()
+					const paste = e.clipboardData?.getData('text') || ''
+					const cleanedValue = paste.replace(/[^0-9]/g, '') // Remove everything except digits
+					if (cleanedValue) {
+						const numValue = parseInt(cleanedValue, 10)
+						if (numValue > 0) {
+							period = numValue
+							onPeriodChange() // Trigger the change handler
+						}
+					}
+				}}
+				inputmode="numeric"
+				pattern="[0-9]*"
+			></Input>
 			<Select
 				variant="solid"
 				dimension="compact"
