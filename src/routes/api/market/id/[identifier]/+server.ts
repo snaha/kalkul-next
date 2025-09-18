@@ -34,7 +34,7 @@ export async function GET({ params }) {
 	try {
 		const { identifier } = params
 		if (!identifier) {
-			return jsonError('missing identifier', 400)
+			return jsonError('missing identifier')
 		}
 
 		const idType = identifierIdType(identifier)
@@ -65,6 +65,6 @@ export async function GET({ params }) {
 		return json(jsonResponse)
 	} catch (error) {
 		console.error(error)
-		return jsonError(error, 500)
+		return jsonError('error while getting cached market data', { status: 500, cause: error })
 	}
 }

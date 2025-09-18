@@ -6,7 +6,7 @@ export async function POST({ params, request }) {
 	try {
 		const { identifier } = params
 		if (!identifier) {
-			return jsonError('missing identifier', 400)
+			return jsonError('missing identifier')
 		}
 
 		const error = await request.json()
@@ -15,6 +15,6 @@ export async function POST({ params, request }) {
 		return json({ success: true })
 	} catch (error) {
 		console.error(error)
-		return jsonError(error, 500)
+		return jsonError('error while adding ISIN error', { status: 500, cause: error })
 	}
 }

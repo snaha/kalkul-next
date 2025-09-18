@@ -53,7 +53,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		// For API routes, enforce Authorization header
 		const auth = event.request.headers.get('Authorization')
 		if (!auth) {
-			return jsonError('Missing Authorization header', 400, headers)
+			return jsonError('Missing Authorization header', { cause: headers })
 		}
 
 		const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {

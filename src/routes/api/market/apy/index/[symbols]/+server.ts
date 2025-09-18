@@ -58,7 +58,7 @@ export async function GET({ params }) {
 	try {
 		const { symbols } = params
 		if (!symbols) {
-			return jsonError('missing identifier', 400)
+			return jsonError('missing identifier')
 		}
 
 		const symbolList = symbols.split(',').map(decodeURIComponent)
@@ -84,6 +84,6 @@ export async function GET({ params }) {
 		return json(apyResponse)
 	} catch (error) {
 		console.error(error)
-		return jsonError(error, 500)
+		return jsonError('error while getting index data', { status: 500, cause: error })
 	}
 }

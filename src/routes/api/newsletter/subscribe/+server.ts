@@ -28,9 +28,29 @@ export const POST: RequestHandler = async ({ request }) => {
 			email,
 			audienceId: AUDIENCE_ID,
 		})
+
 		if (getContactResponse.error) {
-			return jsonError(getContactResponse.error)
+			if (getContactResponse.error.name !== 'not_found') {
+				return jsonError(getContactResponse.error.message, { cause: getContactResponse.error })
+			}
+
+			// Contact was not found, create one
+			const createContactResponse = await resend.contacts.create({
+				email,
+				audienceId: AUDIENCE_ID,
+				unsubscribed: false,
+			})
+
+			if (createContactResponse.error) {
+				return jsonError(createContactResponse.error.message, {
+					cause: createContactResponse.error,
+				})
+			} else {
+				return json({ success: true })
+			}
 		}
+
+		// Contact was found
 		const contact = getContactResponse.data
 
 		// Contact already exist
@@ -47,25 +67,17 @@ export const POST: RequestHandler = async ({ request }) => {
 			})
 
 			if (updateContactResponse.error) {
-				return jsonError(updateContactResponse.error)
+				return jsonError(updateContactResponse.error.message, {
+					cause: updateContactResponse.error,
+				})
 			}
 
 			return json({ success: true })
 		}
 
-		const createContactResponse = await resend.contacts.create({
-			email,
-			audienceId: AUDIENCE_ID,
-			unsubscribed: false,
-		})
-
-		if (createContactResponse.error) {
-			return json({ error: createContactResponse.error.message }, { status: 400 })
-		} else {
-			return json({ success: true })
-		}
+		return jsonError('missing contact data')
 	} catch (error) {
 		console.error('Resend error:', error)
-		return json({ error: 'Subscription failed' }, { status: 500 })
+		return jsonError('Subscription failed', { status: 500, cause: error })
 	}
 }

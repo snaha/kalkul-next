@@ -124,7 +124,7 @@
 		const data = await res.json()
 
 		if (!res.ok) {
-			throw new Error(data?.error || 'Something went wrong.')
+			throw new Error(data?.error || 'Something went wrong.', { cause: data?.cause })
 		}
 	}
 
@@ -141,7 +141,9 @@
 				await manageNewsletterSubscription(false)
 			}
 		} catch (e) {
-			console.error(`Error while ${newsletter_consent ? '' : 'un'}subscribing the newsletter`, e)
+			console.error(`Error while ${newsletter_consent ? '' : 'un'}subscribing the newsletter`, {
+				e,
+			})
 			// Restore original state
 			await adapters.updateUserMetadata({
 				newsletter_consent: !newsletter_consent,
