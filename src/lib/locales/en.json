@@ -584,7 +584,10 @@
 		"preview": "Preview",
 		"error": "Error",
 		"success": "Success",
-		"realValue": "Real value"
+		"realValue": "Real value",
+		"nominalValue": "Nominal value",
+		"totalReal": "Total (real)",
+		"totalNominal": "Total (nominal)"
 	},
 	"error": {
 		"emailError": "This doesn't look like a correct email",

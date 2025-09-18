@@ -584,7 +584,10 @@
 		"preview": "Náhled",
 		"error": "Chyba",
 		"success": "Úspěch",
-		"realValue": "Reálná hodnota"
+		"realValue": "Reálná hodnota",
+		"nominalValue": "Nominální hodnota",
+		"totalReal": "Celkem (reálná)",
+		"totalNominal": "Celkem (nominální)"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",
