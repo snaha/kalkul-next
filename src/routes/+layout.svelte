@@ -72,3 +72,12 @@
 </svelte:head>
 
 {@render children()}
+
+<!-- Enable Umami Analytics on Instagram in-app browser on iOS -->
+{#if isProductionEnvironment() && isiOS() && isInstagramBrowser()}
+	<script
+		defer
+		src="https://cloud.umami.is/script.js"
+		data-website-id="792b102b-b18a-440b-9fce-58639490a4d2"
+	></script>
+{/if}
