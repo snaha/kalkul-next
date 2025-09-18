@@ -324,30 +324,70 @@
 		birthDate={new Date(client.birth_date)}
 		onchange={onDateChange}
 	></DateAge>
-	{#if showInflation && !isRecurring}
-		<div class="spacer"></div>
-		<Vertical --vertical-gap="var(--quarter-padding)">
-			<Typography class="total-amount">
-				{transactionType === 'deposit'
-					? $_('component.viewHeader.totalDeposited', {
-							values: {
-								amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
-							},
-						})
-					: $_('component.viewHeader.totalWithdrawn', {
-							values: {
-								amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
-							},
-						})}
-			</Typography>
-			<Typography class="total-amount real">
-				{$_('common.realValue')}: {formatCurrency(
-					totalAmounts.adjusted,
-					portfolio.currency,
-					$locale,
-				)}
-			</Typography>
-		</Vertical>
+	{#if !isRecurring}
+		<!-- Single transaction -->
+		{#if inflationAdjusted}
+			<!-- Inflation-adjusted: show both real and nominal values -->
+			{#if showInflation}
+				<!-- Show inflation ON: real value primary, nominal value secondary -->
+				<div class="spacer"></div>
+				<Vertical --vertical-gap="var(--quarter-padding)">
+					<Typography class="total-amount">
+						{$_('common.realValue')}: {formatCurrency(
+							totalAmounts.adjusted,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+					<Typography class="total-amount secondary">
+						{$_('common.nominalValue')}: {formatCurrency(
+							totalAmounts.nominal,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+				</Vertical>
+			{:else}
+				<!-- Show inflation OFF: nominal value primary, real value secondary -->
+				<div class="spacer"></div>
+				<Vertical --vertical-gap="var(--quarter-padding)">
+					<Typography class="total-amount">
+						{$_('common.nominalValue')}: {formatCurrency(
+							totalAmounts.nominal,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+					<Typography class="total-amount secondary">
+						{$_('common.realValue')}: {formatCurrency(
+							totalAmounts.adjusted,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+				</Vertical>
+			{/if}
+		{:else if showInflation}
+			<!-- Not inflation-adjusted, show inflation ON: display real and nominal values -->
+			<div class="spacer"></div>
+			<Vertical --vertical-gap="var(--quarter-padding)">
+				<Typography class="total-amount">
+					{$_('common.realValue')}: {formatCurrency(
+						totalAmounts.adjusted,
+						portfolio.currency,
+						$locale,
+					)}
+				</Typography>
+				<Typography class="total-amount secondary">
+					{$_('common.nominalValue')}: {formatCurrency(
+						totalAmounts.nominal,
+						portfolio.currency,
+						$locale,
+					)}
+				</Typography>
+			</Vertical>
+		{/if}
+		<!-- Not inflation-adjusted, show inflation OFF: display only form inputs -->
 	{/if}
 	{#if isRecurring}
 		<section class="horizontal inputs">
@@ -434,37 +474,68 @@
 		<div class="spacer"></div>
 		<Vertical --vertical-gap="var(--quarter-padding)">
 			<Typography>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography>
-			{#if showInflation}
+			{#if inflationAdjusted}
+				<!-- Inflation-adjusted: show both total real and total nominal values -->
+				{#if showInflation}
+					<!-- Show inflation ON: total real primary, total nominal secondary -->
+					<Typography class="total-amount">
+						{$_('common.totalReal')}: {formatCurrency(
+							totalAmounts.adjusted,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+					<Typography class="total-amount secondary">
+						{$_('common.totalNominal')}: {formatCurrency(
+							totalAmounts.nominal,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+				{:else}
+					<!-- Show inflation OFF: total nominal primary, total real secondary -->
+					<Typography class="total-amount">
+						{$_('common.totalNominal')}: {formatCurrency(
+							totalAmounts.nominal,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+					<Typography class="total-amount secondary">
+						{$_('common.totalReal')}: {formatCurrency(
+							totalAmounts.adjusted,
+							portfolio.currency,
+							$locale,
+						)}
+					</Typography>
+				{/if}
+			{:else if showInflation}
+				<!-- Not inflation-adjusted, show inflation ON: display total real and total nominal -->
 				<Typography class="total-amount">
-					{transactionType === 'deposit'
-						? $_('component.viewHeader.totalDeposited', {
-								values: {
-									amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
-								},
-							})
-						: $_('component.viewHeader.totalWithdrawn', {
-								values: {
-									amount: formatCurrency(totalAmounts.nominal, portfolio.currency, $locale),
-								},
-							})}
-				</Typography>
-				<Typography class="total-amount real">
-					{$_('common.realValue')}: {formatCurrency(
+					{$_('common.totalReal')}: {formatCurrency(
 						totalAmounts.adjusted,
 						portfolio.currency,
 						$locale,
 					)}
 				</Typography>
+				<Typography class="total-amount secondary">
+					{$_('common.totalNominal')}: {formatCurrency(
+						totalAmounts.nominal,
+						portfolio.currency,
+						$locale,
+					)}
+				</Typography>
 			{:else}
-				<Typography
-					>{transactionType === 'deposit'
+				<!-- Not inflation-adjusted, show inflation OFF: display total deposited/withdrawn -->
+				<Typography class="total-amount">
+					{transactionType === 'deposit'
 						? $_('component.viewHeader.totalDeposited', {
 								values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
 							})
 						: $_('component.viewHeader.totalWithdrawn', {
 								values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
-							})}</Typography
-				>
+							})}
+				</Typography>
 			{/if}
 		</Vertical>
 	{/if}
@@ -544,8 +615,8 @@
 	:global(.total-amount) {
 		color: var(--colors-high);
 	}
-	:global(.real) {
-		opacity: 50%;
+	:global(.total-amount.secondary) {
 		color: var(--colors-ultra-high);
+		opacity: 0.5;
 	}
 </style>
