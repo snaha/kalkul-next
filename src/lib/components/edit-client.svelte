@@ -1,6 +1,6 @@
 <script lang="ts">
 	import adapter from '$lib/adapters'
-	import { Close, Checkmark, Image, TrashCan } from 'carbon-icons-svelte'
+	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import LocalizedDateInput from '$lib/components/localized-date-input.svelte'
@@ -12,7 +12,6 @@
 	import ErrorComp from './error.svelte'
 	import type { z, ZodFormattedError } from 'zod'
 	import { emailFormSchema } from '$lib/schemas'
-	import { notImplemented } from '$lib/not-implemented'
 	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import { asyncTimeout } from '$lib/utils'
@@ -136,7 +135,7 @@
 {/snippet}
 
 <ContentLayout>
-	<Vertical>
+	<Vertical class="max-width560">
 		<section class="horizontal">
 			{#if formType === 'create'}
 				<Typography variant="h4">{$_('page.client.addClient')}</Typography>
@@ -179,7 +178,7 @@
 			oninput={() => (emailTouched = true)}
 			onblur={validateEmailAddress}>{$_('page.client.clientEmailExplanation')}</Input
 		>
-		<section class="profile-picture">
+		<Vertical --vertical-gap="var(--half-padding)">
 			<Typography>{$_('page.client.profilePicture')}</Typography>
 			<section class="horizontal">
 				<Avatar
@@ -190,15 +189,9 @@
 				/>
 				<section class="profile-helper">
 					<Typography variant="small">{$_('page.client.profileImageHelper')}</Typography>
-					<Button
-						variant="solid"
-						dimension="small"
-						onclick={() => notImplemented(undefined, $_('common.comingSoon'))}
-						><Image size={16} />{$_('page.client.uploadImage')}</Button
-					>
 				</section>
 			</section>
-		</section>
+		</Vertical>
 		{#if error}
 			<ErrorComp>{error}</ErrorComp>
 		{:else}
@@ -262,10 +255,9 @@
 	.grower {
 		flex: 1;
 	}
-	.profile-picture {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
+	:global(.max-width560) {
+		max-width: 560px;
+		width: 100%;
 	}
 	.profile-helper {
 		display: flex;

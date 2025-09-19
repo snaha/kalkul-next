@@ -22,7 +22,7 @@
 {/snippet}
 <main class:mobile={layoutStore.mobile}>
 	<Vertical
-		class="max-width560"
+		class="max-width560 text-align-center"
 		--vertical-gap="var(--padding)"
 		--vertical-justify-content="center"
 		--vertical-align-items="center"
@@ -77,6 +77,9 @@
 	}
 	:global(.max-width560) {
 		max-width: 560px;
+		width: 100%;
+	}
+	:global(.text-align-center) {
 		text-align: center;
 	}
 	:global(.rounded-box) {
