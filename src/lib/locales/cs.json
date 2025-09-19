@@ -78,7 +78,7 @@
 				"intro": "Nyní, když jste vytvořili portfolio pro svého klienta, je čas přidat svou první investici. Investice může být jakýkoliv cenný papír nebo finanční instrument.",
 				"requirements": "Pro přidání nové investice budete potřebovat nastavit:",
 				"steps": {
-					"name": "Název investice - používá se k identifikaci investice v grafech a sestavách",
+					"name": "Název investice - používá se k identifikaci investice v grafech a přehledech",
 					"type": "Typ (volitelné) - například 'Kmenové akcie', 'ETF', 'Dluhopisy', 'Podílový fond', atd.",
 					"apy": "APY (Roční procentuální výnos) - očekávaná roční míra návratnosti této investice",
 					"fees": "Struktura poplatků investice - jakékoliv související náklady nebo správní poplatky"
@@ -94,7 +94,7 @@
 					"type": "Vybrat typ transakce - vklad nebo výběr",
 					"frequency": "Vybrat frekvenci - jednorázově (výchozí) nebo opakovaně pomocí přepínače \"Opakující se\"",
 					"amount": "Zadat částku transakce",
-					"label": "Přidat označení - používá se k identifikaci transakce v grafech a sestavách",
+					"label": "Přidat volitelné označení - používá se k identifikaci transakce v grafech a přehledech",
 					"date": "Nastavit datum transakce - buď pomocí kalendáře nebo na základě věku vašeho klienta"
 				},
 				"afterCreation": "Jakmile zadáte tyto údaje, transakce se zobrazí v odpovídající kartě investice na postranním panelu stránky portfolia."
@@ -508,7 +508,9 @@
 		"withdrawals": "Výběry",
 		"recurring": "Opakující se",
 		"amount": "Částka",
-		"label": "Štítek",
+		"label": "Štítek (volitelný)",
+		"labelPlaceholderDeposit": "např. Počáteční investice, Měsíční spoření",
+		"labelPlaceholderWithdrawal": "např. Záloha na dům, Renta",
 		"create": "Vytvořit",
 		"showInflation": "Zobrazit inflaci",
 		"value": "Hodnota",

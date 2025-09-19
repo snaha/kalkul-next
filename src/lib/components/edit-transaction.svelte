@@ -21,7 +21,6 @@
 		calculatePeriodDifference,
 	} from '$lib/@snaha/kalkul-maths/date'
 	import DateAge from './date-age.svelte'
-	import { investmentStore } from '$lib/stores/investment.svelte'
 	import Toggle from './ui/toggle.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { subDays } from 'date-fns'
@@ -44,12 +43,7 @@
 	let { investment, portfolio, client, transaction, showInflation = false, close }: Props = $props()
 
 	let transactionType: TransactionType = $state('deposit')
-	let label = $state(
-		capitalizeFirstLetter($_('common.deposit')) +
-			' ' +
-			(investmentStore.filter(investment.id).length + 1).toString(),
-	)
-	let isDefaultLabel = $state(true)
+	let label = $state('')
 	let amount = $state<number | undefined>(undefined)
 	let date = $state(new Date())
 	let inflationAdjusted = $state(false)
@@ -93,8 +87,7 @@
 
 	const totalAmount = $derived(showInflation ? totalAmounts.adjusted : totalAmounts.nominal)
 	const createDisabled = $derived(
-		label === '' ||
-			amount === undefined ||
+		amount === undefined ||
 			amount <= 0 ||
 			(isRecurring && totalAmounts.nominal === 0 && totalAmounts.adjusted === 0) ||
 			createClicked,
@@ -238,21 +231,6 @@
 	function toggleRecurring() {
 		recalculateEndDate()
 	}
-
-	function onTransactionTypeChange() {
-		if (isDefaultLabel) {
-			const labelText =
-				transactionType === 'deposit' ? $_('common.deposit') : $_('common.withdrawal')
-			label =
-				capitalizeFirstLetter(labelText) +
-				' ' +
-				(investmentStore.filter(investment.id).length + 1).toString()
-		}
-	}
-
-	function onLabelInput() {
-		isDefaultLabel = false
-	}
 </script>
 
 <Vertical --gap="var(--half-padding)">
@@ -276,7 +254,6 @@
 				{ value: 'deposit', label: capitalizeFirstLetter($_('common.deposit')) },
 				{ value: 'withdrawal', label: capitalizeFirstLetter($_('common.withdrawal')) },
 			]}
-			onchange={onTransactionTypeChange}
 		></Select>
 		<Toggle
 			class="toggle"
@@ -310,10 +287,11 @@
 	<Input
 		dimension="compact"
 		variant="solid"
-		placeholder={$_('common.label')}
+		placeholder={transactionType === 'deposit'
+			? $_('common.labelPlaceholderDeposit')
+			: $_('common.labelPlaceholderWithdrawal')}
 		label={$_('common.label')}
 		bind:value={label}
-		oninput={onLabelInput}
 	></Input>
 	<DateAge
 		dimension="compact"

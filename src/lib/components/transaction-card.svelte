@@ -123,7 +123,9 @@
 		{/if}
 
 		<FlexItem />
-		<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
+		{#if transaction.label}
+			<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
+		{/if}
 		<div class="control-buttons">
 			<Button
 				variant="solid"

@@ -94,7 +94,7 @@
 					"type": "Select the transaction type - deposit or withdrawal",
 					"frequency": "Choose frequency - one-time (default) or recurring using the \"Recurring\" switch",
 					"amount": "Enter the transaction amount",
-					"label": "Add a label - used to identify the transaction in charts and reports",
+					"label": "Add an optional label - used to identify the transaction in charts and reports",
 					"date": "Set the transaction date - either using the calendar or based on your client's age"
 				},
 				"afterCreation": "Once you've entered these details, the transaction will appear in the corresponding investment card on the portfolio page sidebar."
@@ -508,7 +508,9 @@
 		"withdrawals": "Withdrawals",
 		"recurring": "Recurring",
 		"amount": "Amount",
-		"label": "Label",
+		"label": "Label (optional)",
+		"labelPlaceholderDeposit": "e.g. Initial investment, Monthly savings",
+		"labelPlaceholderWithdrawal": "e.g. House downpayment, Retirement withdrawal",
 		"create": "Create",
 		"showInflation": "Show inflation",
 		"value": "Value",
