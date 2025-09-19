@@ -278,7 +278,6 @@
 		},
 		"changePassword": {
 			"newPassword": "Nové heslo",
-			"confirmNewPassword": "Potvrdit nové heslo",
 			"successChangePassword": "Vaše heslo bylo úspěšně změněno!",
 			"backToSettings": "Zpět do nastavení účtu",
 			"changePassword": "Změnit heslo"

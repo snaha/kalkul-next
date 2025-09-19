@@ -1,91 +1,37 @@
 <script lang="ts">
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { resetPasswordFormSchema } from '$lib/schemas'
-	import { z } from 'zod'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { _ } from 'svelte-i18n'
-	import type { ZodFormattedError } from 'zod'
 	import Button from '$lib/components/ui/button.svelte'
 	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
 	import routes from '$lib/routes'
 	import { base } from '$app/paths'
 
-	let formErrors: ZodFormattedError<z.infer<typeof resetPasswordFormSchema>> | undefined =
-		$state(undefined)
-	let formValid = $state(false)
-
-	let passwordTouched = $state(false)
-	let confirmPasswordTouched = $state(false)
-
-	let confirmNewPassword = $state('')
 	let newPassword = $state('')
-
+	let newPasswordError: string | undefined = $state()
+	let error: string | undefined = $state()
 	let success = $state(false)
-	let error: string | undefined = $state(undefined)
+	const formValid = $derived(newPasswordError === undefined)
 
 	async function updateUserPassword() {
 		try {
 			await adapter.resetPassword(newPassword)
 			success = true
 		} catch (e) {
+			error = String(e)
 			console.error(e)
-			error = (e as Error).message
-		}
-	}
-
-	function onPasswordBlur() {
-		if (newPassword.trim() === '') {
-			passwordTouched = false
-		} else {
-			passwordTouched = true
-		}
-	}
-	function onConfirmPasswordBlur() {
-		if (confirmNewPassword.trim() === '') {
-			confirmPasswordTouched = false
-		} else {
-			confirmPasswordTouched = true
-		}
-	}
-
-	function clearErrorState() {
-		if (error) {
-			error = undefined
-			passwordTouched = false
-			confirmPasswordTouched = false
 		}
 	}
 
 	$effect(() => {
-		const res = resetPasswordFormSchema.safeParse({
-			newPassword,
-			confirmNewPassword,
-		})
-		if (res.success) {
-			formErrors = undefined
-			formValid = true
+		if (newPassword.length < 12) {
+			newPasswordError = $_('error.passwordLengthError')
 		} else {
-			formErrors = res.error.format()
-			formValid = false
+			newPasswordError = undefined
 		}
 	})
 </script>
-
-{#snippet newPasswordError()}
-	{#if formErrors?.newPassword?._errors}
-		{#each formErrors?.newPassword?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
-{#snippet confirmNewPassError()}
-	{#if formErrors?.confirmNewPassword?._errors}
-		{#each formErrors?.confirmNewPassword?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
 
 <main>
 	{#if success}
@@ -107,26 +53,13 @@
 		<Typography variant="h4">{$_('page.changePassword.changePassword')}</Typography>
 		<form onsubmit={updateUserPassword} class="change-email">
 			<Input
+				autofocus
+				variant="solid"
+				dimension="compact"
 				type="password"
 				label={$_('page.changePassword.newPassword')}
 				bind:value={newPassword}
-				oninput={clearErrorState}
-				onblur={onPasswordBlur}
-				error={passwordTouched && newPassword.trim() !== '' && formErrors?.newPassword?._errors
-					? newPasswordError
-					: undefined}
-			/>
-			<Input
-				type="password"
-				label={$_('page.changePassword.confirmNewPassword')}
-				bind:value={confirmNewPassword}
-				oninput={clearErrorState}
-				onblur={onConfirmPasswordBlur}
-				error={confirmPasswordTouched &&
-				confirmNewPassword.trim() !== '' &&
-				formErrors?.confirmNewPassword?._errors
-					? confirmNewPassError
-					: undefined}
+				error={newPasswordError}
 			/>
 		</form>
 		{#if error}

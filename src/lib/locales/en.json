@@ -278,7 +278,6 @@
 		},
 		"changePassword": {
 			"newPassword": "New password",
-			"confirmNewPassword": "Confirm new password",
 			"successChangePassword": "Your password was successfully changed!",
 			"backToSettings": "Return to account settings",
 			"changePassword": "Change password"
