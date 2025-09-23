@@ -1,5 +1,73 @@
 # Changelog
 
+## [0.12.0](https://github.com/snaha/kalkul/compare/v0.11.0...v0.12.0) (2025-09-19)
+
+
+### Features
+
+* consistent amount details in edit transaction component ([#949](https://github.com/snaha/kalkul/issues/949)) ([5a673a4](https://github.com/snaha/kalkul/commit/5a673a4e0b4ad5169c9e216f0590eb5af32f9199))
+* consistent value details in transaction card component ([#947](https://github.com/snaha/kalkul/issues/947)) ([8550a85](https://github.com/snaha/kalkul/commit/8550a859924fa1485a49b7642c46b5234d108df8))
+* get started page ([#875](https://github.com/snaha/kalkul/issues/875)) ([55b1a15](https://github.com/snaha/kalkul/commit/55b1a1544840082645eebe8ca52faad0d2ce5cf5))
+* helpbox get started links ([#903](https://github.com/snaha/kalkul/issues/903)) ([752fa9a](https://github.com/snaha/kalkul/commit/752fa9ad17fdbf0a1634ac55fafe7ae7f4932fa3))
+* inflation adjusted transactions ([#839](https://github.com/snaha/kalkul/issues/839)) ([94576dd](https://github.com/snaha/kalkul/commit/94576ddeaefb3ac92dd88aa8fbb213db6051b574))
+* make transaction labels optional and remove auto generated labels ([#951](https://github.com/snaha/kalkul/issues/951)) ([2e2337b](https://github.com/snaha/kalkul/commit/2e2337bb2607bcafd671d59f55aab40544dbbae1))
+* newsletter subscription management in settings ([#900](https://github.com/snaha/kalkul/issues/900)) ([c3393fc](https://github.com/snaha/kalkul/commit/c3393fcad0fb3e1bf531aa26fee66246655c0539))
+* send-newsletter script improvements ([#870](https://github.com/snaha/kalkul/issues/870)) ([044f7c1](https://github.com/snaha/kalkul/commit/044f7c12404a42cf274ff45e75167a7a66be3d07))
+* sign-up for newsletter ([#856](https://github.com/snaha/kalkul/issues/856)) ([b5ae795](https://github.com/snaha/kalkul/commit/b5ae7955203c44908fbd9b9347ab8dce4c34e0cb))
+* sign-up on landing page ([#854](https://github.com/snaha/kalkul/issues/854)) ([d108240](https://github.com/snaha/kalkul/commit/d108240e266571059b826ce7f73c8537065120fb)), closes [#851](https://github.com/snaha/kalkul/issues/851) [#692](https://github.com/snaha/kalkul/issues/692)
+* svelte newsletter ([#847](https://github.com/snaha/kalkul/issues/847)) ([4da58ba](https://github.com/snaha/kalkul/commit/4da58baabe4a83c45ff361ec0e0af660b0eba737))
+* updated newsletter ([#923](https://github.com/snaha/kalkul/issues/923)) ([2966a51](https://github.com/snaha/kalkul/commit/2966a51081c0edaa553b62b4ffda201b7a758ca0))
+
+
+### Bug Fixes
+
+* add busy state to create/edit buttons ([#917](https://github.com/snaha/kalkul/issues/917)) ([0b9fcb8](https://github.com/snaha/kalkul/commit/0b9fcb8cf2c56d8457a6cfa2294fc9e0d95759b2))
+* analytics in instagram browser ([#942](https://github.com/snaha/kalkul/issues/942)) ([644a6d7](https://github.com/snaha/kalkul/commit/644a6d788c4f569c033573970ebd286d8eb59f30))
+* button, spelling ([#909](https://github.com/snaha/kalkul/issues/909)) ([2f3bf65](https://github.com/snaha/kalkul/commit/2f3bf6565d91b60ba2776f2f8697e3ccea40370a))
+* client age label ([#889](https://github.com/snaha/kalkul/issues/889)) ([04350ba](https://github.com/snaha/kalkul/commit/04350baa74c3716af9792c38b1587829fac932da)), closes [#861](https://github.com/snaha/kalkul/issues/861)
+* convert email to lowercase ([#857](https://github.com/snaha/kalkul/issues/857)) ([6fb12f4](https://github.com/snaha/kalkul/commit/6fb12f40032b5f273fdca4918ad02c120dfdcd9d))
+* default maximum fraction digits ([#881](https://github.com/snaha/kalkul/issues/881)) ([16633d1](https://github.com/snaha/kalkul/commit/16633d1c6ee6b294451c496a5fa06444ae006431))
+* delete investment modal ([#918](https://github.com/snaha/kalkul/issues/918)) ([b39e9c2](https://github.com/snaha/kalkul/commit/b39e9c2602e403f86958e3e6ee6cafb257b5428b)), closes [#916](https://github.com/snaha/kalkul/issues/916)
+* disable analytics on iOS Instagram in-app browser ([#940](https://github.com/snaha/kalkul/issues/940)) ([92b2629](https://github.com/snaha/kalkul/commit/92b26294ff0d33bdd7611c6708f8b1fda1b78340))
+* disable analytics when in instagram browser ([#939](https://github.com/snaha/kalkul/issues/939)) ([2af744d](https://github.com/snaha/kalkul/commit/2af744d84914ea687201d29a00e89764e11369fe))
+* disable email obfuscation ([#867](https://github.com/snaha/kalkul/issues/867)) ([ece31c1](https://github.com/snaha/kalkul/commit/ece31c1077cd0194144e8440ef342e0b9675cd07))
+* disable email obfuscation for any email we send ([#869](https://github.com/snaha/kalkul/issues/869)) ([5adc037](https://github.com/snaha/kalkul/commit/5adc03749bfd98e4b416a4f1d0942db28f0b6351))
+* email use sans ([#886](https://github.com/snaha/kalkul/issues/886)) ([2f46d6c](https://github.com/snaha/kalkul/commit/2f46d6c8c7ba53fa9d72f82e0320861100ad7462))
+* for input field in edit transaction component ([#937](https://github.com/snaha/kalkul/issues/937)) ([3d13bf3](https://github.com/snaha/kalkul/commit/3d13bf34fa0c1937ee0ca57712c87f09692528aa))
+* improve czech September newsletter email translations ([#868](https://github.com/snaha/kalkul/issues/868)) ([d53381e](https://github.com/snaha/kalkul/commit/d53381ef2a8cafa82bb24bd1c8c9ebcdb9f74083))
+* improve password strength ([#924](https://github.com/snaha/kalkul/issues/924)) ([95ebee6](https://github.com/snaha/kalkul/commit/95ebee67af95acee6edb214d12823383522838d5))
+* inflation should be calculated from the earliest event ([#938](https://github.com/snaha/kalkul/issues/938)) ([481c527](https://github.com/snaha/kalkul/commit/481c52716f99c612f4a103a411b2abf5d6af0475))
+* initial language ([#894](https://github.com/snaha/kalkul/issues/894)) ([890a602](https://github.com/snaha/kalkul/commit/890a6029fd2de3b39c429f93d705664aa4e10cc5))
+* instagram in-app-browser ([#928](https://github.com/snaha/kalkul/issues/928)) ([c85ba0d](https://github.com/snaha/kalkul/commit/c85ba0deb695dca23421ace47673a227fb563b7a))
+* instagram in-app-browser ([#930](https://github.com/snaha/kalkul/issues/930)) ([a09cba6](https://github.com/snaha/kalkul/commit/a09cba6f5bccc5891da659c8f195320fa62f2599))
+* instagram landing page ([#933](https://github.com/snaha/kalkul/issues/933)) ([fe8d8c1](https://github.com/snaha/kalkul/commit/fe8d8c1d402c8d5b5166cea84427d26c97799459))
+* instagram mobile page ([#931](https://github.com/snaha/kalkul/issues/931)) ([f825edd](https://github.com/snaha/kalkul/commit/f825eddfc3a36a995f3f293b559f776497d5cd40))
+* localization initialization ([#901](https://github.com/snaha/kalkul/issues/901)) ([3c5d3ef](https://github.com/snaha/kalkul/commit/3c5d3ef6e1ee9165ab610a817d1e882b4d6800be))
+* missing ISIN translation ([#853](https://github.com/snaha/kalkul/issues/853)) ([1ae8c96](https://github.com/snaha/kalkul/commit/1ae8c969b140a861a95dac97bb7f33b1d3a6cd71)), closes [#852](https://github.com/snaha/kalkul/issues/852)
+* move from dependencies to dev ([#896](https://github.com/snaha/kalkul/issues/896)) ([ad18b28](https://github.com/snaha/kalkul/commit/ad18b2876399559209e662631c4029152a90d3c4))
+* newsletter fixes ([#865](https://github.com/snaha/kalkul/issues/865)) ([e6e4af1](https://github.com/snaha/kalkul/commit/e6e4af1f081d21e04d2955333baf21a0796c829a))
+* newsletter subscription ([#950](https://github.com/snaha/kalkul/issues/950)) ([50e097b](https://github.com/snaha/kalkul/commit/50e097b5b20ba561ba1b92ee6b5075f20379ece0))
+* occurrences translation ([#863](https://github.com/snaha/kalkul/issues/863)) ([9b1f09e](https://github.com/snaha/kalkul/commit/9b1f09e6f0a5094ccedaa22c27da037e75a7f3d9)), closes [#862](https://github.com/snaha/kalkul/issues/862)
+* password change ([#953](https://github.com/snaha/kalkul/issues/953)) ([b0decc0](https://github.com/snaha/kalkul/commit/b0decc04f18785ede215fb49619c077985a91617))
+* potential fix for playwright error ([#866](https://github.com/snaha/kalkul/issues/866)) ([5a5da32](https://github.com/snaha/kalkul/commit/5a5da32ad9ecab75b74f933498a30bac865b6ce7))
+* remove profile picture upload ([#954](https://github.com/snaha/kalkul/issues/954)) ([8a2cfd8](https://github.com/snaha/kalkul/commit/8a2cfd82f4391f022a358350c452bde47a3fa50f))
+* sample portfolio from homepage ([#895](https://github.com/snaha/kalkul/issues/895)) ([94c0508](https://github.com/snaha/kalkul/commit/94c05088e5bff653d2b4d81cb655b54e40bc0d5e)), closes [#878](https://github.com/snaha/kalkul/issues/878)
+* sample portfolio link ([#935](https://github.com/snaha/kalkul/issues/935)) ([bfc2ff9](https://github.com/snaha/kalkul/commit/bfc2ff9e0a2783c885f7701dfa00ee2fa7e10cfd))
+* settings back navigation ([#864](https://github.com/snaha/kalkul/issues/864)) ([a49d514](https://github.com/snaha/kalkul/commit/a49d51460b32b5c8844993178ba281bebe3eef28)), closes [#860](https://github.com/snaha/kalkul/issues/860)
+* show portfolio period ([#892](https://github.com/snaha/kalkul/issues/892)) ([abf162e](https://github.com/snaha/kalkul/commit/abf162ee88ab7b24b1a5546feccb2100b4aa299e))
+* sort clients by reverse creation date ([#890](https://github.com/snaha/kalkul/issues/890)) ([7496329](https://github.com/snaha/kalkul/commit/74963298356eb876f76e4ee2f49d3cbd636953fd)), closes [#859](https://github.com/snaha/kalkul/issues/859)
+* stop propagation of transaction card menu click ([#914](https://github.com/snaha/kalkul/issues/914)) ([8ebcb8d](https://github.com/snaha/kalkul/commit/8ebcb8d1c668aa76507fc7f75ebb0b09c50dfd99))
+* transaction date format ([#888](https://github.com/snaha/kalkul/issues/888)) ([f82876f](https://github.com/snaha/kalkul/commit/f82876f273a7a4deb8dd2498b9c4173e0902ecd9)), closes [#882](https://github.com/snaha/kalkul/issues/882)
+* update help modal with get started ([#893](https://github.com/snaha/kalkul/issues/893)) ([e313551](https://github.com/snaha/kalkul/commit/e313551d212c98a78bfc9a845efce30ac45e1f9d))
+* update september newsletter ([#908](https://github.com/snaha/kalkul/issues/908)) ([bd9de68](https://github.com/snaha/kalkul/commit/bd9de68c5a6aa9052b8ca1f7005ae5cb06fdb960))
+* updated footer ([#885](https://github.com/snaha/kalkul/issues/885)) ([cb19abe](https://github.com/snaha/kalkul/commit/cb19abe4a68c711de87c08bdb241c6968542b7ef))
+* welcome get started ([#906](https://github.com/snaha/kalkul/issues/906)) ([42469f0](https://github.com/snaha/kalkul/commit/42469f05f6e73e47a1a806176e81d1e45b7556c5))
+
+
+### Reverts
+
+* instagram in-app browser fixes ([#934](https://github.com/snaha/kalkul/issues/934)) ([f93b5ce](https://github.com/snaha/kalkul/commit/f93b5ce609eb9c7a9b27126bb44bbe2f99987434))
+
 ## [0.11.0](https://github.com/snaha/kalkul/compare/v0.10.0...v0.11.0) (2025-08-28)
 
 
