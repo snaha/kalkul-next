@@ -11,13 +11,16 @@ import {
 	type MetaFields,
 	type Portfolio,
 	type Store,
+	type StripeSubscription,
 	type TypedUserMetadata,
 } from '$lib/types'
+import type Stripe from 'stripe'
 import { clientStore } from '$lib/stores/clients.svelte'
 import { portfolioStore } from '$lib/stores/portfolio.svelte'
 import { investmentStore } from '$lib/stores/investment.svelte'
 import { transactionStore } from '$lib/stores/transaction.svelte'
 import { apiRoutes } from '$lib/routes'
+import { subscriptionStore } from '$lib/stores/subscription.svelte'
 
 const POSTGRES_NO_ROWS_ERROR_CODE = 'PGRST116'
 
@@ -182,6 +185,7 @@ export default class Supabase implements Adapter {
 		this.stop()
 		authStore.user = undefined
 		authStore.session = undefined
+		subscriptionStore.reset()
 	}
 
 	async refreshSession() {
@@ -472,5 +476,56 @@ export default class Supabase implements Adapter {
 			console.error('Failed to set market data cache', error)
 			throw new Error(error.message)
 		}
+	}
+
+	async upsertStripeSubscription(
+		userId: string,
+		subscription: Stripe.Subscription,
+	): Promise<StripeSubscription> {
+		const customerId = subscription.customer as string
+
+		const subscriptionData: Omit<StripeSubscription, MetaFields> = {
+			stripe_customer_id: customerId,
+			user_id: userId,
+			stripe_subscription_id: subscription.id,
+			status: subscription.status,
+			current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+			trial_end: subscription.trial_end
+				? new Date(subscription.trial_end * 1000).toISOString()
+				: null,
+			items: subscription.items ? JSON.parse(JSON.stringify(subscription.items)) : null,
+		}
+
+		const { data, error } = await this.supabase
+			.from('stripe_subscription')
+			.upsert(subscriptionData, {
+				onConflict: 'stripe_customer_id',
+			})
+			.select()
+			.single()
+
+		if (error) {
+			throw new Error(`Failed to upsert subscription: ${error.message}`, { cause: error })
+		}
+
+		return data
+	}
+
+	async getStripeSubscriptionByUserId(userId: string): Promise<StripeSubscription | undefined> {
+		const { data, error } = await this.supabase
+			.from('stripe_subscription')
+			.select('*')
+			.eq('user_id', userId)
+			.single()
+
+		if (error) {
+			if (error.code === POSTGRES_NO_ROWS_ERROR_CODE) {
+				// No rows returned
+				return undefined
+			}
+			throw new Error(`Failed to get subscription: ${error.message}`, { cause: error })
+		}
+
+		return data
 	}
 }

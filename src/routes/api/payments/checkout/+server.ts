@@ -31,11 +31,8 @@ async function getSubscriptionParameters(email: string): Promise<{
 		return defaultParameters
 	}
 
-	const subscriptionsList = await stripe.subscriptions.list({
-		customer: customer.id,
-		status: 'all',
-	})
-	const subscriptions = subscriptionsList.data
+	// Subscriptions are already included via expand: ['data.subscriptions']
+	const subscriptions = customer.subscriptions?.data || []
 
 	if (subscriptions.length === 0) {
 		return {

@@ -9,19 +9,21 @@
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
 	import Stripe from 'stripe'
+	import type { StripeSubscription } from '$lib/types'
 	import { goto } from '$app/navigation'
 	import routes, { apiRoutes } from '$lib/routes'
 	import { authorizedFetch } from '$lib/auth'
 	import { base } from '$app/paths'
 
-	let subscription: Stripe.Subscription | undefined = $state()
+	let subscription: StripeSubscription | undefined = $state()
+	const items = $derived(subscription?.items as unknown as Stripe.Subscription['items'])
 	const isTrial = $derived(subscription?.status === 'trialing')
-	const yearlyFee = $derived((subscription?.items.data[0].price.unit_amount ?? 0) / 100)
-	const currency = $derived(subscription?.items.data[0].price.currency.toUpperCase())
+	const yearlyFee = $derived((items?.data?.[0]?.price?.unit_amount ?? 0) / 100)
+	const currency = $derived(items?.data?.[0]?.price?.currency?.toUpperCase() ?? 'CZK')
 	const sessionId = $derived(page.params.session_id)
 	const firstPaymentFormattedDate = $derived(
 		new Date(
-			((isTrial ? subscription?.trial_end : subscription?.current_period_end) ?? 0) * 1000,
+			(isTrial ? subscription?.trial_end : subscription?.current_period_end) ?? new Date(),
 		).toLocaleDateString(undefined, {
 			dateStyle: 'medium',
 		}),
@@ -69,13 +71,11 @@
 			throw new Error('subscription not found', { cause: subscriptionResponse })
 		}
 
-		const customer = subscription?.customer
-		if (!customer) {
+		const customerId = subscription?.stripe_customer_id
+		if (!customerId) {
 			subscription = undefined
 			throw new Error('customer not found', { cause: subscriptionResponse })
 		}
-
-		const customerId = typeof customer === 'string' ? customer : customer.id
 
 		subscriptionStore.data = [subscription]
 		subscriptionStore.customer = customerId

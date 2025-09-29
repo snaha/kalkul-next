@@ -1,27 +1,37 @@
 import { stripe } from '$lib/payments/stripe'
+import { serviceAdapter } from '$lib/adapters/service'
 import { json } from '@sveltejs/kit'
+import { jsonError } from '$lib/error'
 
-export async function GET({ params }) {
+export async function GET({ params, locals }) {
 	try {
 		const { session_id } = params
 		if (!session_id) {
-			return json('missing session_id', { status: 400 })
+			return jsonError('Missing session_id')
+		}
+
+		const user = locals.user
+		if (!user?.id) {
+			return jsonError('Unauthorized', { status: 401 })
 		}
 
 		const checkoutSession = await stripe.checkout.sessions.retrieve(session_id)
 		if (checkoutSession.mode !== 'subscription') {
-			throw Error('not subscription')
+			return jsonError('Invalid session mode - not a subscription')
 		}
 
 		const subscriptionId = checkoutSession.subscription
 		if (!subscriptionId || typeof subscriptionId !== 'string') {
-			throw Error('missing subscriptionId')
+			return jsonError('Missing subscription ID from checkout session')
 		}
 		const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+
+		// Store subscription in database for faster future access
+		await serviceAdapter.upsertStripeSubscription(user.id, subscription)
 
 		return json({ subscription })
 	} catch (error) {
 		console.error(error)
-		return json({ error }, { status: 500 })
+		return jsonError('Failed to process payment success', { status: 500, cause: error })
 	}
 }

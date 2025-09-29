@@ -8,10 +8,11 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
-	import routes from '$lib/routes'
+	import routes, { apiRoutes } from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { page } from '$app/state'
 	import { base } from '$app/paths'
+	import { authorizedFetch } from '$lib/auth'
 
 	let formErrors: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state(undefined)
 	let formValid = $state(false)
@@ -26,11 +27,38 @@
 	const mailpitUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	async function updateUserEmail() {
+		const oldEmail = authStore.user?.email
+		if (!oldEmail) {
+			error = 'Current email not found'
+			return
+		}
+
 		try {
+			// Step 1: Update Stripe customer email first (critical step)
+			const stripeResponse = await authorizedFetch(apiRoutes.CUSTOMER_EMAIL, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					oldEmail,
+					newEmail,
+				}),
+			})
+
+			if (!stripeResponse.ok) {
+				const stripeError = await stripeResponse.json()
+				throw new Error(
+					`Failed to update payment information: ${stripeError.error || 'Unknown error'}`,
+				)
+			}
+
+			// Step 2: Only update Supabase email after Stripe succeeds
 			await adapter.updateEmail(newEmail)
+
 			success = true
 		} catch (e) {
-			console.error(e)
+			console.error('Failed to update email:', e)
 			error = (e as Error).message
 		}
 	}

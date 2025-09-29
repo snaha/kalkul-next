@@ -10,6 +10,12 @@
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import Banner from '$lib/components/banner.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import { onMount } from 'svelte'
+	import { PROMOTION, PROMOTION_STORAGE_KEY } from '$lib/payments'
+
+	onMount(() => {
+		localStorage.setItem(PROMOTION_STORAGE_KEY, PROMOTION.MONEYFEST_SK_2025)
+	})
 </script>
 
 {#snippet icon()}

@@ -5,9 +5,11 @@ import type {
 	MetaFields,
 	Portfolio,
 	PortfolioView,
+	StripeSubscription,
 	Transaction,
 	TypedUserMetadata,
 } from '$lib/types'
+import type Stripe from 'stripe'
 import SupabaseAdapter from './supabase'
 
 export interface Adapter {
@@ -57,6 +59,13 @@ export interface Adapter {
 		updatedAfter: Date | undefined,
 	) => Promise<object | undefined>
 	addMarketData: (identifier: string, idType: string, responseData: object) => Promise<void>
+
+	// Stripe subscription management
+	upsertStripeSubscription: (
+		userId: string,
+		subscription: Stripe.Subscription,
+	) => Promise<StripeSubscription>
+	getStripeSubscriptionByUserId: (userId: string) => Promise<StripeSubscription | undefined>
 }
 
 export default new SupabaseAdapter() as Adapter

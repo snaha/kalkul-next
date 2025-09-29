@@ -72,7 +72,7 @@ Generate TypeScript types after schema changes:
 
 ```bash
 # Generate types from local database (recommended)
-supabase gen types --lang=typescript --local > src/lib/typesdb.ts
+pnpm supabase:gen-types
 
 # Alternative: Generate from project ID
 supabase gen types --lang=typescript --project-id=<project-id> > src/lib/typesdb.ts
@@ -83,10 +83,8 @@ supabase gen types --lang=typescript --project-id=<project-id> > src/lib/typesdb
 1. Create migration: `pnpm supabase migration new <descriptive-name>`
 2. Edit migration file in `supabase/migrations/`
 3. Apply migrations: `pnpm supabase db reset`
-4. Generate types: `supabase gen types --lang=typescript --local > src/lib/typesdb.ts`
+4. Generate types: `pnpm supabase:gen-types`
 5. Verify types compile: `pnpm check`
-
-> **⚠️ Important**: Use `supabase` directly (not `pnpm supabase`) for type generation. The pnpm wrapper can mix command output with the generated TypeScript, corrupting the file.
 
 ## Project Structure
 

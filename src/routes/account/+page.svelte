@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
 	import { goto } from '$app/navigation'
+	import { page } from '$app/state'
 	import adapters from '$lib/adapters'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import ErrorComponent from '$lib/components/error.svelte'
@@ -15,7 +16,7 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import DeleteAccountModal from '$lib/components/delete-account-modal.svelte'
-	import routes, { apiRoutes } from '$lib/routes'
+	import routes, { accountSections, apiRoutes } from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { subscriptionStore } from '$lib/stores/subscription.svelte'
 	import { formatNumber } from '$lib/utils'
@@ -34,24 +35,31 @@
 	import { authorizedFetch } from '$lib/auth'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 	import Checkbox from '$lib/components/ui/checkbox.svelte'
+	import type { StripeSubscription } from '$lib/types'
 
 	let error: string | undefined = $state()
 	let showDeleteModal = $state(false)
 	let language = $state($locale?.slice(0, 2) ?? 'cs')
-	const subscription: Stripe.Subscription | undefined = $derived(subscriptionStore.data[0])
+	const subscription: StripeSubscription | undefined = $derived(subscriptionStore.data[0])
+	const items = $derived(subscription?.items as unknown as Stripe.Subscription['items'])
 	const isTrial = $derived(subscription?.status === 'trialing')
-	const currency = $derived(subscription?.currency.toUpperCase())
+	const currency = $derived(items?.data?.[0]?.price?.currency?.toUpperCase() ?? 'CZK')
 	const nextPaymentFormattedDate = $derived(
 		new Date(
-			((isTrial ? subscription?.trial_end : subscription?.current_period_end) ?? 0) * 1000,
+			(isTrial ? subscription?.trial_end : subscription?.current_period_end) ?? new Date(),
 		).toLocaleDateString(undefined, {
 			dateStyle: 'medium',
 		}),
 	)
-	const yearlyFee = $derived((subscription?.items.data[0].price.unit_amount ?? 0) / 100)
+	const yearlyFee = $derived((items?.data?.[0]?.price?.unit_amount ?? 0) / 100)
 	const trialRemainingDays = $derived(
-		isTrial ? differenceInDays(new Date((subscription?.trial_end ?? 0) * 1000), new Date()) - 1 : 0,
+		isTrial && subscription?.trial_end
+			? differenceInDays(new Date(subscription.trial_end), new Date()) - 1
+			: 0,
 	)
+
+	const hash = $derived(page.url.hash)
+	let selectedTabId = $state(`#${accountSections.ACCOUNT}`)
 
 	const languageName: Record<string, string> = {
 		en: 'English',
@@ -71,6 +79,18 @@
 			if (browser) {
 				localStorage.setItem(LOCALE_STORAGE_KEY, newLocale)
 			}
+		}
+	})
+
+	$effect(() => {
+		if (hash !== '') {
+			selectedTabId = hash
+		}
+	})
+
+	$effect(() => {
+		if (hash !== '' && selectedTabId !== hash) {
+			goto(`/account/${selectedTabId}`, { replaceState: true })
 		}
 	})
 
@@ -193,8 +213,9 @@
 			ulClass="account-tabbar"
 			liClass="account-tab-li"
 			buttonClass="account-tab-button"
+			bind:selectedTabId
 		>
-			<TabContent>
+			<TabContent id={`#${accountSections.ACCOUNT}`}>
 				{#snippet value()}
 					<User size={24} />{$_('page.account.account')}
 				{/snippet}
@@ -240,7 +261,7 @@
 					</Vertical>
 				</Vertical>
 			</TabContent>
-			<TabContent>
+			<TabContent id={`#${accountSections.PAYMENT}`}>
 				{#snippet value()}
 					<Receipt size={24} />{$_('common.paymentAndBilling')}
 				{/snippet}

@@ -19,34 +19,36 @@
 	import { ArrowRight, CheckmarkFilled, Rocket, WatsonHealthRotate_360 } from 'carbon-icons-svelte'
 	import { addDays } from 'date-fns'
 	import type Stripe from 'stripe'
+	import type { StripeSubscription } from '$lib/types'
 	import { onMount } from 'svelte'
-	import { _ } from 'svelte-i18n'
+	import { _, locale } from 'svelte-i18n'
+	import { PROMOTION, PROMOTION_STORAGE_KEY } from '$lib/payments'
 
 	let loading = $state(true)
 	let payButtonDisabled = $state(false)
 	let price: Stripe.Price | undefined = $state()
-	let isEarlyBird = $state(false)
-	let earlyBirdPrice: Stripe.Price | undefined = $state()
+	let isPromotion = $state(false)
+	let promotionalPrice: Stripe.Price | undefined = $state()
 	let error: string | undefined = $state()
-	const subscription: Stripe.Subscription | undefined = $derived(
+	const activeSubscription: StripeSubscription | undefined = $derived(
 		subscriptionStore.getActiveSubscription(),
 	)
-	const isTrial = $derived(subscriptionStore.data.length === 0)
+	const hasExistingSubscription = $derived(subscriptionStore.data.length > 0)
+	const isTrial = $derived(!hasExistingSubscription)
 	const currency = $derived(price?.currency.toUpperCase())
 	const yearlyFee = $derived((price?.unit_amount ?? 0) / 100)
 	const monthlyFee = $derived(yearlyFee / 12)
 	const trialDays = parseInt(PUBLIC_PRODUCT_TRIAL_DAYS, 10)
 	const trialRemainingDays = $derived(isTrial ? trialDays : 0)
 
-	const earlyBirdYearlyFee = $derived((earlyBirdPrice?.unit_amount ?? 0) / 100)
-	const earlyBirdMonthlyFee = $derived(earlyBirdYearlyFee / 12)
+	const promotionalYearlyFee = $derived((promotionalPrice?.unit_amount ?? 0) / 100)
+	const promotionalMonthlyFee = $derived(promotionalYearlyFee / 12)
 	const firstPaymentFormattedDate = $derived(
 		addDays(new Date(), trialDays).toLocaleDateString(undefined, {
 			dateStyle: 'medium',
 		}),
 	)
 	const formatNumber = new Intl.NumberFormat().format
-	const locale = 'cs'
 
 	async function onClickPay() {
 		payButtonDisabled = true
@@ -80,12 +82,15 @@
 
 	async function fetchPrices() {
 		price = await fetchPrice(PUBLIC_PRODUCT_PRICE_ID)
-		if (subscriptionStore.data.length === 0) {
-			isEarlyBird = true
-			earlyBirdPrice = await fetchPrice(PUBLIC_PRODUCT_EARLY_BIRD_PRICE_ID)
+		if (
+			!hasExistingSubscription &&
+			localStorage.getItem(PROMOTION_STORAGE_KEY) === PROMOTION.MONEYFEST_SK_2025
+		) {
+			isPromotion = true
+			promotionalPrice = await fetchPrice(PUBLIC_PRODUCT_EARLY_BIRD_PRICE_ID)
 		} else {
-			isEarlyBird = false
-			earlyBirdPrice = price
+			isPromotion = false
+			promotionalPrice = price
 		}
 	}
 
@@ -138,7 +143,7 @@
 	</ContentLayout>
 {:else}
 	<Vertical --vertical-gap="var(--double-padding)" class="max560">
-		{#if !subscription}
+		{#if !activeSubscription}
 			<Vertical --vertical-gap="var(--half-padding)">
 				<Typography --colors-ultra-high={isTrial ? 'var(--colors-ultra-high)' : 'var(--colors-red)'}
 					>{isTrial ? $_('common.welcomeToKalkul') : $_('common.noActiveSubscription')}</Typography
@@ -151,7 +156,7 @@
 						: $_('common.pleaseSubscribeToUseKalkul')}</Typography
 				>
 			</Vertical>
-			{#if isEarlyBird}
+			{#if isPromotion}
 				<Vertical --vertical-gap="var(--padding)">
 					<Vertical --vertical-gap="0">
 						<Horizontal --horizontal-gap="var(--half-padding)">
@@ -160,7 +165,7 @@
 									>{monthlyFee} {currency}</Typography
 								>
 								<Typography variant="large" bold class="green"
-									>{earlyBirdMonthlyFee} {currency}</Typography
+									>{promotionalMonthlyFee} {currency}</Typography
 								>
 								<Typography variant="large">/ {$_('common.month')}</Typography>
 							</Typography>
@@ -174,7 +179,7 @@
 							<Typography variant="small" class="line-through">{yearlyFee} {currency}</Typography
 							>&nbsp;
 							<Typography variant="small">
-								{earlyBirdYearlyFee} {currency} {$_('common.billedEveryYear')}</Typography
+								{promotionalYearlyFee} {currency} {$_('common.billedEveryYear')}</Typography
 							>
 						</Typography>
 					</Vertical>
@@ -206,7 +211,7 @@
 					<Horizontal --horizontal-justify-content="space-between">
 						<Typography>{$_('common.yearlyPlan')}</Typography>
 						<Typography
-							><Typography bold>{formatNumber(earlyBirdYearlyFee)}</Typography>
+							><Typography bold>{formatNumber(promotionalYearlyFee)}</Typography>
 							{currency}</Typography
 						>
 					</Horizontal>

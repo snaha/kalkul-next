@@ -52,3 +52,5 @@ export type TypedUserMetadata = {
 	newsletter_consent: boolean
 	first_visit: boolean
 }
+
+export type StripeSubscription = Tables<'stripe_subscription'>

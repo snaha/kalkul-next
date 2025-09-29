@@ -1,6 +1,6 @@
 import { PUBLIC_ORIGIN } from '$env/static/public'
 import { stripe } from '$lib/payments/stripe'
-import routes from '$lib/routes'
+import routes, { accountSections } from '$lib/routes'
 import { json } from '@sveltejs/kit'
 
 export async function GET({ params }) {
@@ -12,7 +12,7 @@ export async function GET({ params }) {
 
 		// This is the url to which the customer will be redirected when they're done
 		// managing their billing with the portal.
-		const returnUrl = `${PUBLIC_ORIGIN}${routes.ACCOUNT}`
+		const returnUrl = `${PUBLIC_ORIGIN}${routes.ACCOUNT}#${accountSections.PAYMENT}`
 
 		const portalSession = await stripe.billingPortal.sessions.create({
 			customer: customer_id,

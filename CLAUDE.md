@@ -67,9 +67,14 @@ See `README.md` for development commands, project structure, and conventions.
    - TypeScript strict mode is enabled
    - Always run `pnpm check` before committing
    - Use generated database types from `typesdb.ts`
-   - **Never use `null` in your code** - always use `undefined` instead for optional/missing values
-   - The only exception is when `null` comes from external libraries or APIs (e.g., DOM methods that return `null`)
+   - **CRITICAL: Never use `null` in your code** - always use `undefined` instead for optional/missing values
+   - **Exceptions where `null` is allowed:**
+     - When `null` comes from external libraries or APIs (e.g., DOM methods that return `null`)
+     - In Supabase/SQL-related data where `null` translates to the SQL NULL type
    - When checking for missing values, use `!value` or `value === undefined`, not `value === null`
+   - **ENFORCEMENT**: Before any file edit, scan your changes for the literal `null` and replace with `undefined`
+   - Return types should be `T | undefined`, never `T | null`
+   - Function parameters should default to `undefined`, never `null`
    - **Never use `any` type** - always use proper TypeScript types for type safety
    - Use generic types, union types, or `unknown` instead of `any` when needed
    - If you must accept any type, use `unknown` and type guards for safety
@@ -131,9 +136,17 @@ See `README.md` for development commands, project structure, and conventions.
    - Add comprehensive test coverage
 
 3. **Working with State**
+
    - Use existing stores when possible
    - Follow Svelte 5 runes patterns
    - Keep stores focused and single-purpose
+
+4. **API Error Handling**
+   - Always use `jsonError()` utility from `$lib/error` for consistent error responses
+   - Import: `import { jsonError } from '$lib/error'`
+   - Usage: `return jsonError('Error message', { status: 400, cause: error })`
+   - Provides standardized error format and proper HTTP status codes
+   - Never use `json({ error }, { status: 500 })` directly
 
 ### Deployment Context
 

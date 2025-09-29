@@ -55,10 +55,15 @@ export const getStartedSections = {
 	SHARE_PORTFOLIO: 'share-portfolio',
 }
 
+export const accountSections = {
+	ACCOUNT: 'account',
+	PAYMENT: 'payment',
+}
+
 export const apiRoutes = {
 	ROOT: '/api',
 	CHECKOUT: `${routeApiPrefix}/api/payments/checkout`,
-	CUSTOMER: `${routeApiPrefix}/api/payments/customer`,
+	CUSTOMER_EMAIL: `${routeApiPrefix}/api/payments/customer/email`,
 	PORTAL: (sessionId: string) => `${routeApiPrefix}/api/payments/portal/${sessionId}`,
 	PORTAL_CUSTOMER: (customerId: string) =>
 		`${routeApiPrefix}/api/payments/portal/customer/${customerId}`,

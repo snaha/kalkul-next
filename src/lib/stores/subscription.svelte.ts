@@ -1,17 +1,17 @@
 import type { Store } from '$lib/types'
-import Stripe from 'stripe'
+import type { StripeSubscription } from '$lib/types'
 
-export interface SubscriptionStore extends Store<Stripe.Subscription> {
-	data: Stripe.Subscription[]
+export interface SubscriptionStore extends Store<StripeSubscription> {
+	data: StripeSubscription[]
 	customer: string | undefined
 	loading: boolean
 	error: string | undefined
 	reset: () => void
-	getActiveSubscription: () => Stripe.Subscription | undefined
+	getActiveSubscription: () => StripeSubscription | undefined
 }
 
 export function withSubscriptionStore(): SubscriptionStore {
-	let data = $state<Stripe.Subscription[]>([])
+	let data = $state<StripeSubscription[]>([])
 	let customer = $state<string>()
 	let loading = $state(true)
 	let error = $state(undefined)

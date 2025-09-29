@@ -79,6 +79,11 @@ function scanSourceFiles() {
 			return
 		}
 
+		// Skip server files as they contain backend-only messages
+		if (filePath.includes('+server.ts')) {
+			return
+		}
+
 		const file = fs.readFileSync(filePath, { encoding: 'utf8' })
 
 		// First, find simple $_('key') patterns

@@ -17,10 +17,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
+          extensions?: Json
           operationName?: string
           query?: string
           variables?: Json
-          extensions?: Json
         }
         Returns: Json
       }
@@ -220,6 +220,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stripe_subscription: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          id: number
+          items: Json | null
+          last_edited_at: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          trial_end: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end: string
+          id?: number
+          items?: Json | null
+          last_edited_at?: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          trial_end?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          id?: number
+          items?: Json | null
+          last_edited_at?: string
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          trial_end?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       transaction: {
         Row: {

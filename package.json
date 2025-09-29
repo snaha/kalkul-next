@@ -18,6 +18,7 @@
 		"test:unit": "vitest",
 		"test:ct": "playwright test -c playwright-ct.config.ts",
 		"supabase": "supabase",
+		"supabase:gen-types": "supabase gen types --lang=typescript --local > src/lib/typesdb.ts",
 		"generate-exchanges": "tsx scripts/exchange-country",
 		"send-newsletter": "tsx scripts/send-newsletter"
 	},
@@ -52,7 +53,7 @@
 		"prettier-plugin-svelte": "^3.3.3",
 		"resend": "^4.5.1",
 		"stripe": "17.6.0",
-		"supabase": "^2.40.7",
+		"supabase": "^2.45.5",
 		"svelte": "5.19.2",
 		"svelte-check": "^4.1.4",
 		"svelte-email": "^0.0.4",

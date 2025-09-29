@@ -1,7 +1,7 @@
 import { authorizedFetch } from '$lib/auth'
 import { apiRoutes } from '$lib/routes'
 import { subscriptionStore } from '$lib/stores/subscription.svelte'
-import type Stripe from 'stripe'
+import type { StripeSubscription } from '$lib/types'
 
 export async function loadSubscriptions() {
 	try {
@@ -9,22 +9,24 @@ export async function loadSubscriptions() {
 
 		const subscriptionsResponse = await authorizedFetch(apiRoutes.SUBSCRIPTIONS)
 		if (!subscriptionsResponse.ok) {
-			subscriptionStore.data = []
+			const subscriptionResponseError = await subscriptionsResponse.text()
+			throw new Error(subscriptionResponseError)
+		}
+
+		const subscriptions = (await subscriptionsResponse.json()) as StripeSubscription[]
+
+		if (subscriptions.length === 0) {
 			return
 		}
 
-		const subscriptions = (await subscriptionsResponse.json()) as Stripe.Subscription[]
+		// Get customer ID from the first subscription (all subscriptions belong to same customer)
+		const customerId = subscriptions[0].stripe_customer_id
+		if (!customerId || typeof customerId !== 'string') {
+			throw new Error('Customer ID missing from subscription')
+		}
+
 		subscriptionStore.data = subscriptions
-
-		const response = await authorizedFetch(apiRoutes.CUSTOMER)
-
-		if (!response.ok) {
-			return
-		}
-
-		const customer = (await response.json()) as Stripe.Customer
-
-		subscriptionStore.customer = customer.id
+		subscriptionStore.customer = customerId
 	} catch (e) {
 		subscriptionStore.reset()
 		subscriptionStore.error = String(e)
