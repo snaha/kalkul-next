@@ -29,7 +29,7 @@
 	let resetPasswordFormValid = $state(false)
 	let emailTouched = $state(false)
 	let success: boolean = $state(false)
-	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
+	const mailpitUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	async function resetPassword(email: string) {
 		try {
@@ -120,7 +120,7 @@
 					{@html $_('page.forgotPassword.resetPasswordLocal', {
 						values: {
 							email: `<span class='green'>${email}</span>`,
-							link: `<a href="${inbucketUrl}/m/${email}" target="_blank">inbucket</a>`,
+							link: `<a href="${mailpitUrl}" target="_blank">Mailpit</a>`,
 						},
 					})}
 				{:else}

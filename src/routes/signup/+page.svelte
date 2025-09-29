@@ -34,8 +34,7 @@
 	let error = $state('')
 	let success = $state(false)
 	let newsletterConsent = $state(false)
-
-	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
+	const mailpitUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	function isEmailValid() {
 		return z.string().email().safeParse(email).success
@@ -213,7 +212,7 @@
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html $_('page.signUp.verificationLinkLocal', {
 							values: {
-								email: `<a class='green' href="${inbucketUrl}/m/${email}" target="_blank">inbucket</a>`,
+								email: `<a class='green' href="${mailpitUrl}" target="_blank">Mailpit</a>`,
 							},
 						})}
 					{:else}

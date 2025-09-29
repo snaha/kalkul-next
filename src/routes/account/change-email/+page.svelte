@@ -23,7 +23,7 @@
 	let success = $state(false)
 	let error: string | undefined = $state(undefined)
 
-	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
+	const mailpitUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	async function updateUserEmail() {
 		try {
@@ -86,7 +86,7 @@
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html $_('page.changeEmail.bodyLocal', {
 						values: {
-							link: `<a class='green' href="${inbucketUrl}/m/${newEmail}" target="_blank">inbucket</a>`,
+							link: `<a class='green' href="${mailpitUrl}" target="_blank">inbucket</a>`,
 						},
 					})}
 				{:else}

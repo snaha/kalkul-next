@@ -50,7 +50,7 @@ const HARDCODED_TEXT_PATTERNS = [
 
 // Text patterns to exclude (technical terms, single words, etc.)
 const EXCLUDE_PATTERNS = [
-	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord|Instagram|beta|and|kalkul\.app|inbucket)$/i,
+	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord|Instagram|beta|and|kalkul\.app|mailpit)$/i,
 	/^\p{Lu}{2,4}$/u, // Acronyms (any uppercase letters)
 	/^\d+$/, // Pure numbers
 	/^[\w.-]+@[\w.-]+$/, // Email addresses
