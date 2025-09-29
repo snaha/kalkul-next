@@ -4,8 +4,8 @@
 
 <script>
 	/* eslint-disable */
-	// Code snippets that should NOT be caught - they're in script tags
-	let message = 'This is code'
+	// Code snippets that should NOT be caught
+	let message = 'code'
 	const result = someFunction()
 	let formErrors: ZodFormattedError
 	let plugins: Plugin | undefined = undefined
@@ -13,6 +13,13 @@
 	if (value > 0 && index < 10) {
 		// do something
 	}
+
+	// Examples that SHOULD be caught - user-facing error messages
+	function validateEmail() {
+		emailError = 'Please enter a valid email address'
+	}
+
+	let someError = 'This is an error message'
 	/* eslint-enable */
 </script>
 
@@ -50,6 +57,8 @@
 <input placeholder="Enter your name" />
 <img alt="User avatar" />
 <div title="Click here for help"></div>
+<PasswordInput helperText="Minimum 12 characters" />
+<PasswordInput helperText={passwordError ? undefined : 'Minimum 12 characters'} />
 
 <!-- 9. Copyright text -->
 <footer>© 2025 Company Name</footer>

@@ -1,26 +1,25 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
-	import { z, type ZodFormattedError } from 'zod'
+	import { z } from 'zod'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import adapter from '$lib/adapters'
-	import { emailFormSchema } from '$lib/schemas'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { _ } from 'svelte-i18n'
-	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
-	import Logo from '$lib/components/icons/logo.svelte'
+	import { WarningAltFilled } from 'carbon-icons-svelte'
 	import routes, { apiRoutes } from '$lib/routes'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
 	import { locale } from 'svelte-i18n'
 	import { base } from '$app/paths'
-	import FlexItem from '$lib/components/ui/flex-item.svelte'
 	import Checkbox from '$lib/components/ui/checkbox.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
-	import ContentLayout from '$lib/components/content-layout.svelte'
 	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
+	import PasswordInput from '$lib/components/ui/input/password-input.svelte'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import type { AuthError } from '@supabase/supabase-js'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -28,48 +27,81 @@
 		}
 	})
 
-	type User = z.infer<typeof emailFormSchema>
-
-	let formErrors: ZodFormattedError<User> | undefined = $state()
-	let passwordError: string | undefined = $state($_('error.passwordLengthError'))
+	let email = $state('')
+	let emailError: string | undefined = $state()
 	let password = $state('')
-	let formValid = $derived(formErrors === undefined && passwordError === undefined)
+	let passwordError: string | undefined = $state()
 	let error = $state('')
 	let success = $state(false)
 	let newsletterConsent = $state(false)
 
-	let user: Partial<User> = $state({})
-
-	let emailTouched = $state(false)
 	const inbucketUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
-	function onEmailBlur() {
-		if (user.email?.trim() === '') {
-			emailTouched = false
+	function isEmailValid() {
+		return z.string().email().safeParse(email).success
+	}
+
+	function validateEmail() {
+		if (isEmailValid()) {
+			emailError = undefined
 		} else {
-			emailTouched = true
+			emailError = $_('error.pleaseEnterValidEmail')
 		}
 	}
 
+	function onEmailFocus() {
+		emailError = undefined
+	}
+
+	function isPasswordValid() {
+		return password.length >= 12
+	}
+
+	function validatePassword() {
+		if (isPasswordValid()) {
+			passwordError = undefined
+		} else {
+			passwordError = $_('error.passwordLengthError')
+		}
+	}
+
+	function onPasswordFocus() {
+		passwordError = undefined
+	}
+
+	function validate() {
+		validateEmail()
+		validatePassword()
+		return emailError === undefined && passwordError === undefined
+	}
+
 	async function register() {
+		if (!validate()) {
+			return
+		}
 		try {
-			if (user.email && $locale) {
-				await adapter.signUp(user.email, password, $locale.split('-')[0], newsletterConsent)
+			if (email && $locale) {
+				await adapter.signUp(email, password, $locale.split('-')[0], newsletterConsent)
 				success = true
 			}
 		} catch (e) {
-			error = (e as Error).message
+			const errorCode = (e as AuthError)?.code
+			if (errorCode === 'user_already_exists') {
+				error = $_('error.userAlreadyRegistered')
+			} else {
+				error = (e as Error).message
+			}
 		}
 
 		// Subscribe to newsletter if consent is given
 		try {
-			if (newsletterConsent && user.email) {
+			if (newsletterConsent && email) {
 				const res = await fetch(apiRoutes.NEWSLETTER_SUBSCRIBE, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({ email: user.email }),
+					body: JSON.stringify({ email }),
 				})
 
 				const data = await res.json()
@@ -82,59 +114,45 @@
 			console.error('Error subscribing to newsletter:', e)
 		}
 	}
-	$effect(() => {
-		const res = emailFormSchema.safeParse(user)
-		if (res.success) {
-			formErrors = undefined
-		} else {
-			formErrors = res.error.format()
-		}
-
-		if (password.length < 12) {
-			passwordError = $_('error.passwordLengthError')
-		} else {
-			passwordError = undefined
-		}
-	})
 </script>
 
-{#snippet emailError()}
-	{#if formErrors?.email?._errors}
-		{#each formErrors?.email?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
+{#snippet emailErrorSnippet()}
+	<Horizontal --horizontal-gap="var(--half-padding)">
+		<WarningAltFilled size={24} />
+		{emailError}
+	</Horizontal>
 {/snippet}
 
-<ContentLayout --content-layout-margin="0">
-	<Horizontal --horizontal-justify-content="space-between" class="width-100">
-		<a href={routes.HOME} class="logo"><Logo size={40} /></a>
-		<FlexItem></FlexItem>
+{#snippet passwordErrorSnippet()}
+	<Horizontal --horizontal-gap="var(--half-padding)">
+		<WarningAltFilled size={24} />
+		{passwordError}
 	</Horizontal>
-</ContentLayout>
-{#if !success}
-	<ContentLayout --content-layout-margin="0">
+{/snippet}
+
+<Fullscreen hasCloseButton={true} beta={true}>
+	{#if !success}
 		<Vertical class="registration" --vertical-gap="var(--double-padding)">
 			<Typography variant="h4">{$_('page.signUp.signUp')}</Typography>
 			<Vertical --vertical-gap="var(--padding)">
 				<Input
+					autofocus
 					variant="solid"
 					dimension="compact"
-					bind:value={user.email}
+					bind:value={email}
 					label={$_('common.email')}
-					error={emailTouched && user.email?.trim() !== '' && formErrors?.email?._errors
-						? emailError
-						: undefined}
+					error={emailError ? emailErrorSnippet : undefined}
 					type="email"
-					onblur={onEmailBlur}
+					onfocus={onEmailFocus}
 				/>
-				<Input
+				<PasswordInput
 					variant="solid"
 					dimension="compact"
 					bind:value={password}
 					label={$_('common.password')}
-					error={passwordError}
-					type="password"
+					error={passwordError ? passwordErrorSnippet : undefined}
+					onfocus={onPasswordFocus}
+					helperText={passwordError ? undefined : $_('error.passwordMinimumLength')}
 				/>
 				<Checkbox bind:checked={newsletterConsent}>
 					{$_('page.signUp.subscribeToNewsletter')}</Checkbox
@@ -146,13 +164,12 @@
 					</div>
 				{/if}
 				<Vertical --vertical-gap="var(--padding)">
-					<ResponsiveLayout --responsive-gap="var(--padding)" --responsive-justify-content="start">
-						<Button
-							variant="strong"
-							dimension="compact"
-							type="submit"
-							disabled={!formValid}
-							onclick={register}><Checkmark size={24} />{$_('page.signUp.createAccount')}</Button
+					<ResponsiveLayout
+						--responsive-gap="var(--padding)"
+						--responsive-justify-content="stretch"
+					>
+						<Button variant="strong" dimension="compact" type="submit" onclick={register}
+							>{$_('page.signUp.createAccount')}</Button
 						>
 					</ResponsiveLayout>
 					{#key $locale}
@@ -178,9 +195,7 @@
 				</Horizontal>
 			</ResponsiveLayout>
 		</Vertical>
-	</ContentLayout>
-{:else}
-	<ContentLayout>
+	{:else}
 		<Vertical
 			class="registration"
 			--vertical-gap="var(--double-padding)"
@@ -198,27 +213,23 @@
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html $_('page.signUp.verificationLinkLocal', {
 							values: {
-								email: `<a class='green' href="${inbucketUrl}/m/${user.email}" target="_blank">inbucket</a>`,
+								email: `<a class='green' href="${inbucketUrl}/m/${email}" target="_blank">inbucket</a>`,
 							},
 						})}
 					{:else}
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html $_('page.signUp.verificationLinkRemote', {
-							values: { email: `<span class='green'>${user.email}</span>` },
+							values: { email: `<span class='green'>${email}</span>` },
 						})}
 					{/if}</Typography
 				>
 				<Typography>{$_('page.signUp.checkSpam')}</Typography>
 			</Vertical>
 		</Vertical>
-	</ContentLayout>
-{/if}
+	{/if}
+</Fullscreen>
 
 <style>
-	.logo {
-		color: var(--colors-ultra-high);
-		height: 40px;
-	}
 	:global(.registration) {
 		max-width: 560px;
 		width: 100%;
@@ -242,10 +253,9 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--half-padding);
-		border: 1px solid var(--colors-top);
 		border-radius: var(--border-radius);
-		background: var(--colors-top);
-		padding: var(--quarter-padding) var(--half-padding);
+		background: var(--colors-red);
+		padding: var(--half-padding);
 		color: var(--colors-base);
 		font-family: var(--font-family-sans-serif);
 		font-size: var(--font-size);

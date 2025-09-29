@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Snippet } from 'svelte'
 	import type { HTMLInputAttributes } from 'svelte/elements'
-	import { Warning, Information } from 'carbon-icons-svelte'
+	import { Information } from 'carbon-icons-svelte'
 
 	type Layout = 'vertical' | 'horizontal'
 	type Dimension = 'default' | 'large' | 'compact' | 'small'
@@ -14,6 +14,7 @@
 		layout?: Layout
 		unit?: string
 		error?: Snippet | string
+		helperText?: string | Snippet
 		hover?: boolean
 		active?: boolean
 		focus?: boolean
@@ -35,6 +36,7 @@
 		layout = 'vertical',
 		unit,
 		error,
+		helperText,
 		hover,
 		iconStart,
 		active,
@@ -42,7 +44,6 @@
 		type,
 		disabled,
 		class: className = '',
-		children,
 		buttons,
 		variant = 'outline',
 		input = $bindable(),
@@ -56,7 +57,7 @@
 			{label}
 		</label>
 	{/if}
-	{#if children && layout === 'horizontal'}
+	{#if helperText && layout === 'horizontal'}
 		<div class="helper-button">
 			<Information size={dimension === 'small' ? 16 : 24} />
 		</div>
@@ -86,11 +87,6 @@
 				{#if unit && !error}
 					<label class="unit" for={labelFor}>{unit}</label>
 				{/if}
-				{#if error}
-					<div class="error-icon">
-						<Warning size={dimension === 'small' ? 16 : 24} />
-					</div>
-				{/if}
 			</div>
 			{#if buttons}
 				<label for={labelFor} class="control-buttons">
@@ -107,12 +103,16 @@
 				{/if}
 			</div>
 		{/if}
+		{#if helperText && layout === 'vertical'}
+			<div class="helper-text">
+				{#if typeof helperText === 'string'}
+					{helperText}
+				{:else}
+					{@render helperText()}
+				{/if}
+			</div>
+		{/if}
 	</div>
-	{#if children && layout === 'vertical'}
-		<div class="helper-text">
-			{@render children()}
-		</div>
-	{/if}
 </div>
 
 <style lang="postcss">
@@ -160,7 +160,7 @@
 	.root:has(.control-buttons) {
 		.wrapper {
 			flex-direction: row;
-			gap: 0;
+			gap: var(--half-padding);
 			input {
 				border-radius: var(--border-radius) 0 0 var(--border-radius);
 			}
@@ -185,7 +185,7 @@
 		}
 	}
 	.root {
-		gap: 0.5rem;
+		gap: var(--quarter-padding);
 		color: var(--colors-ultra-high);
 		font-family: var(--font-family-sans-serif);
 	}
@@ -265,8 +265,7 @@
 				border: 1px solid var(--colors-low);
 				cursor: not-allowed;
 				& ~ .start-icon,
-				& ~ .unit,
-				& ~ .error-icon {
+				& ~ .unit {
 					opacity: 0.25;
 					cursor: not-allowed;
 				}
@@ -298,8 +297,9 @@
 				color: var(--colors-top);
 			}
 			&.error:not(:disabled) {
-				outline: 2px solid var(--colors-top);
-				outline-offset: -2px;
+				outline: 1px solid var(--colors-red);
+				outline-offset: -1px;
+				color: var(--colors-red);
 			}
 		}
 	}
@@ -314,11 +314,6 @@
 		position: absolute;
 		opacity: 0.5;
 		cursor: text;
-	}
-	.error-icon {
-		position: absolute;
-		cursor: text;
-		color: var(--colors-top);
 	}
 	.default {
 		&:has(.start-icon) {
@@ -473,9 +468,8 @@
 		}
 	}
 	.error-message {
-		border: 1px solid var(--colors-top);
 		border-radius: var(--border-radius);
-		background: var(--colors-top);
+		background: var(--colors-red);
 		padding: var(--quarter-padding) var(--half-padding);
 		color: var(--colors-base);
 		font-size: var(--font-size);

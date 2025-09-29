@@ -152,7 +152,7 @@ export default class Supabase implements Adapter {
 		})
 		if (error) {
 			console.error('Failed to register', error)
-			throw new Error(error.message)
+			throw error
 		}
 		if (newsletterConsent) {
 			await this.subscribeToNewsletter(email)

@@ -599,7 +599,10 @@
 		"invalidMonth": "Neplatný měsíc",
 		"invalidDay": "Neplatný den",
 		"invalidDate": "Neplatné datum",
-		"emailAlreadyAssociated": "Tento e-mail je již přiřazen k účtu"
+		"emailAlreadyAssociated": "Tento e-mail je již přiřazen k účtu",
+		"pleaseEnterValidEmail": "Prosím zadejte platnou e-mailovou adresu",
+		"passwordMinimumLength": "Minimálně 12 znaků",
+		"userAlreadyRegistered": "Uživatel je již registrován"
 	},
 	"email": {
 		"common": {

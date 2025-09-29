@@ -36,6 +36,16 @@ const HARDCODED_TEXT_PATTERNS = [
 		pattern: /\}([A-Z][a-zA-Z\s]+)(?:\{|\s*<)/gu,
 		description: 'Text content inside Svelte template blocks',
 	},
+	// Hardcoded user-facing strings in JavaScript variable assignments (sentences with capital letter start)
+	{
+		pattern: /(?<!!)(?<!==)(?<!=)=(?!=)\s*['"`]([A-Z][a-z]+(?:\s+[a-zA-Z]+)*[.!?]?)['"`]/gu,
+		description: 'Hardcoded user-facing strings in JavaScript assignments',
+	},
+	// Hardcoded user-facing strings in JavaScript expressions (ternary, function calls, etc.)
+	{
+		pattern: /:\s*['"`]([A-Z][a-z]+(?:\s+[a-zA-Z0-9]+)*[.!?]?)['"`]/gu,
+		description: 'Hardcoded user-facing strings in JavaScript expressions',
+	},
 ]
 
 // Text patterns to exclude (technical terms, single words, etc.)

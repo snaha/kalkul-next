@@ -599,7 +599,10 @@
 		"invalidMonth": "Invalid month",
 		"invalidDay": "Invalid day",
 		"invalidDate": "Invalid date",
-		"emailAlreadyAssociated": "This email is already associated with an account"
+		"emailAlreadyAssociated": "This email is already associated with an account",
+		"pleaseEnterValidEmail": "Please enter a valid email address",
+		"passwordMinimumLength": "Minimum 12 characters",
+		"userAlreadyRegistered": "User already registered"
 	},
 	"email": {
 		"common": {

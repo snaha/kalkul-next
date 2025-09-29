@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
 	import CustomHeader from './custom-header.svelte'
-	let { children, hasCloseButton = true }: { children: Snippet; hasCloseButton?: boolean } =
-		$props()
+	let {
+		children,
+		hasCloseButton = true,
+		beta = false,
+	}: { children: Snippet; hasCloseButton?: boolean; beta?: boolean } = $props()
 </script>
 
-<CustomHeader {hasCloseButton} />
+<CustomHeader {hasCloseButton} {beta} />
 <div class="header-placeholder"></div>
 <main>
 	{@render children()}

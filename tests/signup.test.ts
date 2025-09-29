@@ -30,10 +30,12 @@ test.describe('User Registration', () => {
 		// Test invalid email
 		await page.locator('input').first().fill('invalid-email')
 		await page.locator('input[type="password"]').fill('ValidPassword123!')
-		await page.locator('input').first().blur()
 
-		// Should show validation error and disable submit
-		await expect(page.getByRole('button', { name: 'Create account' })).toBeDisabled()
+		// Click submit button to trigger validation
+		await page.getByRole('button', { name: 'Create account' }).click()
+
+		// Should show validation error after submit attempt
+		await expect(page.locator('text=Please enter a valid email address')).toBeVisible()
 	})
 
 	test('should validate password requirements', async ({ page }) => {
@@ -41,10 +43,12 @@ test.describe('User Registration', () => {
 
 		await page.locator('input').first().fill('test@example.com')
 		await page.locator('input[type="password"]').fill('short')
-		await page.locator('input[type="password"]').blur()
 
-		// Should show validation error and disable submit
-		await expect(page.getByRole('button', { name: 'Create account' })).toBeDisabled()
+		// Click submit button to trigger validation
+		await page.getByRole('button', { name: 'Create account' }).click()
+
+		// Should show password validation error after submit attempt
+		await expect(page.locator('text=Password must be at least 12 characters')).toBeVisible()
 	})
 
 	test('should handle newsletter subscription option', async ({ page }) => {

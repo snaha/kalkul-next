@@ -9,6 +9,7 @@
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:all": "pnpm lint && pnpm check && pnpm knip && pnpm check-locales",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"check-locales": "tsx scripts/check-locales",
 		"lint": "prettier --check . && eslint .",

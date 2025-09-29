@@ -1,3 +1,4 @@
+<!-- localization-exclude -->
 <script lang="ts">
 	import type { Snippet } from 'svelte'
 	import Typography from '../../typography.svelte'
