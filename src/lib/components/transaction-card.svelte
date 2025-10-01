@@ -118,7 +118,7 @@
 				{formatCurrency(transaction.amount, currency, $locale)}
 			{/if}
 		</Typography>
-		{#if transaction.inflation_adjusted && !openTransaction}
+		{#if transaction.inflation_adjusted && openTransaction}
 			<InflationBadge />
 		{/if}
 

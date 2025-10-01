@@ -27,6 +27,7 @@
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import { base } from '$app/paths'
 	import HelpBox from '$lib/components/help-box.svelte'
+	import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 
 	const clientId = $derived(parseInt(page.params.id, 10))
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -38,6 +39,10 @@
 		transactionStore.data.filter((transaction) =>
 			investmentIds.includes(transaction.investment_id),
 		),
+	)
+
+	const graphData = $derived(
+		portfolio ? getGraphDataForPortfolio(transactionStore.data, investments, portfolio) : undefined,
 	)
 
 	const investmentsViewStore = $derived(
@@ -165,6 +170,8 @@
 									investmentsViewStore.toggleFocus(investment.id)
 								}}
 								open={transactions.length === 0}
+								exhaustionDate={graphData?.data[i]?.exhaustionDate}
+								missingAmount={graphData?.data[i]?.missingAmount}
 							/>
 						{/each}
 					</section>

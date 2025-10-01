@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements'
-	type Variant = 'default' | 'strong' | 'outline' | 'dark-overlay' | 'light-overlay'
+	type Variant = 'default' | 'strong' | 'outline' | 'dark-overlay' | 'light-overlay' | 'error'
 	type Dimension = 'small' | 'large'
 	interface Props extends HTMLAttributes<HTMLDivElement> {
 		variant?: Variant
@@ -59,5 +59,9 @@
 	.light-overlay {
 		background: var(--colors-light-overlay);
 		color: var(--colors-light-ultra-high);
+	}
+	.error {
+		background: var(--colors-red);
+		color: white;
 	}
 </style>

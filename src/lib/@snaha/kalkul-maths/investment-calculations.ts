@@ -20,16 +20,9 @@ import {
 	calculateDailyFees,
 } from './fee-calculations'
 import { calculateTotalDepositAmount } from './calculation-utils'
-import { PERCENTAGE_DIVISOR, DAYS_PER_YEAR, MONTHS_PER_YEAR } from './constants'
+import { PERCENTAGE_DIVISOR, DAYS_PER_YEAR, MONTHS_PER_YEAR, DECIMAL_0 } from './constants'
 
 Decimal.set({ precision: 30 })
-
-type InvestmentErrorType = 'managementFee' | 'withdrawal'
-
-export type InvestmentError = {
-	type: InvestmentErrorType
-	date: Date
-}
 
 function toPercentage(n: number): number {
 	return n / PERCENTAGE_DIVISOR
@@ -121,7 +114,7 @@ function calculateDailyInvestmentUpdate(
 	dailyTERFeeMulitplier: Decimal,
 	totalDepositAmount: number,
 ) {
-	const investmentCalculationErrors: InvestmentErrorType[] = []
+	const investmentCalculationErrors: string[] = []
 
 	const depositFee = calculateEntryFee(
 		depositsOnDate,
@@ -180,7 +173,11 @@ function calculateDailyInvestmentUpdate(
 		investmentCalculationErrors.push('withdrawal')
 	}
 
-	const newCurrentValue = valueAfterDailyManagementFee.sub(actualWithdrawal)
+	const calculatedValue = valueAfterDailyManagementFee.sub(actualWithdrawal)
+	const newCurrentValue = calculatedValue.greaterThanOrEqualTo(0) ? calculatedValue : DECIMAL_0
+
+	// Calculate missing withdrawal amount when there's a withdrawal error
+	const missingWithdrawalAmount = totalWithdrawalNeeded.sub(actualWithdrawal)
 
 	return {
 		newCurrentValue,
@@ -191,6 +188,7 @@ function calculateDailyInvestmentUpdate(
 		managementFee,
 		TERFee,
 		investmentCalculationErrors,
+		missingWithdrawalAmount,
 	}
 }
 
@@ -216,18 +214,21 @@ export function getInvestmentValues(
 	feeValues: FeeBreakdown[]
 	withdrawalValues: number[]
 	depositValues: number[]
-	errors: InvestmentError[]
+	exhaustionDate?: Date
+	missingAmount: number
 } {
 	const investmentValues: number[] = []
 	const feeValues: FeeBreakdown[] = []
 	const withdrawalValues: number[] = []
 	const depositValues: number[] = []
-	const errors: InvestmentError[] = []
 
-	let currentValue = new Decimal(0)
-	let currentFeeBreakdown: FeeBreakdown<Decimal> = resetFeeBreakdown(new Decimal(0))
-	let withdrawal = new Decimal(0)
-	let deposit = new Decimal(0)
+	let exhaustionDate: Date | undefined
+	let totalMissingAmount = DECIMAL_0
+
+	let currentValue = DECIMAL_0
+	let currentFeeBreakdown: FeeBreakdown<Decimal> = resetFeeBreakdown(DECIMAL_0)
+	let withdrawal = DECIMAL_0
+	let deposit = DECIMAL_0
 
 	const { dailyAPY, dailyAPYWithSuccessFee } = calculateDailyAPY(investment, numDaysPerYear)
 	const { dailyFee: dailyManagementFee, dailyFeeMultiplier: dailyManagementFeeMultiplier } =
@@ -254,27 +255,40 @@ export function getInvestmentValues(
 		const depositsOnDate = deposits.get(formatDate(date)) ?? 0
 		const withdrawalsOnDate = withdrawals.get(formatDate(date)) ?? 0
 
-		const { newCurrentValue, actualWithdrawal, investmentCalculationErrors } =
-			calculateDailyInvestmentUpdate(
-				currentValue,
-				currentFeeBreakdown,
-				depositsOnDate,
-				withdrawalsOnDate,
-				investment,
-				dailyAPY,
-				dailyAPYWithSuccessFee,
-				dailyManagementFee,
-				dailyManagementFeeMultiplier,
-				dailyTERFeeMulitplier,
-				totalDepositAmount,
-			)
+		const {
+			newCurrentValue,
+			actualWithdrawal,
+			investmentCalculationErrors,
+			missingWithdrawalAmount,
+		} = calculateDailyInvestmentUpdate(
+			currentValue,
+			currentFeeBreakdown,
+			exhaustionDate ? 0 : depositsOnDate, // No deposits allowed when exhausted
+			withdrawalsOnDate,
+			investment,
+			// Stop growth if already exhausted
+			exhaustionDate ? DECIMAL_0 : dailyAPY,
+			exhaustionDate ? DECIMAL_0 : dailyAPYWithSuccessFee,
+			dailyManagementFee,
+			dailyManagementFeeMultiplier,
+			dailyTERFeeMulitplier,
+			totalDepositAmount,
+		)
 
-		if (investmentCalculationErrors.length > 0) {
-			errors.push(...investmentCalculationErrors.map((type) => ({ date, type })))
+		// Track exhaustion on first time hitting zero due to withdrawal error
+		if (
+			investmentCalculationErrors.includes('withdrawal') &&
+			newCurrentValue.equals(0) &&
+			!exhaustionDate
+		) {
+			exhaustionDate = date
 		}
 
+		// Add missing withdrawal amount to total
+		totalMissingAmount = totalMissingAmount.add(missingWithdrawalAmount)
+
 		currentValue = newCurrentValue
-		deposit = deposit.add(depositsOnDate)
+		deposit = deposit.add(exhaustionDate ? 0 : depositsOnDate) // Track only allowed deposits
 		withdrawal = withdrawal.add(actualWithdrawal)
 
 		if (date >= nextRecordDate) {
@@ -317,7 +331,14 @@ export function getInvestmentValues(
 		depositValues.push(deposit.toNumber())
 	}
 
-	return { investmentValues, feeValues, withdrawalValues, depositValues, errors }
+	return {
+		investmentValues,
+		feeValues,
+		withdrawalValues,
+		depositValues,
+		exhaustionDate,
+		missingAmount: totalMissingAmount.toNumber(),
+	}
 }
 
 export function getBaseData(

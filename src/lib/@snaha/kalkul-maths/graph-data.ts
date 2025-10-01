@@ -69,6 +69,8 @@ export function getGraphData(
 		feeValues: fees,
 		withdrawalValues: graphWithdrawals,
 		depositValues: graphDeposits,
+		exhaustionDate,
+		missingAmount,
 	} = getInvestmentValues(
 		{ period, count },
 		{ deposits, withdrawals, startDate, endDate },
@@ -175,6 +177,8 @@ export function getGraphData(
 		graphInflationWithdrawals,
 		graphInflationInvestmentValues,
 		graphInflationFeeValues,
+		exhaustionDate,
+		missingAmount,
 	}
 }
 
@@ -307,6 +311,19 @@ export function getGraphDataForPortfolio(
 		getGraphData({ ...d.baseData, startDate, endDate }, d.investment, portfolio),
 	)
 
+	// Find earliest exhaustion date and total missing amount across all investments
+	let portfolioExhaustionDate: Date | undefined
+	let totalMissingAmount = 0
+
+	for (const investmentData of data) {
+		if (investmentData.exhaustionDate) {
+			if (!portfolioExhaustionDate || investmentData.exhaustionDate < portfolioExhaustionDate) {
+				portfolioExhaustionDate = investmentData.exhaustionDate
+			}
+		}
+		totalMissingAmount += investmentData.missingAmount
+	}
+
 	const total: GraphData = {
 		label: 'Total',
 		graphLabels: [...data[0].graphLabels],
@@ -319,6 +336,8 @@ export function getGraphDataForPortfolio(
 		graphInflationWithdrawals: [...data[0].graphInflationWithdrawals],
 		graphInflationInvestmentValues: [...data[0].graphInflationInvestmentValues],
 		graphInflationFeeValues: [...data[0].graphInflationFeeValues],
+		exhaustionDate: portfolioExhaustionDate,
+		missingAmount: totalMissingAmount,
 	}
 
 	for (let i = 1; i < data.length; i++) {

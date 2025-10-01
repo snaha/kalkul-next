@@ -414,7 +414,8 @@
 		"tooltipTransaction": {
 			"totalDeposits": "Total deposits",
 			"totalWithdrawals": "Total withdrawals",
-			"totalFees": "Total fees"
+			"totalFees": "Total fees",
+			"missingFunds": "Missing funds"
 		},
 		"transactionCard": {
 			"deleteWarning": "Are you sure you want to delete?"
@@ -602,7 +603,8 @@
 		"emailAlreadyAssociated": "This email is already associated with an account",
 		"pleaseEnterValidEmail": "Please enter a valid email address",
 		"passwordMinimumLength": "Minimum 12 characters",
-		"userAlreadyRegistered": "User already registered"
+		"userAlreadyRegistered": "User already registered",
+		"currentEmailNotFound": "Current email not found"
 	},
 	"email": {
 		"common": {

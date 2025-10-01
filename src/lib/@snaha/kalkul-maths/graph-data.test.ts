@@ -16,6 +16,7 @@ describe('getCumulativeValues', () => {
 		graphInflationWithdrawals: [0, 95, 0, 285],
 		graphInflationInvestmentValues: [950, 1378, 1596, 1349],
 		graphInflationFeeValues: [-9.5, -14.25, -11.4, -7.6],
+		missingAmount: 0,
 	}
 
 	describe('without inflation adjustment', () => {
@@ -107,6 +108,7 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0],
 				graphInflationInvestmentValues: [0],
 				graphInflationFeeValues: [0],
+				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(emptyGraphData, 0, false)
@@ -132,6 +134,7 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 0],
 				graphInflationInvestmentValues: [800, -200],
 				graphInflationFeeValues: [-50, -20],
+				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(negativeGraphData, 1, false)
@@ -157,6 +160,7 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 100],
 				graphInflationInvestmentValues: [1000, 900],
 				graphInflationFeeValues: [-10, -5],
+				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(sparseGraphData, 1, false)
@@ -184,6 +188,7 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 0],
 				graphInflationInvestmentValues: [1100, 1200],
 				graphInflationFeeValues: [0, 0],
+				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(gainsOnlyData, 1, false)
@@ -203,6 +208,7 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 200, 300],
 				graphInflationInvestmentValues: [1050, 1400, 1150],
 				graphInflationFeeValues: [-25, -15, -10],
+				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(mixedData, 2, false)

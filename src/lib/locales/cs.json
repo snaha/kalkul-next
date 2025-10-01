@@ -414,7 +414,8 @@
 		"tooltipTransaction": {
 			"totalDeposits": "Celkem vkladů",
 			"totalWithdrawals": "Celkem výběrů",
-			"totalFees": "Celkem poplatků"
+			"totalFees": "Celkem poplatků",
+			"missingFunds": "Chybějící prostředky"
 		},
 		"transactionCard": {
 			"deleteWarning": "Opravdu chcete smazat?"
@@ -602,7 +603,8 @@
 		"emailAlreadyAssociated": "Tento e-mail je již přiřazen k účtu",
 		"pleaseEnterValidEmail": "Prosím zadejte platnou e-mailovou adresu",
 		"passwordMinimumLength": "Minimálně 12 znaků",
-		"userAlreadyRegistered": "Uživatel je již registrován"
+		"userAlreadyRegistered": "Uživatel je již registrován",
+		"currentEmailNotFound": "Aktuální e-mail nebyl nalezen"
 	},
 	"email": {
 		"common": {

@@ -18,6 +18,7 @@
 		type: ChartType
 		options?: ChartOptions<ChartType>
 		plugins?: Plugin<ChartType>[]
+		zeroCrossingIndex?: number // Optional index where the total value first hits zero
 	}
 
 	Chart.defaults.font.family = getCSSVariableValue('--font-family-sans-serif')
@@ -29,7 +30,14 @@
 		responsive: false,
 	}
 
-	let { labels = [], datasets = [], type, options = {}, plugins = [] }: Props = $props()
+	let {
+		labels = [],
+		datasets = [],
+		type,
+		options = {},
+		plugins = [],
+		zeroCrossingIndex,
+	}: Props = $props()
 
 	let canvas: HTMLCanvasElement | null = $state(null)
 	let chart: Chart | null = $state(null)
@@ -46,6 +54,37 @@
 		}))
 	}
 
+	function enhanceOptionsWithNegativeValueStyling(
+		baseOptions: ChartOptions<ChartType>,
+	): ChartOptions<ChartType> {
+		if (zeroCrossingIndex === undefined) return baseOptions
+
+		const negativeColor = getCSSVariableValue('--colors-red')
+		const defaultColor = getCSSVariableValue('--colors-high-neutral')
+
+		return {
+			...baseOptions,
+			scales: {
+				...baseOptions.scales,
+				x: {
+					...baseOptions.scales?.x,
+					ticks: {
+						...baseOptions.scales?.x?.ticks,
+						color: function (context: { index: number }) {
+							const index = context.index
+							// Use zero-crossing index to determine red labels
+							if (index >= zeroCrossingIndex) {
+								return negativeColor
+							}
+
+							return defaultColor
+						},
+					},
+				},
+			},
+		}
+	}
+
 	$effect(() => {
 		if (canvas && !chart) {
 			chart = new Chart(canvas, {
@@ -54,10 +93,10 @@
 					labels,
 					datasets: setDatasetColors(datasets),
 				},
-				options: {
+				options: enhanceOptionsWithNegativeValueStyling({
 					...DEFAULT_OPTIONS,
 					...options,
-				},
+				}),
 				plugins,
 			})
 			chart.resize()
@@ -65,6 +104,11 @@
 		if (chart) {
 			chart.data.labels = labels
 			chart.data.datasets = setDatasetColors(datasets)
+			// Also update options in case zero-crossing index or withdrawal errors changed
+			chart.options = enhanceOptionsWithNegativeValueStyling({
+				...DEFAULT_OPTIONS,
+				...options,
+			})
 			chart.update()
 		}
 	})

@@ -221,6 +221,7 @@
 						{showWithdrawals}
 						{showFees}
 						{clientBirthDate}
+						exhaustionDate={graphValueData.total.exhaustionDate}
 					/>
 				{:else}
 					<GraphPortfolioBreakdown
@@ -291,6 +292,7 @@
 					{showWithdrawals}
 					{showFees}
 					{clientBirthDate}
+					exhaustionDate={graphValueData.total.exhaustionDate}
 				/>
 			</div>
 			<div class="graph-breakdown-overtime">

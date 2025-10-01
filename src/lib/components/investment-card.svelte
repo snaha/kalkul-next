@@ -10,6 +10,7 @@
 		Settings,
 		TrashCan,
 		ViewOff,
+		WarningAltFilled,
 	} from 'carbon-icons-svelte'
 	import Badge from './ui/badge.svelte'
 	import Button from './ui/button.svelte'
@@ -43,6 +44,8 @@
 		toggleHide: () => void
 		toggleFocus: () => void
 		open?: boolean
+		exhaustionDate?: Date
+		missingAmount?: number
 	}
 
 	let {
@@ -57,6 +60,8 @@
 		toggleHide,
 		toggleFocus,
 		open = $bindable(false),
+		exhaustionDate,
+		missingAmount = 0,
 	}: Props = $props()
 
 	let selectedTransactionIdForDeletion: number | undefined = $state(undefined)
@@ -97,6 +102,11 @@
 		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
 		<Typography variant="h5">{investment.name}</Typography>
 		<Badge>{investment.apy}%</Badge>
+		{#if exhaustionDate && missingAmount > 0 && !open}
+			<Badge variant="error">
+				<WarningAltFilled size={16} />
+			</Badge>
+		{/if}
 		<FlexItem />
 		{#if focused}
 			<Button

@@ -16,7 +16,7 @@
 
 <style>
 	:global(.inflation-badge) {
-		color: var(--colors-dark-top) !important;
-		background-color: var(--colors-high) !important;
+		color: var(--colors-top) !important;
+		background-color: var(--colors-base) !important;
 	}
 </style>

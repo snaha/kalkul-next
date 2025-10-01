@@ -29,7 +29,7 @@
 	async function updateUserEmail() {
 		const oldEmail = authStore.user?.email
 		if (!oldEmail) {
-			error = 'Current email not found'
+			error = $_('error.currentEmailNotFound')
 			return
 		}
 

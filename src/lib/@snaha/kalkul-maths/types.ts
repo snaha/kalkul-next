@@ -44,4 +44,6 @@ export interface GraphData {
 	graphInflationWithdrawals: number[]
 	graphInflationInvestmentValues: number[]
 	graphInflationFeeValues: number[]
+	exhaustionDate?: Date
+	missingAmount: number
 }

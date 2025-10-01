@@ -4,6 +4,7 @@
 	import TooltipTransaction from './tooltip-transaction.svelte'
 	import type { GraphPortfolioTransactions } from '$lib/graph'
 	import { locale } from 'svelte-i18n'
+	import { getCSSVariableValue } from '$lib/css-vars'
 
 	// Label and gridline frequency
 	const GRIDLINE_FREQUENCY = 2
@@ -17,6 +18,7 @@
 		showWithdrawals: boolean
 		showFees: boolean
 		clientBirthDate?: Date
+		exhaustionDate?: Date
 	}
 
 	let {
@@ -27,6 +29,7 @@
 		showWithdrawals,
 		showFees,
 		clientBirthDate,
+		exhaustionDate,
 	}: Props = $props()
 
 	let transactionTooltipData: TooltipData[] = $state([])
@@ -35,6 +38,43 @@
 
 	// Store locale for use in callbacks
 	const currentLocale = $derived($locale)
+
+	// Calculate the zero-crossing index using the exhaustion date
+	const zeroCrossingIndex = $derived(() => {
+		const graphLabels = graphTransactionsData.data[0]?.graphLabels
+
+		if (!exhaustionDate || !graphLabels) {
+			return undefined
+		}
+
+		// Find the index where the exhaustion date falls
+		for (let i = 0; i < graphLabels.length; i++) {
+			const label = graphLabels[i]
+
+			// Handle monthly format like "2024-8"
+			if (label.includes('-')) {
+				const [yearStr, monthStr] = label.split('-')
+				const year = parseInt(yearStr, 10)
+				const month = parseInt(monthStr, 10)
+
+				// Check if exhaustion date falls within this month
+				const labelDate = new Date(year, month - 1, 1) // First day of month
+				const nextMonth = new Date(year, month, 1) // First day of next month
+
+				if (exhaustionDate >= labelDate && exhaustionDate < nextMonth) {
+					return i
+				}
+			} else {
+				// Handle yearly format
+				const labelDate = new Date(label)
+				if (labelDate.getFullYear() >= exhaustionDate.getFullYear()) {
+					return i
+				}
+			}
+		}
+
+		return undefined
+	})
 
 	// Pre-calculate datasets to avoid complex logic in template
 	const chartDatasets = $derived.by(() => {
@@ -196,6 +236,63 @@
 					ctx.stroke()
 					ctx.restore()
 				}
+			},
+		},
+		{
+			id: 'withdrawalErrorIndicator',
+			afterDraw(chart) {
+				const errorIndex = zeroCrossingIndex()
+				if (errorIndex === undefined || errorIndex < 0) return
+
+				const ctx = chart.ctx
+				const yAxis = chart.scales.y
+				const xAxis = chart.scales.x
+				const startX = xAxis.getPixelForValue(errorIndex)
+
+				ctx.save()
+
+				// Draw red line right above x-axis labels
+				const lineY = yAxis.bottom
+				ctx.beginPath()
+				ctx.moveTo(startX, lineY)
+				ctx.lineTo(xAxis.right, lineY)
+				ctx.lineWidth = 4
+				ctx.strokeStyle = getCSSVariableValue('--colors-red')
+				ctx.stroke()
+
+				// Draw warning icon above the line (triangle with exclamation mark)
+				const iconY = lineY - 14
+				const width = 32
+				const height = 24
+				const radius = 12
+
+				// Draw rounded rectangle background
+				ctx.fillStyle = getCSSVariableValue('--colors-red')
+				ctx.beginPath()
+				ctx.roundRect(startX - width / 2, iconY - height / 2, width, height, radius)
+				ctx.fill()
+
+				// Draw filled triangle
+				const triangleSize = 14
+				const triangleY = iconY - 1
+				ctx.fillStyle = 'white'
+				ctx.beginPath()
+				ctx.moveTo(startX, triangleY - triangleSize / 2)
+				ctx.lineTo(startX - triangleSize / 2, triangleY + triangleSize / 2)
+				ctx.lineTo(startX + triangleSize / 2, triangleY + triangleSize / 2)
+				ctx.closePath()
+				ctx.fill()
+
+				// Draw exclamation mark (line)
+				ctx.fillStyle = getCSSVariableValue('--colors-red')
+				ctx.fillRect(startX - 0.75, triangleY - 3, 1.5, 6)
+
+				// Draw exclamation mark (dot)
+				ctx.beginPath()
+				ctx.arc(startX, triangleY + 5, 1, 0, Math.PI * 2)
+				ctx.fill()
+
+				ctx.restore()
 			},
 		},
 	]}

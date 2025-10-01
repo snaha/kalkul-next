@@ -37,14 +37,15 @@ describe('#getInvestmentValues', () => {
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		// Monthly periods: should have one entry per month
 		expect(feeValues.length).toBeGreaterThan(0)
 		expect(investmentValues.length).toEqual(feeValues.length)
@@ -64,14 +65,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, errors } = getInvestmentValues(
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		// With 10% APY for a full year, 100 should become 110
 		expect(investmentValues[0]).toBeCloseTo(110, 1)
 	})
@@ -89,14 +91,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		// 100 deposit - 10 entry fee = 90 invested, with 10% growth = 99
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].entryFee).toEqual(10)
@@ -115,14 +118,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		// 100 grows to 110, then 10 withdrawn + 10 exit fee = 90 remaining
 		expect(investmentValues[0]).toBeCloseTo(90, 1)
 		expect(feeValues[0].exitFee).toEqual(10)
@@ -141,14 +145,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		// 100 grows to 110, then 10 withdrawn + 1 exit fee (10% of 10) = 99 remaining
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].exitFee).toEqual(1)
@@ -166,14 +171,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].TERFee).toBeGreaterThan(0)
 	})
@@ -191,14 +197,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].managementFee).toBeGreaterThan(0)
 	})
@@ -216,14 +223,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, errors } = getInvestmentValues(
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(99.479)
 	})
 
@@ -239,14 +247,15 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, errors } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBe(0)
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 		expect(investmentValues[0]).toBeCloseTo(109, 1)
 		expect(feeValues[0].successFee).toBeGreaterThan(0)
 	})
@@ -264,16 +273,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, errors } = getInvestmentValues(
+		const { investmentValues } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBeGreaterThan(0)
-		expect(errors.some((error) => error.type === 'managementFee')).toBe(true)
-		// Investment value should not go negative
+		// Investment may exhaust due to high management fees, but shouldn't go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 	})
 
@@ -288,15 +295,17 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, withdrawalValues, errors } = getInvestmentValues(
-			periodCount,
-			{ deposits, withdrawals, startDate, endDate },
-			investment,
-			DAYS_PER_YEAR,
-		)
+		const { investmentValues, withdrawalValues, exhaustionDate, missingAmount } =
+			getInvestmentValues(
+				periodCount,
+				{ deposits, withdrawals, startDate, endDate },
+				investment,
+				DAYS_PER_YEAR,
+			)
 
-		expect(errors.length).toBeGreaterThan(0)
-		expect(errors.some((error) => error.type === 'withdrawal')).toBe(true)
+		// Should have exhaustion due to over-withdrawal
+		expect(exhaustionDate).toBeDefined()
+		expect(missingAmount).toBeGreaterThan(0)
 		// Investment value should not go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 		// Actual withdrawal should be limited to available amount
@@ -316,15 +325,16 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, errors } = getInvestmentValues(
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBeGreaterThan(0)
-		expect(errors.some((error) => error.type === 'withdrawal')).toBe(true)
+		// Should have exhaustion due to over-withdrawal with exit fees
+		expect(exhaustionDate).toBeDefined()
+		expect(missingAmount).toBeGreaterThan(0)
 		// Investment value should not go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 	})
@@ -344,18 +354,16 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-03-31')
-		const { investmentValues, errors } = getInvestmentValues(
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBeGreaterThan(0)
-		const errorTypes = errors.map((error) => error.type)
-		// Should report both types of errors
-		expect(errorTypes.includes('managementFee')).toBe(true)
-		expect(errorTypes.includes('withdrawal')).toBe(true)
+		// Should have exhaustion from over-withdrawal in this scenario
+		expect(exhaustionDate).toBeDefined()
+		expect(missingAmount).toBeGreaterThan(0)
 		// Investment value should never go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 	})
@@ -373,15 +381,13 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, errors } = getInvestmentValues(
+		const { investmentValues } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toBeGreaterThan(0)
-		expect(errors.some((error) => error.type === 'managementFee')).toBe(true)
 		// With high management fees, the value should drop to zero but not negative
 		expect(investmentValues[investmentValues.length - 1]).toEqual(0)
 	})
@@ -397,15 +403,17 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-02-28')
-		const { investmentValues, withdrawalValues, errors } = getInvestmentValues(
-			periodCount,
-			{ deposits, withdrawals, startDate, endDate },
-			investment,
-			DAYS_PER_YEAR,
-		)
+		const { investmentValues, withdrawalValues, exhaustionDate, missingAmount } =
+			getInvestmentValues(
+				periodCount,
+				{ deposits, withdrawals, startDate, endDate },
+				investment,
+				DAYS_PER_YEAR,
+			)
 
-		expect(errors.length).toBeGreaterThan(0)
-		expect(errors.some((error) => error.type === 'withdrawal')).toBe(true)
+		// Should have exhaustion due to over-withdrawal
+		expect(exhaustionDate).toBeDefined()
+		expect(missingAmount).toBeGreaterThan(0)
 		// Investment value should become 0, not negative
 		expect(investmentValues[0]).toEqual(0) // January value after withdrawal
 		// Actual withdrawal should be limited to the available 100
@@ -426,22 +434,17 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-04-30')
-		const { errors } = getInvestmentValues(
+		const { exhaustionDate, missingAmount } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(errors.length).toEqual(2)
-
-		// Check that error dates match the problematic transaction dates
-		const errorDates = errors.map((error) => error.date.toISOString().split('T')[0])
-		expect(errorDates).toContain('2025-02-15')
-		expect(errorDates).toContain('2025-03-20')
-
-		// All errors should be withdrawal type in this scenario
-		expect(errors.every((error) => error.type === 'withdrawal')).toBe(true)
+		// Should have exhaustion from first over-withdrawal
+		expect(exhaustionDate).toBeDefined()
+		expect(exhaustionDate).toEqual(new Date('2025-02-15'))
+		expect(missingAmount).toBeGreaterThan(0)
 	})
 })
 
@@ -1263,5 +1266,225 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 
 		// Year 4 - compound calculation
 		expect(baseData.deposits.get('2027-01-01')).toBeCloseTo(1331.09, 2)
+	})
+})
+
+describe('#investment exhaustion tests', () => {
+	const EXHAUSTION_INVESTMENT: Investment = {
+		...DEFAULT_INVESTMENT,
+		id: 1,
+		name: 'Test Investment',
+		apy: 0.05, // 5% annual return
+	}
+
+	it('should demonstrate basic investment exhaustion', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const deposits = new Map<string, number>([['2024-01-01', 1000]])
+		const withdrawals = new Map<string, number>([['2024-02-01', 1500]]) // More than available
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2024-04-30')
+
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			EXHAUSTION_INVESTMENT,
+		)
+
+		// Should have at least 4 data points (Jan, Feb, Mar, Apr)
+		expect(investmentValues.length).toBeGreaterThanOrEqual(4)
+
+		// Should have initial value (end of January)
+		expect(investmentValues[0]).toBeGreaterThan(1000)
+
+		// Should hit zero after over-withdrawal (end of February)
+		expect(investmentValues[1]).toBe(0)
+
+		// Should remain at zero (March, April)
+		expect(investmentValues[2]).toBe(0)
+		expect(investmentValues[3]).toBe(0)
+
+		// Should have exhaustion date and missing amount
+		expect(exhaustionDate).toBeDefined()
+		expect(exhaustionDate).toEqual(new Date('2024-02-01'))
+		expect(missingAmount).toBeGreaterThan(0)
+	})
+
+	it('should stop growth after investment hits zero due to over-withdrawal', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const deposits = new Map<string, number>([['2024-01-01', 10000]])
+		const withdrawals = new Map<string, number>([['2024-06-01', 15000]]) // More than available
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2024-12-31')
+
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			EXHAUSTION_INVESTMENT,
+		)
+
+		// Should have initial value after deposit (with some growth) - End of January
+		expect(investmentValues[0]).toBeGreaterThan(10000)
+		expect(investmentValues[0]).toBeLessThan(10100)
+
+		// Should continue growing before withdrawal - End of May
+		expect(investmentValues[4]).toBeGreaterThan(10000)
+
+		// Should hit zero after withdrawal in June - End of June
+		expect(investmentValues[5]).toBe(0)
+
+		// Should remain at zero after exhaustion - July, August, etc.
+		expect(investmentValues[6]).toBe(0)
+		expect(investmentValues[7]).toBe(0)
+
+		// Should have exhaustion date and missing amount
+		expect(exhaustionDate).toBeDefined()
+		const exhaustionDateStr = exhaustionDate!.toISOString().split('T')[0]
+		expect(['2024-05-31', '2024-06-01']).toContain(exhaustionDateStr)
+		expect(missingAmount).toBeGreaterThan(0)
+	})
+
+	it('should track missing withdrawal amount correctly', () => {
+		const periodCount = { count: 2, period: 'month' as const }
+		const deposits = new Map<string, number>([['2024-01-01', 5000]])
+		const withdrawals = new Map<string, number>([['2024-02-01', 8000]]) // 3000 more than available
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2024-02-29')
+
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			EXHAUSTION_INVESTMENT,
+		)
+
+		// Should hit zero
+		expect(investmentValues[1]).toBe(0)
+
+		// Should track the missing amount (approximately 3000 minus any growth)
+		expect(exhaustionDate).toBeDefined()
+		expect(missingAmount).toBeGreaterThan(0)
+		expect(missingAmount).toBeGreaterThan(2900) // Account for small growth
+		expect(missingAmount).toBeLessThan(3100)
+	})
+
+	it('should continue calculating fees and errors even after exhaustion', () => {
+		const investmentWithFees: Investment = {
+			...EXHAUSTION_INVESTMENT,
+			management_fee: 0.02, // 2% annual management fee
+			management_fee_type: 'annual' as const,
+		}
+
+		const periodCount = { count: 1, period: 'month' as const }
+		const deposits = new Map<string, number>([['2024-01-01', 1000]])
+		const withdrawals = new Map<string, number>([['2024-02-01', 1500]])
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2024-04-30') // Extended to get more data points
+
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investmentWithFees,
+		)
+
+		// Should have exhaustion from withdrawal
+		expect(exhaustionDate).toBeDefined()
+		expect(exhaustionDate).toEqual(new Date('2024-02-01'))
+		expect(missingAmount).toBeGreaterThan(0)
+
+		// Investment should remain at zero
+		expect(investmentValues[1]).toBe(0)
+		expect(investmentValues[2]).toBe(0)
+	})
+
+	it('should not recover from exhaustion even with new deposits', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const deposits = new Map<string, number>([
+			['2024-01-01', 5000],
+			['2024-03-01', 2000],
+		]) // New deposit after exhaustion
+		const withdrawals = new Map<string, number>([['2024-02-01', 6000]])
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2024-05-31') // Extended to get more data points
+
+		const { investmentValues } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			EXHAUSTION_INVESTMENT,
+		)
+
+		// Should start with initial deposit (with some growth)
+		expect(investmentValues[0]).toBeGreaterThan(5000)
+		expect(investmentValues[0]).toBeLessThan(5100)
+
+		// Should hit zero after over-withdrawal
+		expect(investmentValues[1]).toBe(0)
+
+		// Should remain at zero even after new deposit (exhaustion is permanent)
+		expect(investmentValues[2]).toBe(0)
+		expect(investmentValues[3]).toBe(0)
+	})
+
+	it('should handle multiple over-withdrawals correctly', () => {
+		const periodCount = { count: 1, period: 'month' as const }
+		const deposits = new Map<string, number>([['2024-01-01', 3000]])
+		const withdrawals = new Map<string, number>([
+			['2024-02-01', 2000],
+			['2024-03-01', 2000], // Should exhaust remaining ~1000
+			['2024-04-01', 1000], // Another over-withdrawal
+		])
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2024-05-31')
+
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			EXHAUSTION_INVESTMENT,
+		)
+
+		// Should start with 3000 (with some growth)
+		expect(investmentValues[0]).toBeGreaterThan(3000)
+		expect(investmentValues[0]).toBeLessThan(3100)
+
+		// Should have ~1000 after first withdrawal
+		expect(investmentValues[1]).toBeGreaterThan(0)
+
+		// Should hit zero after second withdrawal
+		expect(investmentValues[2]).toBe(0)
+
+		// Should remain zero for subsequent periods
+		expect(investmentValues[3]).toBe(0)
+		expect(investmentValues[4]).toBe(0)
+
+		// Should have exhaustion date from first over-withdrawal
+		expect(exhaustionDate).toBeDefined()
+		expect(exhaustionDate).toEqual(new Date('2024-03-01'))
+		expect(missingAmount).toBeGreaterThan(0)
+	})
+
+	it('should handle normal withdrawals without exhaustion', () => {
+		const periodCount = { count: 1, period: 'year' as const }
+		const deposits = new Map<string, number>([['2024-01-01', 10000]])
+		const withdrawals = new Map<string, number>([['2024-06-01', 3000]]) // Well within available funds
+		const startDate = new Date('2024-01-01')
+		const endDate = new Date('2026-12-31') // 3 years to get multiple data points
+
+		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			EXHAUSTION_INVESTMENT,
+		)
+
+		// Should have growth after initial deposit and withdrawal (end of 2024)
+		expect(investmentValues[0]).toBeGreaterThan(6500) // ~10000 - 3000 + some growth
+		expect(investmentValues[0]).toBeLessThan(7500)
+
+		// Should continue growing (end of 2025)
+		expect(investmentValues[1]).toBeGreaterThan(investmentValues[0])
+
+		// Should continue growing (end of 2026)
+		expect(investmentValues[2]).toBeGreaterThan(investmentValues[1])
+
+		// Should have no exhaustion
+		expect(exhaustionDate).toBeUndefined()
+		expect(missingAmount).toBe(0)
 	})
 })

@@ -66,6 +66,7 @@ const EXCLUDE_PATTERNS = [
 	/^[a-zA-Z_$][a-zA-Z0-9_$]*\s*[=(){}]/, // Code patterns (variable assignments, function calls)
 	/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/, // Simple variable names or property access
 	/^\w+\s*[<>]=?\s*\w+/, // Comparisons
+	/^=\s*\w+/, // Assignment operators or comparison starting with =
 ]
 
 function scanSourceFiles() {

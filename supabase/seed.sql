@@ -897,6 +897,837 @@ VALUES
     true
   );
 
+-- Zero-Crossing Demo Client and Portfolio
+INSERT INTO
+  "public"."client" (
+    "id",
+    "email",
+    "created_at",
+    "name",
+    "birth_date",
+    "advisor"
+  )
+VALUES
+  (
+    '5',
+    'zero.crossing@kalkul.app',
+    '2025-09-24 12:00:00.000000+00',
+    'Zero Crossing Demo Client',
+    '1985-03-15',
+    '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249'
+  );
+
+INSERT INTO
+  "public"."portfolio" (
+    "id",
+    "created_at",
+    "name",
+    "last_edited_at",
+    "start_date",
+    "end_date",
+    "inflation_rate",
+    "client",
+    "currency",
+    "link"
+  )
+VALUES
+  (
+    '5',
+    '2025-09-24 12:00:00.000000+00',
+    'Zero-Crossing Demonstration Portfolio',
+    '2025-09-24 12:00:00.000000+00',
+    '2023-01-01',
+    '2027-12-31',
+    '0.025',
+    '5',
+    'USD',
+    'zero-crossing-demo-2025'
+  );
+
+INSERT INTO
+  "public"."investment" (
+    "id",
+    "created_at",
+    "last_edited_at",
+    "portfolio_id",
+    "apy",
+    "entry_fee",
+    "exit_fee",
+    "success_fee",
+    "management_fee",
+    "exit_fee_type",
+    "management_fee_type",
+    "entry_fee_type",
+    "name"
+  )
+VALUES
+  (
+    '13',
+    '2025-09-24 12:00:00.000000+00',
+    '2025-09-24 12:00:00.000000+00',
+    '5',
+    '6.5',
+    '0',
+    '0',
+    '0',
+    '0.015',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Volatile Growth Fund'
+  );
+
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  -- Initial investment builds up portfolio value
+  (
+    '1001',
+    '2025-09-24 12:00:00.000000+00',
+    '50000',
+    '2023-01-01 00:00:00+00',
+    null,
+    '13',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Monthly contributions for 18 months
+  (
+    '1002',
+    '2025-09-24 12:00:00.000000+00',
+    '5000',
+    '2023-02-01 00:00:00+00',
+    '2024-07-01 00:00:00+00',
+    '13',
+    'Monthly contributions',
+    '1',
+    'month',
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Large emergency withdrawal that pushes portfolio negative
+  (
+    '1003',
+    '2025-09-24 12:00:00.000000+00',
+    '200000',
+    '2024-08-15 00:00:00+00',
+    null,
+    '13',
+    'Emergency withdrawal',
+    null,
+    null,
+    'withdrawal',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Recovery contributions showing portfolio climbing back
+  (
+    '1004',
+    '2025-09-24 12:00:00.000000+00',
+    '8000',
+    '2024-09-01 00:00:00+00',
+    '2027-12-01 00:00:00+00',
+    '13',
+    'Recovery contributions',
+    '1',
+    'month',
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  );
+
+-- Add a second investment to demonstrate contrast (this one stays positive)
+INSERT INTO
+  "public"."investment" (
+    "id",
+    "created_at",
+    "last_edited_at",
+    "portfolio_id",
+    "apy",
+    "entry_fee",
+    "exit_fee",
+    "success_fee",
+    "management_fee",
+    "exit_fee_type",
+    "management_fee_type",
+    "entry_fee_type",
+    "name"
+  )
+VALUES
+  (
+    '14',
+    '2025-09-24 12:00:00.000000+00',
+    '2025-09-24 12:00:00.000000+00',
+    '5',
+    '4.2',
+    '0.5',
+    '0',
+    '0',
+    '0.01',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Stable Bond Fund'
+  ),
+  -- Add a third investment that exhausts later than the first one
+  (
+    '15',
+    '2025-09-24 12:00:00.000000+00',
+    '2025-09-24 12:00:00.000000+00',
+    '5',
+    '5.8',
+    '0',
+    '0',
+    '0',
+    '0.02',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Moderate Risk Fund'
+  );
+
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  -- Conservative initial investment
+  (
+    '2001',
+    '2025-09-24 12:00:00.000000+00',
+    '25000',
+    '2023-01-01 00:00:00+00',
+    null,
+    '14',
+    'Initial Conservative Investment',
+    null,
+    null,
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Steady monthly contributions
+  (
+    '2002',
+    '2025-09-24 12:00:00.000000+00',
+    '2000',
+    '2023-02-01 00:00:00+00',
+    '2027-12-01 00:00:00+00',
+    '14',
+    'Monthly conservative contributions',
+    '1',
+    'month',
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Moderate withdrawal that doesn't exhaust funds
+  (
+    '2003',
+    '2025-09-24 12:00:00.000000+00',
+    '15000',
+    '2024-08-15 00:00:00+00',
+    null,
+    '14',
+    'Moderate withdrawal',
+    null,
+    null,
+    'withdrawal',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Additional withdrawal later that's still within limits
+  (
+    '2004',
+    '2025-09-24 12:00:00.000000+00',
+    '10000',
+    '2025-03-01 00:00:00+00',
+    null,
+    '14',
+    'Planned withdrawal',
+    null,
+    null,
+    'withdrawal',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+
+  -- Transactions for the third investment (Moderate Risk Fund) that exhausts later
+  -- Initial investment
+  (
+    '3001',
+    '2025-09-24 12:00:00.000000+00',
+    '40000',
+    '2023-01-01 00:00:00+00',
+    null,
+    '15',
+    'Initial Moderate Investment',
+    null,
+    null,
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Monthly contributions for 30 months (longer buildup than first investment)
+  (
+    '3002',
+    '2025-09-24 12:00:00.000000+00',
+    '3000',
+    '2023-02-01 00:00:00+00',
+    '2025-07-01 00:00:00+00',
+    '15',
+    'Extended monthly contributions',
+    '1',
+    'month',
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Large withdrawal that exhausts the fund around August 2025 (13 months after first error)
+  (
+    '3003',
+    '2025-09-24 12:00:00.000000+00',
+    '150000',
+    '2025-08-15 00:00:00+00',
+    null,
+    '15',
+    'Major expense - fund exhaustion',
+    null,
+    null,
+    'withdrawal',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  ),
+  -- Recovery attempts showing continued negative balance
+  (
+    '3004',
+    '2025-09-24 12:00:00.000000+00',
+    '4000',
+    '2025-09-01 00:00:00+00',
+    '2027-12-01 00:00:00+00',
+    '15',
+    'Recovery attempts after exhaustion',
+    '1',
+    'month',
+    'deposit',
+    '2025-09-24 12:00:00.000000+00',
+    false
+  );
+
+-- Duplicate Zero-Crossing Portfolio with 3-year extension (+3 Years)
+INSERT INTO "public"."portfolio" (
+  "id",
+  "created_at",
+  "name",
+  "last_edited_at",
+  "start_date",
+  "end_date",
+  "inflation_rate",
+  "client",
+  "currency",
+  "link"
+)
+SELECT
+  '6',
+  "created_at",
+  "name" || ' (+3 Years)',
+  "last_edited_at",
+  "start_date",
+  '2030-12-31',
+  "inflation_rate",
+  "client",
+  "currency",
+  "link" || '-extended'
+FROM "public"."portfolio"
+WHERE "id" = '5';
+
+-- Duplicate investments for extended portfolio
+INSERT INTO "public"."investment" (
+  "id",
+  "created_at",
+  "last_edited_at",
+  "portfolio_id",
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+)
+SELECT
+  '16',
+  "created_at",
+  "last_edited_at",
+  '6',
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+FROM "public"."investment"
+WHERE "id" = '13';
+
+INSERT INTO "public"."investment" (
+  "id",
+  "created_at",
+  "last_edited_at",
+  "portfolio_id",
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+)
+SELECT
+  '17',
+  "created_at",
+  "last_edited_at",
+  '6',
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+FROM "public"."investment"
+WHERE "id" = '14';
+
+INSERT INTO "public"."investment" (
+  "id",
+  "created_at",
+  "last_edited_at",
+  "portfolio_id",
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+)
+SELECT
+  '18',
+  "created_at",
+  "last_edited_at",
+  '6',
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+FROM "public"."investment"
+WHERE "id" = '15';
+
+-- Transactions for extended portfolio
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '4001',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '16',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '1001';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '4002',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '16',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '1002';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '4003',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '16',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '1003';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '4004',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '16',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '1004';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '5001',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '17',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '2001';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '5002',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '17',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '2002';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '5003',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '17',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '2003';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '5004',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '17',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '2004';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '6001',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '18',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '3001';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '6002',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '18',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '3002';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '6003',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '18',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '3003';
+
+INSERT INTO "public"."transaction" (
+  "id",
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  "investment_id",
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+)
+SELECT
+  '6004',
+  "created_at",
+  "amount",
+  "date",
+  "end_date",
+  '18',
+  "label",
+  "repeat",
+  "repeat_unit",
+  "type",
+  "last_edited_at",
+  "inflation_adjusted"
+FROM "public"."transaction"
+WHERE "id" = '3004';
+
 -- Reset sequences to ensure proper ID generation
 DO $$
 BEGIN

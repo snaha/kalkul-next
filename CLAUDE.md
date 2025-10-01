@@ -29,6 +29,7 @@ See `README.md` for development commands, project structure, and conventions.
    - All database queries go through the adapter layer
    - Types are generated from database schema (`src/lib/typesdb.ts`)
    - Run `pnpm supabase gen types` after schema changes
+   - **IMPORTANT**: All database changes go in `seed.sql` only, never touch remote DB!
 
 4. **Internationalization (i18n)**
 
