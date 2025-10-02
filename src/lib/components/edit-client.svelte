@@ -144,7 +144,7 @@
 	</Horizontal>
 	<div class="spacer"></div>
 	<Input
-		autofocus
+		autofocus={!layoutStore.mobile}
 		variant="solid"
 		dimension="compact"
 		placeholder={$_('page.client.clientName')}

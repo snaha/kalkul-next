@@ -20,6 +20,7 @@
 	import PasswordInput from '$lib/components/ui/input/password-input.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import type { AuthError } from '@supabase/supabase-js'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -135,7 +136,7 @@
 			<Typography variant="h4">{$_('page.signUp.signUp')}</Typography>
 			<Vertical --vertical-gap="var(--padding)">
 				<Input
-					autofocus
+					autofocus={!layoutStore.mobile}
 					variant="solid"
 					dimension="compact"
 					bind:value={email}

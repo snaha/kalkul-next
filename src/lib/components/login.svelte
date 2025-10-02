@@ -149,7 +149,7 @@
 			</Horizontal>
 		</ResponsiveLayout>
 	</Vertical>
-</Fullscreen>>
+</Fullscreen>
 
 <style>
 	:global(.width-100) {

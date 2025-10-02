@@ -7,6 +7,7 @@
 	import adapter from '$lib/adapters'
 	import routes from '$lib/routes'
 	import { base } from '$app/paths'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	let newPassword = $state('')
 	let newPasswordError: string | undefined = $state()
@@ -53,7 +54,7 @@
 		<Typography variant="h4">{$_('page.changePassword.changePassword')}</Typography>
 		<form onsubmit={updateUserPassword} class="change-email">
 			<Input
-				autofocus
+				autofocus={!layoutStore.mobile}
 				variant="solid"
 				dimension="compact"
 				type="password"

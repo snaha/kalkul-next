@@ -10,6 +10,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import { EXCHANGE_CODE_TO_CURRENCY, EXCHANGES } from '$lib/exchanges'
 	import Vertical from './ui/vertical.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	type Props = {
 		name: string
@@ -250,7 +251,7 @@
 					}
 				}}
 				error={isinImportError ? inputError : undefined}
-				autofocus
+				autofocus={!layoutStore.mobile}
 			></Input>
 			<Button
 				variant="strong"

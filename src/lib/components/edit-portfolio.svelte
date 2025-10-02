@@ -164,7 +164,7 @@
 	</Horizontal>
 	<div class="spacer"></div>
 	<Input
-		autofocus
+		autofocus={!layoutStore.mobile}
 		dimension="compact"
 		variant="solid"
 		placeholder={$_('component.editPortfolio.portfolioName')}
