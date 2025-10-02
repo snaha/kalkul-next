@@ -24,7 +24,7 @@
 	// Store locale for use in callbacks
 	const currentLocale = $derived($locale)
 
-	// Calculate the zero-crossing index using the exhaustion date
+	// Index of first period where portfolio is exhausted
 	const zeroCrossingIndex = $derived(() => {
 		const exhaustionDate = graphValuesStore.total.exhaustionDate
 		const graphLabels = graphValuesStore.data[0]?.graphLabels
@@ -33,25 +33,21 @@
 			return undefined
 		}
 
-		// Find the index where the exhaustion date falls
 		for (let i = 0; i < graphLabels.length; i++) {
 			const label = graphLabels[i]
 
-			// Handle monthly format like "2024-8"
 			if (label.includes('-')) {
 				const [yearStr, monthStr] = label.split('-')
 				const year = parseInt(yearStr, 10)
 				const month = parseInt(monthStr, 10)
 
-				// Check if exhaustion date falls within this month
-				const labelDate = new Date(year, month - 1, 1) // First day of month
-				const nextMonth = new Date(year, month, 1) // First day of next month
+				const labelDate = new Date(year, month - 1, 1)
+				const nextMonth = new Date(year, month, 1)
 
 				if (exhaustionDate >= labelDate && exhaustionDate < nextMonth) {
 					return i
 				}
 			} else {
-				// Handle yearly format
 				const labelDate = new Date(label)
 				if (labelDate.getFullYear() >= exhaustionDate.getFullYear()) {
 					return i
@@ -129,7 +125,7 @@
 								const label = dataset.label || ''
 								if (label.endsWith('_hidden')) return undefined
 
-								// Only show in red if this specific investment has exhausted (has missing funds)
+								// Determine if investment is exhausted with missing funds
 								const isExhausted =
 									investment?.exhaustionDate !== undefined && investment?.missingAmount > 0
 
@@ -160,7 +156,7 @@
 							x: tooltip.caretX,
 							y: tooltip.caretY,
 						}
-						// Simplified withdrawal error check using zero-crossing index
+						// Check if current period is at or after exhaustion
 						const currentDataIndex = tooltip.dataPoints[0]?.dataIndex
 						const hasWithdrawalError =
 							currentDataIndex !== undefined &&
@@ -237,7 +233,7 @@
 
 				ctx.save()
 
-				// Draw red zero line from error point onward
+				// Red line at zero from exhaustion point onwards
 				if (zeroY >= yAxis.top && zeroY <= yAxis.bottom) {
 					ctx.beginPath()
 					ctx.moveTo(startX, zeroY)
@@ -247,20 +243,20 @@
 					ctx.stroke()
 				}
 
-				// Draw warning icon above zero line (triangle with exclamation mark)
+				// Warning icon at exhaustion point
 				const iconY = zeroY - 20
 				if (iconY >= yAxis.top) {
 					const width = 32
 					const height = 24
 					const radius = 12
 
-					// Draw rounded rectangle background
+					// Background
 					ctx.fillStyle = getCSSVariableValue('--colors-red')
 					ctx.beginPath()
 					ctx.roundRect(startX - width / 2, iconY - height / 2, width, height, radius)
 					ctx.fill()
 
-					// Draw filled triangle
+					// Triangle
 					const triangleSize = 14
 					const triangleY = iconY - 1
 					ctx.fillStyle = 'white'
@@ -271,11 +267,11 @@
 					ctx.closePath()
 					ctx.fill()
 
-					// Draw exclamation mark (line)
+					// Exclamation line
 					ctx.fillStyle = getCSSVariableValue('--colors-red')
 					ctx.fillRect(startX - 0.75, triangleY - 3, 1.5, 6)
 
-					// Draw exclamation mark (dot)
+					// Exclamation dot
 					ctx.beginPath()
 					ctx.arc(startX, triangleY + 5, 1, 0, Math.PI * 2)
 					ctx.fill()

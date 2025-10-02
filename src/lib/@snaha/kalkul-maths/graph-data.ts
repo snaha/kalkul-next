@@ -311,7 +311,7 @@ export function getGraphDataForPortfolio(
 		getGraphData({ ...d.baseData, startDate, endDate }, d.investment, portfolio),
 	)
 
-	// Find earliest exhaustion date and total missing amount across all investments
+	// Determine earliest exhaustion date and aggregate missing amounts
 	let portfolioExhaustionDate: Date | undefined
 	let totalMissingAmount = 0
 

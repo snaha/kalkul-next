@@ -29,7 +29,7 @@
 		...restProps
 	}: Props = $props()
 
-	// Check if a specific investment is exhausted at the current data point
+	// Determine if investment is exhausted at given period
 	function getInvestmentExhaustionInfo(investmentName: string, dataIndex: number) {
 		const investment = investmentData.find((inv) => inv.name === investmentName)
 		if (!investment?.exhaustionDate || !graphLabels[dataIndex]) {
@@ -39,27 +39,31 @@
 			}
 		}
 
-		// Parse the label to get the date
 		const label = String(graphLabels[dataIndex])
 		let labelDate: Date
 
 		if (label.includes('-')) {
-			// Handle monthly format like "2024-8"
 			const [yearStr, monthStr] = label.split('-')
 			const year = parseInt(yearStr, 10)
 			const month = parseInt(monthStr, 10)
 			labelDate = new Date(year, month - 1, 1)
+
+			const nextMonth = new Date(year, month, 1)
+			const isExhausted = investment.exhaustionDate < nextMonth
+
+			return {
+				isExhausted,
+				missingAmount: investment?.missingAmount || 0,
+			}
 		} else {
-			// Handle yearly format
 			labelDate = new Date(parseInt(label, 10), 0, 1)
-		}
 
-		// Check if the current data point is at or after the exhaustion date
-		const isExhausted = labelDate >= investment.exhaustionDate
+			const isExhausted = labelDate.getFullYear() >= investment.exhaustionDate.getFullYear()
 
-		return {
-			isExhausted,
-			missingAmount: investment?.missingAmount || 0,
+			return {
+				isExhausted,
+				missingAmount: investment?.missingAmount || 0,
+			}
 		}
 	}
 </script>

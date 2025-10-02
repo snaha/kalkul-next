@@ -176,7 +176,7 @@ function calculateDailyInvestmentUpdate(
 	const calculatedValue = valueAfterDailyManagementFee.sub(actualWithdrawal)
 	const newCurrentValue = calculatedValue.greaterThanOrEqualTo(0) ? calculatedValue : DECIMAL_0
 
-	// Calculate missing withdrawal amount when there's a withdrawal error
+	// Amount that couldn't be withdrawn
 	const missingWithdrawalAmount = totalWithdrawalNeeded.sub(actualWithdrawal)
 
 	return {
@@ -263,10 +263,9 @@ export function getInvestmentValues(
 		} = calculateDailyInvestmentUpdate(
 			currentValue,
 			currentFeeBreakdown,
-			exhaustionDate ? 0 : depositsOnDate, // No deposits allowed when exhausted
+			exhaustionDate ? 0 : depositsOnDate,
 			withdrawalsOnDate,
 			investment,
-			// Stop growth if already exhausted
 			exhaustionDate ? DECIMAL_0 : dailyAPY,
 			exhaustionDate ? DECIMAL_0 : dailyAPYWithSuccessFee,
 			dailyManagementFee,
@@ -275,7 +274,7 @@ export function getInvestmentValues(
 			totalDepositAmount,
 		)
 
-		// Track exhaustion on first time hitting zero due to withdrawal error
+		// Record when investment reaches zero due to insufficient funds
 		if (
 			investmentCalculationErrors.includes('withdrawal') &&
 			newCurrentValue.equals(0) &&
@@ -284,11 +283,11 @@ export function getInvestmentValues(
 			exhaustionDate = date
 		}
 
-		// Add missing withdrawal amount to total
+		// Accumulate unfulfilled withdrawal amounts
 		totalMissingAmount = totalMissingAmount.add(missingWithdrawalAmount)
 
 		currentValue = newCurrentValue
-		deposit = deposit.add(exhaustionDate ? 0 : depositsOnDate) // Track only allowed deposits
+		deposit = deposit.add(exhaustionDate ? 0 : depositsOnDate)
 		withdrawal = withdrawal.add(actualWithdrawal)
 
 		if (date >= nextRecordDate) {
