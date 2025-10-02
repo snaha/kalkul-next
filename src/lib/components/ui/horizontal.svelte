@@ -23,7 +23,7 @@
 		--horizontal-gap: var(--padding);
 		--horizontal-justify-content: flex-start;
 		--horizontal-align-items: center;
-		--padding-left: 0;
+		--padding-left: unset;
 	}
 	.horizontal {
 		display: flex;

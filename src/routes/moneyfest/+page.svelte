@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Badge, ArrowRight } from 'carbon-icons-svelte'
-	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import Button from '$lib/components/ui/button.svelte'
 	import { _ } from 'svelte-i18n'
 	import routes from '$lib/routes'
@@ -23,7 +22,6 @@
 	<Badge size={24} />
 {/snippet}
 {#snippet disclaimer()}
-	<BetaBadge>beta</BetaBadge>
 	<Typography variant="small" class="color-high">{$_('page.moneyfest.disclaimer')}</Typography>
 {/snippet}
 <main class:mobile={layoutStore.mobile}>

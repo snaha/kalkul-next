@@ -99,7 +99,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		align-items: center;
+		align-items: end;
 		gap: var(--half-padding);
 	}
 	.horizontal :global(.date-age-grower) {

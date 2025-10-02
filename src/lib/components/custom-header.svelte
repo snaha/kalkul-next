@@ -4,9 +4,8 @@
 	import Button from './ui/button.svelte'
 	import routes from '$lib/routes'
 	import Horizontal from './ui/horizontal.svelte'
-	import BetaBadge from './beta-badge.svelte'
 
-	let { hasCloseButton = true, beta = false } = $props()
+	let { hasCloseButton = true } = $props()
 </script>
 
 <header>
@@ -14,9 +13,6 @@
 		<a class="logo-link clickable" href={routes.HOME}>
 			<Logo size={40} />
 		</a>
-		{#if beta}
-			<BetaBadge>beta</BetaBadge>
-		{/if}
 	</Horizontal>
 	{#if hasCloseButton}
 		<Button dimension="compact" variant="ghost" class="clickable" onclick={() => history.back()}>
@@ -28,16 +24,13 @@
 </header>
 
 <style>
-	:root {
-		--header-height: 106px;
-	}
 	header {
 		width: 100%;
 		padding: var(--double-padding);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		position: var(--header-position, fixed);
+		position: var(--header-position, static);
 		top: 0;
 		background-color: var(--header-background-color, var(--colors-ultra-low));
 		pointer-events: var(--header-pointer-events, initial);

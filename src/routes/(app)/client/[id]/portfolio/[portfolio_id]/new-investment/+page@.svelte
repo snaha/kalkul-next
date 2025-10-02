@@ -15,7 +15,7 @@
 	}
 </script>
 
-<Fullscreen>
+<Fullscreen hasCustomHeader={false}>
 	{#if portfolioStore.loading}
 		<Loader />
 	{:else if portfolio}

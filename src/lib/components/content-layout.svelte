@@ -3,14 +3,22 @@
 
 	type Props = {
 		children: Snippet
+		centered?: boolean
 		centerAlign?: boolean
 		centerVertical?: boolean
+		class?: string
 	}
 
-	let { children, centerAlign, centerVertical }: Props = $props()
+	let {
+		children,
+		centered = true,
+		centerAlign,
+		centerVertical,
+		class: className = '',
+	}: Props = $props()
 </script>
 
-<main class="centered" class:centerAlign class:centerVertical>
+<main class:centered class:centerAlign class:centerVertical class={className}>
 	{@render children()}
 </main>
 
@@ -18,12 +26,10 @@
 	:root {
 		--content-layout-margin: 0;
 	}
-	.centered {
+	main {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		gap: var(--gap, --padding);
+		gap: var(--gap, var(--double-padding));
 		margin: var(--content-layout-margin);
 		padding: var(--double-padding);
 		width: 100%;
@@ -36,8 +42,12 @@
 			transform: translate(-50%, -50%);
 		}
 	}
+	.centered {
+		justify-content: center;
+		align-items: center;
+	}
 	@media screen and (max-width: 1023px) {
-		.centered {
+		main {
 			padding: var(--padding);
 		}
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
+	import { Close } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
@@ -12,9 +12,11 @@
 	import { asyncTimeout, capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import DeleteModal from './delete-modal.svelte'
-	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import Loader from './ui/loader.svelte'
+	import Horizontal from './ui/horizontal.svelte'
+	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	type Props = {
 		client: Client
@@ -150,119 +152,115 @@
 	}
 </script>
 
-<ContentLayout>
-	<Vertical class="max-width-560">
-		<section class="horizontal">
-			{#if formType === 'create'}
-				<Typography variant="h4">{$_('component.editPortfolio.addPortfolio')}</Typography>
-			{:else}
-				<Typography variant="h4">{$_('component.editPortfolio.editPortfolio')}</Typography>
-			{/if}
-			<div class="grower"></div>
-			<Typography>{client.name}</Typography>
-		</section>
-		<div class="spacer"></div>
-		<Input
-			autofocus
-			dimension="compact"
-			variant="solid"
-			placeholder={$_('component.editPortfolio.portfolioName')}
-			label={$_('component.editPortfolio.portfolioName')}
-			bind:value={name}
-		></Input>
-		<section class="horizontal">
-			<Select
-				variant="solid"
-				dimension="compact"
-				bind:value={currency}
-				placeholder={$_('common.currency')}
-				label={$_('common.currency')}
-				class="grower"
-				items={[
-					{ value: 'EUR', label: 'EUR' },
-					{ value: 'USD', label: 'USD' },
-					{ value: 'CZK', label: 'CZK' },
-				]}
-			></Select>
-			<Input
-				type="number"
-				variant="solid"
-				dimension="compact"
-				placeholder={$_('common.inflation')}
-				label={$_('common.inflation')}
-				unit="%"
-				bind:value={inflation}
-				step={'.01'}
-				class="grower"
-			></Input>
-		</section>
-		<Divider />
-
-		<DateAge
-			dimension="compact"
-			dateInputLabel={$_('common.startDate')}
-			bind:date={startDate}
-			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioStart')}
-			agePlaceholder={$_('common.clientAge')}
-			birthDate={new Date(client.birth_date)}
-		/>
-
-		<Input
+<Vertical class="max-width-560">
+	<Horizontal>
+		{#if formType === 'create'}
+			<Typography variant="h4">{$_('component.editPortfolio.addPortfolio')}</Typography>
+		{:else}
+			<Typography variant="h4">{$_('component.editPortfolio.editPortfolio')}</Typography>
+		{/if}
+		<div class="grower"></div>
+		<Button variant="ghost" dimension="compact" onclick={close}><Close size={24} /></Button>
+	</Horizontal>
+	<div class="spacer"></div>
+	<Input
+		autofocus
+		dimension="compact"
+		variant="solid"
+		placeholder={$_('component.editPortfolio.portfolioName')}
+		label={$_('component.editPortfolio.portfolioName')}
+		bind:value={name}
+	></Input>
+	<section class="horizontal">
+		<Select
 			variant="solid"
 			dimension="compact"
-			placeholder={$_('component.editPortfolio.horizon')}
-			label={$_('component.editPortfolio.horizon')}
-			unit={$_('common.years')}
-			bind:value={horizon}
-			oninput={onHorizonInput}
-			onblur={checkHorizonInput}
-		></Input>
-
-		<DateAge
+			bind:value={currency}
+			placeholder={$_('common.currency')}
+			label={$_('common.currency')}
+			class="grower"
+			items={[
+				{ value: 'EUR', label: 'EUR' },
+				{ value: 'USD', label: 'USD' },
+				{ value: 'CZK', label: 'CZK' },
+			]}
+		></Select>
+		<Input
+			type="number"
+			variant="solid"
 			dimension="compact"
-			dateInputLabel={$_('common.endDate')}
-			bind:date={endDate}
-			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioEnd')}
-			agePlaceholder={$_('common.clientAge')}
-			birthDate={new Date(client.birth_date)}
-		/>
+			placeholder={$_('common.inflation')}
+			label={$_('common.inflation')}
+			unit="%"
+			bind:value={inflation}
+			step={'.01'}
+			class="grower"
+		></Input>
+	</section>
+	<Divider />
 
-		<section class="buttons horizontal">
-			{#if formType === 'create'}
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={createPortfolio}
-					disabled={createDisabled}
-					busy={createClicked}
-					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
-							size={24}
-						/>{/if}{$_('component.editPortfolio.createPortfolio')}</Button
-				>
-			{:else}
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={updatePortfolio}
-					busy={createClicked}
-					disabled={createDisabled}
-					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
-							size={24}
-						/>{/if}{$_('common.done')}</Button
-				>
-			{/if}
-			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_('common.cancel')}</Button
+	<DateAge
+		dimension="compact"
+		dateInputLabel={$_('common.startDate')}
+		bind:date={startDate}
+		ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioStart')}
+		agePlaceholder={$_('common.clientAge')}
+		birthDate={new Date(client.birth_date)}
+	/>
+
+	<Input
+		variant="solid"
+		dimension="compact"
+		placeholder={$_('component.editPortfolio.horizon')}
+		label={$_('component.editPortfolio.horizon')}
+		unit={$_('common.years')}
+		bind:value={horizon}
+		oninput={onHorizonInput}
+		onblur={checkHorizonInput}
+	></Input>
+
+	<DateAge
+		dimension="compact"
+		dateInputLabel={$_('common.endDate')}
+		bind:date={endDate}
+		ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioEnd')}
+		agePlaceholder={$_('common.clientAge')}
+		birthDate={new Date(client.birth_date)}
+	/>
+
+	<ResponsiveLayout --responsive-justify-content="stretch">
+		{#if formType === 'create'}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={createPortfolio}
+				disabled={createDisabled}
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="large" color="low" />{/if}{$_(
+					'component.editPortfolio.createPortfolio',
+				)}</Button
 			>
-			{#if formType === 'edit'}
-				<div class="grower"></div>
-				<Button variant="ghost" dimension="compact" onclick={confirmDeletePortfolio}
-					><TrashCan size={24} />{$_('component.editPortfolio.deletePortfolio')}</Button
-				>
-			{/if}
-		</section>
-	</Vertical>
-</ContentLayout>
+		{:else}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={updatePortfolio}
+				busy={createClicked}
+				disabled={createDisabled}
+				>{#if createClicked}<Loader dimension="large" color="low" />{/if}{$_(
+					'common.saveChanges',
+				)}</Button
+			>
+		{/if}
+		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
+		{#if formType === 'edit'}
+			{#if !layoutStore.mobile}<div class="grower"></div>{/if}
+			<Button variant="ghost" dimension="compact" onclick={confirmDeletePortfolio} danger
+				>{$_('component.editPortfolio.deletePortfolio')}</Button
+			>
+		{/if}
+	</ResponsiveLayout>
+</Vertical>
 
 <DeleteModal
 	confirm={deletePortfolio}
@@ -278,14 +276,11 @@
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-end;
-		gap: var(--padding);
+		gap: var(--half-padding);
 	}
 	.horizontal :global(.grower) {
 		flex: 1;
-	}
-	.buttons {
-		margin-top: var(--padding);
-		gap: var(--half-padding);
+		min-width: 0;
 	}
 	.spacer {
 		margin-top: var(--half-padding);
@@ -296,5 +291,11 @@
 	:global(.max-width-560) {
 		max-width: 560px;
 		width: 100%;
+	}
+	.horizontal :global(.grower .col),
+	.horizontal :global(.grower .wrapper),
+	.horizontal :global(.grower .relative),
+	.horizontal :global(.grower input) {
+		min-width: 0;
 	}
 </style>

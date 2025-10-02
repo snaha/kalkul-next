@@ -1,24 +1,26 @@
 <script lang="ts">
 	import { page } from '$app/state'
 	import adapters from '$lib/adapters'
-	import InvestmentCard from '$lib/components/investment-card.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import type { PortfolioView } from '$lib/types'
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
 	import ViewHeader from '$lib/components/view-header.svelte'
-	import Sidebar from '$lib/components/sidebar.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import PortfolioHeaderView from '$lib/components/portfolio-header-view.svelte'
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
-	import Button from '$lib/components/ui/button.svelte'
-	import { Menu, SidePanelCloseFilled, SidePanelOpenFilled } from 'carbon-icons-svelte'
-	import Toggle from '$lib/components/ui/toggle.svelte'
-	import Badge from '$lib/components/ui/badge.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
+	import InvestmentsSidebar from '$lib/components/investments-sidebar.svelte'
+	import Vertical from '$lib/components/ui/vertical.svelte'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+	import Button from '$lib/components/ui/button.svelte'
+	import { goto } from '$app/navigation'
+	import Horizontal from '$lib/components/ui/horizontal.svelte'
+	import { ArrowLeft } from 'carbon-icons-svelte'
+	import Typography from '$lib/components/ui/typography.svelte'
 
 	const session_id = page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
@@ -46,26 +48,19 @@
 			investmentsViewStore.allInvestments = investments
 		}
 	})
+
 	let isGraphFullscreened = $state(false)
 	let isSidebarOpen = $state(true)
-	let showInvetments = $state(false)
+	const mobileScreen: 'chart' | 'investments' = $derived(
+		page.url.hash === '#investments' ? 'investments' : 'chart',
+	)
+
 	$effect(() => {
 		if (!isGraphFullscreened) isSidebarOpen = true
 	})
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
-{#snippet sidebarButton()}
-	<Button
-		variant="ghost"
-		dimension="small"
-		active={showInvetments}
-		onclick={() => {
-			showInvetments = !showInvetments
-			isGraphFullscreened = false
-		}}><Menu size={16} />{$_('common.investments')}</Button
-	>
-{/snippet}
 
 {#if notFound}
 	<Fullscreen>
@@ -79,134 +74,92 @@
 	</Fullscreen>
 {:else if isMobile}
 	<ViewHeader />
-	{#if !isGraphFullscreened}
-		<section class="topbar horizontal mobile">
-			<PortfolioHeaderView
-				client={portfolioView.client}
-				portfolio={portfolioView.portfolio}
-				avatarSize={48}
-			/>
-		</section>
-		<section class="topbar horizontal mobile">
-			{@render sidebarButton()}
-			<div class="inflation-container">
-				<Toggle
-					label={$_('common.showInflation')}
-					dimension="small"
-					bind:checked={adjustWithInflation}
-				></Toggle>
-				{#if adjustWithInflation}
-					<Badge dimension="small">{portfolioView.portfolio.inflation_rate * 100}%</Badge>
-				{/if}
-			</div>
-		</section>
-	{/if}
-	<main class="main mobile" class:fullscreen-graph={isGraphFullscreened}>
-		{#if showInvetments}
-			<section class="sidebar-container">
-				<Sidebar --sidebar-padding="0" --sidebar-width="560px">
-					<section class="investments">
-						{#each portfolioView.investments as investment, i}
-							<InvestmentCard
-								viewOnly={true}
-								{investment}
-								portfolio={portfolioView.portfolio}
-								index={i}
-								hidden={investmentsViewStore.isHidden(investment.id)}
-								focused={investmentsViewStore.isFocused(investment.id)}
-								showInflation={adjustWithInflation}
-								toggleHide={() => {
-									investmentsViewStore.toggleHide(investment.id)
-								}}
-								toggleFocus={() => {
-									investmentsViewStore.toggleFocus(investment.id)
-								}}
-							/>
-						{/each}
-					</section>
-				</Sidebar>
-			</section>
-		{:else}
-			<section class="graph-container">
+	<main class="mobile" class:investment={mobileScreen === 'investments'}>
+		<Vertical --vertical-justify-content="space-between" --vertical-gap="0" class="grower">
+			{#if mobileScreen === 'investments'}
+				<ContentLayout centered={false} class="mobile-investment-header">
+					<Horizontal --horizontal-gap="var(--half-padding)" --justify-content="stretch">
+						<Button
+							variant="ghost"
+							dimension="compact"
+							onclick={() => {
+								history.back()
+							}}><ArrowLeft size={20} /></Button
+						>
+						<Typography variant="h4">Investments</Typography>
+					</Horizontal>
+				</ContentLayout>
+				<InvestmentsSidebar
+					bind:isSidebarOpen
+					isGraphFullscreened={false}
+					isSidebarFlexible={true}
+					{investmentsViewStore}
+					client={portfolioView.client}
+					portfolio={portfolioView.portfolio}
+					investments={portfolioView.investments}
+					transactionCount={portfolioView.transactions.length}
+					{adjustWithInflation}
+					viewOnly={true}
+				/>
+				<div class="grower"></div>
+			{:else}
+				<section class="topbar horizontal mobile">
+					<PortfolioHeaderView portfolio={portfolioView.portfolio} />
+				</section>
+
 				<PortfolioGraph
-					view
-					{sidebarButton}
 					fullscreen={() => {
 						isGraphFullscreened = !isGraphFullscreened
-						isSidebarOpen = false
 					}}
-					{isSidebarOpen}
-					{isGraphFullscreened}
+					fullscreenGraph="value"
+					isSidebarOpen={false}
+					isGraphFullscreened={true}
 					bind:adjustWithInflation
 					portfolio={portfolioView.portfolio}
 					investments={portfolioView.investments}
 					{investmentsViewStore}
 				/>
-			</section>
-		{/if}
+				<ContentLayout centered={false}>
+					<Button
+						variant="strong"
+						dimension="compact"
+						onclick={() => {
+							goto('#investments')
+						}}>{$_('common.showInvestments')}</Button
+					>
+				</ContentLayout>
+			{/if}
+		</Vertical>
 	</main>
 {:else}
-	<ViewHeader />
-	{#if !isGraphFullscreened}
-		<section class="topbar horizontal">
-			<PortfolioHeaderView
-				client={portfolioView.client}
-				portfolio={portfolioView.portfolio}
-				investments={portfolioView.investments}
-				bind:adjustWithInflation
-			/>
-		</section>
-	{/if}
-	<main
-		class:fullscreen-graph={isGraphFullscreened}
-		class:sidebar-open={isSidebarOpen && isGraphFullscreened}
-	>
-		{#if isGraphFullscreened}
-			<Button
-				class="absolute"
-				variant="ghost"
-				dimension="small"
-				onclick={() => (isSidebarOpen = !isSidebarOpen)}
-			>
-				{#if isSidebarOpen}
-					<SidePanelCloseFilled size={16} />
-				{:else}
-					<SidePanelOpenFilled size={16} />
-				{/if}
-			</Button>
-		{/if}
-		<section class="horizontal grower">
-			<Sidebar
-				--sidebar-gap="var(--padding)"
-				--sidebar-padding="0"
-				{isGraphFullscreened}
-				{isSidebarOpen}
-			>
-				<section class="investments">
-					{#each portfolioView.investments as investment, i}
-						<InvestmentCard
-							viewOnly={true}
-							{investment}
-							portfolio={portfolioView.portfolio}
-							index={i}
-							hidden={investmentsViewStore.isHidden(investment.id)}
-							focused={investmentsViewStore.isFocused(investment.id)}
-							showInflation={adjustWithInflation}
-							toggleHide={() => {
-								investmentsViewStore.toggleHide(investment.id)
-							}}
-							toggleFocus={() => {
-								investmentsViewStore.toggleFocus(investment.id)
-							}}
-						/>
-					{/each}
-				</section>
-			</Sidebar>
+	<ViewHeader portfolioName={portfolioView.portfolio.name} />
+	<main class:sidebar-open={isSidebarOpen && isGraphFullscreened} class="fixed-height">
+		<section class="horizontal grower fixed-height">
+			{#if isSidebarOpen}
+				<div class="vertical scrollable">
+					<InvestmentsSidebar
+						bind:isSidebarOpen
+						{isGraphFullscreened}
+						isSidebarFlexible={false}
+						{investmentsViewStore}
+						client={portfolioView.client}
+						portfolio={portfolioView.portfolio}
+						investments={portfolioView.investments}
+						transactionCount={portfolioView.transactions.length}
+						{adjustWithInflation}
+						viewOnly={true}
+					/>
+				</div>
+			{/if}
+
 			<PortfolioGraph
 				fullscreen={() => {
 					isGraphFullscreened = !isGraphFullscreened
+					if (isGraphFullscreened) {
+						isSidebarOpen = false
+					}
 				}}
-				{isSidebarOpen}
+				bind:isSidebarOpen
 				{isGraphFullscreened}
 				bind:adjustWithInflation
 				portfolio={portfolioView.portfolio}
@@ -228,15 +181,41 @@
 		--max-width: 1370px;
 	}
 	main {
-		width: 100vw;
 		position: relative;
-		min-height: calc(100vh - 180px);
 		display: flex;
 		flex-direction: column;
-		padding: var(--double-padding);
+		padding: 0;
 		gap: var(--double-padding);
 		transition: padding 0.3s ease-in;
+		overflow: hidden;
 	}
+	main.mobile {
+		min-height: calc(100dvh - var(--header-height));
+		height: unset;
+	}
+	main.mobile.investment {
+		background-color: var(--colors-low);
+	}
+	.horizontal {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: stretch;
+		gap: 0;
+		transition: gap 0.3s ease-in;
+	}
+	:global(.grower) {
+		flex: 1;
+	}
+	.fixed-height {
+		height: calc(100dvh - var(--header-height));
+	}
+	.scrollable {
+		overflow-y: auto;
+		max-height: 100%;
+		background-color: var(--colors-low);
+	}
+
 	.center {
 		display: flex;
 		justify-content: center;
@@ -244,61 +223,13 @@
 		height: 100%;
 	}
 	.topbar {
-		padding: var(--double-padding);
 		border-bottom: 1px solid var(--colors-low);
 	}
-	.horizontal {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		gap: var(--padding);
-		transition: gap 0.3s ease-in;
+	.topbar.mobile {
+		padding: 20px var(--padding);
 	}
-	:global(.grower) {
-		flex: 1;
-	}
-	.investments {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-	}
-	.mobile {
-		padding: var(--padding);
-		gap: var(--half-padding);
-	}
-	.inflation-container {
-		display: flex;
-		align-items: center;
-		gap: var(--half-padding);
-	}
-	.main {
-		gap: var(--padding);
-		min-height: calc(100vh - 206px);
-		display: flex;
-		flex-direction: row;
-		overflow: hidden;
-		transition: unset;
-	}
-	.fullscreen-graph {
-		min-height: calc(100vh - 50px);
-		padding: 0;
-		.horizontal {
-			gap: 0;
-		}
-	}
-	.sidebar-open {
-		padding: 0 0 0 var(--padding);
-		.horizontal {
-			gap: var(--padding);
-		}
-	}
-	.sidebar-container {
-		width: 100%;
-		display: flex;
-		justify-content: center;
-	}
-	.graph-container {
-		width: 100%;
-		min-height: 100%;
+	:global(.mobile-investment-header) {
+		box-shadow: 0px 1px 4px 0px #00000040;
+		z-index: 1;
 	}
 </style>

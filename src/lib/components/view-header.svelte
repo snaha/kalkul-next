@@ -1,30 +1,36 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button.svelte'
 	import Logo from '$lib/components/icons/logo.svelte'
-	import { Moon } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Typography from './ui/typography.svelte'
-	import { notImplemented } from '$lib/not-implemented'
 	import routes from '$lib/routes'
-	import BetaBadge from './beta-badge.svelte'
+	import Horizontal from './ui/horizontal.svelte'
+
+	type Props = {
+		portfolioName?: string
+	}
+
+	let { portfolioName }: Props = $props()
 </script>
 
 <header>
-	<div class="left">
-		<a class="logo-link" href={routes.HOME}>
-			<Logo size={32} />
-		</a>
-		<BetaBadge>BETA</BetaBadge>
-	</div>
+	<Horizontal>
+		<div class="left">
+			<a class="logo-link" href={routes.HOME}>
+				<Logo size={32} />
+			</a>
+		</div>
+		{#if portfolioName}
+			<Typography variant="small" --colors-ultra-high="var(--colors-dark-ultra-high)">
+				{portfolioName}
+			</Typography>
+		{/if}
+	</Horizontal>
 	<div class="user-info">
 		<Typography variant="small" --colors-ultra-high="var(--colors-dark-ultra-high)">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html $_('component.viewHeader.madeWithKalkul', {
 				values: { link: `<a class="link" href=${routes.HOME}>kalkul.app</a>` },
 			})}</Typography
-		>
-		<Button mode="dark" dimension="small" variant="ghost" onclick={notImplemented}
-			><Moon size={16} /></Button
 		>
 	</div>
 </header>
@@ -53,7 +59,7 @@
 		align-items: center;
 	}
 	:global(.link) {
-		color: var(--colors-dark-ultra-high);
+		color: var(--colors-dark-high);
 		text-decoration: underline;
 	}
 </style>

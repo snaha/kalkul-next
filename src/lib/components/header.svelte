@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
 	import Logo from '$lib/components/icons/logo.svelte'
-	import { ChatBot, Logout, Moon, SettingsEdit, UserAvatarFilled } from 'carbon-icons-svelte'
+	import { ChatBot, Logout, SettingsEdit, UserAvatarFilled } from 'carbon-icons-svelte'
 	import adapter from '$lib/adapters'
 	import Dropdown from '$lib/components/ui/dropdown.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
@@ -9,19 +9,16 @@
 	import { _ } from 'svelte-i18n'
 	import HelpModal from './help-modal.svelte'
 	import { goto } from '$app/navigation'
-	import { page } from '$app/stores'
-	import { notImplemented } from '$lib/not-implemented'
-	import BetaBadge from './beta-badge.svelte'
-	import DesktopOnly from './desktop-only.svelte'
+	import { page } from '$app/state'
 
 	let showHelpModal = $state(false)
 
 	function openSettings() {
 		// Don't store return location if already on account page
-		if ($page.url.pathname === routes.ACCOUNT) {
+		if (page.url.pathname === routes.ACCOUNT) {
 			return
 		}
-		sessionStorage.setItem('settingsReturnTo', $page.url.pathname + $page.url.search)
+		sessionStorage.setItem('settingsReturnTo', page.url.pathname + page.url.search)
 		goto(routes.ACCOUNT)
 	}
 
@@ -36,37 +33,28 @@
 		<a class="logo-link" href={routes.HOME}>
 			<Logo size={32} />
 		</a>
-		<BetaBadge>BETA</BetaBadge>
 	</div>
 
 	<div class="user-info">
-		<DesktopOnly>
-			<Dropdown buttonDimension="small" mode="dark">
-				{#snippet button()}
-					<UserAvatarFilled size={16} />{authStore.user?.email}
-				{/snippet}
-				<ul class="dropdown-menu">
-					<Button variant="ghost" dimension="compact" onclick={openSettings} leftAlign>
-						<SettingsEdit size={24} />
-						{$_('component.header.accountSettings')}
-					</Button>
-					<Button variant="ghost" dimension="compact" onclick={logout} leftAlign>
-						<Logout size={24} />
-						{$_('common.logout')}
-					</Button>
-				</ul>
-			</Dropdown>
-		</DesktopOnly>
-
 		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showHelpModal = true)}
-			><ChatBot size={16} /><DesktopOnly>{$_('component.header.helpButton')}</DesktopOnly></Button
+			><ChatBot size={16} />{$_('component.header.helpButton')}</Button
 		>
-		<Button
-			mode="dark"
-			dimension="small"
-			variant="ghost"
-			onclick={(e: Event) => notImplemented(e, $_('common.comingSoon'))}><Moon size={16} /></Button
-		>
+
+		<Dropdown buttonDimension="small" mode="dark" left>
+			{#snippet button()}
+				<UserAvatarFilled size={16} />{authStore.user?.email}
+			{/snippet}
+			<ul class="dropdown-menu">
+				<Button variant="ghost" dimension="compact" onclick={openSettings} leftAlign>
+					<SettingsEdit size={24} />
+					{$_('component.header.accountSettings')}
+				</Button>
+				<Button variant="ghost" dimension="compact" onclick={logout} leftAlign>
+					<Logout size={24} />
+					{$_('common.logout')}
+				</Button>
+			</ul>
+		</Dropdown>
 	</div>
 </header>
 <HelpModal bind:open={showHelpModal} oncancel={() => (showHelpModal = false)} />

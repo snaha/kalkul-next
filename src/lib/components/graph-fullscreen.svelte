@@ -8,6 +8,7 @@
 	import Button from './ui/button.svelte'
 	import { ArrowLeft, Maximize } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
+	import DesktopOnly from './desktop-only.svelte'
 
 	type Props = {
 		view?: boolean
@@ -15,9 +16,11 @@
 		graphName: Snippet
 		inflation: number
 		fullscreen: () => void
+		isSidebarOpen: boolean
 		children: Snippet
 		controls?: Snippet
 		sidebarButton?: Snippet
+		valueChanger?: Snippet
 	}
 	let {
 		view = false,
@@ -25,9 +28,11 @@
 		graphName,
 		inflation,
 		fullscreen,
+		isSidebarOpen = $bindable(),
 		children,
 		controls,
 		sidebarButton,
+		valueChanger,
 	}: Props = $props()
 </script>
 
@@ -42,6 +47,7 @@
 				}}><ArrowLeft size={16} /></Button
 			>
 			<Typography variant="h5">{@render graphName()}</Typography>
+			{@render valueChanger?.()}
 		</div>
 		<div class="row">
 			{#if sidebarButton}
@@ -65,27 +71,35 @@
 			{@render children()}
 		{/if}
 	{:else}
-		<Horizontal --horizontal-gap="var(--half-padding)" --padding-left="42px">
-			<Typography variant="h5">{@render graphName()}</Typography>
-			<Toggle
-				label={$_('common.showInflation')}
-				dimension="small"
-				bind:checked={adjustWithInflation}
-			></Toggle>
-			{#if adjustWithInflation}
-				<Badge dimension="small">{inflation * 100}%</Badge>
-			{/if}
-			<FlexItem />
+		<Horizontal --horizontal-gap="var(--half-padding)">
+			{@render sidebarButton?.()}
+			<DesktopOnly>
+				<Typography variant="h5">{@render graphName()}</Typography>
+			</DesktopOnly>
+			{@render valueChanger?.()}
+			<DesktopOnly>
+				<Toggle
+					label={$_('common.showInflation')}
+					dimension="small"
+					bind:checked={adjustWithInflation}
+				></Toggle>
+				{#if adjustWithInflation}
+					<Badge dimension="small">{inflation * 100}%</Badge>
+				{/if}
+				<FlexItem />
+			</DesktopOnly>
 			{#if controls}
 				{@render controls()}
 			{/if}
-			<Button
-				dimension="small"
-				variant="ghost"
-				onclick={() => {
-					fullscreen()
-				}}><Maximize size={16} /></Button
-			>
+			<DesktopOnly>
+				<Button
+					dimension="small"
+					variant="ghost"
+					onclick={() => {
+						fullscreen()
+					}}><Maximize size={16} /></Button
+				>
+			</DesktopOnly>
 		</Horizontal>
 		{#if children}
 			{@render children()}

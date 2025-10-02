@@ -1,14 +1,6 @@
 <script lang="ts">
 	import type { Transaction, Portfolio } from '$lib/types'
-	import {
-		ChevronRight,
-		Edit,
-		Copy,
-		TrashCan,
-		ViewOff,
-		OverflowMenuVertical,
-	} from 'carbon-icons-svelte'
-	import Button from './ui/button.svelte'
+	import { ChevronRight, Edit, Copy, TrashCan, OverflowMenuVertical } from 'carbon-icons-svelte'
 	import Typography from './ui/typography.svelte'
 	import { _, locale } from 'svelte-i18n'
 	import { formatCurrency } from '$lib/utils'
@@ -23,7 +15,6 @@
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
-	import { notImplemented } from '$lib/not-implemented'
 	import InflationBadge from './inflation-badge.svelte'
 
 	type Props = {
@@ -124,19 +115,11 @@
 
 		<FlexItem />
 		{#if transaction.label}
-			<Typography variant="small" class="transaction-label">{transaction.label}</Typography>
+			<Typography variant="small" class="transaction-label {viewOnly ? 'view-only' : ''}"
+				>{transaction.label}</Typography
+			>
 		{/if}
 		<div class="control-buttons">
-			<Button
-				variant="solid"
-				dimension="small"
-				onclick={(e: Event) => {
-					e.stopPropagation()
-					notImplemented(e, $_('common.comingSoon'))
-				}}
-			>
-				<ViewOff size={16} />
-			</Button>
 			{#if !viewOnly}
 				<div class="dropdown">
 					<Dropdown left buttonDimension="small" buttonVariant="solid" stopPropagation>
@@ -285,6 +268,9 @@
 			}
 			:global(.transaction-label) {
 				display: none;
+			}
+			:global(.transaction-label.view-only) {
+				display: flex;
 			}
 		}
 	}

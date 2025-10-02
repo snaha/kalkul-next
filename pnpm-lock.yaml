@@ -99,8 +99,8 @@ importers:
         specifier: 17.6.0
         version: 17.6.0
       supabase:
-        specifier: ^2.45.5
-        version: 2.45.5
+        specifier: ^2.47.2
+        version: 2.47.2
       svelte:
         specifier: 5.19.2
         version: 5.19.2
@@ -2510,8 +2510,8 @@ packages:
   summary@2.1.0:
     resolution: {integrity: sha512-nMIjMrd5Z2nuB2RZCKJfFMjgS3fygbeyGk9PxPPaJR1RIcyN9yn4A63Isovzm3ZtQuEkLBVgMdPup8UeLH7aQw==}
 
-  supabase@2.45.5:
-    resolution: {integrity: sha512-/toOX6bHYx2TUNA5AtlzrKKfvctbLQ8R6QqvUCAT20KtZOkR14HpBYav3TNDaU5owPeB58cT5Uftvxw36Tb95A==}
+  supabase@2.47.2:
+    resolution: {integrity: sha512-YvjjJXt21GsYvMBBJN3aKoGZf8QkCWU3hX5So/KsLRweY1YDu9mcEsrMdWp3ZYKQhoEMl9jDHG58SEQuFWGUfg==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -2562,8 +2562,8 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tar@7.4.4:
-    resolution: {integrity: sha512-O1z7ajPkjTgEgmTGz0v9X4eqeEXTDREPTO77pVC1Nbs86feBU1Zhdg+edzavPmYW1olxkwsqA2v4uOw6E8LeDg==}
+  tar@7.5.1:
+    resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
     engines: {node: '>=18'}
 
   timers-ext@0.1.8:
@@ -5093,12 +5093,12 @@ snapshots:
 
   summary@2.1.0: {}
 
-  supabase@2.45.5:
+  supabase@2.47.2:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6
       node-fetch: 3.3.2
-      tar: 7.4.4
+      tar: 7.5.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5168,7 +5168,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tar@7.4.4:
+  tar@7.5.1:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0

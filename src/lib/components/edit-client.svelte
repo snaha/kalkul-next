@@ -1,34 +1,33 @@
 <script lang="ts">
 	import adapter from '$lib/adapters'
-	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
+	import { Close } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import LocalizedDateInput from '$lib/components/localized-date-input.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import Avatar from '$lib/components/avatar.svelte'
 	import type { ClientNoId, Client } from '$lib/types'
 	import DeleteModal from './delete-modal.svelte'
 	import ErrorComp from './error.svelte'
 	import type { z, ZodFormattedError } from 'zod'
 	import { emailFormSchema } from '$lib/schemas'
-	import ContentLayout from './content-layout.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import { asyncTimeout } from '$lib/utils'
 	import Loader from './ui/loader.svelte'
+	import Horizontal from './ui/horizontal.svelte'
+	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	type Props = {
 		close: () => void
-		hasClose?: boolean
 		client?: Client
 	}
 
-	let { close, hasClose = false, client }: Props = $props()
+	let { close, client }: Props = $props()
 
 	const date = new Date()
 	let name = $state('')
 	let birthDate: Date | undefined = $state()
-	let imageURI: string | undefined = $state()
 	let email = $state('')
 	let formType: 'edit' | 'create' = $derived(client ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
@@ -68,7 +67,6 @@
 			await adapter.addClient(client)
 			name = ''
 			birthDate = undefined
-			imageURI = undefined
 			close()
 		} catch (e) {
 			error = (e as Error).message
@@ -134,107 +132,83 @@
 	{$_('error.emailError')}
 {/snippet}
 
-<ContentLayout>
-	<Vertical class="max-width560">
-		<section class="horizontal">
-			{#if formType === 'create'}
-				<Typography variant="h4">{$_('page.client.addClient')}</Typography>
-			{:else}
-				<Typography variant="h4">{$_('page.client.editClient')}</Typography>
-			{/if}
-			<div class="grower"></div>
-			{#if hasClose}
-				<Button variant="ghost" onclick={close}><Close size={24} /></Button>
-			{/if}
-		</section>
-		<div class="spacer"></div>
-		<Input
-			autofocus
-			variant="solid"
-			dimension="compact"
-			placeholder={$_('page.client.clientName')}
-			label={$_('common.name')}
-			bind:value={name}
-		></Input>
-		<LocalizedDateInput
-			variant="solid"
-			dimension="compact"
-			yearPlaceholder="1990"
-			monthPlaceholder="01"
-			dayPlaceholder="01"
-			label={$_('common.birthDate')}
-			bind:value={birthDate}
-			error={birthDate && birthDate > date ? birthDateError : undefined}
-		/>
-		<Input
-			variant="solid"
-			dimension="compact"
-			placeholder={$_('common.emailOptional')}
-			label={$_('common.email')}
-			bind:value={email}
-			error={emailTouched && email.trim() !== '' && emailError?.email?._errors
-				? emailErrorSnippet
-				: undefined}
-			oninput={() => (emailTouched = true)}
-			onblur={validateEmailAddress}>{$_('page.client.clientEmailExplanation')}</Input
-		>
-		<Vertical --vertical-gap="var(--half-padding)">
-			<Typography>{$_('page.client.profilePicture')}</Typography>
-			<section class="horizontal">
-				<Avatar
-					{name}
-					birthDate={birthDate ? new Date(birthDate) : new Date()}
-					{imageURI}
-					size={80}
-				/>
-				<section class="profile-helper">
-					<Typography variant="small">{$_('page.client.profileImageHelper')}</Typography>
-				</section>
-			</section>
-		</Vertical>
-		{#if error}
-			<ErrorComp>{error}</ErrorComp>
+<Vertical class="max-width560">
+	<Horizontal>
+		{#if formType === 'create'}
+			<Typography variant="h4">{$_('page.client.addClient')}</Typography>
 		{:else}
-			<div class="spacer"></div>
+			<Typography variant="h4">{$_('page.client.editClient')}</Typography>
 		{/if}
-		<section class="buttons horizontal">
-			{#if formType === 'create'}
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={create}
-					disabled={createDisabled}
-					busy={createClicked}
-					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
-							size={24}
-						/>{/if}
-					{$_('page.client.createClient')}
-				</Button>
-			{:else}
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={updateClient}
-					disabled={createDisabled}
-					busy={createClicked}
-					>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
-							size={24}
-						/>{/if}
-					{$_('common.done')}
-				</Button>
-			{/if}
-			<Button variant="secondary" dimension="compact" onclick={cancel}
-				><Close size={24} />{$_('common.cancel')}</Button
+		<div class="grower"></div>
+		<Button variant="ghost" dimension="compact" onclick={close}><Close size={20} /></Button>
+	</Horizontal>
+	<div class="spacer"></div>
+	<Input
+		autofocus
+		variant="solid"
+		dimension="compact"
+		placeholder={$_('page.client.clientName')}
+		label={$_('common.name')}
+		bind:value={name}
+	></Input>
+	<LocalizedDateInput
+		variant="solid"
+		dimension="compact"
+		yearPlaceholder="1990"
+		monthPlaceholder="01"
+		dayPlaceholder="01"
+		label={$_('common.birthDate')}
+		bind:value={birthDate}
+		error={birthDate && birthDate > date ? birthDateError : undefined}
+	/>
+	<Input
+		variant="solid"
+		dimension="compact"
+		placeholder={$_('common.emailOptional')}
+		label={$_('common.email')}
+		bind:value={email}
+		error={emailTouched && email.trim() !== '' && emailError?.email?._errors
+			? emailErrorSnippet
+			: undefined}
+		oninput={() => (emailTouched = true)}
+		onblur={validateEmailAddress}>{$_('page.client.clientEmailExplanation')}</Input
+	>
+	{#if error}
+		<ErrorComp>{error}</ErrorComp>
+	{:else}
+		<div class="spacer"></div>
+	{/if}
+	<ResponsiveLayout --responsive-justify-content="stretch">
+		{#if formType === 'create'}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={create}
+				disabled={createDisabled}
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="large" color="low" />{/if}
+				{$_('page.client.createClient')}
+			</Button>
+		{:else}
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={updateClient}
+				disabled={createDisabled}
+				busy={createClicked}
+				>{#if createClicked}<Loader dimension="large" color="low" />{/if}
+				Save changes
+			</Button>
+		{/if}
+		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
+		{#if formType === 'edit'}
+			{#if !layoutStore.mobile}<div class="grower"></div>{/if}
+			<Button variant="ghost" dimension="compact" onclick={confirmDeleteClient} danger
+				>{$_('page.client.deleteClient')}</Button
 			>
-			{#if formType === 'edit'}
-				<div class="grower"></div>
-				<Button variant="ghost" dimension="compact" onclick={confirmDeleteClient}
-					><TrashCan size={24} />{$_('page.client.deleteClient')}</Button
-				>
-			{/if}
-		</section>
-	</Vertical>
-</ContentLayout>
+		{/if}
+	</ResponsiveLayout>
+</Vertical>
 
 <DeleteModal
 	confirm={deleteClient}
@@ -245,29 +219,12 @@
 />
 
 <style>
-	.horizontal {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-		gap: var(--padding);
-	}
 	.grower {
 		flex: 1;
 	}
 	:global(.max-width560) {
 		max-width: 560px;
 		width: 100%;
-	}
-	.profile-helper {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-		justify-content: flex-start;
-		align-items: flex-start;
-	}
-	.buttons {
-		gap: var(--half-padding);
 	}
 	.spacer {
 		margin-top: var(--half-padding);

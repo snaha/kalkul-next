@@ -128,9 +128,11 @@
 </script>
 
 <div class="root {dimension} {layout} {className}">
-	<label class="label" for={labelFor}>
-		{label}
-	</label>
+	{#if label}
+		<label class="label" for={labelFor}>
+			{label}
+		</label>
+	{/if}
 	<div class="select-container">
 		<input
 			bind:this={input}

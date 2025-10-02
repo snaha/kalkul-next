@@ -13,6 +13,7 @@
 		leftAlign?: boolean
 		flexGrow?: boolean
 		busy?: boolean
+		danger?: boolean
 	}
 	interface AnchorElement extends HTMLAnchorAttributes, ButtonProps {
 		href?: HTMLAnchorAttributes['href']
@@ -41,6 +42,7 @@
 		leftAlign = false,
 		flexGrow = false,
 		busy = false,
+		danger = false,
 		children,
 		mode = 'auto',
 		style,
@@ -56,6 +58,7 @@
 		class:active
 		class:hover
 		class:focus
+		class:danger
 		{href}
 		{disabled}
 		{...restProps}
@@ -111,6 +114,10 @@
 
 	.flexGrow {
 		flex-grow: 1 !important;
+	}
+
+	.danger {
+		color: var(--colors-red) !important;
 	}
 
 	.default {

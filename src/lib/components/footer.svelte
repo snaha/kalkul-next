@@ -33,8 +33,9 @@
 				>{$_('component.footer.privacyPolicy')}</Button
 			>
 		</ResponsiveLayout>
-		<Typography --typography-color="var(--colors-light-base)" style="opacity: 0.5"
-			>© 2025 Kalkul.app s.r.o.</Typography
+		<Typography
+			--typography-color="var(--colors-light-base)"
+			style="opacity: 0.5; white-space: nowrap;">© 2025 Kalkul.app s.r.o.</Typography
 		>
 	</ResponsiveLayout>
 </Vertical>

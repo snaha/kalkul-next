@@ -8,15 +8,13 @@
 	import { Checkmark, WarningAltFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Divider from '$lib/components/ui/divider.svelte'
-	import Logo from '$lib/components/icons/logo.svelte'
 	import routes from '$lib/routes'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
-	import ContentLayout from './content-layout.svelte'
 	import Horizontal from './ui/horizontal.svelte'
-	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import Fullscreen from './fullscreen.svelte'
 
 	type User = z.infer<typeof loginFormSchema>
 
@@ -92,13 +90,7 @@
 	{/if}
 {/snippet}
 
-<ContentLayout --content-layout-margin="0">
-	<Horizontal --horizontal-justify-content="space-between" class="width-100">
-		<a href={routes.HOME} class="logo"><Logo size={40} /></a>
-		<FlexItem></FlexItem>
-	</Horizontal>
-</ContentLayout>
-<ContentLayout --content-layout-margin="0">
+<Fullscreen>
 	<Vertical class="login" --vertical-gap="var(--double-padding)">
 		<Typography variant="h4">{$_('common.login')}</Typography>
 		<Vertical --vertical-gap="var(--padding)">
@@ -157,13 +149,9 @@
 			</Horizontal>
 		</ResponsiveLayout>
 	</Vertical>
-</ContentLayout>
+</Fullscreen>>
 
 <style>
-	.logo {
-		color: var(--colors-ultra-high);
-		height: 40px;
-	}
 	:global(.width-100) {
 		max-width: 100%;
 		width: 100%;

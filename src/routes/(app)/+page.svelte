@@ -4,13 +4,13 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import {
 		OverflowMenuVertical,
-		UserFollow,
 		FolderShared,
 		UserProfile,
 		TrashCan,
 		LogoYoutube,
 		Launch,
 		Rocket,
+		ArrowRight,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import { formatAge } from '$lib/utils'
@@ -31,13 +31,14 @@
 	import DesktopOnly from '$lib/components/desktop-only.svelte'
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
-	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
 	import HelpBox from '$lib/components/help-box.svelte'
 	import { authStore } from '$lib/stores/auth.svelte'
 	import VideoModal from '$lib/components/video-modal.svelte'
-	import YoutubeIntroVideo from '$lib/components/youtube-intro-video.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
 	import GetStarted from '$lib/components/get-started.svelte'
+	import Horizontal from '$lib/components/ui/horizontal.svelte'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	let showConfirmModal = $state(false)
 	let showWelcome = $state(authStore.user?.user_metadata.first_visit ? true : false)
@@ -100,105 +101,65 @@
 	</Dropdown>
 {/snippet}
 
-{#snippet welcomeMobile()}
-	<Vertical --vertical-gap="0" --vertical-align-items="center">
-		<Vertical --vertical-gap="var(--padding)" style="padding-top: var(--padding)" class="max560">
-			<YoutubeIntroVideo />
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Typography variant="h4" class="text-center">{$_('page.home.welcomeToKalkul')}</Typography>
-				<Typography class="text-center" variant="large"
-					>{$_('page.home.kalkulExplanation')}</Typography
-				>
-			</Vertical>
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Button
-					variant="secondary"
-					href={routes.SAMPLE_PORTFOLIO_LINK}
-					target="_blank"
-					class="max560">{$_('common.viewSamplePortfolio')}</Button
-				>
-				<Button variant="secondary" href={PUBLIC_DISCORD_LINK} target="_blank" class="max560"
-					>{$_('page.home.joinCommunity')}</Button
-				>
-			</Vertical>
-			<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center" class="max560">
-				<Typography variant="h5" class="text-center">{$_('page.home.whatsNext')}</Typography>
-				<Vertical --vertical-gap="var(--half-padding)">
-					<Typography class="text-center">{$_('page.home.loginOnComputer')}</Typography>
-					<Typography variant="small" class="text-center"
-						>{$_('page.home.kalkulNotAvailableOnMobile')}</Typography
-					>
-				</Vertical>
-			</Vertical>
-		</Vertical>
-	</Vertical>
-{/snippet}
-
 <Header />
-<DesktopOnly>
-	<main>
-		{#if showWelcome}
-			<GetStarted
-				onPrimaryActionClick={async () => {
-					adapter.updateUserMetadata({ first_visit: false })
-				}}
-			/>
-		{:else if clientStore.loading}
-			<Typography>{$_('common.loading')}</Typography><Loader />
-		{:else if clientStore.data.length === 0}
-			<section class="empty">
-				<img src={`${base}/images/no-client.svg`} alt={$_('common.noClientYet')} />
-				<Typography variant="h4">{$_('page.home.noClientsYet')}</Typography>
-				<Typography>{$_('page.home.createYourFirstClient')}</Typography>
-				<div class="spacer"></div>
-				<Button variant="strong" onclick={addClient}
-					><UserFollow />{$_('page.home.addClient')}</Button
-				>
-			</section>
-			<HelpBox
-				open={true}
-				title={$_('helpBox.addClientTitle')}
-				boxText={$_('helpBox.addClientText')}
-				text={$_('helpBox.clientListExplanation')}
+
+<ContentLayout centered={false}>
+	{#if showWelcome}
+		<GetStarted
+			onPrimaryActionClick={async () => {
+				adapter.updateUserMetadata({ first_visit: false })
+			}}
+		/>
+	{:else if clientStore.loading}
+		<Typography>{$_('common.loading')}</Typography><Loader />
+	{:else if clientStore.data.length === 0}
+		<section class="empty">
+			<img src={`${base}/images/no-client.svg`} alt={$_('common.noClientYet')} />
+			<Typography variant="h4">{$_('page.home.noClientsYet')}</Typography>
+			<Typography>{$_('page.home.createYourFirstClient')}</Typography>
+			<div class="spacer"></div>
+			<Button variant="strong" dimension="compact" onclick={addClient}
+				>{$_('page.home.addClient')}</Button
 			>
-				<Vertical --vertical-gap="var(--half-padding)">
-					<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
-						><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
-					>
-					<Button
-						variant="solid"
-						dimension="compact"
-						onclick={() => {
-							isVideoPlayer = true
-						}}><LogoYoutube size={24} />{$_('helpBox.watchIntroVideo')}</Button
-					>
-					<Button
-						variant="solid"
-						dimension="compact"
-						href={routes.SAMPLE_PORTFOLIO_LINK}
-						target="_blank"><Launch size={24} />{$_('helpBox.viewSamplePortfolio')}</Button
-					>
-				</Vertical>
-			</HelpBox>
-		{:else}
-			<section class="top-bar horizontal">
-				<div class="left">
-					<Typography variant="h4">{$_('page.home.allClients')}</Typography>
-					<SearchInput
-						bind:value={searchQuery}
-						dimension="compact"
-						variant="solid"
-						placeholder={$_('common.search')}
-					></SearchInput>
-					{#if searchQuery.length > 0}
-						<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
-							>{$_('page.home.clearSearch')}</Button
-						>
-					{/if}
-				</div>
+		</section>
+		<HelpBox
+			open={layoutStore.mobile ? false : true}
+			title={$_('helpBox.addClientTitle')}
+			boxText={$_('helpBox.addClientText')}
+			text={$_('helpBox.clientListExplanation')}
+		>
+			<Vertical --vertical-gap="var(--half-padding)">
+				<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
+					><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+				>
+				<Button
+					variant="solid"
+					dimension="compact"
+					onclick={() => {
+						isVideoPlayer = true
+					}}><LogoYoutube size={24} />{$_('helpBox.watchIntroVideo')}</Button
+				>
+				<Button
+					variant="solid"
+					dimension="compact"
+					href={routes.SAMPLE_PORTFOLIO_LINK}
+					target="_blank"><Launch size={24} />{$_('helpBox.viewSamplePortfolio')}</Button
+				>
+			</Vertical>
+		</HelpBox>
+	{:else}
+		<DesktopOnly>
+			<section class="horizontal">
+				<Typography variant="h4">{$_('page.home.allClients')}</Typography>
 				<div class="grower"></div>
+				<SearchInput
+					bind:value={searchQuery}
+					dimension="compact"
+					variant="solid"
+					placeholder={$_('common.search')}
+				></SearchInput>
 				<Button dimension="compact" variant="strong" onclick={addClient}
-					><UserFollow />{$_('page.home.addClient')}</Button
+					>{$_('page.home.addClient')}</Button
 				>
 			</section>
 
@@ -242,14 +203,58 @@
 					</li>
 				{/each}
 			</ul>
-		{/if}
-	</main>
+		</DesktopOnly>
+		<MobileOnly>
+			<Vertical>
+				<Horizontal --horizontal-justify-content="space-between">
+					<Typography variant="h4">{$_('page.home.allClients')}</Typography>
 
-	<VideoModal oncancel={hideVideoPlayer} bind:open={isVideoPlayer} />
-</DesktopOnly>
-<MobileOnly>
-	{@render welcomeMobile()}
-</MobileOnly>
+					<Button dimension="compact" variant="strong" onclick={addClient}
+						>{$_('page.home.addClient')}</Button
+					>
+				</Horizontal>
+				<Horizontal>
+					<SearchInput
+						bind:value={searchQuery}
+						dimension="compact"
+						variant="solid"
+						placeholder={$_('common.search')}
+						class="grower"
+					></SearchInput>
+					{#if searchQuery.length > 0}
+						<Button dimension="compact" variant="ghost" onclick={() => (searchQuery = '')}
+							>{$_('page.home.clearSearch')}</Button
+						>
+					{/if}
+				</Horizontal>
+			</Vertical>
+
+			<ul class="mobile">
+				{#each filteredClient as client}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<li
+						class="client mobile"
+						onclick={(e: MouseEvent) => {
+							if (!e.defaultPrevented) {
+								goto(routes.CLIENT(client.id))
+							}
+						}}
+					>
+						<span>{client.name}</span>
+						<span class="right-aligned"><ArrowRight /></span>
+					</li>
+				{/each}
+			</ul>
+
+			<Button variant="ghost" dimension="compact" onclick={addClient}
+				>{$_('page.home.addClient')}</Button
+			>
+		</MobileOnly>
+	{/if}
+</ContentLayout>
+
+<VideoModal oncancel={hideVideoPlayer} bind:open={isVideoPlayer} />
 
 <DeleteModal
 	confirm={deleteClient}
@@ -263,12 +268,6 @@
 	:root {
 		--max-width: 1370px;
 	}
-	main {
-		margin: var(--double-padding);
-	}
-	.top-bar {
-		padding-bottom: var(--padding);
-	}
 	.horizontal {
 		display: flex;
 		flex-direction: row;
@@ -276,16 +275,17 @@
 		align-items: center;
 		gap: var(--half-padding);
 	}
-	.left {
-		display: flex;
-		align-items: center;
-		gap: var(--padding);
-	}
-	.grower {
+	:global(.grower) {
 		flex: 1;
 	}
 	ul {
 		padding-left: 0;
+	}
+	ul.mobile {
+		display: flex;
+		flex-direction: column;
+		border-top: 1px solid var(--colors-low);
+		margin: 0;
 	}
 	li > span {
 		display: flex;
@@ -317,6 +317,13 @@
 		font-size: var(--font-size);
 		font-family: var(--font-family-sans-serif);
 		cursor: pointer;
+	}
+	.client.mobile {
+		display: flex;
+		justify-content: space-between;
+		padding: var(--padding) var(--half-padding);
+		width: 100%;
+		gap: var(--half-padding);
 	}
 	.client:hover {
 		background-color: color-mix(in srgb, var(--colors-low) 25%, transparent);

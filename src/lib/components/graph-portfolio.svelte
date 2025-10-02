@@ -21,6 +21,10 @@
 	import { getCSSVariableValue } from '$lib/css-vars'
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
+	import Select from './ui/select/select.svelte'
+	import MobileOnly from './mobile-only.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
+	import DesktopOnly from './desktop-only.svelte'
 
 	interface Props {
 		portfolio: Portfolio
@@ -30,6 +34,7 @@
 		investmentsViewStore: InvestmentsViewStore
 		fullscreen: () => void
 		isGraphFullscreened: boolean
+		fullscreenGraph?: FullscreenGraphType
 		isSidebarOpen: boolean
 		view?: boolean
 		sidebarButton?: Snippet
@@ -45,7 +50,8 @@
 		investmentsViewStore,
 		fullscreen,
 		isGraphFullscreened,
-		isSidebarOpen,
+		fullscreenGraph = $bindable(undefined),
+		isSidebarOpen = $bindable(),
 		view = false,
 		sidebarButton,
 		isEmpty,
@@ -66,8 +72,6 @@
 	)
 
 	type FullscreenGraphType = 'value' | 'transactions' | 'breakdown'
-
-	let fullscreenGraph: undefined | FullscreenGraphType = $state(undefined)
 
 	const lowColor = getCSSVariableValue('--colors-low')
 	const baseColor = `${getCSSVariableValue('--colors-base')}cc`
@@ -93,6 +97,9 @@
 		}),
 	)
 
+	const controlSize = $derived(layoutStore.mobile ? 'compact' : 'small')
+	const controlIconSize = $derived(layoutStore.mobile ? 20 : 16)
+
 	function breakdownSelectToday() {
 		const today = new Date().toISOString()
 		let [year, month] = today.split('T')[0].split('-')
@@ -117,43 +124,95 @@
 	})
 </script>
 
+{#snippet inflationToggle()}
+	<Horizontal --horizontal-justify-content="space-between">
+		<Toggle
+			label={$_('common.showInflation')}
+			dimension={controlSize}
+			bind:checked={adjustWithInflation}
+		></Toggle>
+		<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
+	</Horizontal>
+{/snippet}
+
+{#snippet controlsValue()}
+	<MobileOnly>
+		<Dropdown left buttonDimension={controlSize} buttonVariant="ghost" autoClose={false}>
+			{#snippet button()}
+				<SettingsView size={controlIconSize} />
+			{/snippet}
+			<List>
+				{@render inflationToggle()}
+			</List>
+		</Dropdown>
+	</MobileOnly>
+{/snippet}
+
 {#snippet controlsTransaction()}
-	<Dropdown left buttonDimension="small" buttonVariant="ghost" autoClose={false}>
+	<Dropdown left buttonDimension={controlSize} buttonVariant="ghost" autoClose={false}>
 		{#snippet button()}
-			<SettingsView size={16} />
+			<SettingsView size={controlIconSize} />
 		{/snippet}
 		<List>
-			<Checkbox dimension="small" bind:checked={showDeposits}>{$_('common.deposits')}</Checkbox>
-			<Checkbox dimension="small" bind:checked={showWithdrawals}
+			<MobileOnly>
+				{@render inflationToggle()}
+			</MobileOnly>
+			<Checkbox dimension={controlSize} bind:checked={showDeposits}
+				>{$_('common.deposits')}</Checkbox
+			>
+			<Checkbox dimension={controlSize} bind:checked={showWithdrawals}
 				>{$_('common.withdrawals')}</Checkbox
 			>
-			<Checkbox dimension="small" bind:checked={showFees}>{$_('common.fees')}</Checkbox>
+			<Checkbox dimension={controlSize} bind:checked={showFees}>{$_('common.fees')}</Checkbox>
 		</List>
 	</Dropdown>
 {/snippet}
 
 {#snippet controlsBreakdown()}
-	<Button dimension="small" variant="solid" onclick={() => (selectedIndex = breakdownSelectToday())}
-		>{$_('common.showToday')}</Button
+	<DesktopOnly>
+		<Button
+			dimension={controlSize}
+			variant="solid"
+			onclick={() => (selectedIndex = breakdownSelectToday())}>{$_('common.showToday')}</Button
+		>
+	</DesktopOnly>
+	<Dropdown
+		buttonDimension={controlSize}
+		buttonVariant="ghost"
+		autoClose={false}
+		up={!isGraphFullscreened}
+		left={isGraphFullscreened}
 	>
-	<Dropdown buttonDimension="small" buttonVariant="ghost" autoClose={false} up>
 		{#snippet button()}
-			<SettingsView size={16} />
+			<SettingsView size={controlIconSize} />
 		{/snippet}
 		<List>
-			<Checkbox dimension="small" bind:checked={showBreakdownInvestmentValue}
+			<MobileOnly>
+				{@render inflationToggle()}
+			</MobileOnly>
+
+			<Checkbox dimension={controlSize} bind:checked={showBreakdownInvestmentValue}
 				>{$_('common.investmentValue')}</Checkbox
 			>
-			<Checkbox dimension="small" bind:checked={showBreakdownInterestEarned}
+			<Checkbox dimension={controlSize} bind:checked={showBreakdownInterestEarned}
 				>{$_('common.interestEarned')}</Checkbox
 			>
-			<Checkbox dimension="small" bind:checked={showBreakdownDeposited}
+			<Checkbox dimension={controlSize} bind:checked={showBreakdownDeposited}
 				>{$_('common.deposited')}</Checkbox
 			>
-			<Checkbox dimension="small" bind:checked={showBreakdownWithdrawn}
+			<Checkbox dimension={controlSize} bind:checked={showBreakdownWithdrawn}
 				>{$_('common.withdrawn')}</Checkbox
 			>
-			<Checkbox dimension="small" bind:checked={showBreakdownFees}>{$_('common.fees')}</Checkbox>
+			<Checkbox dimension={controlSize} bind:checked={showBreakdownFees}
+				>{$_('common.fees')}</Checkbox
+			>
+			<MobileOnly>
+				<Button
+					dimension={controlSize}
+					variant="ghost"
+					onclick={() => (selectedIndex = breakdownSelectToday())}>{$_('common.showToday')}</Button
+				>
+			</MobileOnly>
 		</List>
 	</Dropdown>
 {/snippet}
@@ -180,12 +239,14 @@
 		class:sidebar-open={isSidebarOpen}
 		class:view
 		class:empty={isEmpty === true}
+		class:mobile={layoutStore.mobile}
 	>
 		{#if isGraphFullscreened}
 			<FullscreenGraph
 				{view}
 				{sidebarButton}
 				bind:adjustWithInflation
+				bind:isSidebarOpen
 				fullscreen={() => {
 					fullscreenGraph = undefined
 					fullscreen()
@@ -193,22 +254,29 @@
 				inflation={portfolio.inflation_rate}
 			>
 				{#snippet graphName()}
-					{#if fullscreenGraph === 'value'}
-						{$_('common.value')}
-					{:else if fullscreenGraph === 'transactions'}
-						{$_('common.transactions')}
-					{:else}
-						{$_('common.breakdown')}
-					{/if}
+					{portfolio.name}
 				{/snippet}
 				{#snippet controls()}
 					{#if fullscreenGraph === 'value'}
-						<!--  -->
+						{@render controlsValue()}
 					{:else if fullscreenGraph === 'transactions'}
 						{@render controlsTransaction()}
 					{:else}
 						{@render controlsBreakdown()}
 					{/if}
+				{/snippet}
+				{#snippet valueChanger()}
+					<Select
+						variant="solid"
+						dimension="compact"
+						bind:value={fullscreenGraph}
+						items={[
+							{ value: 'value', label: $_('common.value') },
+							{ value: 'transactions', label: $_('common.transactions') },
+							{ value: 'breakdown', label: $_('common.breakdown') },
+						]}
+						class="max-select-length {layoutStore.mobile ? 'mobile' : ''}"
+					></Select>
 				{/snippet}
 				{#if fullscreenGraph === 'value'}
 					<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
@@ -340,17 +408,24 @@
 {/if}
 
 <style>
+	:root {
+		--min-chart-height: 632px;
+	}
 	.graph {
 		display: flex;
 		flex-direction: column;
-		min-height: 100%;
+		min-height: var(--min-chart-height);
+		max-height: max(var(--min-chart-height), calc(100dvh - var(--header-height)));
+		overflow-y: auto;
 		width: 100%;
-		max-width: calc(100% - calc(var(--sidebar-width) + var(--padding)));
-		gap: var(--padding);
+		max-width: calc(100% - calc(var(--sidebar-width)));
+		gap: var(--half-padding);
+		padding: var(--half-padding);
 
 		.graph-main {
+			flex: 210;
 			width: 100%;
-			aspect-ratio: 1000 / 252;
+			min-height: 0;
 			background-color: var(--colors-base);
 			display: flex;
 			flex-direction: column;
@@ -361,8 +436,9 @@
 		}
 
 		.graph-main-sub {
+			flex: 210;
 			width: 100%;
-			aspect-ratio: 1000 / 192;
+			min-height: 0; /*aspect-ratio: 1000 / 192;*/
 			background-color: var(--colors-base);
 			display: flex;
 			flex-direction: column;
@@ -373,7 +449,9 @@
 		}
 
 		.graph-breakdown-overtime {
+			flex: 268px;
 			width: 100%;
+			min-height: 0;
 			background-color: var(--colors-base);
 			display: flex;
 			flex-direction: column;
@@ -387,14 +465,25 @@
 			opacity: 0.5;
 		}
 	}
+	.graph.mobile {
+		min-height: 0;
+	}
 	.fullscreen-graph {
 		max-width: 100%;
+		flex: 1;
+		padding: 0;
 		&.sidebar-open {
-			max-width: calc(100% - calc(var(--sidebar-width) + var(--padding)));
+			max-width: calc(100% - calc(var(--sidebar-width)));
 		}
 	}
 	.view {
 		max-width: 100%;
 		min-height: 100%;
+	}
+	:global(.max-select-length) {
+		max-width: 164px;
+	}
+	:global(.max-select-length.mobile) {
+		max-width: 100%;
 	}
 </style>

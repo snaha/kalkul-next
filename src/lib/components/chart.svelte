@@ -27,7 +27,7 @@
 
 	const DEFAULT_OPTIONS: ChartOptions<ChartType> = {
 		maintainAspectRatio: false,
-		responsive: false,
+		responsive: true,
 	}
 
 	let {
@@ -138,5 +138,7 @@
 	.chart {
 		width: 100%;
 		height: 100%;
+		flex: 1;
+		min-height: 120px;
 	}
 </style>

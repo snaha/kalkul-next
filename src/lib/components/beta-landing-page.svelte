@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { ArrowRight, UserAvatar } from 'carbon-icons-svelte'
-	import BetaBadge from './beta-badge.svelte'
 	import Logo from './icons/logo.svelte'
 	import Button from './ui/button.svelte'
 	import { _, locale } from 'svelte-i18n'
@@ -31,7 +30,6 @@
 <header class:mobile={isMobile}>
 	<div class="left">
 		<Logo size={48} />
-		<BetaBadge>beta</BetaBadge>
 	</div>
 	<div class="right">
 		<Button variant="ghost" onclick={() => setLocale($locale?.startsWith('en') ? 'cs' : 'en')}>
@@ -89,7 +87,6 @@
 				>
 			</ResponsiveLayout>
 			<Vertical --vertical-gap="var(--half-padding)">
-				<BetaBadge>beta</BetaBadge>
 				<Typography class="color-high">
 					{$_('page.landing.betaAccessTitle')}
 					<br />

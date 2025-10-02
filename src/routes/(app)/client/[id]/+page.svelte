@@ -2,23 +2,22 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import {
-		Add,
 		ArrowLeft,
+		ArrowRight,
 		Copy,
+		Edit,
 		Folder,
+		FolderAdd,
 		FolderDetails,
 		Launch,
 		OverflowMenuVertical,
 		Rocket,
 		Share,
 		TrashCan,
-		UserFollow,
-		UserProfile,
 	} from 'carbon-icons-svelte'
 	import { _, locale } from 'svelte-i18n'
 	import { formatCurrency } from '$lib/utils'
 	import { formatDate } from '$lib/@snaha/kalkul-maths/date'
-	import Avatar from '$lib/components/avatar.svelte'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'
 	import routes, { getStartedSections } from '$lib/routes'
@@ -43,6 +42,10 @@
 		differenceInYears,
 	} from 'date-fns'
 	import type { Portfolio } from '$lib/types'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+	import DesktopOnly from '$lib/components/desktop-only.svelte'
+	import MobileOnly from '$lib/components/mobile-only.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -51,6 +54,7 @@
 	)
 	let showConfirmModal = $state(false)
 	let portfolioToBeDeleted: number | undefined = $state()
+	let showConfirmDeleteClientModal = $state(false)
 
 	function addPortfolio() {
 		goto(routes.CLIENT_NEW_PORTFOLIO(clientId))
@@ -69,6 +73,11 @@
 		await adapters.deletePortfolio({ id: portfolioToBeDeleted })
 		portfolioToBeDeleted = undefined
 		showConfirmModal = false
+	}
+
+	async function deleteClient() {
+		await adapters.deleteClient({ id: clientId })
+		goto(routes.HOME)
 	}
 
 	function portfolioValue(portfolioId: number): number {
@@ -93,6 +102,29 @@
 		return `${dayDiff}${$_('common.abbreviations.day')}`
 	}
 </script>
+
+{#snippet clientDropdown()}
+	<Dropdown left buttonDimension="compact">
+		{#snippet button()}
+			<OverflowMenuVertical size={24} />
+		{/snippet}
+		<List>
+			{#if layoutStore.mobile}
+				<ListItem onclick={addPortfolio}
+					><FolderAdd size={24} />{$_('page.portfolio.addPortfolio')}</ListItem
+				>
+			{/if}
+			<ListItem onclick={() => goto(routes.EDIT_CLIENT(clientId))}
+				><Edit size={24} />{$_('page.portfolio.editClient')}</ListItem
+			>
+			<ListItem onclick={() => (showConfirmDeleteClientModal = true)}
+				><TrashCan size={24} color="var(--colors-red)" /><Typography
+					--typography-color="var(--colors-red)">{$_('common.deleteClient')}</Typography
+				></ListItem
+			>
+		</List>
+	</Dropdown>
+{/snippet}
 
 {#snippet portfolioDropdown(portfolioId: number)}
 	<Dropdown left buttonDimension="compact">
@@ -143,30 +175,26 @@
 {#if !client}
 	<Loader />
 {:else}
-	<section class="topbar horizontal">
-		<Button
-			dimension="default"
-			variant="ghost"
-			onclick={() => {
-				goto(routes.HOME)
-			}}
-		>
-			<ArrowLeft size={24} /></Button
-		>
-		<Avatar size={48} name={client.name} birthDate={new Date(client.birth_date)} />
-		<Typography variant="h4">{client.name}</Typography>
-		<div class="grower"></div>
-		<Button dimension="default" variant="strong" onclick={addPortfolio}
-			><Add size={24} />{$_('page.portfolio.addPortfolio')}</Button
-		>
-		<Button
-			dimension="default"
-			variant="secondary"
-			onclick={() => goto(routes.EDIT_CLIENT(clientId))}
-			><UserProfile size={24} />{$_('page.portfolio.editClient')}</Button
-		>
-	</section>
-	<main>
+	<ContentLayout centered={false}>
+		<section class="horizontal">
+			<Button
+				dimension="compact"
+				variant="ghost"
+				onclick={() => {
+					goto(routes.HOME)
+				}}
+			>
+				<ArrowLeft size={24} /></Button
+			>
+			<Typography variant="h4">{client.name}</Typography>
+			<div class="grower"></div>
+			{#if !layoutStore.mobile}
+				<Button variant="strong" dimension="compact" onclick={addPortfolio}
+					>{$_('page.portfolio.addPortfolio')}</Button
+				>
+			{/if}
+			{@render clientDropdown()}
+		</section>
 		{#if client}
 			{#if portfolioStore.loading}
 				<Typography>{$_('common.loading')}</Typography><Loader />
@@ -177,56 +205,81 @@
 					<Typography variant="h4">{$_('page.client.noPortfoliosYet')}</Typography>
 					<Typography>{$_('page.client.createYourFirstPortfolio')}</Typography>
 					<div class="spacer"></div>
-					<Button variant="strong" onclick={addPortfolio}
-						><UserFollow />{$_('page.portfolio.addPortfolio')}</Button
+					<Button variant="strong" dimension="compact" onclick={addPortfolio}
+						>{$_('page.portfolio.addPortfolio')}</Button
 					>
 				</section>
 			{:else}
-				<ul>
-					<li class="portfolios title">
-						<span>{$_('common.portfolioName')}</span>
-						<span>{$_('common.currency')}</span>
-						<span>{$_('common.startDate')}</span>
-						<span>{$_('common.period')}</span>
-						<span class="right-aligned">{$_('common.inflation')}</span>
-						<span class="right-aligned">{$_('common.currentValue')}</span>
-						<span></span>
-						<span></span>
-					</li>
-					{#each portfolios as portfolio}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-						<li
-							class="portfolios portfolio table-row"
-							onclick={(e: MouseEvent) => {
-								if (!e.defaultPrevented) {
-									goto(routes.CLIENT_PORTFOLIO(clientId, portfolio.id))
-								}
-							}}
-						>
-							<span>{portfolio.name}</span>
-							<span>{portfolio.currency}</span>
-							<span>{formatDate(new Date(portfolio.start_date))}</span>
-							<span>{portfolioPeriod(portfolio)}</span>
-							<span class="right-aligned">{portfolio.inflation_rate * 100}%</span>
-							<span class="right-aligned"
-								>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency, $locale, {
-									maximumFractionDigits: 0,
-								})}</span
-							>
-							<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span>
-							<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
+				<DesktopOnly>
+					<ul>
+						<li class="portfolios title">
+							<span>{$_('common.portfolioName')}</span>
+							<span>{$_('common.currency')}</span>
+							<span>{$_('common.startDate')}</span>
+							<span>{$_('common.period')}</span>
+							<span class="right-aligned">{$_('common.inflation')}</span>
+							<span class="right-aligned">{$_('common.currentValue')}</span>
+							<span></span>
+							<span></span>
 						</li>
-					{/each}
-				</ul>
+						{#each portfolios as portfolio}
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+							<li
+								class="portfolios portfolio"
+								onclick={(e: MouseEvent) => {
+									if (!e.defaultPrevented) {
+										goto(routes.CLIENT_PORTFOLIO(clientId, portfolio.id))
+									}
+								}}
+							>
+								<span>{portfolio.name}</span>
+								<span>{portfolio.currency}</span>
+								<span>{formatDate(new Date(portfolio.start_date))}</span>
+								<span>{portfolioPeriod(portfolio)}</span>
+								<span class="right-aligned">{portfolio.inflation_rate * 100}%</span>
+								<span class="right-aligned"
+									>{formatCurrency(portfolioValue(portfolio.id), portfolio.currency, $locale, {
+										maximumFractionDigits: 0,
+									})}</span
+								>
+								<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span
+								>
+								<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
+							</li>
+						{/each}
+					</ul>
+				</DesktopOnly>
+				<MobileOnly>
+					<ul class="mobile">
+						{#each portfolios as portfolio}
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+							<li
+								class="portfolio mobile"
+								onclick={(e: MouseEvent) => {
+									if (!e.defaultPrevented) {
+										goto(routes.CLIENT_PORTFOLIO(clientId, portfolio.id))
+									}
+								}}
+							>
+								<span>{portfolio.name}</span>
+								<span class="right-aligned"><ArrowRight /></span>
+							</li>
+						{/each}
+					</ul>
+					<Button variant="ghost" dimension="compact" onclick={addPortfolio}
+						>{$_('page.portfolio.addPortfolio')}</Button
+					>
+				</MobileOnly>
 			{/if}
 		{/if}
-	</main>
+	</ContentLayout>
 {/if}
 
 {#if portfolios.length === 0}
 	<HelpBox
-		open={true}
+		open={layoutStore.mobile ? false : true}
 		title={$_('helpBox.addPortfolioTitle')}
 		boxText={$_('helpBox.addPortfolioText')}
 		text={$_('helpBox.portfolioExplanation')}
@@ -248,17 +301,17 @@
 	text={$_('page.client.deletePortfolioWarning')}
 />
 
+<DeleteModal
+	confirm={deleteClient}
+	oncancel={() => (showConfirmDeleteClientModal = false)}
+	bind:open={showConfirmDeleteClientModal}
+	title={$_('page.client.clientDelete')}
+	text={$_('page.client.clientDeleteExplanation')}
+/>
+
 <style>
 	:root {
 		--max-width: 1370px;
-	}
-	main {
-		margin: var(--double-padding);
-	}
-	.topbar {
-		padding: var(--double-padding);
-		border-top: 1px solid var(--colors-low);
-		border-bottom: 1px solid var(--colors-low);
 	}
 	.horizontal {
 		display: flex;
@@ -272,6 +325,10 @@
 	}
 	ul {
 		padding-left: 0;
+		margin: 0;
+	}
+	ul.mobile {
+		border-top: 1px solid var(--colors-low);
 	}
 	li > span {
 		display: flex;
@@ -303,6 +360,13 @@
 		font-size: var(--font-size);
 		font-family: var(--font-family-sans-serif);
 		cursor: pointer;
+	}
+	.portfolio.mobile {
+		display: flex;
+		justify-content: space-between;
+		padding: var(--padding) var(--half-padding);
+		width: 100%;
+		gap: var(--half-padding);
 	}
 	.portfolio:hover {
 		background-color: color-mix(in srgb, var(--colors-low) 25%, transparent);

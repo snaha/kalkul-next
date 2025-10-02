@@ -5,22 +5,24 @@
 		children: Snippet
 		isGraphFullscreened?: boolean
 		isSidebarOpen?: boolean
+		isSidebarFlexible?: boolean
 	}
 
-	let { children, isGraphFullscreened, isSidebarOpen }: Props = $props()
+	let { children, isGraphFullscreened, isSidebarOpen, isSidebarFlexible = false }: Props = $props()
 </script>
 
 <section
 	class="sidebar vertical"
 	class:fullscreen-graph={isGraphFullscreened}
 	class:open={isSidebarOpen}
+	class:fixed-width={!isSidebarFlexible}
 >
 	{@render children()}
 </section>
 
 <style>
 	:root {
-		--sidebar-width: 360px;
+		--sidebar-width: 400px;
 		--sidebar-gap: 0;
 		--sidebar-padding: 0;
 	}
@@ -33,7 +35,6 @@
 	}
 
 	.sidebar {
-		width: var(--sidebar-width);
 		max-width: 100%;
 		height: 100%;
 		padding: var(--sidebar-padding);
@@ -52,14 +53,13 @@
 		transition: transform 0.3s ease-in;
 	}
 
-	.open {
+	.fixed-width {
 		width: var(--sidebar-width);
+	}
+	.open {
 		opacity: 1;
 		transform: translateX(0);
 		content-visibility: visible;
 		transition: transform 0.3s ease-in;
-	}
-	.fullscreen-graph.open {
-		padding-top: 66px;
 	}
 </style>

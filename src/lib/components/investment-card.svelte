@@ -2,7 +2,6 @@
 	import { cascadeDuplicateInvestment } from '$lib/cascade'
 	import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
 	import {
-		Add,
 		CenterSquare,
 		ChevronRight,
 		Copy,
@@ -12,7 +11,6 @@
 		ViewOff,
 		WarningAltFilled,
 	} from 'carbon-icons-svelte'
-	import Badge from './ui/badge.svelte'
 	import Button from './ui/button.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
@@ -21,7 +19,6 @@
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
-	import { SERIES_COLORS } from '$lib/colors'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
@@ -31,6 +28,8 @@
 	import { base } from '$app/paths'
 	import { transactionStore } from '$lib/stores/transaction.svelte'
 	import DeleteModal from './delete-modal.svelte'
+	import InvestmentColorBox from './investment-color-box.svelte'
+	import Badge from './ui/badge.svelte'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
@@ -97,11 +96,14 @@
 <div class="card" onclick={cardOpenInvestment} class:hidden class:open>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
 		<div class="chevron">
-			<ChevronRight size={24} class="open-investment-icon" />
+			<ChevronRight
+				size={24}
+				class="open-investment-icon"
+				color={hidden ? 'transparent' : undefined}
+			/>
 		</div>
-		<div class="color-box" style={`background-color: ${SERIES_COLORS[index]}`}></div>
-		<Typography variant="h5">{investment.name}</Typography>
-		<Badge>{investment.apy}%</Badge>
+		<InvestmentColorBox colorIndex={investment.colorIndex} />
+		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
 		{#if exhaustionDate && missingAmount > 0 && !open}
 			<Badge variant="error">
 				<WarningAltFilled size={16} />
@@ -167,17 +169,20 @@
 	</Horizontal>
 	<div class="trasaction-container" class:modalShow={!open || hidden}>
 		<Horizontal>
-			<Typography variant="h5">{$_('common.transactions')}</Typography>
-			<FlexItem />
 			{#if openTransaction && !viewOnly}
 				<Button
 					dimension="compact"
+					variant="solid"
 					onclick={(e: Event) => {
 						e.preventDefault()
 						openTransaction(investment)
-					}}><Add size={24} />{$_('common.add')}</Button
+					}}>{$_('common.addTransaction')}</Button
 				>
+			{:else}
+				<Typography variant="h5">{$_('common.transactions')}</Typography>
 			{/if}
+			<FlexItem />
+			<Badge>{investment.apy}% APY</Badge>
 		</Horizontal>
 		{#if transactions.length === 0}
 			<section class="centered">
@@ -237,6 +242,11 @@
 			transform: rotate(0deg);
 			transition: transform 0.2s ease-out;
 		}
+		:global(.investment-name) {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 	}
 	.dropdown {
 		opacity: 1;
@@ -253,13 +263,8 @@
 		border: 1px solid transparent;
 		display: flex;
 	}
-	.color-box {
-		width: 36px;
-		height: 24px;
-		border-radius: var(--border-radius);
-	}
 	.hidden {
-		background-color: transparent;
+		background-color: var(--colors-low);
 		pointer-events: none;
 		:global(.open-investment-icon) {
 			opacity: 0.25;

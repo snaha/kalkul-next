@@ -1,15 +1,24 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
 	import CustomHeader from './custom-header.svelte'
+	import Header from './header.svelte'
+	import { authStore } from '$lib/stores/auth.svelte'
 	let {
 		children,
-		hasCloseButton = true,
-		beta = false,
-	}: { children: Snippet; hasCloseButton?: boolean; beta?: boolean } = $props()
+		hasCustomHeader = authStore.user ? false : true,
+		hasCloseButton,
+	}: {
+		children: Snippet
+		hasCustomHeader?: boolean
+		hasCloseButton?: boolean
+	} = $props()
 </script>
 
-<CustomHeader {hasCloseButton} {beta} />
-<div class="header-placeholder"></div>
+{#if hasCustomHeader}
+	<CustomHeader {hasCloseButton} />
+{:else}
+	<Header />
+{/if}
 <main>
 	{@render children()}
 </main>
@@ -25,17 +34,10 @@
 		padding-bottom: var(--double-padding);
 		background-color: var(--colors-ultra-low);
 	}
-	.header-placeholder {
-		display: flex;
-		height: var(--header-height);
-	}
 	@media screen and (max-width: 760px) {
 		main {
 			min-height: 100dvh -
 				calc(var(--header-height) - var(--double-padding) - var(--padding) - var(--double-padding));
-		}
-		.header-placeholder {
-			height: calc(var(--header-height) - var(--double-padding) - var(--padding));
 		}
 	}
 </style>

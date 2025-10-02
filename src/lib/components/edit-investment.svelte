@@ -1,12 +1,6 @@
 <script lang="ts">
 	import DeleteModal from './delete-modal.svelte'
-	import {
-		Close,
-		Checkmark,
-		TrashCan,
-		DocumentImport,
-		InformationFilled,
-	} from 'carbon-icons-svelte'
+	import { Checkmark, Close, DocumentImport, InformationFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
@@ -28,6 +22,8 @@
 	import ImportInvestmentModal from './import-investment-modal.svelte'
 	import HelperTooltip from './helper-tooltip.svelte'
 	import Loader from './ui/loader.svelte'
+	import ResponsiveLayout from './ui/responsive-layout.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -182,17 +178,27 @@
 {/snippet}
 
 <Vertical class="max-width-560" --vertical-gap="var(--double-padding)">
-	<section class="horizontal">
+	<Horizontal>
 		{#if formType === 'create'}
 			<Typography variant="h4">{$_('component.editInvestment.addInvestment')}</Typography>
 		{:else}
 			<Typography variant="h4">{$_('component.editInvestment.editInvestment')}</Typography>
 		{/if}
 		<div class="grower"></div>
-		<Typography>{$_('common.in')} {portfolio.name}</Typography>
-	</section>
+		<Button variant="ghost" dimension="compact" onclick={close}><Close size={20} /></Button>
+	</Horizontal>
 	<Vertical --vertical-gap="var(--padding)">
-		<Typography variant="h5">{$_('common.details')}</Typography>
+		<Horizontal --horizontal-justify-content="space-between">
+			<Typography variant="h5">{$_('common.details')}</Typography>
+			<Button
+				dimension="compact"
+				variant="ghost"
+				onclick={() => (isImportInvestmentModalOpen = true)}
+			>
+				<DocumentImport size={24} />
+				{$_('common.importData')}
+			</Button>
+		</Horizontal>
 		<section class="horizontal half-gap">
 			<Input
 				dimension="compact"
@@ -202,34 +208,20 @@
 				label={$_('component.editInvestment.investmentName')}
 				class="grower"
 			></Input>
-			<Button
+			<Input
 				dimension="compact"
 				variant="solid"
-				onclick={() => (isImportInvestmentModalOpen = true)}
-			>
-				<DocumentImport size={24} />
-				{$_('common.importData')}
-			</Button>
+				bind:value={apy}
+				placeholder={'0'}
+				label={$_('common.apy')}
+				unit="%"
+				type="number"
+				step={0.001}
+				min={0}
+				error={apy === undefined ? APYError : undefined}
+				class="grower"
+			></Input>
 		</section>
-		<Input
-			dimension="compact"
-			variant="solid"
-			bind:value={type}
-			placeholder={$_('component.editInvestment.typePlaceholder')}
-			label={$_('component.editInvestment.typeLabel')}
-		></Input>
-		<Input
-			dimension="compact"
-			variant="solid"
-			bind:value={apy}
-			placeholder={'0'}
-			label={$_('common.apy')}
-			unit="%"
-			type="number"
-			step={0.001}
-			min={0}
-			error={apy === undefined ? APYError : undefined}
-		></Input>
 		<Horizontal>
 			<Typography variant="h5">{$_('common.fees')}</Typography>
 			<div class="grower"></div>
@@ -317,6 +309,7 @@
 				unit="%"
 				step={'.001'}
 				min={0}
+				class="grower"
 			></Input>
 			<Select
 				variant="solid"
@@ -366,7 +359,7 @@
 		</section>
 	</Vertical>
 
-	<Horizontal>
+	<ResponsiveLayout --responsive-justify-content="stretch">
 		{#if formType === 'create'}
 			<Button
 				variant="strong"
@@ -385,25 +378,23 @@
 				onclick={updateInvestment}
 				disabled={createDisabled}
 				busy={createClicked}
-				>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
-						size={24}
-					/>{/if}{$_('common.done')}</Button
+				>{#if createClicked}<Loader dimension="large" color="low" />{/if}{$_(
+					'common.saveChanges',
+				)}</Button
 			>
 		{/if}
-		<Button variant="secondary" dimension="compact" onclick={cancel}
-			><Close size={24} />{$_('common.cancel')}</Button
-		>
+		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
 		{#if formType === 'edit'}
-			<div class="grower"></div>
+			{#if !layoutStore.mobile}<div class="grower"></div>{/if}
 			<Button
 				variant="ghost"
 				dimension="compact"
 				onclick={confirmDeleteInvestment}
 				disabled={createDisabled}
-				><TrashCan size={24} />{$_('component.editInvestment.deleteInvestment')}</Button
+				danger>Delete</Button
 			>
 		{/if}
-	</Horizontal>
+	</ResponsiveLayout>
 </Vertical>
 
 <DeleteModal
@@ -430,9 +421,16 @@
 		justify-content: flex-start;
 		align-items: flex-end;
 		gap: var(--half-padding);
+		min-width: 320px;
 	}
 	.horizontal :global(.grower) {
 		flex-grow: 1;
+		flex-shrink: 1;
+		min-width: 0;
+	}
+	.horizontal > :global(*) {
+		flex-shrink: 1;
+		min-width: 0;
 	}
 	.half-gap {
 		gap: var(--half-padding);
@@ -440,5 +438,12 @@
 	:global(.max-width-560) {
 		max-width: 560px;
 		width: 100%;
+		min-width: 320px;
+	}
+	.horizontal :global(.grower .col),
+	.horizontal :global(.grower .wrapper),
+	.horizontal :global(.grower .relative),
+	.horizontal :global(.grower input) {
+		min-width: 0;
 	}
 </style>

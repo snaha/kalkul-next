@@ -5,8 +5,6 @@
 	import { cascadeDuplicatePortfolio } from '$lib/cascade'
 	import routes from '$lib/routes'
 	import {
-		Add,
-		Share,
 		OverflowMenuVertical,
 		Copy,
 		TrashCan,
@@ -14,6 +12,7 @@
 		DocumentExport,
 		Link,
 		Edit,
+		Add,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
@@ -23,6 +22,7 @@
 	import type { Client, Investment, Portfolio } from '$lib/types'
 	import adapters from '$lib/adapters'
 	import PortfolioHeaderView from './portfolio-header-view.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	type Props = {
 		client: Client
@@ -62,7 +62,7 @@
 	}
 </script>
 
-<section class="topbar horizontal">
+<section class="horizontal">
 	<div class="controls">
 		<Button
 			dimension="compact"
@@ -75,30 +75,43 @@
 			<ArrowLeft size={24} /></Button
 		>
 	</div>
-	<PortfolioHeaderView {client} {portfolio} {investments} bind:adjustWithInflation />
+	<PortfolioHeaderView {portfolio} {investments} bind:adjustWithInflation />
 	<div class="grower"></div>
 	<div class="controls">
-		<Button dimension="compact" variant="strong" onclick={addInvestment}
-			><Add size={24} />{$_('component.portfolioHeader.addInvestment')}</Button
-		>
-		<Dropdown left buttonDimension="compact" buttonVariant="secondary">
-			{#snippet button()}
-				<Share size={24} />{$_('common.share')}
-			{/snippet}
-			<List>
-				<ListItem onclick={share}
-					><Link size={24} />{$_('component.portfolioHeader.linkSharing')}</ListItem
-				>
-				<ListItem onclick={exportPdf}
-					><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</ListItem
-				>
-			</List>
-		</Dropdown>
+		{#if !layoutStore.mobile}
+			<Button dimension="compact" variant="strong" onclick={addInvestment}
+				>{$_('component.portfolioHeader.addInvestment')}</Button
+			>
+			<Dropdown left buttonDimension="compact" buttonVariant="ghost">
+				{#snippet button()}
+					{$_('common.share')}
+				{/snippet}
+				<List>
+					<ListItem onclick={share}
+						><Link size={24} />{$_('component.portfolioHeader.linkSharing')}</ListItem
+					>
+					<ListItem onclick={exportPdf}
+						><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</ListItem
+					>
+				</List>
+			</Dropdown>
+		{/if}
 		<Dropdown left buttonDimension="compact">
 			{#snippet button()}
 				<OverflowMenuVertical size={24} />
 			{/snippet}
 			<List>
+				{#if layoutStore.mobile}
+					<ListItem onclick={addInvestment}
+						><Add size={24} />{$_('component.portfolioHeader.addInvestment')}</ListItem
+					>
+					<ListItem onclick={share}
+						><Link size={24} />{$_('component.portfolioHeader.linkSharing')}</ListItem
+					>
+					<ListItem onclick={exportPdf}
+						><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</ListItem
+					>
+				{/if}
 				<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(client.id, portfolio.id))}
 					><Edit size={24} />{$_('component.portfolioHeader.editPortfolio')}</ListItem
 				>
@@ -131,10 +144,6 @@
 <style>
 	:global(.grower) {
 		flex: 1;
-	}
-	.topbar {
-		padding: var(--double-padding);
-		padding-bottom: 0;
 	}
 	.horizontal {
 		display: flex;

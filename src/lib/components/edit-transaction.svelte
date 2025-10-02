@@ -1,11 +1,16 @@
 <script lang="ts">
-	import { Close, Checkmark, TrashCan } from 'carbon-icons-svelte'
+	import { Close } from 'carbon-icons-svelte'
 	import { _, locale } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import FormattedNumberInput from '$lib/components/ui/input/formatted-number/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { type Client, type Investment, type Portfolio, type Transaction } from '$lib/types'
+	import {
+		type Client,
+		type InvestmentWithColorIndex,
+		type Portfolio,
+		type Transaction,
+	} from '$lib/types'
 	import {
 		type Period,
 		type TransactionType,
@@ -30,9 +35,10 @@
 	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
 	import HelperTooltip from './helper-tooltip.svelte'
 	import Loader from './ui/loader.svelte'
+	import InvestmentColorBox from './investment-color-box.svelte'
 
 	type Props = {
-		investment: Investment
+		investment: InvestmentWithColorIndex
 		portfolio: Portfolio
 		client: Client
 		transaction?: Transaction
@@ -233,8 +239,8 @@
 	}
 </script>
 
-<Vertical --gap="var(--half-padding)">
-	<section class="horizontal">
+<Vertical --vertical-gap="var(--half-padding)">
+	<section class="horizontal header">
 		<Typography variant="h5"
 			>{formType === 'create'
 				? $_('component.editTransaction.addTransaction')
@@ -243,71 +249,115 @@
 		<FlexItem />
 		<Button dimension="compact" variant="ghost" onclick={cancel}><Close size={24} /></Button>
 	</section>
-	<div class="spacer"></div>
-	<div class="horizontal flex-end">
-		<Select
+	<Vertical class="rounded">
+		<div class="horizontal">
+			In
+			<InvestmentColorBox colorIndex={investment.colorIndex} />
+			{investment.name}
+		</div>
+		<div class="horizontal flex-end">
+			<Select
+				variant="solid"
+				dimension="compact"
+				bind:value={transactionType}
+				label={$_('common.type')}
+				items={[
+					{ value: 'deposit', label: capitalizeFirstLetter($_('common.deposit')) },
+					{ value: 'withdrawal', label: capitalizeFirstLetter($_('common.withdrawal')) },
+				]}
+			></Select>
+			<Toggle
+				class="toggle"
+				dimension="compact"
+				label={$_('common.recurring')}
+				bind:checked={isRecurring}
+				onchange={toggleRecurring}
+			></Toggle>
+		</div>
+		<FormattedNumberInput
 			variant="solid"
 			dimension="compact"
-			bind:value={transactionType}
-			label={$_('common.type')}
-			items={[
-				{ value: 'deposit', label: capitalizeFirstLetter($_('common.deposit')) },
-				{ value: 'withdrawal', label: capitalizeFirstLetter($_('common.withdrawal')) },
-			]}
-		></Select>
-		<Toggle
-			class="toggle"
+			placeholder={'0'}
+			label={$_('common.amount')}
+			unit={portfolio.currency}
+			bind:value={amount}
+			min={0}
+			step={1}
+			class="grower"
+			locale={$locale}
+		></FormattedNumberInput>
+		<Horizontal --horizontal-justify-content="space-between">
+			<Toggle
+				class="toggle"
+				dimension="compact"
+				label={$_('component.editTransaction.inflationAdjusted')}
+				bind:checked={inflationAdjusted}
+			></Toggle>
+			<HelperTooltip helperText={$_('component.viewHeader.inflationAdjustmentTooltip')} />
+		</Horizontal>
+		<Input
 			dimension="compact"
-			label={$_('common.recurring')}
-			bind:checked={isRecurring}
-			onchange={toggleRecurring}
-		></Toggle>
-	</div>
-	<FormattedNumberInput
-		variant="solid"
-		dimension="compact"
-		placeholder={'0'}
-		label={$_('common.amount')}
-		unit={portfolio.currency}
-		bind:value={amount}
-		min={0}
-		step={1}
-		class="grower"
-		locale={$locale}
-	></FormattedNumberInput>
-	<Horizontal --horizontal-justify-content="space-between">
-		<Toggle
-			class="toggle"
+			variant="solid"
+			placeholder={transactionType === 'deposit'
+				? $_('common.labelPlaceholderDeposit')
+				: $_('common.labelPlaceholderWithdrawal')}
+			label={$_('common.label')}
+			bind:value={label}
+		></Input>
+		<DateAge
 			dimension="compact"
-			label={$_('component.editTransaction.inflationAdjusted')}
-			bind:checked={inflationAdjusted}
-		></Toggle>
-		<HelperTooltip helperText={$_('component.viewHeader.inflationAdjustmentTooltip')} />
-	</Horizontal>
-	<Input
-		dimension="compact"
-		variant="solid"
-		placeholder={transactionType === 'deposit'
-			? $_('common.labelPlaceholderDeposit')
-			: $_('common.labelPlaceholderWithdrawal')}
-		label={$_('common.label')}
-		bind:value={label}
-	></Input>
-	<DateAge
-		dimension="compact"
-		dateInputLabel={$_('common.startDate')}
-		ageLabel={$_('common.clientAge')}
-		agePlaceholder={'0'}
-		bind:date
-		birthDate={new Date(client.birth_date)}
-		onchange={onDateChange}
-	></DateAge>
-	{#if !isRecurring}
-		<!-- Single transaction -->
-		{#if inflationAdjusted}
-			<!-- Inflation-adjusted: show both real and nominal values -->
-			{#if showInflation}
-				<!-- Show inflation ON: real value primary, nominal value secondary -->
+			dateInputLabel={$_('common.startDate')}
+			ageLabel={$_('common.clientAge')}
+			agePlaceholder={'0'}
+			bind:date
+			birthDate={new Date(client.birth_date)}
+			onchange={onDateChange}
+		></DateAge>
+		{#if !isRecurring}
+			<!-- Single transaction -->
+			{#if inflationAdjusted}
+				<!-- Inflation-adjusted: show both real and nominal values -->
+				{#if showInflation}
+					<!-- Show inflation ON: real value primary, nominal value secondary -->
+					<div class="spacer"></div>
+					<Vertical --vertical-gap="var(--quarter-padding)">
+						<Typography class="total-amount">
+							{$_('common.realValue')}: {formatCurrency(
+								totalAmounts.adjusted,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+						<Typography class="total-amount secondary">
+							{$_('common.nominalValue')}: {formatCurrency(
+								totalAmounts.nominal,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+					</Vertical>
+				{:else}
+					<!-- Show inflation OFF: nominal value primary, real value secondary -->
+					<div class="spacer"></div>
+					<Vertical --vertical-gap="var(--quarter-padding)">
+						<Typography class="total-amount">
+							{$_('common.nominalValue')}: {formatCurrency(
+								totalAmounts.nominal,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+						<Typography class="total-amount secondary">
+							{$_('common.realValue')}: {formatCurrency(
+								totalAmounts.adjusted,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+					</Vertical>
+				{/if}
+			{:else if showInflation}
+				<!-- Not inflation-adjusted, show inflation ON: display real and nominal values -->
 				<div class="spacer"></div>
 				<Vertical --vertical-gap="var(--quarter-padding)">
 					<Typography class="total-amount">
@@ -320,142 +370,138 @@
 					<Typography class="total-amount secondary">
 						{$_('common.nominalValue')}: {formatCurrency(
 							totalAmounts.nominal,
-							portfolio.currency,
-							$locale,
-						)}
-					</Typography>
-				</Vertical>
-			{:else}
-				<!-- Show inflation OFF: nominal value primary, real value secondary -->
-				<div class="spacer"></div>
-				<Vertical --vertical-gap="var(--quarter-padding)">
-					<Typography class="total-amount">
-						{$_('common.nominalValue')}: {formatCurrency(
-							totalAmounts.nominal,
-							portfolio.currency,
-							$locale,
-						)}
-					</Typography>
-					<Typography class="total-amount secondary">
-						{$_('common.realValue')}: {formatCurrency(
-							totalAmounts.adjusted,
 							portfolio.currency,
 							$locale,
 						)}
 					</Typography>
 				</Vertical>
 			{/if}
-		{:else if showInflation}
-			<!-- Not inflation-adjusted, show inflation ON: display real and nominal values -->
+			<!-- Not inflation-adjusted, show inflation OFF: display only form inputs -->
+		{/if}
+		{#if isRecurring}
+			<section class="horizontal inputs">
+				<FormattedNumberInput
+					variant="solid"
+					dimension="compact"
+					placeholder={'1'}
+					label={$_('component.editTransaction.repeatLabel')}
+					min={1}
+					step={1}
+					bind:value={repeat}
+					class="grower"
+					style="max-width: 100%;"
+					locale={$locale}
+				></FormattedNumberInput>
+				<Select
+					variant="solid"
+					dimension="compact"
+					bind:value={repeatUnit}
+					items={[
+						{ value: 'day', label: $_('common.day').toLowerCase() },
+						{ value: 'week', label: $_('common.week').toLowerCase() },
+						{ value: 'month', label: $_('common.month').toLowerCase() },
+						{ value: 'year', label: $_('common.year').toLowerCase() },
+					]}
+				></Select>
+			</section>
+			<section class="horizontal inputs">
+				<Input
+					type="number"
+					variant="solid"
+					dimension="compact"
+					placeholder={'30'}
+					label={$_('component.editTransaction.for')}
+					min={1}
+					step={1}
+					bind:value={period}
+					style="max-width: 100%"
+					class="grower"
+					oninput={onPeriodChange}
+					onblur={checkPeriodInput}
+					onkeydown={(e) => {
+						// Prevent decimal separator (. and ,) and negative sign (-)
+						if (e.key === '.' || e.key === ',' || e.key === '-' || e.key === 'e' || e.key === 'E') {
+							e.preventDefault()
+						}
+					}}
+					onpaste={(e) => {
+						// Clean pasted content to only allow positive integers
+						e.preventDefault()
+						const paste = e.clipboardData?.getData('text') || ''
+						const cleanedValue = paste.replace(/[^0-9]/g, '') // Remove everything except digits
+						if (cleanedValue) {
+							const numValue = parseInt(cleanedValue, 10)
+							if (numValue > 0) {
+								period = numValue
+								onPeriodChange() // Trigger the change handler
+							}
+						}
+					}}
+					inputmode="numeric"
+					pattern="[0-9]*"
+				></Input>
+				<Select
+					variant="solid"
+					dimension="compact"
+					bind:value={periodUnit}
+					onchange={onPeriodUnitChange}
+					items={[
+						{ value: 'day', label: $_('common.day').toLowerCase() },
+						{ value: 'week', label: $_('common.week').toLowerCase() },
+						{ value: 'month', label: $_('common.month').toLowerCase() },
+						{ value: 'year', label: $_('common.year').toLowerCase() },
+					]}
+				></Select>
+			</section>
+			<DateAge
+				dimension="compact"
+				dateInputLabel={$_('common.endDate')}
+				ageLabel={$_('common.clientAge')}
+				agePlaceholder={'0'}
+				bind:date={endDate}
+				birthDate={new Date(client.birth_date)}
+				onchange={onEndDateChange}
+			></DateAge>
 			<div class="spacer"></div>
 			<Vertical --vertical-gap="var(--quarter-padding)">
-				<Typography class="total-amount">
-					{$_('common.realValue')}: {formatCurrency(
-						totalAmounts.adjusted,
-						portfolio.currency,
-						$locale,
-					)}
-				</Typography>
-				<Typography class="total-amount secondary">
-					{$_('common.nominalValue')}: {formatCurrency(
-						totalAmounts.nominal,
-						portfolio.currency,
-						$locale,
-					)}
-				</Typography>
-			</Vertical>
-		{/if}
-		<!-- Not inflation-adjusted, show inflation OFF: display only form inputs -->
-	{/if}
-	{#if isRecurring}
-		<section class="horizontal inputs">
-			<FormattedNumberInput
-				variant="solid"
-				dimension="compact"
-				placeholder={'1'}
-				label={$_('component.editTransaction.repeatLabel')}
-				min={1}
-				step={1}
-				bind:value={repeat}
-				style="max-width: 100%"
-				locale={$locale}
-			></FormattedNumberInput>
-			<Select
-				variant="solid"
-				dimension="compact"
-				bind:value={repeatUnit}
-				items={[
-					{ value: 'day', label: $_('common.day').toLowerCase() },
-					{ value: 'week', label: $_('common.week').toLowerCase() },
-					{ value: 'month', label: $_('common.month').toLowerCase() },
-					{ value: 'year', label: $_('common.year').toLowerCase() },
-				]}
-			></Select>
-		</section>
-		<section class="horizontal inputs">
-			<Input
-				type="number"
-				variant="solid"
-				dimension="compact"
-				placeholder={'30'}
-				label={$_('component.editTransaction.for')}
-				min={1}
-				step={1}
-				bind:value={period}
-				style="max-width: 100%"
-				oninput={onPeriodChange}
-				onblur={checkPeriodInput}
-				onkeydown={(e) => {
-					// Prevent decimal separator (. and ,) and negative sign (-)
-					if (e.key === '.' || e.key === ',' || e.key === '-' || e.key === 'e' || e.key === 'E') {
-						e.preventDefault()
-					}
-				}}
-				onpaste={(e) => {
-					// Clean pasted content to only allow positive integers
-					e.preventDefault()
-					const paste = e.clipboardData?.getData('text') || ''
-					const cleanedValue = paste.replace(/[^0-9]/g, '') // Remove everything except digits
-					if (cleanedValue) {
-						const numValue = parseInt(cleanedValue, 10)
-						if (numValue > 0) {
-							period = numValue
-							onPeriodChange() // Trigger the change handler
-						}
-					}
-				}}
-				inputmode="numeric"
-				pattern="[0-9]*"
-			></Input>
-			<Select
-				variant="solid"
-				dimension="compact"
-				bind:value={periodUnit}
-				onchange={onPeriodUnitChange}
-				items={[
-					{ value: 'day', label: $_('common.day').toLowerCase() },
-					{ value: 'week', label: $_('common.week').toLowerCase() },
-					{ value: 'month', label: $_('common.month').toLowerCase() },
-					{ value: 'year', label: $_('common.year').toLowerCase() },
-				]}
-			></Select>
-		</section>
-		<DateAge
-			dimension="compact"
-			dateInputLabel={$_('common.endDate')}
-			ageLabel={$_('common.clientAge')}
-			agePlaceholder={'0'}
-			bind:date={endDate}
-			birthDate={new Date(client.birth_date)}
-			onchange={onEndDateChange}
-		></DateAge>
-		<div class="spacer"></div>
-		<Vertical --vertical-gap="var(--quarter-padding)">
-			<Typography>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography>
-			{#if inflationAdjusted}
-				<!-- Inflation-adjusted: show both total real and total nominal values -->
-				{#if showInflation}
-					<!-- Show inflation ON: total real primary, total nominal secondary -->
+				<Typography>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography>
+				{#if inflationAdjusted}
+					<!-- Inflation-adjusted: show both total real and total nominal values -->
+					{#if showInflation}
+						<!-- Show inflation ON: total real primary, total nominal secondary -->
+						<Typography class="total-amount">
+							{$_('common.totalReal')}: {formatCurrency(
+								totalAmounts.adjusted,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+						<Typography class="total-amount secondary">
+							{$_('common.totalNominal')}: {formatCurrency(
+								totalAmounts.nominal,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+					{:else}
+						<!-- Show inflation OFF: total nominal primary, total real secondary -->
+						<Typography class="total-amount">
+							{$_('common.totalNominal')}: {formatCurrency(
+								totalAmounts.nominal,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+						<Typography class="total-amount secondary">
+							{$_('common.totalReal')}: {formatCurrency(
+								totalAmounts.adjusted,
+								portfolio.currency,
+								$locale,
+							)}
+						</Typography>
+					{/if}
+				{:else if showInflation}
+					<!-- Not inflation-adjusted, show inflation ON: display total real and total nominal -->
 					<Typography class="total-amount">
 						{$_('common.totalReal')}: {formatCurrency(
 							totalAmounts.adjusted,
@@ -471,86 +517,52 @@
 						)}
 					</Typography>
 				{:else}
-					<!-- Show inflation OFF: total nominal primary, total real secondary -->
+					<!-- Not inflation-adjusted, show inflation OFF: display total deposited/withdrawn -->
 					<Typography class="total-amount">
-						{$_('common.totalNominal')}: {formatCurrency(
-							totalAmounts.nominal,
-							portfolio.currency,
-							$locale,
-						)}
-					</Typography>
-					<Typography class="total-amount secondary">
-						{$_('common.totalReal')}: {formatCurrency(
-							totalAmounts.adjusted,
-							portfolio.currency,
-							$locale,
-						)}
+						{transactionType === 'deposit'
+							? $_('component.viewHeader.totalDeposited', {
+									values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
+								})
+							: $_('component.viewHeader.totalWithdrawn', {
+									values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
+								})}
 					</Typography>
 				{/if}
-			{:else if showInflation}
-				<!-- Not inflation-adjusted, show inflation ON: display total real and total nominal -->
-				<Typography class="total-amount">
-					{$_('common.totalReal')}: {formatCurrency(
-						totalAmounts.adjusted,
-						portfolio.currency,
-						$locale,
-					)}
-				</Typography>
-				<Typography class="total-amount secondary">
-					{$_('common.totalNominal')}: {formatCurrency(
-						totalAmounts.nominal,
-						portfolio.currency,
-						$locale,
-					)}
-				</Typography>
+			</Vertical>
+		{/if}
+		<div class="spacer"></div>
+		<Vertical --vertical-align-items="stretch">
+			{#if formType === 'create'}
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={createTransaction}
+					disabled={createDisabled}
+					busy={createClicked}
+					>{#if createClicked}<Loader dimension="small" color="low" />{/if}{$_(
+						'common.create',
+					)}</Button
+				>
 			{:else}
-				<!-- Not inflation-adjusted, show inflation OFF: display total deposited/withdrawn -->
-				<Typography class="total-amount">
-					{transactionType === 'deposit'
-						? $_('component.viewHeader.totalDeposited', {
-								values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
-							})
-						: $_('component.viewHeader.totalWithdrawn', {
-								values: { amount: formatCurrency(totalAmount, portfolio.currency, $locale) },
-							})}
-				</Typography>
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={editTransaction}
+					disabled={createDisabled}
+					busy={createClicked}
+					>{#if createClicked}<Loader dimension="small" color="low" />{/if}{$_(
+						'common.done',
+					)}</Button
+				>
+			{/if}
+			<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
+			{#if formType === 'edit'}
+				<Button variant="ghost" dimension="compact" onclick={deleteTransaction} danger
+					>{$_('component.editTransaction.deleteTransaction')}</Button
+				>
 			{/if}
 		</Vertical>
-	{/if}
-	<div class="spacer"></div>
-	<menu class="buttons horizontal">
-		{#if formType === 'create'}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={createTransaction}
-				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="small" color="low" />{:else}<Checkmark
-						size={16}
-					/>{/if}{$_('common.create')}</Button
-			>
-		{:else}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={editTransaction}
-				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="small" color="low" />{:else}<Checkmark
-						size={16}
-					/>{/if}{$_('common.done')}</Button
-			>
-		{/if}
-		<Button variant="secondary" dimension="compact" onclick={cancel}
-			><Close size={16} />{$_('common.cancel')}</Button
-		>
-	</menu>
-	{#if formType === 'edit'}
-		<Button variant="ghost" dimension="compact" onclick={deleteTransaction}
-			><TrashCan size={16} />{$_('component.editTransaction.deleteTransaction')}</Button
-		>
-	{/if}
+	</Vertical>
 </Vertical>
 
 <style type="postcss">
@@ -576,17 +588,11 @@
 	.horizontal :global(.root) {
 		max-width: calc(50% - var(--quarter-padding));
 	}
+	.horizontal.header {
+		padding: var(--half-padding);
+	}
 	:global(.max-width-half) {
 		max-width: calc(50% - var(--quarter-padding));
-	}
-	.buttons {
-		gap: var(--half-padding);
-		margin: 0;
-		padding: 0;
-		flex: 1;
-	}
-	:global(.buttons > span) {
-		flex-grow: 1 !important;
 	}
 	.spacer {
 	}
@@ -596,5 +602,10 @@
 	:global(.total-amount.secondary) {
 		color: var(--colors-ultra-high);
 		opacity: 0.5;
+	}
+	:global(.rounded) {
+		border-radius: var(--half-padding);
+		background-color: var(--colors-ultra-low);
+		padding: var(--padding);
 	}
 </style>

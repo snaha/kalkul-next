@@ -129,7 +129,7 @@
 	</Horizontal>
 {/snippet}
 
-<Fullscreen hasCloseButton={true} beta={true}>
+<Fullscreen hasCloseButton={true}>
 	{#if !success}
 		<Vertical class="registration" --vertical-gap="var(--double-padding)">
 			<Typography variant="h4">{$_('page.signUp.signUp')}</Typography>
