@@ -6,10 +6,6 @@
 	import { locale } from 'svelte-i18n'
 	import { getCSSVariableValue } from '$lib/css-vars'
 
-	// Label and gridline frequency
-	const GRIDLINE_FREQUENCY = 2
-	const LABEL_FREQUENCY = GRIDLINE_FREQUENCY
-
 	interface Props {
 		graphValueData: GraphPortfolioValue
 		adjustWithInflation: boolean
@@ -20,6 +16,18 @@
 
 	let investmentsTooltipData: TooltipData[] = $state([])
 	let tooltipPosition = $state({ x: 0, y: 0 })
+	let chartWidth = $state(0)
+
+	// Responsive label and gridline frequency based on chart width
+	const labelFrequency = $derived.by(() => {
+		if (chartWidth < 400) return 6 // Mobile: show fewer labels
+		if (chartWidth < 768) return 4 // Tablet: moderate labels
+		return 2 // Desktop: show more labels
+	})
+
+	const gridlineFrequency = $derived.by(() => {
+		return labelFrequency // Keep gridlines in sync with labels
+	})
 
 	// Store locale for use in callbacks
 	const currentLocale = $derived($locale)
@@ -61,6 +69,7 @@
 
 <Chart
 	type="line"
+	bind:width={chartWidth}
 	labels={graphValuesStore.data[0]?.graphLabels}
 	datasets={adjustWithInflation
 		? graphValuesStore.investmentGraphDataWithInflation
@@ -88,12 +97,12 @@
 				grid: {
 					offset: false,
 					color: ({ index }) =>
-						index % GRIDLINE_FREQUENCY === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
+						index % gridlineFrequency === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
 				},
 				ticks: {
 					autoSkip: false,
 					callback: function (_, index) {
-						return index % LABEL_FREQUENCY === 0 ? this.getLabelForValue(index) : ''
+						return index % labelFrequency === 0 ? this.getLabelForValue(index) : ''
 					},
 				},
 			},

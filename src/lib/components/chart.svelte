@@ -19,6 +19,7 @@
 		options?: ChartOptions<ChartType>
 		plugins?: Plugin<ChartType>[]
 		zeroCrossingIndex?: number // Optional index where the total value first hits zero
+		width?: number // Expose chart width to parent
 	}
 
 	Chart.defaults.font.family = getCSSVariableValue('--font-family-sans-serif')
@@ -37,6 +38,7 @@
 		options = {},
 		plugins = [],
 		zeroCrossingIndex,
+		width = $bindable(0),
 	}: Props = $props()
 
 	let canvas: HTMLCanvasElement | null = $state(null)
@@ -121,6 +123,7 @@
 			if ((actChartWidth !== prevChartWidth || actChartHeight !== prevChartHeight) && chart) {
 				prevChartHeight = actChartHeight
 				prevChartWidth = actChartWidth
+				width = actChartWidth // Expose width to parent
 				chart.resize()
 			}
 		})
