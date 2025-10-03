@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Typography from './ui/typography.svelte'
 	import type { Investment, Portfolio } from '$lib/types'
-	import Horizontal from './ui/horizontal.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -12,6 +11,4 @@
 	let { portfolio, adjustWithInflation = $bindable() }: Props = $props()
 </script>
 
-<Horizontal --horizontal-justify-content="space-between">
-	<Typography variant="h4" bold>{portfolio.name}</Typography>
-</Horizontal>
+<Typography variant="h4" bold nowrap>{portfolio.name}</Typography>

@@ -186,7 +186,7 @@
 			>
 				<ArrowLeft size={24} /></Button
 			>
-			<Typography variant="h4">{client.name}</Typography>
+			<Typography variant="h4" nowrap>{client.name}</Typography>
 			<div class="grower"></div>
 			{#if !layoutStore.mobile}
 				<Button variant="strong" dimension="compact" onclick={addPortfolio}

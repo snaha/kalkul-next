@@ -102,7 +102,7 @@
 					viewOnly={true}
 				/>
 				<div class="grower"></div>
-			{:else}
+			{:else if mobileScreen === 'chart'}
 				<section class="topbar horizontal mobile">
 					<PortfolioHeaderView portfolio={portfolioView.portfolio} />
 				</section>

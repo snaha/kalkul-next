@@ -9,6 +9,7 @@
 		font?: Font
 		bold?: boolean
 		italic?: boolean
+		nowrap?: boolean
 	}
 	type Props = (HTMLAttributes<HTMLHeadingElement> | HTMLAttributes<HTMLParagraphElement>) &
 		CustomProps
@@ -38,6 +39,7 @@
 		font = 'sans',
 		bold = false,
 		italic = false,
+		nowrap = false,
 		class: className = '',
 		children,
 		...restProps
@@ -48,6 +50,7 @@
 	this={element}
 	class:bold
 	class:italic
+	class:nowrap
 	class={`root ${font} ${variant} ${className}`}
 	{...restProps}
 >
@@ -78,6 +81,11 @@
 	}
 	.italic {
 		font-style: italic;
+	}
+	.nowrap {
+		white-space: nowrap;
+		overflow-x: hidden;
+		text-overflow: ellipsis;
 	}
 	.h1 {
 		font-weight: var(--font-weight-h1);
