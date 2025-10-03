@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.13.0](https://github.com/snaha/kalkul/compare/v0.12.0...v0.13.0) (2025-10-03)
+
+
+### Features
+
+* show calculation errors on chart and in investment card ([#969](https://github.com/snaha/kalkul/issues/969)) ([93799fa](https://github.com/snaha/kalkul/commit/93799fa96cec5529211e56ea94de6f8ee4a05609))
+
+
+### Bug Fixes
+
+* add RLS to stripe_subscription table ([#980](https://github.com/snaha/kalkul/issues/980)) ([8f72408](https://github.com/snaha/kalkul/commit/8f72408d5c3890c3ef94a46044b9c04e6abea070))
+* chart gridline frequency ([#983](https://github.com/snaha/kalkul/issues/983)) ([967660f](https://github.com/snaha/kalkul/commit/967660fb3823bbfda862a7108d78c8d6f1aa9a5f))
+* inflation badge ([#987](https://github.com/snaha/kalkul/issues/987)) ([89fb654](https://github.com/snaha/kalkul/commit/89fb654698fc4490a98939528080e586b92e14e9))
+* mobile calendar ([#985](https://github.com/snaha/kalkul/issues/985)) ([3b08386](https://github.com/snaha/kalkul/commit/3b083863747dc4a6becf74f31c15af71839eb467))
+* mobile chart title ([#984](https://github.com/snaha/kalkul/issues/984)) ([bfabfca](https://github.com/snaha/kalkul/commit/bfabfca98f02ac7a668362ae0afea11be1faf131))
+* mobile fixes ([#981](https://github.com/snaha/kalkul/issues/981)) ([0eb990a](https://github.com/snaha/kalkul/commit/0eb990a18badd283ff9c5975a6239e543a69cac7))
+* mobile version ([#971](https://github.com/snaha/kalkul/issues/971)) ([bccb700](https://github.com/snaha/kalkul/commit/bccb7008d6c42cd669a270f85843d3324f4c0a07))
+* payment improvements ([#955](https://github.com/snaha/kalkul/issues/955)) ([421c603](https://github.com/snaha/kalkul/commit/421c603692c47dfc4cf8d5c3c51b199aaee14fb2))
+* tooltip missing funds warning appears one month/year late ([#975](https://github.com/snaha/kalkul/issues/975)) ([f3a241e](https://github.com/snaha/kalkul/commit/f3a241e0bbff706b403268bfb7bd4afcf9419287))
+* updated signup page ([#966](https://github.com/snaha/kalkul/issues/966)) ([4e06ba4](https://github.com/snaha/kalkul/commit/4e06ba4427e00b9b24e6181728d03013ecd5efae))
+* use mailpit instead of inbucket ([#962](https://github.com/snaha/kalkul/issues/962)) ([e11eb64](https://github.com/snaha/kalkul/commit/e11eb64076b891991d3b47023ca4b3d8c3ffd6fd))
+
 ## [0.12.0](https://github.com/snaha/kalkul/compare/v0.11.0...v0.12.0) (2025-09-19)
 
 
