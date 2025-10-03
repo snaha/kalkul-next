@@ -24,7 +24,7 @@
 
 <style lang="postcss">
 	:root {
-		--content-layout-margin: 0;
+		--content-layout-margin: 0 auto;
 	}
 	main {
 		display: flex;
