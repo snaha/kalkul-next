@@ -132,11 +132,13 @@
 
 	function close(e: MouseEvent) {
 		const target = e.target as unknown as Node
-		if (datePicker.contains(target) || rootElement?.contains(target)) {
-			// Clicked on the date picker
-		} else {
-			showDatePicker = false
-			showYearPicker = false
+		const isVisible = showDatePicker || showYearPicker
+		if (isVisible) {
+			if (!datePicker.contains(target)) {
+				e.stopPropagation()
+				showDatePicker = false
+				showYearPicker = false
+			}
 		}
 	}
 
@@ -219,7 +221,8 @@
 		{disabled}
 		active={showDatePicker}
 		variant="ghost"
-		onclick={() => {
+		onclick={(e: Event) => {
+			e.stopPropagation()
 			showDatePicker = !showDatePicker
 			showYearPicker = false
 		}}
