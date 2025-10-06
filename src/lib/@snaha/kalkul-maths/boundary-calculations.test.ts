@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { getInvestmentValues } from './investment-calculations'
 import type { Investment } from '$lib/types'
+import type { TransactionMap, TransactionMapEntry } from './types'
 import { DAYS_PER_YEAR } from './constants'
+
+// Helper function to convert test data to new TransactionMap format
+function createTransactionMap(entries: Array<[string, number]>): TransactionMap {
+	const map = new Map<string, TransactionMapEntry>()
+	for (const [date, amount] of entries) {
+		map.set(date, { amount, transactionIds: [] })
+	}
+	return map
+}
 
 const DEFAULT_INVESTMENT: Investment = {
 	apy: 0,
@@ -28,8 +38,8 @@ describe('Year boundary investment value calculation bug', () => {
 		// After fix: 2025 should show the deposit value, not 0
 
 		const depositValue = 100000
-		const deposits = new Map<string, number>([['2025-05-14', depositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-05-14', depositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2024-09-13')
 		const endDate = new Date('2049-09-13')
@@ -56,8 +66,8 @@ describe('Year boundary investment value calculation bug', () => {
 		// Test with a deposit that should be included in the same year
 		const periodCount = { count: 1, period: 'year' as const }
 		const depositValue = 50000
-		const deposits = new Map<string, number>([['2025-12-31', depositValue]]) // End of year deposit
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-12-31', depositValue]]) // End of year deposit
+		const withdrawals = createTransactionMap([])
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2026-12-31')
@@ -77,8 +87,8 @@ describe('Year boundary investment value calculation bug', () => {
 	it('should handle deposits made mid-period with growth (precise values)', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const depositValue = 100000
-		const deposits = new Map<string, number>([['2025-05-14', depositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-05-14', depositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 5, // 5% APY to see growth
@@ -106,8 +116,8 @@ describe('Monthly boundary investment value calculation', () => {
 		// Test monthly periods: portfolio from 2025-01-15 to 2025-04-30, deposit on 2025-02-14
 		const periodCount = { count: 1, period: 'month' as const }
 		const depositValue = 50000
-		const deposits = new Map<string, number>([['2025-02-14', depositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-02-14', depositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2025-01-15')
 		const endDate = new Date('2025-04-30')
@@ -134,11 +144,11 @@ describe('Monthly boundary investment value calculation', () => {
 	it('should handle monthly deposits correctly across different months', () => {
 		// Test multiple deposits in different months
 		const periodCount = { count: 1, period: 'month' as const }
-		const deposits = new Map<string, number>([
+		const deposits = createTransactionMap([
 			['2025-01-20', 30000],
 			['2025-03-10', 20000],
 		])
-		const withdrawals = new Map<string, number>([])
+		const withdrawals = createTransactionMap([])
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-04-30')
@@ -166,8 +176,8 @@ describe('Monthly boundary investment value calculation', () => {
 		// With positive APY, compute exact month-end values
 		const periodCount = { count: 1, period: 'month' as const }
 		const depositValue = 60000
-		const deposits = new Map<string, number>([['2025-02-15', depositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-02-15', depositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 12, // 12% APY (1% per month) for easier calculations

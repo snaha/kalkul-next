@@ -11,11 +11,14 @@
 		calculateTotalDisplayAmount,
 		calculateNumOccurrences,
 		type Period,
+		formatDate,
 	} from '$lib/@snaha/kalkul-maths'
 	import Dropdown from './ui/dropdown.svelte'
 	import List from './ui/list/list.svelte'
 	import ListItem from './ui/list/list-item.svelte'
 	import InflationBadge from './inflation-badge.svelte'
+	import Badge from './ui/badge.svelte'
+	import { WarningAltFilled } from 'carbon-icons-svelte'
 
 	type Props = {
 		transaction: Transaction
@@ -24,6 +27,7 @@
 		viewOnly: boolean
 		showInflation?: boolean
 		editTransaction?: (transaction: Transaction) => void
+		exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
 	}
 
 	let {
@@ -33,6 +37,7 @@
 		viewOnly,
 		showInflation = false,
 		editTransaction,
+		exhaustionWarning,
 	}: Props = $props()
 
 	let openTransaction = $state(false)
@@ -112,6 +117,11 @@
 		{#if transaction.inflation_adjusted && !openTransaction}
 			<InflationBadge />
 		{/if}
+		{#if exhaustionWarning && !openTransaction}
+			<Badge variant="error">
+				<WarningAltFilled size={16} />
+			</Badge>
+		{/if}
 
 		<FlexItem />
 		{#if transaction.label}
@@ -147,57 +157,92 @@
 		</div>
 	</Horizontal>
 	<section class="transaction-info" class:modalShow={!openTransaction}>
-		{#if transaction.inflation_adjusted}
-			<InflationBadge>{$_('common.inflationAdjusted')}</InflationBadge>
-		{/if}
-
-		<Typography variant="small"
-			>{transaction.date.substring(
-				0,
-				10,
-			)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
-		>
-
-		{#if !transaction.repeat}
-			<!-- Single transaction -->
-			{#if transaction.inflation_adjusted}
-				<!-- Inflation-adjusted: show both real and nominal values -->
-				{#if showInflation}
-					<!-- Show inflation ON: real value primary, nominal value secondary -->
-					<Typography variant="small" class="total-amount">
-						{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
-					</Typography>
-					<Typography variant="small" class="total-amount secondary">
-						{$_('common.nominalValue')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
-					</Typography>
-				{:else}
-					<!-- Show inflation OFF: nominal value primary, real value secondary -->
-					<Typography variant="small" class="total-amount">
-						{$_('common.nominalValue')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
-					</Typography>
-					<Typography variant="small" class="total-amount secondary">
-						{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
-					</Typography>
-				{/if}
-			{:else if showInflation}
-				<!-- Not inflation-adjusted, show inflation ON: display real and nominal values -->
-				<Typography variant="small" class="total-amount">
-					{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
-				</Typography>
-				<Typography variant="small" class="total-amount secondary">
-					{$_('common.nominalValue')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
-				</Typography>
-			{/if}
-			<!-- Not inflation-adjusted, show inflation OFF: display only date -->
-		{:else}
-			<!-- Recurring transaction -->
-			<Typography variant="small"
-				>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography
+		{#if exhaustionWarning && openTransaction}
+			<Badge variant="error">
+				<WarningAltFilled size={16} />
+				{$_('component.transactionCard.insufficientFunds')}
+			</Badge>
+			<Typography variant="small" class="exhaustion-warning"
+				>{formatDate(exhaustionWarning.date)}</Typography
 			>
+			<Typography variant="small" class="exhaustion-warning"
+				><strong
+					>{$_('component.transactionCard.missingFunds')}: {formatCurrency(
+						exhaustionWarning.missingAmount,
+						currency,
+						$locale,
+					)}</strong
+				></Typography
+			>
+		{:else}
 			{#if transaction.inflation_adjusted}
-				<!-- Inflation-adjusted: show both total real and total nominal values -->
-				{#if showInflation}
-					<!-- Show inflation ON: total real primary, total nominal secondary -->
+				<InflationBadge>{$_('common.inflationAdjusted')}</InflationBadge>
+			{/if}
+
+			<Typography variant="small"
+				>{transaction.date.substring(
+					0,
+					10,
+				)}{`${transaction.end_date ? ' → ' + transaction.end_date.substring(0, 10) : ''}`}</Typography
+			>
+
+			{#if !transaction.repeat}
+				<!-- Single transaction -->
+				{#if transaction.inflation_adjusted}
+					<!-- Inflation-adjusted: show both real and nominal values -->
+					{#if showInflation}
+						<!-- Show inflation ON: real value primary, nominal value secondary -->
+						<Typography variant="small" class="total-amount">
+							{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+						</Typography>
+						<Typography variant="small" class="total-amount secondary">
+							{$_('common.nominalValue')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
+						</Typography>
+					{:else}
+						<!-- Show inflation OFF: nominal value primary, real value secondary -->
+						<Typography variant="small" class="total-amount">
+							{$_('common.nominalValue')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
+						</Typography>
+						<Typography variant="small" class="total-amount secondary">
+							{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+						</Typography>
+					{/if}
+				{:else if showInflation}
+					<!-- Not inflation-adjusted, show inflation ON: display real and nominal values -->
+					<Typography variant="small" class="total-amount">
+						{$_('common.realValue')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+					</Typography>
+					<Typography variant="small" class="total-amount secondary">
+						{$_('common.nominalValue')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
+					</Typography>
+				{/if}
+				<!-- Not inflation-adjusted, show inflation OFF: display only date -->
+			{:else}
+				<!-- Recurring transaction -->
+				<Typography variant="small"
+					>{numOccurrences} {$_('component.editTransaction.occurrences')}</Typography
+				>
+				{#if transaction.inflation_adjusted}
+					<!-- Inflation-adjusted: show both total real and total nominal values -->
+					{#if showInflation}
+						<!-- Show inflation ON: total real primary, total nominal secondary -->
+						<Typography variant="small" class="total-amount">
+							{$_('common.totalReal')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+						</Typography>
+						<Typography variant="small" class="total-amount secondary">
+							{$_('common.totalNominal')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
+						</Typography>
+					{:else}
+						<!-- Show inflation OFF: total nominal primary, total real secondary -->
+						<Typography variant="small" class="total-amount">
+							{$_('common.totalNominal')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
+						</Typography>
+						<Typography variant="small" class="total-amount secondary">
+							{$_('common.totalReal')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+						</Typography>
+					{/if}
+				{:else if showInflation}
+					<!-- Not inflation-adjusted, show inflation ON: display total real and total nominal -->
 					<Typography variant="small" class="total-amount">
 						{$_('common.totalReal')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
 					</Typography>
@@ -205,33 +250,17 @@
 						{$_('common.totalNominal')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
 					</Typography>
 				{:else}
-					<!-- Show inflation OFF: total nominal primary, total real secondary -->
+					<!-- Not inflation-adjusted, show inflation OFF: display total deposited/withdrawn -->
 					<Typography variant="small" class="total-amount">
-						{$_('common.totalNominal')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
-					</Typography>
-					<Typography variant="small" class="total-amount secondary">
-						{$_('common.totalReal')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
+						{transaction.type === 'deposit'
+							? $_('component.viewHeader.totalDeposited', {
+									values: { amount: formatCurrency(totalAmount, currency, $locale) },
+								})
+							: $_('component.viewHeader.totalWithdrawn', {
+									values: { amount: formatCurrency(totalAmount, currency, $locale) },
+								})}
 					</Typography>
 				{/if}
-			{:else if showInflation}
-				<!-- Not inflation-adjusted, show inflation ON: display total real and total nominal -->
-				<Typography variant="small" class="total-amount">
-					{$_('common.totalReal')}: {formatCurrency(totalAmounts.adjusted, currency, $locale)}
-				</Typography>
-				<Typography variant="small" class="total-amount secondary">
-					{$_('common.totalNominal')}: {formatCurrency(totalAmounts.nominal, currency, $locale)}
-				</Typography>
-			{:else}
-				<!-- Not inflation-adjusted, show inflation OFF: display total deposited/withdrawn -->
-				<Typography variant="small" class="total-amount">
-					{transaction.type === 'deposit'
-						? $_('component.viewHeader.totalDeposited', {
-								values: { amount: formatCurrency(totalAmount, currency, $locale) },
-							})
-						: $_('component.viewHeader.totalWithdrawn', {
-								values: { amount: formatCurrency(totalAmount, currency, $locale) },
-							})}
-				</Typography>
 			{/if}
 		{/if}
 	</section>
@@ -332,5 +361,8 @@
 	:global(.total-amount.secondary) {
 		color: var(--colors-ultra-high);
 		opacity: 0.5;
+	}
+	:global(.exhaustion-warning) {
+		color: var(--colors-red) !important;
 	}
 </style>

@@ -88,12 +88,16 @@
 	}
 
 	$effect(() => {
+		// Create plain JS copies to avoid Svelte 5 reactivity conflicts with Chart.js
+		// Using $state.snapshot() to efficiently break reactivity proxy chain
+		const plainDatasets = $state.snapshot(datasets) as typeof datasets
+
 		if (canvas && !chart) {
 			chart = new Chart(canvas, {
 				type,
 				data: {
 					labels,
-					datasets: setDatasetColors(datasets),
+					datasets: setDatasetColors(plainDatasets),
 				},
 				options: enhanceOptionsWithNegativeValueStyling({
 					...DEFAULT_OPTIONS,
@@ -105,7 +109,7 @@
 		}
 		if (chart) {
 			chart.data.labels = labels
-			chart.data.datasets = setDatasetColors(datasets)
+			chart.data.datasets = setDatasetColors(plainDatasets)
 			// Also update options in case zero-crossing index or withdrawal errors changed
 			chart.options = enhanceOptionsWithNegativeValueStyling({
 				...DEFAULT_OPTIONS,

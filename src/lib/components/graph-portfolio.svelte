@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Typography from '$lib/components/ui/typography.svelte'
 	import type { Portfolio, InvestmentWithColorIndex } from '$lib/types'
-	import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
-	import { transactionStore } from '$lib/stores/transaction.svelte'
+	import type { GraphData as MathGraphData } from '$lib/@snaha/kalkul-maths'
 	import Horizontal from './ui/horizontal.svelte'
 	import FlexItem from './ui/flex-item.svelte'
 	import { _ } from 'svelte-i18n'
@@ -25,11 +24,18 @@
 	import MobileOnly from './mobile-only.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import DesktopOnly from './desktop-only.svelte'
+	import LoadingOverlay from './loading-overlay.svelte'
 
 	interface Props {
 		portfolio: Portfolio
 		investments: InvestmentWithColorIndex[]
 		adjustWithInflation: boolean
+		simulationData: {
+			data: MathGraphData[]
+			total: MathGraphData
+			isCalculating?: boolean
+			progress?: number
+		}
 		title?: string
 		investmentsViewStore: InvestmentsViewStore
 		fullscreen: () => void
@@ -45,6 +51,7 @@
 	let {
 		investments,
 		portfolio,
+		simulationData,
 		title = $_('common.value'),
 		adjustWithInflation = $bindable(),
 		investmentsViewStore,
@@ -57,6 +64,11 @@
 		isEmpty,
 		clientBirthDate,
 	}: Props = $props()
+
+	const data = $derived(simulationData.data)
+	const total = $derived(simulationData.total)
+	const isCalculating = $derived(simulationData.isCalculating ?? false)
+
 	let showDeposits = $state(true)
 	let showWithdrawals = $state(true)
 	let showFees = $state(true)
@@ -66,10 +78,6 @@
 	let showBreakdownWithdrawn = $state(true)
 	let showBreakdownFees = $state(true)
 	let selectedIndex = $state(0)
-
-	const { total, data } = $derived(
-		getGraphDataForPortfolio(transactionStore.data, investments, portfolio),
-	)
 
 	type FullscreenGraphType = 'value' | 'transactions' | 'breakdown'
 
@@ -228,9 +236,13 @@
 	>
 {/snippet}
 
-{#if investments.length === 0 || data.length === 0}
+{#if investments.length === 0}
 	<section class="graph">
 		<Typography variant="h1">{$_('common.noData')}</Typography>
+	</section>
+{:else if data.length === 0}
+	<section class="graph">
+		<LoadingOverlay visible={true} />
 	</section>
 {:else}
 	<section
@@ -280,6 +292,7 @@
 				{/snippet}
 				{#if fullscreenGraph === 'value'}
 					<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
+					<LoadingOverlay visible={isCalculating} />
 				{:else if fullscreenGraph === 'transactions'}
 					<GraphPortfolioTransactions
 						{portfolio}
@@ -289,8 +302,8 @@
 						{showWithdrawals}
 						{showFees}
 						{clientBirthDate}
-						exhaustionDate={graphValueData.total.exhaustionDate}
 					/>
+					<LoadingOverlay visible={isCalculating} />
 				{:else}
 					<GraphPortfolioBreakdown
 						{portfolio}
@@ -309,6 +322,7 @@
 						showWithdrawn={showBreakdownWithdrawn}
 						showFees={showBreakdownFees}
 					/>
+					<LoadingOverlay visible={isCalculating} />
 				{/if}
 			</FullscreenGraph>
 		{:else}
@@ -329,6 +343,7 @@
 					{@render fullscreenButton('value')}
 				</Horizontal>
 				<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
+				<LoadingOverlay visible={isCalculating} />
 			</div>
 			<div class="graph-main-sub">
 				<Horizontal
@@ -360,8 +375,8 @@
 					{showWithdrawals}
 					{showFees}
 					{clientBirthDate}
-					exhaustionDate={graphValueData.total.exhaustionDate}
 				/>
+				<LoadingOverlay visible={isCalculating} />
 			</div>
 			<div class="graph-breakdown-overtime">
 				<Horizontal
@@ -402,6 +417,7 @@
 					showWithdrawn={showBreakdownWithdrawn}
 					showFees={showBreakdownFees}
 				/>
+				<LoadingOverlay visible={isCalculating} />
 			</div>
 		{/if}
 	</section>
@@ -433,6 +449,7 @@
 			border-radius: var(--border-radius);
 			border: 1px solid var(--colors-low);
 			gap: var(--half-padding);
+			position: relative;
 		}
 
 		.graph-main-sub {
@@ -446,6 +463,7 @@
 			border-radius: var(--border-radius);
 			border: 1px solid var(--colors-low);
 			gap: var(--half-padding);
+			position: relative;
 		}
 
 		.graph-breakdown-overtime {
@@ -459,6 +477,7 @@
 			border-radius: var(--border-radius);
 			border: 1px solid var(--colors-low);
 			gap: var(--half-padding);
+			position: relative;
 		}
 
 		&.empty {

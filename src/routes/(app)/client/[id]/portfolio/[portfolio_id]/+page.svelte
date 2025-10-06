@@ -23,7 +23,6 @@
 	import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import { base } from '$app/paths'
 	import HelpBox from '$lib/components/help-box.svelte'
-	import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import DesktopOnly from '$lib/components/desktop-only.svelte'
@@ -31,6 +30,7 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import InvestmentsSidebar from '$lib/components/investments-sidebar.svelte'
+	import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
 
 	const clientId = $derived(parseInt(page.params.id, 10))
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -44,9 +44,20 @@
 		),
 	)
 
-	const graphData = $derived(
-		portfolio ? getGraphDataForPortfolio(transactionStore.data, investments, portfolio) : undefined,
-	)
+	const portfolioSimulation = withPortfolioSimulationStore()
+	const graphData = $derived(portfolioSimulation.simulationData)
+
+	// Recalculate when portfolio, investments, or transactions change
+	$effect(() => {
+		if (portfolio && !isLoading && transactions) {
+			// setTimeout with 0 delay yields control to the browser, allowing:
+			// 1. The UI to update (show loading state) before heavy calculations
+			// 2. The browser to remain responsive during calculation
+			setTimeout(() => {
+				portfolioSimulation.calculateIteratively(portfolio, investments, transactions)
+			}, 0)
+		}
+	})
 
 	const investmentsViewStore = $derived(
 		withInvestmentsViewStore(investmentStore.filter(portfolioId)),
@@ -200,6 +211,7 @@
 						}}
 						{portfolio}
 						{investments}
+						simulationData={graphData}
 						bind:adjustWithInflation
 						{investmentsViewStore}
 						isEmpty={transactions.length === 0}
@@ -251,6 +263,7 @@
 							fullscreenGraph="value"
 							{portfolio}
 							{investments}
+							simulationData={graphData}
 							bind:adjustWithInflation
 							{investmentsViewStore}
 							isEmpty={transactions.length === 0}

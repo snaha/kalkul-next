@@ -23,16 +23,25 @@ export function addSingleEvent(
 	portfolioStartDate: string,
 	inflationRate = 0,
 	inflationAdjusted?: boolean,
+	transactionId?: number,
 ): void {
 	const dateString = date
-	const existingTransaction = map.get(dateString) ?? 0
+	const existingEntry = map.get(dateString) ?? { amount: 0, transactionIds: [] }
 
 	// Apply inflation adjustment if needed
 	const adjustedAmount = inflationAdjusted
 		? calculateInflationAdjustedAmount(amount, date, portfolioStartDate, inflationRate)
 		: amount
 
-	map.set(dateString, existingTransaction + adjustedAmount)
+	const newEntry = {
+		amount: existingEntry.amount + adjustedAmount,
+		transactionIds:
+			transactionId !== undefined
+				? [...existingEntry.transactionIds, transactionId]
+				: existingEntry.transactionIds,
+	}
+
+	map.set(dateString, newEntry)
 }
 
 export function addTransaction(
@@ -49,6 +58,7 @@ export function addTransaction(
 			portfolioStartDate,
 			inflationRate,
 			transaction.inflation_adjusted,
+			transaction.id,
 		)
 	} else if (
 		typeof transaction.repeat_unit === 'string' &&
@@ -67,6 +77,7 @@ export function addTransaction(
 				portfolioStartDate,
 				inflationRate,
 				transaction.inflation_adjusted,
+				transaction.id,
 			)
 		}
 	}

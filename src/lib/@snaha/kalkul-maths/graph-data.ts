@@ -5,6 +5,7 @@ import {
 	type PortfolioPeriod,
 	type GraphData,
 	type InvestmentData,
+	type TransactionMapEntry,
 } from './types'
 import { differenceInDays, differenceInYears } from 'date-fns'
 import { getInvestmentValues, getBaseData } from './investment-calculations'
@@ -13,7 +14,12 @@ import { DECIMAL_1, DAYS_PER_YEAR, MONTHS_PER_YEAR } from './constants'
 
 Decimal.set({ precision: 30 })
 
-function generateGraphDateLabels(start: Date, end: Date, period: PortfolioPeriod, count = 1) {
+export function generateGraphDateLabels(
+	start: Date,
+	end: Date,
+	period: PortfolioPeriod,
+	count = 1,
+) {
 	const res = []
 	if (period === 'year') {
 		// For yearly periods, generate labels based on calendar years
@@ -44,7 +50,7 @@ function generateGraphDateLabels(start: Date, end: Date, period: PortfolioPeriod
 	return res
 }
 
-function getSamplingPeriodCount(startDate: Date, endDate: Date): PortfolioPeriodCount {
+export function getSamplingPeriodCount(startDate: Date, endDate: Date): PortfolioPeriodCount {
 	const years = differenceInYears(endDate, startDate)
 	if (years < 5) return { period: 'month', count: 1 }
 
@@ -53,6 +59,100 @@ function getSamplingPeriodCount(startDate: Date, endDate: Date): PortfolioPeriod
 
 function getTotalFeeValue(fees: FeeBreakdown) {
 	return fees.entryFee + fees.exitFee + fees.successFee + fees.managementFee + fees.TERFee
+}
+
+/**
+ * Generates record dates aligned with calendar period ends (year-end or month-end).
+ * These dates correspond to when investment value snapshots are taken.
+ *
+ * @param startDate - Portfolio start date
+ * @param endDate - Portfolio end date
+ * @param period - Sampling period (year or month)
+ * @param count - Number of periods to skip between samples
+ * @returns Array of record dates for value snapshots
+ */
+function generateRecordDates(
+	startDate: Date,
+	endDate: Date,
+	period: PortfolioPeriod,
+	count: number,
+): Date[] {
+	const recordDates: Date[] = []
+	if (period === 'year') {
+		let rd = new Date(startDate.getFullYear(), MONTHS_PER_YEAR - 1, 31)
+		while (rd <= endDate) {
+			recordDates.push(rd)
+			const nextYear = rd.getFullYear() + count
+			rd = new Date(nextYear, MONTHS_PER_YEAR - 1, 31)
+		}
+	} else {
+		let rd = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0)
+		while (rd <= endDate) {
+			recordDates.push(rd)
+			let nextMonth = rd.getMonth() + count
+			let nextYear = rd.getFullYear()
+			while (nextMonth > 11) {
+				nextYear += 1
+				nextMonth -= MONTHS_PER_YEAR
+			}
+			rd = new Date(nextYear, nextMonth + 1, 0)
+		}
+	}
+	return recordDates
+}
+
+/**
+ * Calculates period boundaries (start and end dates) for a given record date.
+ *
+ * @param recordDate - The end date of the period
+ * @param period - Sampling period (year or month)
+ * @returns Object with periodStart and periodEnd dates
+ */
+function getPeriodBoundaries(
+	recordDate: Date,
+	period: PortfolioPeriod,
+): { periodStart: Date; periodEnd: Date } {
+	if (period === 'year') {
+		return {
+			periodStart: new Date(recordDate.getFullYear(), 0, 1),
+			periodEnd: new Date(recordDate.getFullYear(), MONTHS_PER_YEAR - 1, 31),
+		}
+	} else {
+		return {
+			periodStart: new Date(recordDate.getFullYear(), recordDate.getMonth(), 1),
+			periodEnd: new Date(recordDate.getFullYear(), recordDate.getMonth() + 1, 0),
+		}
+	}
+}
+
+/**
+ * Calculates inflation-adjusted sum of transactions within a period.
+ * Converts nominal amounts to real values at baseline date.
+ *
+ * @param transactionEntries - Array of [date, TransactionMapEntry] transaction entries
+ * @param periodStart - Start date of the period
+ * @param periodEnd - End date of the period
+ * @param startDate - Baseline date for inflation adjustment
+ * @param inflationRate - Annual inflation rate
+ * @returns Sum of inflation-adjusted transaction amounts
+ */
+function calculateInflationAdjustedSum(
+	transactionEntries: Array<[string, TransactionMapEntry]>,
+	periodStart: Date,
+	periodEnd: Date,
+	startDate: Date,
+	inflationRate: number,
+): number {
+	let sum = 0
+	for (const [date, entry] of transactionEntries) {
+		const d = new Date(date)
+		if (d >= periodStart && d <= periodEnd) {
+			const yearsAtEvent = differenceInDays(d, startDate) / DAYS_PER_YEAR
+			const inflationAtEvent = DECIMAL_1.add(inflationRate).pow(yearsAtEvent)
+			sum += new Decimal(entry.amount).div(inflationAtEvent).toNumber()
+		}
+	}
+	return sum
 }
 
 export function getGraphData(
@@ -69,8 +169,7 @@ export function getGraphData(
 		feeValues: fees,
 		withdrawalValues: graphWithdrawals,
 		depositValues: graphDeposits,
-		exhaustionDate,
-		missingAmount,
+		exhaustionWarning,
 	} = getInvestmentValues(
 		{ period, count },
 		{ deposits, withdrawals, startDate, endDate },
@@ -80,28 +179,8 @@ export function getGraphData(
 	const graphFeeValues = fees.map((fee) => -getTotalFeeValue(fee))
 
 	// Build record dates aligned with getInvestmentValues snapshots (calendar period ends)
-	const recordDates: Date[] = []
-	if (period === 'year') {
-		let rd = new Date(startDate.getFullYear(), MONTHS_PER_YEAR - 1, 31)
-		while (rd <= endDate) {
-			recordDates.push(rd)
-			const nextYear = rd.getFullYear() + count
-			rd = new Date(nextYear, MONTHS_PER_YEAR - 1, 31)
-		}
-	} else {
-		// month
-		let rd = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0)
-		while (rd <= endDate) {
-			recordDates.push(rd)
-			let nextMonth = rd.getMonth() + count
-			let nextYear = rd.getFullYear()
-			while (nextMonth > 11) {
-				nextYear += 1
-				nextMonth -= MONTHS_PER_YEAR
-			}
-			rd = new Date(nextYear, nextMonth + 1, 0)
-		}
-	}
+	const recordDates = generateRecordDates(startDate, endDate, period, count)
+
 	// Calculate inflation-adjusted values alongside nominal values for optimal performance
 	const graphInflationDeposits: number[] = []
 	const graphInflationWithdrawals: number[] = []
@@ -117,41 +196,25 @@ export function getGraphData(
 		const inflationAtRecord = DECIMAL_1.add(portfolio.inflation_rate).pow(years)
 
 		// Calculate period boundaries for deposits/withdrawals
-		let periodStart: Date
-		let periodEnd: Date
-		if (period === 'year') {
-			periodStart = new Date(rd.getFullYear(), 0, 1)
-			periodEnd = new Date(rd.getFullYear(), MONTHS_PER_YEAR - 1, 31)
-		} else {
-			periodStart = new Date(rd.getFullYear(), rd.getMonth(), 1)
-			periodEnd = new Date(rd.getFullYear(), rd.getMonth() + 1, 0)
-		}
+		const { periodStart, periodEnd } = getPeriodBoundaries(rd, period)
 
 		// Process deposits for this period (convert to real terms using baseline date)
-		let depSum = 0
-		for (const [date, amount] of depositEntries) {
-			const d = new Date(date)
-			if (d >= periodStart && d <= periodEnd) {
-				// Calculate inflation from baseline date to transaction date
-				const yearsAtEvent = differenceInDays(d, startDate) / DAYS_PER_YEAR
-				const inflationAtEvent = DECIMAL_1.add(portfolio.inflation_rate).pow(yearsAtEvent)
-				// Convert nominal amount to real value at baseline date
-				depSum += new Decimal(amount).div(inflationAtEvent).toNumber()
-			}
-		}
+		const depSum = calculateInflationAdjustedSum(
+			depositEntries,
+			periodStart,
+			periodEnd,
+			startDate,
+			portfolio.inflation_rate,
+		)
 
 		// Process withdrawals for this period (convert to real terms using baseline date)
-		let wdSum = 0
-		for (const [date, amount] of withdrawalEntries) {
-			const d = new Date(date)
-			if (d >= periodStart && d <= periodEnd) {
-				// Calculate inflation from baseline date to transaction date
-				const yearsAtEvent = differenceInDays(d, startDate) / DAYS_PER_YEAR
-				const inflationAtEvent = DECIMAL_1.add(portfolio.inflation_rate).pow(yearsAtEvent)
-				// Convert nominal amount to real value at baseline date
-				wdSum += new Decimal(amount).div(inflationAtEvent).toNumber()
-			}
-		}
+		const wdSum = calculateInflationAdjustedSum(
+			withdrawalEntries,
+			periodStart,
+			periodEnd,
+			startDate,
+			portfolio.inflation_rate,
+		)
 
 		// Store both nominal and inflation-adjusted values
 		graphInflationDeposits.push(depSum)
@@ -177,12 +240,68 @@ export function getGraphData(
 		graphInflationWithdrawals,
 		graphInflationInvestmentValues,
 		graphInflationFeeValues,
-		exhaustionDate,
-		missingAmount,
+		exhaustionWarning,
 	}
 }
 
-// (removed) getRateAdjustment: superseded by day-accurate deflation logic
+/**
+ * Aggregates multiple investment graph data into a portfolio total.
+ * Sums all array values at each index and determines the earliest exhaustion date.
+ *
+ * @param data - Array of GraphData from individual investments
+ * @returns Aggregated GraphData representing the portfolio total
+ */
+export function aggregateGraphData(data: GraphData[]): GraphData {
+	if (data.length === 0) {
+		throw new Error('Cannot aggregate empty data array')
+	}
+
+	// Initialize total from first investment
+	const first = data[0]
+	const total: GraphData = {
+		label: 'Total',
+		graphLabels: [...first.graphLabels],
+		graphDeposits: [...first.graphDeposits],
+		graphWithdrawals: [...first.graphWithdrawals],
+		graphInvestmentValues: [...first.graphInvestmentValues],
+		graphFeeValues: [...first.graphFeeValues],
+		graphInflationDeposits: [...first.graphInflationDeposits],
+		graphInflationWithdrawals: [...first.graphInflationWithdrawals],
+		graphInflationInvestmentValues: [...first.graphInflationInvestmentValues],
+		graphInflationFeeValues: [...first.graphInflationFeeValues],
+		exhaustionWarning: first.exhaustionWarning,
+	}
+
+	// Aggregate remaining investments
+	for (let i = 1; i < data.length; i++) {
+		const investmentData = data[i]
+
+		// Track earliest exhaustion date (if same date, keep first by order)
+		if (investmentData.exhaustionWarning) {
+			if (!total.exhaustionWarning) {
+				total.exhaustionWarning = investmentData.exhaustionWarning
+			} else if (investmentData.exhaustionWarning.date < total.exhaustionWarning.date) {
+				total.exhaustionWarning = investmentData.exhaustionWarning
+			}
+			// If same date, keep the existing one (first by order)
+		}
+
+		// Sum all array values at each index
+		for (let j = 0; j < total.graphLabels.length; j++) {
+			total.graphDeposits[j] += investmentData.graphDeposits[j]
+			total.graphWithdrawals[j] += investmentData.graphWithdrawals[j]
+			total.graphInvestmentValues[j] += investmentData.graphInvestmentValues[j]
+			total.graphFeeValues[j] += investmentData.graphFeeValues[j]
+
+			total.graphInflationDeposits[j] += investmentData.graphInflationDeposits[j]
+			total.graphInflationWithdrawals[j] += investmentData.graphInflationWithdrawals[j]
+			total.graphInflationInvestmentValues[j] += investmentData.graphInflationInvestmentValues[j]
+			total.graphInflationFeeValues[j] += investmentData.graphInflationFeeValues[j]
+		}
+	}
+
+	return total
+}
 
 function getCumulativeSum(array: number[], index: number): number {
 	return array.slice(0, index + 1).reduce((acc, val) => acc + val, 0)
@@ -235,11 +354,9 @@ export function getCumulativeValues(
 	}
 }
 
-// Simple hash function for cache keys
 function createHash(data: unknown): string {
 	const dataToHash = JSON.stringify(data)
 
-	// Simple string hash function - more reliable than btoa for large data
 	let hash = 0
 	for (let i = 0; i < dataToHash.length; i++) {
 		const char = dataToHash.charCodeAt(i)
@@ -250,7 +367,6 @@ function createHash(data: unknown): string {
 	return Math.abs(hash).toString(36)
 }
 
-// Cache for computed graph data to avoid recalculation on inflation toggle
 const portfolioDataCache = new Map<
 	string,
 	{ data: GraphData[]; total: GraphData; timestamp: number }
@@ -261,12 +377,58 @@ function getPortfolioCacheKey(
 	investments: Investment[],
 	portfolio: Portfolio,
 ): string {
-	// Hash the complete data structures - any new field will automatically invalidate cache
 	return createHash({
 		transactions: transactions,
 		investments: investments,
 		portfolio: portfolio,
 	})
+}
+
+/**
+ * Prepares base calculation data for each investment by filtering its transactions
+ * and computing initial date ranges and transaction maps.
+ *
+ * @param investments - Array of investments to prepare
+ * @param transactions - All transactions (will be filtered per investment)
+ * @param portfolio - Portfolio configuration
+ * @returns Array of base data with investment reference
+ */
+export function prepareInvestmentBaseData(
+	investments: Investment[],
+	transactions: Transaction[],
+	portfolio: Portfolio,
+): Array<{ baseData: ReturnType<typeof getBaseData>; investment: Investment }> {
+	return investments.map((i) => {
+		const filteredTransactions = transactions.filter((t) => t.investment_id === i.id)
+		return {
+			baseData: getBaseData(filteredTransactions, portfolio.inflation_rate, portfolio.start_date),
+			investment: i,
+		}
+	})
+}
+
+/**
+ * Calculates the overall date range from base data of multiple investments,
+ * constrained by portfolio start/end dates.
+ *
+ * @param baseData - Array of base data from investments
+ * @param portfolio - Portfolio configuration with start_date and end_date
+ * @returns Object with startDate and endDate
+ */
+export function calculateDateRange(
+	baseData: Array<{ baseData: ReturnType<typeof getBaseData> }>,
+	portfolio: Portfolio,
+): { startDate: Date; endDate: Date } {
+	return baseData.reduce(
+		(acc, i) => ({
+			startDate: i.baseData.startDate < acc.startDate ? i.baseData.startDate : acc.startDate,
+			endDate: i.baseData.endDate > acc.endDate ? i.baseData.endDate : acc.endDate,
+		}),
+		{
+			startDate: new Date(portfolio.start_date),
+			endDate: new Date(portfolio.end_date),
+		},
+	)
 }
 
 export function getGraphDataForPortfolio(
@@ -286,75 +448,15 @@ export function getGraphDataForPortfolio(
 		return { data: cached.data, total: cached.total }
 	}
 
-	const baseData = investments.map((i) => {
-		const filteredTransactions = transactions.filter((t) => t.investment_id === i.id)
-		return {
-			baseData: getBaseData(filteredTransactions, portfolio.inflation_rate, portfolio.start_date),
-			investment: i,
-		}
-	})
+	const baseData = prepareInvestmentBaseData(investments, transactions, portfolio)
+	const { startDate, endDate } = calculateDateRange(baseData, portfolio)
 
-	const { startDate, endDate } = baseData.reduce(
-		(acc, i) => ({
-			startDate: i.baseData.startDate < acc.startDate ? i.baseData.startDate : acc.startDate,
-			endDate: i.baseData.endDate > acc.endDate ? i.baseData.endDate : acc.endDate,
-		}),
-		{
-			startDate: new Date(portfolio.start_date),
-			endDate: new Date(portfolio.end_date),
-		},
-	)
-
-	// Always calculate both variants - showInflation parameter is now ignored here
-	// The UI will choose which arrays to display
 	const data = baseData.map((d) =>
 		getGraphData({ ...d.baseData, startDate, endDate }, d.investment, portfolio),
 	)
 
-	// Determine earliest exhaustion date and aggregate missing amounts
-	let portfolioExhaustionDate: Date | undefined
-	let totalMissingAmount = 0
+	const total = aggregateGraphData(data)
 
-	for (const investmentData of data) {
-		if (investmentData.exhaustionDate) {
-			if (!portfolioExhaustionDate || investmentData.exhaustionDate < portfolioExhaustionDate) {
-				portfolioExhaustionDate = investmentData.exhaustionDate
-			}
-		}
-		totalMissingAmount += investmentData.missingAmount
-	}
-
-	const total: GraphData = {
-		label: 'Total',
-		graphLabels: [...data[0].graphLabels],
-		graphDeposits: [...data[0].graphDeposits],
-		graphWithdrawals: [...data[0].graphWithdrawals],
-		graphInvestmentValues: [...data[0].graphInvestmentValues],
-		graphFeeValues: [...data[0].graphFeeValues],
-
-		graphInflationDeposits: [...data[0].graphInflationDeposits],
-		graphInflationWithdrawals: [...data[0].graphInflationWithdrawals],
-		graphInflationInvestmentValues: [...data[0].graphInflationInvestmentValues],
-		graphInflationFeeValues: [...data[0].graphInflationFeeValues],
-		exhaustionDate: portfolioExhaustionDate,
-		missingAmount: totalMissingAmount,
-	}
-
-	for (let i = 1; i < data.length; i++) {
-		for (let j = 0; j < total.graphLabels.length; j++) {
-			total.graphDeposits[j] += data[i].graphDeposits[j]
-			total.graphWithdrawals[j] += data[i].graphWithdrawals[j]
-			total.graphInvestmentValues[j] += data[i].graphInvestmentValues[j]
-			total.graphFeeValues[j] += data[i].graphFeeValues[j]
-
-			total.graphInflationDeposits[j] += data[i].graphInflationDeposits[j]
-			total.graphInflationWithdrawals[j] += data[i].graphInflationWithdrawals[j]
-			total.graphInflationInvestmentValues[j] += data[i].graphInflationInvestmentValues[j]
-			total.graphInflationFeeValues[j] += data[i].graphInflationFeeValues[j]
-		}
-	}
-
-	// Cache the result
 	portfolioDataCache.set(cacheKey, { data, total, timestamp: now })
 
 	return { data, total }

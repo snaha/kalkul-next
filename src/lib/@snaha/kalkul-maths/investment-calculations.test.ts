@@ -6,8 +6,17 @@ import {
 	getBaseData,
 } from './investment-calculations'
 import type { Investment } from '$lib/types'
-import type { Transaction } from './types'
+import type { Transaction, TransactionMap, TransactionMapEntry } from './types'
 import { DAYS_PER_YEAR } from './constants'
+
+// Helper function to convert test data to new TransactionMap format
+function createTransactionMap(entries: Array<[string, number]>): TransactionMap {
+	const map = new Map<string, TransactionMapEntry>()
+	for (const [date, amount] of entries) {
+		map.set(date, { amount, transactionIds: [] })
+	}
+	return map
+}
 
 const DEFAULT_INVESTMENT: Investment = {
 	apy: 0,
@@ -32,20 +41,19 @@ describe('#getInvestmentValues', () => {
 	it('should calculate default investment', () => {
 		const periodCount = { count: 1, period: 'month' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-15', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-15', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment = DEFAULT_INVESTMENT
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		// Monthly periods: should have one entry per month
 		expect(feeValues.length).toBeGreaterThan(0)
 		expect(investmentValues.length).toEqual(feeValues.length)
@@ -57,23 +65,22 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment without fees', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		// With 10% APY for a full year, 100 should become 110
 		expect(investmentValues[0]).toBeCloseTo(110, 1)
 	})
@@ -81,8 +88,8 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment with upfront entry fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -91,15 +98,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		// 100 deposit - 10 entry fee = 90 invested, with 10% growth = 99
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].entryFee).toEqual(10)
@@ -108,8 +114,8 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment with fixed exit fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([['2025-12-31', 10]])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([['2025-12-31', 10]])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -118,15 +124,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		// 100 grows to 110, then 10 withdrawn + 10 exit fee = 90 remaining
 		expect(investmentValues[0]).toBeCloseTo(90, 1)
 		expect(feeValues[0].exitFee).toEqual(10)
@@ -135,8 +140,8 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment with percentage exit fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([['2025-12-31', 10]])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([['2025-12-31', 10]])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -145,15 +150,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		// 100 grows to 110, then 10 withdrawn + 1 exit fee (10% of 10) = 99 remaining
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].exitFee).toEqual(1)
@@ -162,8 +166,8 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment with TER fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -171,15 +175,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].TERFee).toBeGreaterThan(0)
 	})
@@ -187,8 +190,8 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment with percentage management fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -197,15 +200,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		expect(investmentValues[0]).toBeCloseTo(99, 1)
 		expect(feeValues[0].managementFee).toBeGreaterThan(0)
 	})
@@ -213,8 +215,8 @@ describe('#getInvestmentValues', () => {
 	it('should calculate simple investment with fixed management fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -223,23 +225,22 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		expect(investmentValues[0]).toBeCloseTo(99.479)
 	})
 
 	it('should calculate simple investment with success fee', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 10,
@@ -247,15 +248,14 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, feeValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, feeValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
 			DAYS_PER_YEAR,
 		)
 
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 		expect(investmentValues[0]).toBeCloseTo(109, 1)
 		expect(feeValues[0].successFee).toBeGreaterThan(0)
 	})
@@ -263,8 +263,8 @@ describe('#getInvestmentValues', () => {
 	it('should report managementFee error when daily management fee exceeds investment value', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 0,
@@ -287,25 +287,24 @@ describe('#getInvestmentValues', () => {
 	it('should report withdrawal error when withdrawal exceeds available investment value', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([['2025-06-01', 150]]) // Withdraw more than available
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([['2025-06-01', 150]]) // Withdraw more than available
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 0, // No growth to ensure withdrawal exceeds value
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, withdrawalValues, exhaustionDate, missingAmount } =
-			getInvestmentValues(
-				periodCount,
-				{ deposits, withdrawals, startDate, endDate },
-				investment,
-				DAYS_PER_YEAR,
-			)
+		const { investmentValues, withdrawalValues, exhaustionWarning } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			DAYS_PER_YEAR,
+		)
 
 		// Should have exhaustion due to over-withdrawal
-		expect(exhaustionDate).toBeDefined()
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 		// Investment value should not go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 		// Actual withdrawal should be limited to available amount
@@ -315,8 +314,8 @@ describe('#getInvestmentValues', () => {
 	it('should report withdrawal error with exit fees when total needed exceeds value', () => {
 		const periodCount = { count: 1, period: 'year' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([['2025-06-01', 95]]) // Withdraw + exit fee = 95 + 10 = 105 > 100
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([['2025-06-01', 95]]) // Withdraw + exit fee = 95 + 10 = 105 > 100
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 0,
@@ -325,7 +324,7 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-12-31')
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
@@ -333,8 +332,8 @@ describe('#getInvestmentValues', () => {
 		)
 
 		// Should have exhaustion due to over-withdrawal with exit fees
-		expect(exhaustionDate).toBeDefined()
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 		// Investment value should not go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 	})
@@ -342,8 +341,8 @@ describe('#getInvestmentValues', () => {
 	it('should report both managementFee and withdrawal errors in extreme scenario', () => {
 		const periodCount = { count: 1, period: 'month' as const }
 		const initialDepositValue = 50
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([['2025-02-01', 60]]) // Withdraw more than deposited
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([['2025-02-01', 60]]) // Withdraw more than deposited
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: -5, // Negative return
@@ -354,7 +353,7 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-03-31')
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
@@ -362,8 +361,8 @@ describe('#getInvestmentValues', () => {
 		)
 
 		// Should have exhaustion from over-withdrawal in this scenario
-		expect(exhaustionDate).toBeDefined()
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 		// Investment value should never go negative
 		expect(Math.min(...investmentValues)).toBeGreaterThanOrEqual(0)
 	})
@@ -371,8 +370,8 @@ describe('#getInvestmentValues', () => {
 	it('should limit daily management fee to available value when value is insufficient', () => {
 		const periodCount = { count: 1, period: 'month' as const }
 		const initialDepositValue = 10
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([])
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([])
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 0,
@@ -395,25 +394,24 @@ describe('#getInvestmentValues', () => {
 	it('should limit actual withdrawal to available value when insufficient funds', () => {
 		const periodCount = { count: 1, period: 'month' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([['2025-01-15', 200]]) // Try to withdraw double
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([['2025-01-15', 200]]) // Try to withdraw double
 		const investment: Investment = {
 			...DEFAULT_INVESTMENT,
 			apy: 0,
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-02-28')
-		const { investmentValues, withdrawalValues, exhaustionDate, missingAmount } =
-			getInvestmentValues(
-				periodCount,
-				{ deposits, withdrawals, startDate, endDate },
-				investment,
-				DAYS_PER_YEAR,
-			)
+		const { investmentValues, withdrawalValues, exhaustionWarning } = getInvestmentValues(
+			periodCount,
+			{ deposits, withdrawals, startDate, endDate },
+			investment,
+			DAYS_PER_YEAR,
+		)
 
 		// Should have exhaustion due to over-withdrawal
-		expect(exhaustionDate).toBeDefined()
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 		// Investment value should become 0, not negative
 		expect(investmentValues[0]).toEqual(0) // January value after withdrawal
 		// Actual withdrawal should be limited to the available 100
@@ -423,8 +421,8 @@ describe('#getInvestmentValues', () => {
 	it('should report errors with correct dates', () => {
 		const periodCount = { count: 1, period: 'month' as const }
 		const initialDepositValue = 100
-		const deposits = new Map<string, number>([['2025-01-01', initialDepositValue]])
-		const withdrawals = new Map<string, number>([
+		const deposits = createTransactionMap([['2025-01-01', initialDepositValue]])
+		const withdrawals = createTransactionMap([
 			['2025-02-15', 150], // First problematic withdrawal
 			['2025-03-20', 50], // Second problematic withdrawal
 		])
@@ -434,7 +432,7 @@ describe('#getInvestmentValues', () => {
 		}
 		const startDate = new Date('2025-01-01')
 		const endDate = new Date('2025-04-30')
-		const { exhaustionDate, missingAmount } = getInvestmentValues(
+		const { exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investment,
@@ -442,17 +440,17 @@ describe('#getInvestmentValues', () => {
 		)
 
 		// Should have exhaustion from first over-withdrawal
-		expect(exhaustionDate).toBeDefined()
-		expect(exhaustionDate).toEqual(new Date('2025-02-15'))
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.date).toEqual(new Date('2025-02-15'))
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 	})
 })
 
 describe('#getCurrentInvestmentValue', () => {
 	it('should return 0 for investment with no transactions', () => {
 		const baseData = {
-			deposits: new Map<string, number>(),
-			withdrawals: new Map<string, number>(),
+			deposits: createTransactionMap([]),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -464,10 +462,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should return 0 when as-of date is before investment start date', () => {
-		const deposits = new Map<string, number>([['2025-01-15', 1000]])
+		const deposits = createTransactionMap([['2025-01-15', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-15'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -479,10 +477,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should calculate simple investment value on exact start date', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -494,10 +492,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should calculate investment value with 10% APY after one year', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -509,14 +507,14 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should handle multiple deposits over time', () => {
-		const deposits = new Map<string, number>([
+		const deposits = createTransactionMap([
 			['2025-01-01', 1000],
 			['2025-03-01', 500],
 			['2025-06-01', 300],
 		])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -529,8 +527,8 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should handle withdrawals correctly', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
-		const withdrawals = new Map<string, number>([['2025-06-01', 200]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
+		const withdrawals = createTransactionMap([['2025-06-01', 200]])
 		const baseData = {
 			deposits,
 			withdrawals,
@@ -546,10 +544,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should apply entry fees correctly', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -566,8 +564,8 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should apply exit fees correctly', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
-		const withdrawals = new Map<string, number>([['2025-06-01', 200]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
+		const withdrawals = createTransactionMap([['2025-06-01', 200]])
 		const baseData = {
 			deposits,
 			withdrawals,
@@ -588,10 +586,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should apply management fees correctly', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -609,10 +607,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should apply success fees correctly', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -629,10 +627,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should apply TER fees correctly', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-12-31'),
 		}
@@ -649,10 +647,10 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should continue calculation beyond end date when as-of date is beyond', () => {
-		const deposits = new Map<string, number>([['2025-01-01', 1000]])
+		const deposits = createTransactionMap([['2025-01-01', 1000]])
 		const baseData = {
 			deposits,
-			withdrawals: new Map<string, number>(),
+			withdrawals: createTransactionMap([]),
 			startDate: new Date('2025-01-01'),
 			endDate: new Date('2025-06-30'), // Investment ends mid-year
 		}
@@ -665,11 +663,11 @@ describe('#getCurrentInvestmentValue', () => {
 	})
 
 	it('should handle complex scenario with all fee types', () => {
-		const deposits = new Map<string, number>([
+		const deposits = createTransactionMap([
 			['2025-01-01', 1000],
 			['2025-03-01', 500],
 		])
-		const withdrawals = new Map<string, number>([['2025-09-01', 300]])
+		const withdrawals = createTransactionMap([['2025-09-01', 300]])
 		const baseData = {
 			deposits,
 			withdrawals,
@@ -908,10 +906,10 @@ describe('#auto-inflation integration tests', () => {
 		const baseData = getBaseData(transactions, 0.03, '2024-01-01')
 
 		// First deposit should remain 1000
-		expect(baseData.deposits.get('2024-01-01')).toBe(1000)
+		expect(baseData.deposits.get('2024-01-01')?.amount).toBe(1000)
 
 		// Second deposit should be inflation-adjusted (~1030)
-		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(1030, 0)
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBeCloseTo(1030, 0)
 
 		// Investment calculation should work with these inflated amounts
 		const investment = { ...DEFAULT_INVESTMENT, apy: 5 }
@@ -937,9 +935,9 @@ describe('#auto-inflation integration tests', () => {
 		const baseData = getBaseData(transactions, 0.03, '2024-01-01')
 
 		// Check that each occurrence is properly inflation-adjusted
-		expect(baseData.deposits.get('2024-01-01')).toBe(100) // Base amount
-		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(103, 0) // 3% inflation
-		expect(baseData.deposits.get('2026-01-01')).toBeCloseTo(106, 0) // 6% inflation over 2 years
+		expect(baseData.deposits.get('2024-01-01')?.amount).toBe(100) // Base amount
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBeCloseTo(103, 0) // 3% inflation
+		expect(baseData.deposits.get('2026-01-01')?.amount).toBeCloseTo(106, 0) // 6% inflation over 2 years
 	})
 
 	it('should handle portfolio-level calculations with mixed auto-inflation', () => {
@@ -1027,17 +1025,17 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		const baseData = getBaseData(transactions, 0.02, '2024-01-01') // 2% annual inflation
 
 		// Verify initial deposit
-		expect(baseData.deposits.get('2024-01-01')).toBe(12000.0)
+		expect(baseData.deposits.get('2024-01-01')?.amount).toBe(12000.0)
 
 		// Verify monthly withdrawals are inflation-adjusted
 		// January (base): 1000.00
-		expect(baseData.withdrawals.get('2024-01-01')).toBe(1000.0)
+		expect(baseData.withdrawals.get('2024-01-01')?.amount).toBe(1000.0)
 
 		// February (1 month later): compound interest calculation
-		expect(baseData.withdrawals.get('2024-02-01')).toBeCloseTo(1001.68, 2)
+		expect(baseData.withdrawals.get('2024-02-01')?.amount).toBeCloseTo(1001.68, 2)
 
 		// March (2 months later): compound interest calculation
-		expect(baseData.withdrawals.get('2024-03-01')).toBeCloseTo(1003.26, 2)
+		expect(baseData.withdrawals.get('2024-03-01')?.amount).toBeCloseTo(1003.26, 2)
 
 		// Test investment value calculation with these withdrawals
 		const investment = { ...DEFAULT_INVESTMENT, apy: 10 } // 10% APY for easy calculation
@@ -1064,7 +1062,7 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		const baseData = getBaseData(transactions, 0, '2024-01-01') // Zero inflation
 
 		// With zero inflation, even inflation-adjusted amounts should remain unchanged
-		expect(baseData.deposits.get('2025-01-01')).toBe(1000)
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBe(1000)
 	})
 
 	it('should handle 2% deflation correctly', () => {
@@ -1083,7 +1081,7 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		const baseData = getBaseData(transactions, -0.02, '2024-01-01') // -2% deflation
 
 		// With 2% deflation over 1 year: compound calculation
-		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(979.96, 2)
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBeCloseTo(979.96, 2)
 	})
 
 	it('should handle mixed adjusted and non-adjusted transactions with 12% inflation', () => {
@@ -1115,7 +1113,7 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		// Non-adjusted should remain 1000.00
 		// Adjusted should be compound calculation ~1120.26
 		// Total deposits for the date should be ~2120.26
-		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(2120.26, 2)
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBeCloseTo(2120.26, 2)
 	})
 
 	it('should handle 10% inflation over 2 years', () => {
@@ -1134,7 +1132,7 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		const baseData = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
 
 		// After 2 years of 10% inflation: compound calculation
-		expect(baseData.deposits.get('2026-01-01')).toBeCloseTo(1210.16, 2)
+		expect(baseData.deposits.get('2026-01-01')?.amount).toBeCloseTo(1210.16, 2)
 	})
 
 	it('should handle 10-year inflation-adjusted transaction with 2% inflation', () => {
@@ -1153,7 +1151,7 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		const baseData = getBaseData(transactions, 0.02, '2024-01-01') // 2% inflation
 
 		// After 10 years of 2% inflation: compound calculation
-		expect(baseData.withdrawals.get('2034-01-01')).toBeCloseTo(12190.27, 2)
+		expect(baseData.withdrawals.get('2034-01-01')?.amount).toBeCloseTo(12190.27, 2)
 	})
 
 	it('should handle portfolio-level calculation with simple 10% APY and 5% inflation', () => {
@@ -1236,8 +1234,8 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 
 		// Both transactions should be inflated by 10% over 1 year
 		// 1000 * compound = ~1100.22, 500 * compound = ~550.11
-		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(1100.22, 2)
-		expect(baseData.withdrawals.get('2025-01-01')).toBeCloseTo(550.11, 2)
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBeCloseTo(1100.22, 2)
+		expect(baseData.withdrawals.get('2025-01-01')?.amount).toBeCloseTo(550.11, 2)
 	})
 
 	it('should handle yearly recurring deposits with 10% inflation', () => {
@@ -1256,16 +1254,16 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 		const baseData = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
 
 		// Year 1 - base amount
-		expect(baseData.deposits.get('2024-01-01')).toBe(1000.0)
+		expect(baseData.deposits.get('2024-01-01')?.amount).toBe(1000.0)
 
 		// Year 2 - compound calculation ~1100.22
-		expect(baseData.deposits.get('2025-01-01')).toBeCloseTo(1100.22, 2)
+		expect(baseData.deposits.get('2025-01-01')?.amount).toBeCloseTo(1100.22, 2)
 
 		// Year 3 - compound calculation ~1210.16
-		expect(baseData.deposits.get('2026-01-01')).toBeCloseTo(1210.16, 2)
+		expect(baseData.deposits.get('2026-01-01')?.amount).toBeCloseTo(1210.16, 2)
 
 		// Year 4 - compound calculation
-		expect(baseData.deposits.get('2027-01-01')).toBeCloseTo(1331.09, 2)
+		expect(baseData.deposits.get('2027-01-01')?.amount).toBeCloseTo(1331.09, 2)
 	})
 })
 
@@ -1279,12 +1277,12 @@ describe('#investment exhaustion tests', () => {
 
 	it('should demonstrate basic investment exhaustion', () => {
 		const periodCount = { count: 1, period: 'month' as const }
-		const deposits = new Map<string, number>([['2024-01-01', 1000]])
-		const withdrawals = new Map<string, number>([['2024-02-01', 1500]]) // More than available
+		const deposits = createTransactionMap([['2024-01-01', 1000]])
+		const withdrawals = createTransactionMap([['2024-02-01', 1500]]) // More than available
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2024-04-30')
 
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			EXHAUSTION_INVESTMENT,
@@ -1304,19 +1302,19 @@ describe('#investment exhaustion tests', () => {
 		expect(investmentValues[3]).toBe(0)
 
 		// Should have exhaustion date and missing amount
-		expect(exhaustionDate).toBeDefined()
-		expect(exhaustionDate).toEqual(new Date('2024-02-01'))
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.date).toEqual(new Date('2024-02-01'))
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 	})
 
 	it('should stop growth after investment hits zero due to over-withdrawal', () => {
 		const periodCount = { count: 1, period: 'month' as const }
-		const deposits = new Map<string, number>([['2024-01-01', 10000]])
-		const withdrawals = new Map<string, number>([['2024-06-01', 15000]]) // More than available
+		const deposits = createTransactionMap([['2024-01-01', 10000]])
+		const withdrawals = createTransactionMap([['2024-06-01', 15000]]) // More than available
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2024-12-31')
 
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			EXHAUSTION_INVESTMENT,
@@ -1337,20 +1335,20 @@ describe('#investment exhaustion tests', () => {
 		expect(investmentValues[7]).toBe(0)
 
 		// Should have exhaustion date and missing amount
-		expect(exhaustionDate).toBeDefined()
-		const exhaustionDateStr = exhaustionDate!.toISOString().split('T')[0]
+		expect(exhaustionWarning?.date).toBeDefined()
+		const exhaustionDateStr = exhaustionWarning?.date!.toISOString().split('T')[0]
 		expect(['2024-05-31', '2024-06-01']).toContain(exhaustionDateStr)
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 	})
 
 	it('should track missing withdrawal amount correctly', () => {
 		const periodCount = { count: 2, period: 'month' as const }
-		const deposits = new Map<string, number>([['2024-01-01', 5000]])
-		const withdrawals = new Map<string, number>([['2024-02-01', 8000]]) // 3000 more than available
+		const deposits = createTransactionMap([['2024-01-01', 5000]])
+		const withdrawals = createTransactionMap([['2024-02-01', 8000]]) // 3000 more than available
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2024-02-29')
 
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			EXHAUSTION_INVESTMENT,
@@ -1360,10 +1358,10 @@ describe('#investment exhaustion tests', () => {
 		expect(investmentValues[1]).toBe(0)
 
 		// Should track the missing amount (approximately 3000 minus any growth)
-		expect(exhaustionDate).toBeDefined()
-		expect(missingAmount).toBeGreaterThan(0)
-		expect(missingAmount).toBeGreaterThan(2900) // Account for small growth
-		expect(missingAmount).toBeLessThan(3100)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(2900) // Account for small growth
+		expect(exhaustionWarning?.missingAmount).toBeLessThan(3100)
 	})
 
 	it('should continue calculating fees and errors even after exhaustion', () => {
@@ -1374,21 +1372,21 @@ describe('#investment exhaustion tests', () => {
 		}
 
 		const periodCount = { count: 1, period: 'month' as const }
-		const deposits = new Map<string, number>([['2024-01-01', 1000]])
-		const withdrawals = new Map<string, number>([['2024-02-01', 1500]])
+		const deposits = createTransactionMap([['2024-01-01', 1000]])
+		const withdrawals = createTransactionMap([['2024-02-01', 1500]])
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2024-04-30') // Extended to get more data points
 
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			investmentWithFees,
 		)
 
 		// Should have exhaustion from withdrawal
-		expect(exhaustionDate).toBeDefined()
-		expect(exhaustionDate).toEqual(new Date('2024-02-01'))
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.date).toEqual(new Date('2024-02-01'))
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 
 		// Investment should remain at zero
 		expect(investmentValues[1]).toBe(0)
@@ -1397,11 +1395,11 @@ describe('#investment exhaustion tests', () => {
 
 	it('should not recover from exhaustion even with new deposits', () => {
 		const periodCount = { count: 1, period: 'month' as const }
-		const deposits = new Map<string, number>([
+		const deposits = createTransactionMap([
 			['2024-01-01', 5000],
 			['2024-03-01', 2000],
 		]) // New deposit after exhaustion
-		const withdrawals = new Map<string, number>([['2024-02-01', 6000]])
+		const withdrawals = createTransactionMap([['2024-02-01', 6000]])
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2024-05-31') // Extended to get more data points
 
@@ -1425,8 +1423,8 @@ describe('#investment exhaustion tests', () => {
 
 	it('should handle multiple over-withdrawals correctly', () => {
 		const periodCount = { count: 1, period: 'month' as const }
-		const deposits = new Map<string, number>([['2024-01-01', 3000]])
-		const withdrawals = new Map<string, number>([
+		const deposits = createTransactionMap([['2024-01-01', 3000]])
+		const withdrawals = createTransactionMap([
 			['2024-02-01', 2000],
 			['2024-03-01', 2000], // Should exhaust remaining ~1000
 			['2024-04-01', 1000], // Another over-withdrawal
@@ -1434,7 +1432,7 @@ describe('#investment exhaustion tests', () => {
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2024-05-31')
 
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			EXHAUSTION_INVESTMENT,
@@ -1455,19 +1453,19 @@ describe('#investment exhaustion tests', () => {
 		expect(investmentValues[4]).toBe(0)
 
 		// Should have exhaustion date from first over-withdrawal
-		expect(exhaustionDate).toBeDefined()
-		expect(exhaustionDate).toEqual(new Date('2024-03-01'))
-		expect(missingAmount).toBeGreaterThan(0)
+		expect(exhaustionWarning?.date).toBeDefined()
+		expect(exhaustionWarning?.date).toEqual(new Date('2024-03-01'))
+		expect(exhaustionWarning?.missingAmount).toBeGreaterThan(0)
 	})
 
 	it('should handle normal withdrawals without exhaustion', () => {
 		const periodCount = { count: 1, period: 'year' as const }
-		const deposits = new Map<string, number>([['2024-01-01', 10000]])
-		const withdrawals = new Map<string, number>([['2024-06-01', 3000]]) // Well within available funds
+		const deposits = createTransactionMap([['2024-01-01', 10000]])
+		const withdrawals = createTransactionMap([['2024-06-01', 3000]]) // Well within available funds
 		const startDate = new Date('2024-01-01')
 		const endDate = new Date('2026-12-31') // 3 years to get multiple data points
 
-		const { investmentValues, exhaustionDate, missingAmount } = getInvestmentValues(
+		const { investmentValues, exhaustionWarning } = getInvestmentValues(
 			periodCount,
 			{ deposits, withdrawals, startDate, endDate },
 			EXHAUSTION_INVESTMENT,
@@ -1484,7 +1482,6 @@ describe('#investment exhaustion tests', () => {
 		expect(investmentValues[2]).toBeGreaterThan(investmentValues[1])
 
 		// Should have no exhaustion
-		expect(exhaustionDate).toBeUndefined()
-		expect(missingAmount).toBe(0)
+		expect(exhaustionWarning).toBeUndefined()
 	})
 })

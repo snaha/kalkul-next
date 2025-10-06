@@ -30,6 +30,7 @@
 	import DeleteModal from './delete-modal.svelte'
 	import InvestmentColorBox from './investment-color-box.svelte'
 	import Badge from './ui/badge.svelte'
+	import Loader from './ui/loader.svelte'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
@@ -43,8 +44,8 @@
 		toggleHide: () => void
 		toggleFocus: () => void
 		open?: boolean
-		exhaustionDate?: Date
-		missingAmount?: number
+		exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
+		isCalculating?: boolean
 	}
 
 	let {
@@ -59,8 +60,8 @@
 		toggleHide,
 		toggleFocus,
 		open = $bindable(false),
-		exhaustionDate,
-		missingAmount = 0,
+		exhaustionWarning,
+		isCalculating = false,
 	}: Props = $props()
 
 	let selectedTransactionIdForDeletion: number | undefined = $state(undefined)
@@ -104,12 +105,15 @@
 		</div>
 		<InvestmentColorBox colorIndex={investment.colorIndex} />
 		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
-		{#if exhaustionDate && missingAmount > 0 && !open}
+		<FlexItem />
+		{#if exhaustionWarning && !open}
 			<Badge variant="error">
 				<WarningAltFilled size={16} />
 			</Badge>
 		{/if}
-		<FlexItem />
+		{#if isCalculating}
+			<Loader dimension="small" />
+		{/if}
 		{#if focused}
 			<Button
 				variant="ghost"
@@ -207,6 +211,9 @@
 						{transaction}
 						{portfolio}
 						currency={portfolio.currency}
+						exhaustionWarning={exhaustionWarning?.transactionIds.includes(transaction.id ?? -1)
+							? exhaustionWarning
+							: undefined}
 					/>
 				{/each}
 			</Vertical>

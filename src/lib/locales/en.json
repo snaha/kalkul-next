@@ -407,7 +407,9 @@
 			"missingFunds": "Missing funds"
 		},
 		"transactionCard": {
-			"deleteWarning": "Are you sure you want to delete?"
+			"deleteWarning": "Are you sure you want to delete?",
+			"insufficientFunds": "Insufficient funds",
+			"missingFunds": "Missing funds"
 		},
 		"viewHeader": {
 			"madeWithKalkul": "Made with {link}",
@@ -454,6 +456,7 @@
 		"total": "Total",
 		"share": "Share",
 		"loading": "Loading...",
+		"calculatingChartData": "Calculating chart data",
 		"name": "Name",
 		"birthDate": "Birthdate",
 		"age": "Age",

@@ -21,6 +21,7 @@
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import { ArrowLeft } from 'carbon-icons-svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
+	import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
 
 	const session_id = page.params.id
 	let portfolioView: PortfolioView | undefined = $state()
@@ -28,6 +29,25 @@
 	let adjustWithInflation = $state(false)
 	let windowWidth = $state(0)
 	let isMobile = $derived(windowWidth < 1024)
+
+	const portfolioSimulation = withPortfolioSimulationStore()
+	const graphData = $derived(portfolioSimulation.simulationData)
+
+	// Recalculate when portfolioView changes
+	$effect(() => {
+		const view = portfolioView
+
+		if (view) {
+			// Start iterative calculation - updates progressively
+			setTimeout(() => {
+				portfolioSimulation.calculateIteratively(
+					view.portfolio,
+					view.investments,
+					view.transactions,
+				)
+			}, 0)
+		}
+	})
 
 	onMount(async () => {
 		portfolioView = await adapters.portfolioView(session_id)
@@ -100,6 +120,7 @@
 					transactionCount={portfolioView.transactions.length}
 					{adjustWithInflation}
 					viewOnly={true}
+					{graphData}
 				/>
 				<div class="grower"></div>
 			{:else if mobileScreen === 'chart'}
@@ -117,6 +138,7 @@
 					bind:adjustWithInflation
 					portfolio={portfolioView.portfolio}
 					investments={portfolioView.investments}
+					simulationData={graphData}
 					{investmentsViewStore}
 				/>
 				<ContentLayout centered={false}>
@@ -148,6 +170,7 @@
 						transactionCount={portfolioView.transactions.length}
 						{adjustWithInflation}
 						viewOnly={true}
+						{graphData}
 					/>
 				</div>
 			{/if}
@@ -164,6 +187,7 @@
 				bind:adjustWithInflation
 				portfolio={portfolioView.portfolio}
 				investments={portfolioView.investments}
+				simulationData={graphData}
 				{investmentsViewStore}
 			/>
 		</section>
@@ -219,8 +243,6 @@
 	.center {
 		display: flex;
 		justify-content: center;
-		align-items: center;
-		height: 100%;
 	}
 	.topbar {
 		border-bottom: 1px solid var(--colors-low);

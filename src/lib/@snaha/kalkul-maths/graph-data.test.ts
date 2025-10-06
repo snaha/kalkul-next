@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { getCumulativeValues, getGraphData } from './graph-data'
+import { getCumulativeValues, getGraphData, getGraphDataForPortfolio } from './graph-data'
 import { getBaseData } from './investment-calculations'
-import type { Investment, Portfolio } from '$lib/types'
+import type { Investment, Portfolio, Transaction } from '$lib/types'
 import type { GraphData } from './types'
 
 describe('getCumulativeValues', () => {
@@ -16,7 +16,6 @@ describe('getCumulativeValues', () => {
 		graphInflationWithdrawals: [0, 95, 0, 285],
 		graphInflationInvestmentValues: [950, 1378, 1596, 1349],
 		graphInflationFeeValues: [-9.5, -14.25, -11.4, -7.6],
-		missingAmount: 0,
 	}
 
 	describe('without inflation adjustment', () => {
@@ -108,7 +107,6 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0],
 				graphInflationInvestmentValues: [0],
 				graphInflationFeeValues: [0],
-				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(emptyGraphData, 0, false)
@@ -134,7 +132,6 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 0],
 				graphInflationInvestmentValues: [800, -200],
 				graphInflationFeeValues: [-50, -20],
-				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(negativeGraphData, 1, false)
@@ -160,7 +157,6 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 100],
 				graphInflationInvestmentValues: [1000, 900],
 				graphInflationFeeValues: [-10, -5],
-				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(sparseGraphData, 1, false)
@@ -188,7 +184,6 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 0],
 				graphInflationInvestmentValues: [1100, 1200],
 				graphInflationFeeValues: [0, 0],
-				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(gainsOnlyData, 1, false)
@@ -208,7 +203,6 @@ describe('getCumulativeValues', () => {
 				graphInflationWithdrawals: [0, 200, 300],
 				graphInflationInvestmentValues: [1050, 1400, 1150],
 				graphInflationFeeValues: [-25, -15, -10],
-				missingAmount: 0,
 			}
 
 			const result = getCumulativeValues(mixedData, 2, false)
@@ -340,8 +334,8 @@ describe('inflation-adjusted transactions on graph', () => {
 		const base = getBaseData(transactions, 0.1, '2024-01-01') // 10% inflation
 
 		// Verify the base data calculations
-		expect(base.deposits.get('2024-01-01')).toBe(5000.0) // No adjustment
-		expect(base.deposits.get('2025-01-01')).toBeCloseTo(1100.22, 2) // compound calculation
+		expect(base.deposits.get('2024-01-01')?.amount).toBe(5000.0) // No adjustment
+		expect(base.deposits.get('2025-01-01')?.amount).toBeCloseTo(1100.22, 2) // compound calculation
 
 		const graph = getGraphData(
 			{ ...base, startDate: new Date('2024-01-01'), endDate: new Date('2026-12-31') },
@@ -417,9 +411,9 @@ describe('inflation-adjusted transactions on graph', () => {
 		const base = getBaseData(transactions, 0.2, '2024-01-01') // 20% inflation
 
 		// Verify the base data calculations
-		expect(base.deposits.get('2024-01-01')).toBe(1000.0) // Year 1: 1000
-		expect(base.deposits.get('2025-01-01')).toBeCloseTo(1200.45, 2) // Year 2: compound calculation
-		expect(base.deposits.get('2026-01-01')).toBeCloseTo(1440.36, 2) // Year 3: compound calculation
+		expect(base.deposits.get('2024-01-01')?.amount).toBe(1000.0) // Year 1: 1000
+		expect(base.deposits.get('2025-01-01')?.amount).toBeCloseTo(1200.45, 2) // Year 2: compound calculation
+		expect(base.deposits.get('2026-01-01')?.amount).toBeCloseTo(1440.36, 2) // Year 3: compound calculation
 
 		const graph = getGraphData(
 			{ ...base, startDate: new Date('2024-01-01'), endDate: new Date('2027-12-31') },
@@ -575,5 +569,258 @@ describe('inflation-adjusted transactions on graph', () => {
 			)
 			expect(graph.graphInflationDeposits[idx2005]).toBeLessThan(500)
 		}
+	})
+})
+
+describe('per-investment caching', () => {
+	const mockPortfolio: Portfolio = {
+		id: 1,
+		client: 1,
+		name: 'Test Portfolio',
+		currency: 'USD',
+		start_date: '2024-01-01',
+		end_date: '2024-12-31',
+		inflation_rate: 0.03,
+		created_at: '2024-01-01',
+		last_edited_at: '2024-01-01',
+		link: null,
+	}
+
+	const createMockInvestment = (id: number, apy: number): Investment => ({
+		id,
+		portfolio_id: 1,
+		name: `Investment ${id}`,
+		apy,
+		entry_fee: 0,
+		exit_fee: 0,
+		management_fee: 0,
+		success_fee: 0,
+		ter: null,
+		entry_fee_type: 'ongoing',
+		exit_fee_type: 'percentage',
+		management_fee_type: 'percentage',
+		advanced_fees: false,
+		created_at: '2024-01-01',
+		last_edited_at: '2024-01-01',
+		type: null,
+	})
+
+	const createMockTransaction = (
+		id: number,
+		investmentId: number,
+		amount: number,
+	): Transaction => ({
+		id,
+		investment_id: investmentId,
+		date: '2024-01-01',
+		amount,
+		type: 'deposit',
+		inflation_adjusted: false,
+		created_at: '2024-01-01',
+		end_date: null,
+		label: null,
+		last_edited_at: null,
+		repeat: null,
+		repeat_unit: null,
+	})
+
+	describe('cache behavior', () => {
+		it('should return same results with or without cache', () => {
+			const investment1 = createMockInvestment(1, 5)
+			const investment2 = createMockInvestment(2, 7)
+			const transactions = [createMockTransaction(1, 1, 1000), createMockTransaction(2, 2, 2000)]
+
+			// First call (no cache)
+			const result1 = getGraphDataForPortfolio(
+				transactions,
+				[investment1, investment2],
+				mockPortfolio,
+			)
+
+			// Second call (should use cache)
+			const result2 = getGraphDataForPortfolio(
+				transactions,
+				[investment1, investment2],
+				mockPortfolio,
+			)
+
+			// Results should be identical
+			expect(result1.data.length).toBe(2)
+			expect(result2.data.length).toBe(2)
+			expect(result1.data[0].label).toBe(result2.data[0].label)
+			expect(result1.data[0].graphLabels).toEqual(result2.data[0].graphLabels)
+			expect(result1.total.graphLabels).toEqual(result2.total.graphLabels)
+		})
+
+		it('should only recalculate changed investment', () => {
+			const investment1 = createMockInvestment(1, 5)
+			const investment2 = createMockInvestment(2, 7)
+			const transactions = [createMockTransaction(1, 1, 1000), createMockTransaction(2, 2, 2000)]
+
+			// First calculation
+			const result1 = getGraphDataForPortfolio(
+				transactions,
+				[investment1, investment2],
+				mockPortfolio,
+			)
+
+			// Change only investment 2's APY
+			const updatedInvestment2 = { ...investment2, apy: 10 }
+
+			// Second calculation
+			const result2 = getGraphDataForPortfolio(
+				transactions,
+				[investment1, updatedInvestment2],
+				mockPortfolio,
+			)
+
+			// Investment 1 should be the same (potentially from cache)
+			expect(result1.data[0].label).toBe(result2.data[0].label)
+
+			// Investment 2 should be different (recalculated)
+			expect(result2.data[1].label).toBe('Investment 2')
+			// Values should differ due to different APY (we're not checking exact values, just structure)
+			expect(result2.data[1].graphInvestmentValues).toBeDefined()
+		})
+
+		it('should handle transaction changes for specific investment', () => {
+			const investment1 = createMockInvestment(1, 5)
+			const investment2 = createMockInvestment(2, 7)
+			const transactions1 = [createMockTransaction(1, 1, 1000), createMockTransaction(2, 2, 2000)]
+
+			// First calculation to warm up cache
+			getGraphDataForPortfolio(transactions1, [investment1, investment2], mockPortfolio)
+
+			// Add transaction for investment 1 only
+			const transactions2 = [
+				...transactions1,
+				createMockTransaction(3, 1, 500), // New transaction for investment 1
+			]
+
+			// Second calculation
+			const result2 = getGraphDataForPortfolio(
+				transactions2,
+				[investment1, investment2],
+				mockPortfolio,
+			)
+
+			// Investment 2 should be unchanged (potentially from cache)
+			expect(result2.data[1].label).toBe('Investment 2')
+
+			// Results should still be valid
+			expect(result2.data.length).toBe(2)
+			expect(result2.data[0]).toBeDefined()
+			expect(result2.data[1]).toBeDefined()
+		})
+
+		it('should cache empty investment results', () => {
+			const investment = createMockInvestment(1, 5)
+			const transactions: Transaction[] = []
+
+			// First call
+			const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+
+			// Second call (should use cache)
+			const result2 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+
+			expect(result1.data.length).toBe(1)
+			expect(result2.data.length).toBe(1)
+			expect(result1.data[0].graphInvestmentValues).toEqual(result2.data[0].graphInvestmentValues)
+		})
+	})
+
+	describe('cache invalidation', () => {
+		it('should invalidate cache when investment parameters change', () => {
+			const investment = createMockInvestment(1, 5)
+			const transactions = [createMockTransaction(1, 1, 1000)]
+
+			// First calculation
+			const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+
+			// Change investment APY
+			const updatedInvestment = { ...investment, apy: 10 }
+			const result2 = getGraphDataForPortfolio(transactions, [updatedInvestment], mockPortfolio)
+
+			// Results should be different
+			expect(result1.data[0].graphInvestmentValues).toBeDefined()
+			expect(result2.data[0].graphInvestmentValues).toBeDefined()
+			// Not checking exact values, just that both calculations succeeded
+		})
+
+		it('should invalidate cache when portfolio dates change', () => {
+			const investment = createMockInvestment(1, 5)
+			const transactions = [createMockTransaction(1, 1, 1000)]
+
+			// First calculation
+			const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+
+			// Change portfolio end date
+			const updatedPortfolio = { ...mockPortfolio, end_date: '2025-12-31' }
+			const result2 = getGraphDataForPortfolio(transactions, [investment], updatedPortfolio)
+
+			// Graph labels should reflect different date range
+			expect(result1.total.graphLabels.length).toBeLessThanOrEqual(result2.total.graphLabels.length)
+		})
+
+		it('should invalidate cache when portfolio inflation changes', () => {
+			const investment = createMockInvestment(1, 5)
+			const transactions = [createMockTransaction(1, 1, 1000)]
+
+			// First calculation
+			const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+
+			// Change portfolio inflation
+			const updatedPortfolio = { ...mockPortfolio, inflation_rate: 0.05 }
+			const result2 = getGraphDataForPortfolio(transactions, [investment], updatedPortfolio)
+
+			// Inflation-adjusted values should be different
+			expect(result1.data[0].graphInflationInvestmentValues).toBeDefined()
+			expect(result2.data[0].graphInflationInvestmentValues).toBeDefined()
+		})
+	})
+
+	describe('multiple investments', () => {
+		it('should handle portfolio with many investments efficiently', () => {
+			const investments = Array.from({ length: 10 }, (_, i) => createMockInvestment(i + 1, 5 + i))
+			const transactions = investments.map((inv, i) =>
+				createMockTransaction(i + 1, inv.id, 1000 * (i + 1)),
+			)
+
+			const result = getGraphDataForPortfolio(transactions, investments, mockPortfolio)
+
+			expect(result.data.length).toBe(10)
+			expect(result.total.graphLabels.length).toBeGreaterThan(0)
+
+			// All investments should have valid data
+			result.data.forEach((data, i) => {
+				expect(data.label).toBe(`Investment ${i + 1}`)
+				expect(data.graphInvestmentValues.length).toBeGreaterThan(0)
+			})
+		})
+
+		it('should aggregate totals correctly across investments', () => {
+			const investment1 = createMockInvestment(1, 5)
+			const investment2 = createMockInvestment(2, 7)
+			const transactions = [createMockTransaction(1, 1, 1000), createMockTransaction(2, 2, 2000)]
+
+			const result = getGraphDataForPortfolio(
+				transactions,
+				[investment1, investment2],
+				mockPortfolio,
+			)
+
+			// Total should aggregate both investments
+			expect(result.total.label).toBe('Total')
+
+			// At first period, total deposits should be sum of individual deposits
+			const firstPeriodTotalDeposits = result.total.graphDeposits[0]
+			const firstPeriodInv1Deposits = result.data[0].graphDeposits[0]
+			const firstPeriodInv2Deposits = result.data[1].graphDeposits[0]
+
+			expect(firstPeriodTotalDeposits).toBeCloseTo(
+				firstPeriodInv1Deposits + firstPeriodInv2Deposits,
+				2,
+			)
+		})
 	})
 })

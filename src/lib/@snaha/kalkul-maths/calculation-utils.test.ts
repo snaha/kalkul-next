@@ -1,19 +1,29 @@
 import { describe, expect, it } from 'vitest'
 import { calculateTotalDepositAmount, calculateInflationAdjustedAmount } from './calculation-utils'
+import type { TransactionMap, TransactionMapEntry } from './types'
+
+// Helper function to convert test data to new TransactionMap format
+function createTransactionMap(entries: Array<[string, number]>): TransactionMap {
+	const map = new Map<string, TransactionMapEntry>()
+	for (const [date, amount] of entries) {
+		map.set(date, { amount, transactionIds: [] })
+	}
+	return map
+}
 
 describe('#calculateTotalDepositAmount', () => {
 	it('should return 0 for an empty deposit map', () => {
-		const deposits = new Map<string, number>()
+		const deposits = createTransactionMap([])
 		expect(calculateTotalDepositAmount(deposits)).toBe(0)
 	})
 
 	it('should correctly sum a single deposit', () => {
-		const deposits = new Map<string, number>([['2024-01-01', 150]])
+		const deposits = createTransactionMap([['2024-01-01', 150]])
 		expect(calculateTotalDepositAmount(deposits)).toBe(150)
 	})
 
 	it('should correctly sum multiple deposits', () => {
-		const deposits = new Map<string, number>([
+		const deposits = createTransactionMap([
 			['2024-01-01', 100],
 			['2024-01-15', 250],
 			['2024-02-01', 300],

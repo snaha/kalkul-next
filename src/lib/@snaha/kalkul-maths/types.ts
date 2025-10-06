@@ -1,8 +1,20 @@
-export type TransactionMap = Map<string, number>
+export type TransactionMapEntry = {
+	amount: number
+	transactionIds: number[]
+}
+
+export type TransactionMap = Map<string, TransactionMapEntry>
+
+export type ExhaustionWarning = {
+	date: Date
+	missingAmount: number
+	transactionIds: number[]
+}
 
 export type TransactionType = 'deposit' | 'withdrawal'
 
 export type Transaction = {
+	id?: number
 	date: string
 	repeat?: number | null
 	repeat_unit?: Period | null
@@ -44,6 +56,5 @@ export interface GraphData {
 	graphInflationWithdrawals: number[]
 	graphInflationInvestmentValues: number[]
 	graphInflationFeeValues: number[]
-	exhaustionDate?: Date
-	missingAmount: number
+	exhaustionWarning?: ExhaustionWarning
 }

@@ -8,6 +8,7 @@ import {
 	type FeeType,
 	DEFAULT_FEE_TYPE,
 	type Transaction,
+	type ExhaustionWarning,
 } from './types'
 import { formatDate } from './date'
 import { addDays } from 'date-fns'
@@ -214,8 +215,7 @@ export function getInvestmentValues(
 	feeValues: FeeBreakdown[]
 	withdrawalValues: number[]
 	depositValues: number[]
-	exhaustionDate?: Date
-	missingAmount: number
+	exhaustionWarning?: ExhaustionWarning
 } {
 	const investmentValues: number[] = []
 	const feeValues: FeeBreakdown[] = []
@@ -224,6 +224,7 @@ export function getInvestmentValues(
 
 	let exhaustionDate: Date | undefined
 	let totalMissingAmount = DECIMAL_0
+	let exhaustedTransactionIds: number[] | undefined
 
 	let currentValue = DECIMAL_0
 	let currentFeeBreakdown: FeeBreakdown<Decimal> = resetFeeBreakdown(DECIMAL_0)
@@ -241,19 +242,21 @@ export function getInvestmentValues(
 
 	const totalDepositAmount = calculateTotalDepositAmount(deposits)
 
-	// For portfolio periods, record values at the end of each calendar period
+	// Initialize the next date to record values (end of first period)
 	let nextRecordDate: Date
 	if (period === 'year') {
-		nextRecordDate = new Date(startDate.getFullYear(), MONTHS_PER_YEAR - 1, 31) // December 31st of start year
+		nextRecordDate = new Date(startDate.getFullYear(), MONTHS_PER_YEAR - 1, 31)
 	} else {
-		// period === 'month' - record at the end of each calendar month
-		const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0) // Last day of start month
+		const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0)
 		nextRecordDate = lastDayOfMonth
 	}
 
 	for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
-		const depositsOnDate = deposits.get(formatDate(date)) ?? 0
-		const withdrawalsOnDate = withdrawals.get(formatDate(date)) ?? 0
+		const dateKey = formatDate(date)
+		const depositEntry = deposits.get(dateKey)
+		const withdrawalEntry = withdrawals.get(dateKey)
+		const depositsOnDate = depositEntry?.amount ?? 0
+		const withdrawalsOnDate = withdrawalEntry?.amount ?? 0
 
 		const {
 			newCurrentValue,
@@ -281,6 +284,10 @@ export function getInvestmentValues(
 			!exhaustionDate
 		) {
 			exhaustionDate = date
+			// Track which transaction(s) caused the exhaustion
+			if (withdrawalEntry?.transactionIds && withdrawalEntry.transactionIds.length > 0) {
+				exhaustedTransactionIds = withdrawalEntry.transactionIds
+			}
 		}
 
 		// Accumulate unfulfilled withdrawal amounts
@@ -313,13 +320,13 @@ export function getInvestmentValues(
 			investmentValues.push(currentValue.toNumber())
 
 			feeValues.push(convertFeeBreakdownToNumbers(currentFeeBreakdown))
-			currentFeeBreakdown = resetFeeBreakdown(new Decimal(0))
+			currentFeeBreakdown = resetFeeBreakdown(DECIMAL_0)
 
 			withdrawalValues.push(-withdrawal.toNumber())
-			withdrawal = new Decimal(0)
+			withdrawal = DECIMAL_0
 
 			depositValues.push(deposit.toNumber())
-			deposit = new Decimal(0)
+			deposit = DECIMAL_0
 		}
 	}
 
@@ -330,13 +337,20 @@ export function getInvestmentValues(
 		depositValues.push(deposit.toNumber())
 	}
 
+	const exhaustionWarning = exhaustionDate
+		? {
+				date: exhaustionDate,
+				missingAmount: totalMissingAmount.toNumber(),
+				transactionIds: exhaustedTransactionIds ?? [],
+			}
+		: undefined
+
 	return {
 		investmentValues,
 		feeValues,
 		withdrawalValues,
 		depositValues,
-		exhaustionDate,
-		missingAmount: totalMissingAmount.toNumber(),
+		exhaustionWarning,
 	}
 }
 
@@ -419,8 +433,8 @@ export function getCurrentInvestmentValue(
 
 	// Calculate day by day up to the as-of date
 	for (let date = startDate; date <= calculationEndDate; date = addDays(date, 1)) {
-		const depositsOnDate = deposits.get(formatDate(date)) ?? 0
-		const withdrawalsOnDate = withdrawals.get(formatDate(date)) ?? 0
+		const depositsOnDate = deposits.get(formatDate(date))?.amount ?? 0
+		const withdrawalsOnDate = withdrawals.get(formatDate(date))?.amount ?? 0
 
 		const { newCurrentValue } = calculateDailyInvestmentUpdate(
 			currentValue,

@@ -5,6 +5,7 @@
 	import type { GraphPortfolioValue } from '$lib/graph'
 	import { locale } from 'svelte-i18n'
 	import { getCSSVariableValue } from '$lib/css-vars'
+	import { drawExclamationMarks, drawExhaustionLine } from '$lib/chart-utils'
 
 	interface Props {
 		graphValueData: GraphPortfolioValue
@@ -32,39 +33,49 @@
 	// Store locale for use in callbacks
 	const currentLocale = $derived($locale)
 
-	// Index of first period where portfolio is exhausted
-	const zeroCrossingIndex = $derived(() => {
-		const exhaustionDate = graphValuesStore.total.exhaustionDate
+	// Indices of all periods where any investment is exhausted
+	const zeroCrossingIndices = $derived(() => {
 		const graphLabels = graphValuesStore.data[0]?.graphLabels
+		if (!graphLabels) return []
 
-		if (!exhaustionDate || !graphLabels) {
-			return undefined
-		}
+		const indices = new Set<number>()
 
-		for (let i = 0; i < graphLabels.length; i++) {
-			const label = graphLabels[i]
+		// Collect exhaustion dates from all investments
+		for (const investment of graphValuesStore.data) {
+			const exhaustionDate = investment.exhaustionWarning?.date
+			if (!exhaustionDate) continue
 
-			if (label.includes('-')) {
-				const [yearStr, monthStr] = label.split('-')
-				const year = parseInt(yearStr, 10)
-				const month = parseInt(monthStr, 10)
+			// Find the index for this exhaustion date
+			for (let i = 0; i < graphLabels.length; i++) {
+				const label = graphLabels[i]
 
-				const labelDate = new Date(year, month - 1, 1)
-				const nextMonth = new Date(year, month, 1)
+				if (label.includes('-')) {
+					const [yearStr, monthStr] = label.split('-')
+					const year = parseInt(yearStr, 10)
+					const month = parseInt(monthStr, 10)
 
-				if (exhaustionDate >= labelDate && exhaustionDate < nextMonth) {
-					return i
-				}
-			} else {
-				const labelDate = new Date(label)
-				if (labelDate.getFullYear() >= exhaustionDate.getFullYear()) {
-					return i
+					const labelDate = new Date(year, month - 1, 1)
+					const nextMonth = new Date(year, month, 1)
+
+					if (exhaustionDate >= labelDate && exhaustionDate < nextMonth) {
+						indices.add(i)
+						break
+					}
+				} else {
+					const labelDate = new Date(label)
+					if (labelDate.getFullYear() >= exhaustionDate.getFullYear()) {
+						indices.add(i)
+						break
+					}
 				}
 			}
 		}
 
-		return undefined
+		return Array.from(indices).sort((a, b) => a - b)
 	})
+
+	// First exhaustion index (for backward compatibility with total exhaustion)
+	const firstZeroCrossingIndex = $derived(zeroCrossingIndices()[0])
 </script>
 
 <Chart
@@ -74,7 +85,7 @@
 	datasets={adjustWithInflation
 		? graphValuesStore.investmentGraphDataWithInflation
 		: graphValuesStore.investmentGraphData}
-	zeroCrossingIndex={zeroCrossingIndex()}
+	zeroCrossingIndex={firstZeroCrossingIndex}
 	options={{
 		interaction: {
 			intersect: false,
@@ -136,7 +147,8 @@
 
 								// Determine if investment is exhausted with missing funds
 								const isExhausted =
-									investment?.exhaustionDate !== undefined && investment?.missingAmount > 0
+									investment?.exhaustionWarning?.date !== undefined &&
+									investment?.exhaustionWarning?.missingAmount > 0
 
 								return {
 									text: label,
@@ -165,12 +177,12 @@
 							x: tooltip.caretX,
 							y: tooltip.caretY,
 						}
-						// Check if current period is at or after exhaustion
+						// Check if current period is at or after any exhaustion
 						const currentDataIndex = tooltip.dataPoints[0]?.dataIndex
 						const hasWithdrawalError =
 							currentDataIndex !== undefined &&
-							zeroCrossingIndex() !== undefined &&
-							currentDataIndex >= zeroCrossingIndex()!
+							firstZeroCrossingIndex !== undefined &&
+							currentDataIndex >= firstZeroCrossingIndex
 
 						const filteredDataPoints = tooltip.dataPoints.filter((d) => {
 							if (d?.dataset?.label?.startsWith('_hidden')) return false
@@ -231,60 +243,22 @@
 		{
 			id: 'withdrawalErrorIndicator',
 			afterDraw(chart) {
-				const errorIndex = zeroCrossingIndex()
-				if (errorIndex === undefined || errorIndex < 0) return
+				const errorIndices = zeroCrossingIndices()
+				if (errorIndices.length === 0) return
 
 				const ctx = chart.ctx
 				const yAxis = chart.scales.y
 				const xAxis = chart.scales.x
-				const zeroY = yAxis.getPixelForValue(0)
-				const startX = xAxis.getPixelForValue(errorIndex)
+				const lineY = yAxis.bottom
 
 				ctx.save()
 
-				// Red line at zero from exhaustion point onwards
-				if (zeroY >= yAxis.top && zeroY <= yAxis.bottom) {
-					ctx.beginPath()
-					ctx.moveTo(startX, zeroY)
-					ctx.lineTo(xAxis.right, zeroY)
-					ctx.lineWidth = 4
-					ctx.strokeStyle = getCSSVariableValue('--colors-red')
-					ctx.stroke()
-				}
+				// Draw red line from first exhaustion to end
+				drawExhaustionLine(ctx, xAxis, lineY, errorIndices[0])
 
-				// Warning icon at exhaustion point
-				const iconY = zeroY - 20
-				if (iconY >= yAxis.top) {
-					const width = 32
-					const height = 24
-					const radius = 12
-
-					// Background
-					ctx.fillStyle = getCSSVariableValue('--colors-red')
-					ctx.beginPath()
-					ctx.roundRect(startX - width / 2, iconY - height / 2, width, height, radius)
-					ctx.fill()
-
-					// Triangle
-					const triangleSize = 14
-					const triangleY = iconY - 1
-					ctx.fillStyle = 'white'
-					ctx.beginPath()
-					ctx.moveTo(startX, triangleY - triangleSize / 2)
-					ctx.lineTo(startX - triangleSize / 2, triangleY + triangleSize / 2)
-					ctx.lineTo(startX + triangleSize / 2, triangleY + triangleSize / 2)
-					ctx.closePath()
-					ctx.fill()
-
-					// Exclamation line
-					ctx.fillStyle = getCSSVariableValue('--colors-red')
-					ctx.fillRect(startX - 0.75, triangleY - 3, 1.5, 6)
-
-					// Exclamation dot
-					ctx.beginPath()
-					ctx.arc(startX, triangleY + 5, 1, 0, Math.PI * 2)
-					ctx.fill()
-				}
+				// Draw warning icon for EACH exhausted investment
+				const iconY = lineY - 20
+				drawExclamationMarks(ctx, xAxis, iconY, errorIndices)
 
 				ctx.restore()
 			},
@@ -302,8 +276,8 @@
 	investmentData={graphValuesStore.data.map((inv, index) => ({
 		id: String(graphValuesStore.investments[index]?.id || ''),
 		name: inv.label,
-		exhaustionDate: inv.exhaustionDate,
-		missingAmount: inv.missingAmount,
+		exhaustionDate: inv.exhaustionWarning?.date,
+		missingAmount: inv.exhaustionWarning?.missingAmount ?? 0,
 	}))}
 	year={(() => {
 		if (investmentsTooltipData.length === 0 || !graphValuesStore.data[0]?.graphLabels)

@@ -407,7 +407,9 @@
 			"missingFunds": "Chybějící prostředky"
 		},
 		"transactionCard": {
-			"deleteWarning": "Opravdu chcete smazat?"
+			"deleteWarning": "Opravdu chcete smazat?",
+			"insufficientFunds": "Nedostatek prostředků",
+			"missingFunds": "Chybějící prostředky"
 		},
 		"viewHeader": {
 			"madeWithKalkul": "Vytvořeno pomocí {link}",
@@ -454,6 +456,7 @@
 		"total": "Celkem",
 		"share": "Sdílet",
 		"loading": "Načítání...",
+		"calculatingChartData": "Vypočítávám data grafu",
 		"name": "Jméno",
 		"birthDate": "Datum narození",
 		"age": "Věk",

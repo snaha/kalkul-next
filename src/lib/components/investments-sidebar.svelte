@@ -12,7 +12,7 @@
 	import Sidebar from './sidebar.svelte'
 	import InvestmentCard from './investment-card.svelte'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
-	import type { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths/graph-data'
+	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
 
 	type Props = {
 		isGraphFullscreened: boolean
@@ -27,7 +27,7 @@
 		editedTransaction?: Transaction
 		adjustWithInflation: boolean
 		viewOnly: boolean
-		graphData?: ReturnType<typeof getGraphDataForPortfolio>
+		graphData?: PortfolioSimulation
 		closeDialog?: () => void
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
 		addInvestment?: () => void
@@ -90,8 +90,9 @@
 					investmentsViewStore.toggleFocus(investment.id)
 				}}
 				open={transactionCount === 0}
-				exhaustionDate={graphData?.data[i]?.exhaustionDate}
-				missingAmount={graphData?.data[i]?.missingAmount}
+				exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
+				isCalculating={graphData?.isCalculating &&
+					(!graphData.currentCalculatingIndex || i >= graphData.currentCalculatingIndex)}
 			/>
 		{/each}
 		{#if addInvestment}
