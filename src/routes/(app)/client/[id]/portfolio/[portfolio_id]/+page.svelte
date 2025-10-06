@@ -81,6 +81,9 @@
 	let isSidebarOpen = $state(true)
 	const isSidebarFlexible = $derived(layoutStore.mobile)
 	let isHeaderHovered = $state(false)
+	let isMenuOpen = $state(false)
+	let isShareMenuOpen = $state(false)
+	const isPortfolioMenuOpen = $derived(isMenuOpen || isShareMenuOpen)
 
 	$effect(() => {
 		investmentsViewStore.allInvestments = investments
@@ -181,7 +184,7 @@
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="header-container"
-					class:visible={isHeaderHovered}
+					class:visible={isHeaderHovered || isPortfolioMenuOpen}
 					onmouseenter={() => (isHeaderHovered = true)}
 					onmouseleave={() => (isHeaderHovered = false)}
 				>
@@ -191,6 +194,8 @@
 						{investments}
 						back={() => goto(routes.CLIENT(clientId))}
 						bind:adjustWithInflation
+						bind:isMenuOpen
+						bind:isShareMenuOpen
 					/>
 				</div>
 
@@ -251,6 +256,8 @@
 								{investments}
 								back={() => goto(routes.CLIENT(clientId))}
 								bind:adjustWithInflation
+								bind:isMenuOpen
+								bind:isShareMenuOpen
 							/>
 						</ContentLayout>
 
@@ -392,7 +399,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		z-index: 1;
+		z-index: 100;
 		background-color: var(--colors-ultra-low);
 		padding: var(--double-padding);
 		box-shadow: 0px 1px 4px 0px #00000040;

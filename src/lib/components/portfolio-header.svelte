@@ -30,9 +30,19 @@
 		investments: Investment[]
 		back?: () => void
 		adjustWithInflation: boolean
+		isMenuOpen: boolean
+		isShareMenuOpen: boolean
 	}
 
-	let { client, portfolio, investments, back, adjustWithInflation = $bindable() }: Props = $props()
+	let {
+		client,
+		portfolio,
+		investments,
+		back,
+		adjustWithInflation = $bindable(),
+		isMenuOpen = $bindable(false),
+		isShareMenuOpen = $bindable(false),
+	}: Props = $props()
 
 	let showConfirmModal = $state(false)
 
@@ -82,7 +92,7 @@
 			<Button dimension="compact" variant="strong" onclick={addInvestment}
 				>{$_('component.portfolioHeader.addInvestment')}</Button
 			>
-			<Dropdown left buttonDimension="compact" buttonVariant="ghost">
+			<Dropdown left buttonDimension="compact" buttonVariant="ghost" bind:open={isShareMenuOpen}>
 				{#snippet button()}
 					{$_('common.share')}
 				{/snippet}
@@ -96,7 +106,7 @@
 				</List>
 			</Dropdown>
 		{/if}
-		<Dropdown left buttonDimension="compact">
+		<Dropdown left buttonDimension="compact" bind:open={isMenuOpen}>
 			{#snippet button()}
 				<OverflowMenuVertical size={24} />
 			{/snippet}
