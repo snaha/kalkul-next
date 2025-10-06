@@ -1,9 +1,23 @@
 import { json, type RequestHandler } from '@sveltejs/kit'
-import { renderEmailTemplate } from '$lib/email/utils/render'
+import { renderEmailTemplate, type TemplateProps } from '$lib/email/utils/render'
 import WelcomeEmail from '$lib/email/templates/welcome-email.svelte'
 import { init, register } from 'svelte-i18n'
 import Newsletter_2025September from '$lib/email/templates/newsletter-2025-september.svelte'
+import FollowupEmail_2025September from '$lib/email/templates/followup-2025-october.svelte'
 import { UNSUBSCRIBE_LINK_PLACEHOLDER } from '$lib/email/utils/constants'
+
+async function renderTemplate(name: string, templateProps: TemplateProps) {
+	switch (name) {
+		case 'welcome':
+			return await renderEmailTemplate(WelcomeEmail, templateProps)
+		case 'newsletter-2025-september':
+			return await renderEmailTemplate(Newsletter_2025September, templateProps)
+		case 'followup-2025-october':
+			return await renderEmailTemplate(FollowupEmail_2025September, templateProps)
+		default:
+			return
+	}
+}
 
 export const GET: RequestHandler = async ({ url }) => {
 	const origin = 'https://kalkul.app'
@@ -29,17 +43,9 @@ export const GET: RequestHandler = async ({ url }) => {
 			unsubscribeLink,
 		}
 
-		let renderResult
-
-		switch (template) {
-			case 'welcome':
-				renderResult = await renderEmailTemplate(WelcomeEmail, templateProps)
-				break
-			case 'newsletter-2025-september':
-				renderResult = await renderEmailTemplate(Newsletter_2025September, templateProps)
-				break
-			default:
-				return json({ error: 'Template not found' }, { status: 404 })
+		const renderResult = await renderTemplate(template, templateProps)
+		if (!renderResult) {
+			return json({ error: 'Template not found' }, { status: 404 })
 		}
 
 		if (!renderResult.success) {
