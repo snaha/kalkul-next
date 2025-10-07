@@ -10,6 +10,7 @@
 		bold?: boolean
 		italic?: boolean
 		nowrap?: boolean
+		lineThrough?: boolean
 	}
 	type Props = (HTMLAttributes<HTMLHeadingElement> | HTMLAttributes<HTMLParagraphElement>) &
 		CustomProps
@@ -40,6 +41,7 @@
 		bold = false,
 		italic = false,
 		nowrap = false,
+		lineThrough = false,
 		class: className = '',
 		children,
 		...restProps
@@ -51,6 +53,7 @@
 	class:bold
 	class:italic
 	class:nowrap
+	class:line-through={lineThrough}
 	class={`root ${font} ${variant} ${className}`}
 	{...restProps}
 >
@@ -86,6 +89,9 @@
 		white-space: nowrap;
 		overflow-x: hidden;
 		text-overflow: ellipsis;
+	}
+	.line-through {
+		text-decoration: line-through;
 	}
 	.h1 {
 		font-weight: var(--font-weight-h1);

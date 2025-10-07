@@ -1,15 +1,16 @@
 <script>
 	import { SERIES_COLORS } from '$lib/colors'
 
-	let { colorIndex } = $props()
+	let { colorIndex, width = '36px', height = '24px' } = $props()
 </script>
 
-<div class="color-box" style={`background-color: ${SERIES_COLORS[colorIndex]}`}></div>
+<div
+	class="color-box"
+	style={`background-color: ${SERIES_COLORS[colorIndex]}; min-width: ${width}; min-height: ${height}`}
+></div>
 
 <style>
 	.color-box {
-		min-width: 36px;
-		min-height: 24px;
 		border-radius: var(--border-radius);
 	}
 </style>

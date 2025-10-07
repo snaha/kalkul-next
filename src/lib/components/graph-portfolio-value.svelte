@@ -4,7 +4,6 @@
 	import TooltipInvestment from './tooltip-investment.svelte'
 	import type { GraphPortfolioValue } from '$lib/graph'
 	import { locale } from 'svelte-i18n'
-	import { getCSSVariableValue } from '$lib/css-vars'
 	import { drawExclamationMarks, drawExhaustionLine } from '$lib/chart-utils'
 
 	interface Props {
@@ -125,45 +124,7 @@
 		},
 		plugins: {
 			legend: {
-				onClick: (e, item) => {
-					const index = item.datasetIndex
-					if (index !== undefined)
-						graphValuesStore.investmentsViewStore.toggleHide(graphValuesStore.investments[index].id)
-				},
-				position: 'bottom',
-				labels: {
-					useBorderRadius: true,
-					borderRadius: 1,
-					generateLabels: (chart) => {
-						const datasets = chart.data.datasets
-						const defaultColor = getCSSVariableValue('--colors-high-neutral')
-						const dangerColor = getCSSVariableValue('--colors-red')
-
-						return datasets
-							.map((dataset, i) => {
-								const investment = graphValuesStore.data[i]
-								const label = dataset.label || ''
-								if (label.endsWith('_hidden')) return undefined
-
-								// Determine if investment is exhausted with missing funds
-								const isExhausted =
-									investment?.exhaustionWarning?.date !== undefined &&
-									investment?.exhaustionWarning?.missingAmount > 0
-
-								return {
-									text: label,
-									fillStyle: dataset.backgroundColor as string,
-									strokeStyle: dataset.borderColor as string,
-									lineWidth: dataset.borderWidth as number,
-									hidden: dataset.hidden,
-									index: i,
-									datasetIndex: i,
-									fontColor: isExhausted ? dangerColor : defaultColor,
-								}
-							})
-							.filter((item) => item !== undefined)
-					},
-				},
+				display: false,
 			},
 			tooltip: {
 				enabled: false,

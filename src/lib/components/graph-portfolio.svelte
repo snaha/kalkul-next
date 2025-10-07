@@ -25,6 +25,8 @@
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import DesktopOnly from './desktop-only.svelte'
 	import LoadingOverlay from './loading-overlay.svelte'
+	import InvestmentColorBox from './investment-color-box.svelte'
+	import Vertical from './ui/vertical.svelte'
 
 	interface Props {
 		portfolio: Portfolio
@@ -52,7 +54,6 @@
 		investments,
 		portfolio,
 		simulationData,
-		title = $_('common.value'),
 		adjustWithInflation = $bindable(),
 		investmentsViewStore,
 		fullscreen,
@@ -78,6 +79,7 @@
 	let showBreakdownWithdrawn = $state(true)
 	let showBreakdownFees = $state(true)
 	let selectedIndex = $state(0)
+	let showBreakdown = $state(false)
 
 	type FullscreenGraphType = 'value' | 'transactions' | 'breakdown'
 
@@ -328,22 +330,55 @@
 		{:else}
 			<div class="graph-main">
 				<Horizontal --horizontal-gap="var(--half-padding)" --padding-left="0">
-					<Typography variant="h5">{title}</Typography>
-					{#if investments && investments.length > 0}
-						<Toggle
-							label={$_('common.showInflation')}
+					{#if showBreakdown}
+						<Typography variant="h5">{$_('common.breakdown')}</Typography>
+						<Button
+							variant="ghost"
 							dimension="small"
-							bind:checked={adjustWithInflation}
-						></Toggle>
-						{#if adjustWithInflation}
-							<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
-						{/if}
+							onclick={() => {
+								showBreakdown = false
+							}}>{$_('common.viewValue')}</Button
+						>
+						<FlexItem />
+						{@render fullscreenButton('breakdown')}
+					{:else}
+						<Typography variant="h5">{$_('common.value')}</Typography>
+						<Button
+							variant="ghost"
+							dimension="small"
+							onclick={() => {
+								showBreakdown = true
+							}}>{$_('common.viewBreakdown')}</Button
+						>
+						<FlexItem />
+						{@render fullscreenButton('value')}
 					{/if}
-					<FlexItem />
-					{@render fullscreenButton('value')}
 				</Horizontal>
-				<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
-				<LoadingOverlay visible={isCalculating} />
+				{#if showBreakdown}
+					<Vertical --vertical-justify-content="center" class="flex">
+						<GraphPortfolioBreakdown
+							{portfolio}
+							{data}
+							{total}
+							{investments}
+							{adjustWithInflation}
+							{investmentsViewStore}
+							bind:selectedIndex
+							{lowColor}
+							{baseColor}
+							{clientBirthDate}
+							showInvestmentValue={showBreakdownInvestmentValue}
+							showInterestEarned={showBreakdownInterestEarned}
+							showDeposited={showBreakdownDeposited}
+							showWithdrawn={showBreakdownWithdrawn}
+							showFees={showBreakdownFees}
+						/>
+						<LoadingOverlay visible={isCalculating} />
+					</Vertical>
+				{:else}
+					<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
+					<LoadingOverlay visible={isCalculating} />
+				{/if}
 			</div>
 			<div class="graph-main-sub">
 				<Horizontal
@@ -378,47 +413,44 @@
 				/>
 				<LoadingOverlay visible={isCalculating} />
 			</div>
-			<div class="graph-breakdown-overtime">
+			<Horizontal --horizontal-justify-content="space-between">
 				<Horizontal
 					--horizontal-gap="var(--half-padding)"
-					--padding-left={isGraphFullscreened && !isSidebarOpen ? '42px' : '0'}
+					--horizontal-justify-content="start"
+					style="min-width: 200px"
 				>
-					<Typography variant="h5">{$_('common.breakdown')}</Typography>
-					{#if isGraphFullscreened}
-						<Toggle
-							label={$_('common.showInflation')}
-							dimension="small"
-							bind:checked={adjustWithInflation}
-						></Toggle>
-						{#if adjustWithInflation}
-							<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
-						{/if}
+					<Toggle
+						label={$_('common.showInflation')}
+						dimension="small"
+						bind:checked={adjustWithInflation}
+					></Toggle>
+					{#if adjustWithInflation}
+						<Badge dimension="small">{portfolio.inflation_rate * 100}%</Badge>
 					{/if}
-					<FlexItem />
-					{#if !view}
-						{@render controlsBreakdown()}
-					{/if}
-					{@render fullscreenButton('breakdown')}
 				</Horizontal>
-				<GraphPortfolioBreakdown
-					{portfolio}
-					{data}
-					{total}
-					{investments}
-					{adjustWithInflation}
-					{investmentsViewStore}
-					bind:selectedIndex
-					{lowColor}
-					{baseColor}
-					{clientBirthDate}
-					showInvestmentValue={showBreakdownInvestmentValue}
-					showInterestEarned={showBreakdownInterestEarned}
-					showDeposited={showBreakdownDeposited}
-					showWithdrawn={showBreakdownWithdrawn}
-					showFees={showBreakdownFees}
-				/>
-				<LoadingOverlay visible={isCalculating} />
-			</div>
+				<Horizontal class="wrap">
+					{#each investments as investment}
+						<Button
+							variant="ghost"
+							dimension="small"
+							onclick={() => investmentsViewStore.toggleHide(investment.id)}
+						>
+							<Horizontal --horizontal-gap="var(--quarter-padding)">
+								<InvestmentColorBox
+									width="24px"
+									height="16px"
+									colorIndex={investment.colorIndex}
+								/><Typography
+									variant="small"
+									nowrap
+									lineThrough={investmentsViewStore.isHidden(investment.id)}
+									>{investment.name}</Typography
+								>
+							</Horizontal>
+						</Button>
+					{/each}
+				</Horizontal>
+			</Horizontal>
 		{/if}
 	</section>
 {/if}
@@ -466,20 +498,6 @@
 			position: relative;
 		}
 
-		.graph-breakdown-overtime {
-			flex: 268px;
-			width: 100%;
-			min-height: 0;
-			background-color: var(--colors-base);
-			display: flex;
-			flex-direction: column;
-			padding: var(--padding);
-			border-radius: var(--border-radius);
-			border: 1px solid var(--colors-low);
-			gap: var(--half-padding);
-			position: relative;
-		}
-
 		&.empty {
 			opacity: 0.5;
 		}
@@ -504,5 +522,14 @@
 	}
 	:global(.max-select-length.mobile) {
 		max-width: 100%;
+	}
+	:global(.wrap) {
+		flex-wrap: wrap;
+	}
+	:global(.flex) {
+		flex: 1;
+	}
+	:global(.red) {
+		color: var(--colors-red);
 	}
 </style>
