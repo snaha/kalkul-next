@@ -1,7 +1,8 @@
 import { Resend } from 'resend'
 import { readFileSync } from 'fs'
 
-const RESEND_MAX_EMAIL_PER_BATCH = 50
+// The total number of recipients cannot exceed 50 (including the `to` recipient)
+const RESEND_MAX_EMAIL_PER_BATCH = 50 - 1
 
 // Check required environment variables
 if (!process.env.RESEND_API_KEY) {
