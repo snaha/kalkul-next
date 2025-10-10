@@ -214,8 +214,72 @@
 			"clientDeleteExplanation": "This client and all the portfolios it contains will be deleted permanently. There's no undo.",
 			"noPortfoliosYet": "No portfolio yet",
 			"createYourFirstPortfolio": "Create your first portfolio",
+			"addFirstInvestmentGoal": "Add a first investment goal for your client",
+			"chooseCalculatorBelow": "Choose a calculator below to get started. You can add more or update details later.",
+			"startWithBlank": "Start with blank",
+			"templates": {
+				"retirement": {
+					"title": "Retirement",
+					"description": "Calculate the amount of money needed to save and invest to achieve financial independence."
+				},
+				"houseBuying": {
+					"title": "House buying",
+					"description": "Calculate the amount of money needed to save and invest for a home down payment and purchase."
+				},
+				"kidsEducation": {
+					"title": "Kids education",
+					"description": "Calculate the amount of money needed to save and invest to cover children's education expenses."
+				},
+				"largePurchase": {
+					"title": "Large purchase",
+					"description": "Calculate the amount of money needed to save and invest to make a specific purchase at the desired time."
+				},
+				"optimisedWithdrawals": {
+					"title": "Optimised withdrawals",
+					"description": "Calculate the optimal withdrawal strategy to live comfortably from current portfolio savings."
+				}
+			},
 			"deletePortfolio": "Delete portfolio?",
-			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There’s no undo."
+			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo."
+		},
+		"retirement": {
+			"title": "Retirement",
+			"clientAgeToday": "Client's age today",
+			"retirementAge": "Retirement age",
+			"retirementStart": "Retirement start",
+			"retirementLength": "Retirement length",
+			"inflation": "Inflation",
+			"desiredRetirementBudget": "Desired retirement budget",
+			"inTodaysMoney": "In today's money",
+			"currentSavings": "Current savings",
+			"earmarkedForRetirement": "Earmarked for retirement",
+			"depositFrequency": "Deposit frequency",
+			"depositStart": "Deposit start",
+			"calculateDepositAmount": "Calculate deposit amount",
+			"yearsOld": "Years old",
+			"perMonth": "per month",
+			"perYear": "per year",
+			"monthly": "Monthly",
+			"yearly": "Yearly",
+			"preview": "Preview",
+			"setDepositAmount": "Set deposit amount",
+			"depositInRealValue": "Deposit amount in real value (today's money) — it will be automatically adjusted to match inflation.",
+			"createPlan": "Create plan",
+			"modifyParameters": "Modify parameters",
+			"depositToMatch": "Deposit {amount} {currency} {frequency} to match the retirement goals.",
+			"whatYouNeed": "What you'll need",
+			"whatYouHave": "What you'll have"
+		},
+		"goals": {
+			"title": "Goals",
+			"linkedInvestments": "Linked investments"
+		},
+		"balanceInvestments": {
+			"title": "Balance investments",
+			"weightedAverageReturn": "weighted average return",
+			"initialGoalTarget": "Initial goal target",
+			"autoBalance": "Auto-balance",
+			"rebalancePortfolio": "Rebalance portfolio"
 		},
 		"resetPassword": {
 			"resetPassword": "Reset password",
@@ -241,6 +305,8 @@
 			"noInvestmentYet": "No investment yet",
 			"createYourFirstInvestment": "Create a first investment in this portfolio",
 			"addInvestment": "Add investment",
+			"addGoal": "Add goal",
+			"addInvestmentsExplanation": "Ready to get more specific? Right now your plan uses a single ROI rate for everything. Break down your goal by adding actual investment products - each with their own returns & fees.",
 			"addPortfolio": "Add portfolio",
 			"openPortfolio": "Open portfolio",
 			"sharePortfolio": "Share portfolio",
@@ -367,6 +433,14 @@
 			"deleteInvestment": "Delete investment",
 			"noTransactionsYet": "No transactions yet",
 			"noTransactionsYetText": "Use the button above to add one"
+		},
+		"goalCard": {
+			"removeFocus": "Remove focus",
+			"focusInChart": "Focus in chart",
+			"hideInChart": "Hide in chart",
+			"editGoalDetails": "Edit goal details",
+			"duplicateGoal": "Duplicate goal",
+			"deleteGoal": "Delete goal"
 		},
 		"login": {
 			"forgotPassword": "Forgot password?",

@@ -130,7 +130,7 @@
 				width = actChartWidth // Expose width to parent
 				chart.resize()
 			}
-		})
+		}, 100)
 		return () => {
 			clearInterval(interval)
 		}

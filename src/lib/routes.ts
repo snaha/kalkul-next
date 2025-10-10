@@ -44,6 +44,16 @@ export default {
 	EMAIL: `${routePrefix}/email`,
 	SAMPLE_PORTFOLIO_LINK: `${routePrefix}/view/au0ts392wixhshz0unsmf7fnl`,
 	GET_STARTED: `${routePrefix}/get-started`,
+	// Demo routes - client-independent portfolio simulation
+	DEMO_TEMPLATES: `${routePrefix}/demo`,
+	RETIREMENT_CALCULATOR: () => `${routePrefix}/demo/portfolio/retirement`,
+	RETIREMENT_PREVIEW: () => `${routePrefix}/demo/portfolio/retirement/preview`,
+	DEMO: () => `${routePrefix}/demo/portfolio`,
+	DEMO_NEW_INVESTMENT: () => `${routePrefix}/demo/portfolio/new-investment`,
+	DEMO_EDIT_INVESTMENT: (investmentId: number) =>
+		`${routePrefix}/demo/portfolio/edit-investment/${investmentId}`,
+	DEMO_BALANCE_INVESTMENTS: (goalIndex: number) =>
+		`${routePrefix}/demo/portfolio/balance-investments/${goalIndex}`,
 }
 
 export const getStartedSections = {

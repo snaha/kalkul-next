@@ -214,8 +214,72 @@
 			"clientDeleteExplanation": "Tento klient a všechna jeho portfolia budou nenávratně smazána. Operaci nelze vrátit zpět.",
 			"noPortfoliosYet": "Zatím žádné portfolio",
 			"createYourFirstPortfolio": "Vytvořte své první portfolio",
+			"addFirstInvestmentGoal": "Přidejte první investiční cíl pro vašeho klienta",
+			"chooseCalculatorBelow": "Vyberte kalkulačku níže pro začátek. Později můžete přidat další nebo upravit detaily.",
+			"startWithBlank": "Začít s prázdným",
+			"templates": {
+				"retirement": {
+					"title": "Důchod",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro dosažení finanční nezávislosti."
+				},
+				"houseBuying": {
+					"title": "Koupě domu",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím na akontaci a nákup domu."
+				},
+				"kidsEducation": {
+					"title": "Vzdělání dětí",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím na pokrytí nákladů na vzdělání dětí."
+				},
+				"largePurchase": {
+					"title": "Velký nákup",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro konkrétní nákup v požadovaném čase."
+				},
+				"optimisedWithdrawals": {
+					"title": "Optimalizované výběry",
+					"description": "Vypočítejte optimální strategii výběrů pro pohodlný život z aktuálních úspor portfolia."
+				}
+			},
 			"deletePortfolio": "Smazat portfolio?",
 			"deletePortfolioWarning": "Toto portfolio a všechny obsažené investice budou nenávratně smazány. Operaci nelze vrátit zpět."
+		},
+		"retirement": {
+			"title": "Důchod",
+			"clientAgeToday": "Současný věk klienta",
+			"retirementAge": "Důchodový věk",
+			"retirementStart": "Začátek důchodu",
+			"retirementLength": "Délka důchodu",
+			"inflation": "Inflace",
+			"desiredRetirementBudget": "Požadovaný důchodový rozpočet",
+			"inTodaysMoney": "V dnešních penězích",
+			"currentSavings": "Aktuální úspory",
+			"earmarkedForRetirement": "Určeno pro důchod",
+			"depositFrequency": "Frekvence vkladů",
+			"depositStart": "Začátek vkladů",
+			"calculateDepositAmount": "Vypočítat částku vkladu",
+			"yearsOld": "Let",
+			"perMonth": "za měsíc",
+			"perYear": "za rok",
+			"monthly": "Měsíčně",
+			"yearly": "Ročně",
+			"preview": "Náhled",
+			"setDepositAmount": "Nastavit částku vkladu",
+			"depositInRealValue": "Částka vkladu v reálné hodnotě (dnešní peníze) — bude automaticky upravena podle inflace.",
+			"createPlan": "Vytvořit plán",
+			"modifyParameters": "Upravit parametry",
+			"depositToMatch": "Vložte {amount} {currency} {frequency} pro dosažení důchodových cílů.",
+			"whatYouNeed": "Co budete potřebovat",
+			"whatYouHave": "Co budete mít"
+		},
+		"goals": {
+			"title": "Cíle",
+			"linkedInvestments": "Propojené investice"
+		},
+		"balanceInvestments": {
+			"title": "Vyvážení investic",
+			"weightedAverageReturn": "vážený průměrný výnos",
+			"initialGoalTarget": "Počáteční cílový výnos",
+			"autoBalance": "Automatické vyvážení",
+			"rebalancePortfolio": "Vyvážit portfolio"
 		},
 		"resetPassword": {
 			"resetPassword": "Obnovit heslo",
@@ -241,6 +305,8 @@
 			"noInvestmentYet": "Zatím žádné investice",
 			"createYourFirstInvestment": "Vytvořte první investici v tomto portfoliu",
 			"addInvestment": "Přidat investici",
+			"addGoal": "Přidat cíl",
+			"addInvestmentsExplanation": "Chcete být konkrétnější? Váš plán nyní používá jednu míru návratnosti pro vše. Rozšiřte svůj cíl přidáním skutečných investičních produktů - každý s vlastními výnosy a poplatky.",
 			"addPortfolio": "Přidat portfolio",
 			"openPortfolio": "Otevřít portfolio",
 			"sharePortfolio": "Sdílet portfolio",
@@ -367,6 +433,14 @@
 			"deleteInvestment": "Smazat investici",
 			"noTransactionsYet": "Zatím žádné transakce",
 			"noTransactionsYetText": "Použijte tlačítko výše pro přidání"
+		},
+		"goalCard": {
+			"removeFocus": "Odebrat zvýraznění",
+			"focusInChart": "Zvýraznit v grafu",
+			"hideInChart": "Skrýt v grafu",
+			"editGoalDetails": "Upravit detaily cíle",
+			"duplicateGoal": "Duplikovat cíl",
+			"deleteGoal": "Smazat cíl"
 		},
 		"login": {
 			"forgotPassword": "Zapomněli jste heslo?",
