@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.14.0](https://github.com/snaha/kalkul/compare/v0.13.0...v0.14.0) (2025-10-07)
+
+
+### Features
+
+* followup email 2025 october ([#993](https://github.com/snaha/kalkul/issues/993)) ([d31f072](https://github.com/snaha/kalkul/commit/d31f07265db5bb6fa3b06fe6e1dd29fddb5cc0bb))
+* improved calculation performance and add loading indicator ([#976](https://github.com/snaha/kalkul/issues/976)) ([e4da530](https://github.com/snaha/kalkul/commit/e4da530b52f5b0cf388ae732f968dd904a45d04a))
+
+
+### Bug Fixes
+
+* breakdown chart layout ([#995](https://github.com/snaha/kalkul/issues/995)) ([41bfefb](https://github.com/snaha/kalkul/commit/41bfefbd86ef2b0fa7a0f9e4908c31cd902e463a))
+* portfolio header stay when menu is open ([#991](https://github.com/snaha/kalkul/issues/991)) ([88d3d5a](https://github.com/snaha/kalkul/commit/88d3d5afc7e47e71e0eaad8d6e92fb6131f39142)), closes [#989](https://github.com/snaha/kalkul/issues/989)
+* send batch email ([#994](https://github.com/snaha/kalkul/issues/994)) ([498f858](https://github.com/snaha/kalkul/commit/498f8580ddd26036b6de50c61f24ec640cd1e853))
+* wide layout ([#988](https://github.com/snaha/kalkul/issues/988)) ([c3bb4a4](https://github.com/snaha/kalkul/commit/c3bb4a44d5a6adfe84d7a523bbf514e73eb14a27))
+
 ## [0.13.0](https://github.com/snaha/kalkul/compare/v0.12.0...v0.13.0) (2025-10-03)
 
 
