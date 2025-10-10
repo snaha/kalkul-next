@@ -7,8 +7,11 @@ const DEFAULT_LOCALE = 'cs'
 // Patterns for detecting hardcoded user-facing text (generic Unicode patterns)
 const HARDCODED_TEXT_PATTERNS = [
 	// Text between regular HTML/Svelte tags (not after self-closing tags)
+	// Uses 's' flag (dotAll) to allow matching across newlines
+	// Script and style tags are filtered out before pattern matching
+	// Avoids matching content with Svelte expressions (excludes { and })
 	{
-		pattern: /(?<!\/)>(\p{L}\p{L}*(?:\s+\p{L}+)*[\s,.'!?„"]*)<(?:\/|\w)/gu,
+		pattern: /(?<!\/)>\s*(\p{L}[^<{}]*?[^\s<{}])\s*<(?:\/|\w)/gsu,
 		description: 'Text content between HTML tags',
 	},
 	// Text starting with special symbols or arrows (multiline support)
@@ -50,7 +53,8 @@ const HARDCODED_TEXT_PATTERNS = [
 
 // Text patterns to exclude (technical terms, single words, etc.)
 const EXCLUDE_PATTERNS = [
-	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord|Instagram|beta|and|kalkul\.app|mailpit)$/i,
+	/^(OK|ID|API|URL|HTML|CSS|JS|TS|JSON|XML|HTTP|HTTPS|UTC|GMT|PDF|CSV|USD|EUR|CZK|GBP|Discord|Instagram|beta|and|FAQ|mailpit)$/i,
+	/kalkul\.app/i, // Domain name
 	/^\p{Lu}{2,4}$/u, // Acronyms (any uppercase letters)
 	/^\d+$/, // Pure numbers
 	/^[\w.-]+@[\w.-]+$/, // Email addresses
@@ -157,12 +161,26 @@ function scanForHardcodedText(scanDir: string = SOURCE_DIR) {
 			return
 		}
 
+		// Separate script, style, and template sections
+		// Remove <script> and <style> content to avoid matching code as user-facing text
+		const scriptStyleRegex = /<(script|style)[^>]*>[\s\S]*?<\/\1>/gi
+		const templateOnly = file.replace(scriptStyleRegex, (match) => {
+			// Replace with same number of newlines to preserve line numbers
+			return '\n'.repeat((match.match(/\n/g) || []).length)
+		})
+
 		// Check each pattern
 		HARDCODED_TEXT_PATTERNS.forEach(({ pattern, description }) => {
 			const regex = new RegExp(pattern.source, pattern.flags)
 			let match
 
-			while ((match = regex.exec(file)) !== null) {
+			// Use templateOnly for HTML content patterns, full file for JS patterns
+			const searchText =
+				description.includes('JavaScript') || description.includes('template blocks')
+					? file
+					: templateOnly
+
+			while ((match = regex.exec(searchText)) !== null) {
 				// Extract the actual text content (usually in capture group 1 or 2)
 				const textContent = match[2] || match[1]
 				if (!textContent) continue
@@ -179,7 +197,7 @@ function scanForHardcodedText(scanDir: string = SOURCE_DIR) {
 				}
 
 				// Find line number
-				const beforeMatch = file.substring(0, match.index)
+				const beforeMatch = searchText.substring(0, match.index)
 				const lineNumber = beforeMatch.split('\n').length
 
 				hardcodedTextFound.push({

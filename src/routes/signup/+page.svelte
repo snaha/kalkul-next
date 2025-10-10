@@ -21,6 +21,7 @@
 	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import type { AuthError } from '@supabase/supabase-js'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import BetaBadge from '$lib/components/beta-badge.svelte'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -134,6 +135,18 @@
 	{#if !success}
 		<Vertical class="registration" --vertical-gap="var(--double-padding)">
 			<Typography variant="h4">{$_('page.signUp.signUp')}</Typography>
+			<Vertical --vertical-gap="var(--half-padding)">
+				<Horizontal --horizontal-gap="var(--half-padding)">
+					<BetaBadge />
+					<Typography bold>{$_('common.welcomeToKalkulBeta')}</Typography>
+				</Horizontal>
+				<Typography>
+					{$_('page.signUp.betaAccessDescription')}
+				</Typography>
+				<Typography variant="small" accent>
+					{$_('page.signUp.betaDisclaimer')}
+				</Typography>
+			</Vertical>
 			<Vertical --vertical-gap="var(--padding)">
 				<Input
 					autofocus={!layoutStore.mobile}

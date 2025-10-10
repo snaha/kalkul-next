@@ -23,7 +23,8 @@
 	onclick={() => (expanded = !expanded)}
 >
 	<Horizontal --horizontal-gap="0" --horizontal-justify-content="stretch">
-		<Typography variant="large">FAQ:&nbsp;</Typography>
+		<Typography variant="large">FAQ</Typography>
+		<Typography variant="large">:&nbsp;</Typography>
 		<Typography variant="h4">{title}</Typography>
 		<div class="spacer"></div>
 		{#if expanded}

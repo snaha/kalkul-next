@@ -68,6 +68,21 @@
 	><Growth size={16} />{#if showText}Inflation adjusted{/if}</Badge
 >
 
+<!-- 11. Multi-line text between tags (like in signup page) -->
+<Typography>
+	Get free early access, shape the product with your feedback, and lock in exclusive launch
+	pricing—expected public release: early 2026.
+</Typography>
+
+<!-- 12. Multi-line text with variant attribute -->
+<Typography variant="small" accent
+	>We're actively developing Kalkul with advisor input. Some features highlighted on our website are
+	still in development and will roll out progressively as they're perfected.</Typography
+>
+
+<!-- 13. Multi-line text with simpler case -->
+<div>This is a longer piece of text that spans multiple lines and should be detected.</div>
+
 <!-- Examples that should NOT be caught -->
 
 <!-- Single words without context -->

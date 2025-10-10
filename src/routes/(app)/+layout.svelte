@@ -9,8 +9,8 @@
 	import { loadSubscriptions } from '$lib/payments/load'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
-	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
 
 	let { children } = $props()
 

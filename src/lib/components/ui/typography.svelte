@@ -11,6 +11,8 @@
 		italic?: boolean
 		nowrap?: boolean
 		lineThrough?: boolean
+		center?: boolean
+		accent?: boolean
 	}
 	type Props = (HTMLAttributes<HTMLHeadingElement> | HTMLAttributes<HTMLParagraphElement>) &
 		CustomProps
@@ -42,6 +44,8 @@
 		italic = false,
 		nowrap = false,
 		lineThrough = false,
+		center = false,
+		accent = false,
 		class: className = '',
 		children,
 		...restProps
@@ -54,6 +58,8 @@
 	class:italic
 	class:nowrap
 	class:line-through={lineThrough}
+	class:center
+	class:accent
 	class={`root ${font} ${variant} ${className}`}
 	{...restProps}
 >
@@ -92,6 +98,12 @@
 	}
 	.line-through {
 		text-decoration: line-through;
+	}
+	.center {
+		text-align: center;
+	}
+	.accent {
+		color: var(--colors-high);
 	}
 	.h1 {
 		font-weight: var(--font-weight-h1);

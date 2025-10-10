@@ -254,3 +254,10 @@ test('should handle text selection replacement', async ({ mount }) => {
 All commands must pass successfully before committing. This ensures code quality and prevents CI/CD failures.
 
 **Testing check-locales patterns**: Use `pnpm check-locales --test` to validate the hardcoded text detection patterns against test cases in `scripts/test-locales-examples.svelte`. This helps ensure the regex patterns correctly identify user-facing text that should be localized while properly excluding code snippets and technical content.
+
+**IMPORTANT**: When running `pnpm check-locales`, you MUST fix ALL issues it finds:
+
+- Add missing localization keys for any hardcoded user-facing text
+- Remove unused localization keys from JSON files
+- Update components to use the localization keys instead of hardcoded strings
+- Do not leave any hardcoded text or unused keys remaining
