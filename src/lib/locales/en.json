@@ -771,5 +771,22 @@
 				"kalkulDemoRequestBody": "Hi, I am interested in Kalkul and would like to request a demo."
 			}
 		}
+	},
+	"demo": {
+		"transactions": {
+			"initialSavings": "Initial Savings",
+			"regularDeposit": "Regular Deposit",
+			"retirementWithdrawal": "Retirement Withdrawal",
+			"initialInvestment": "Initial Investment",
+			"monthlyContribution": "Monthly Contribution",
+			"monthlyRetirementWithdrawal": "Monthly Retirement Withdrawal"
+		},
+		"investments": {
+			"retirement": "Retirement",
+			"retirementInvestment": "Retirement Investment"
+		},
+		"portfolio": {
+			"demoPortfolio": "Demo Portfolio"
+		}
 	}
 }

@@ -4,6 +4,8 @@ import {
 	type RetirementCalculationInput,
 } from '$lib/demo/maths/retirement-calc'
 import type { Portfolio, Investment, Transaction, InvestmentWithColorIndex } from '$lib/types'
+import { _ } from 'svelte-i18n'
+import { get } from 'svelte/store'
 
 export const RETIREMENT_DEFAULTS = {
 	RETIREMENT_AGE: 65,
@@ -50,7 +52,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 				last_edited_at: new Date().toISOString(),
 				end_date: null,
 				inflation_adjusted: false, // Current savings is today's money, not future
-				label: 'Initial Savings',
+				label: get(_)('demo.transactions.initialSavings'),
 				repeat: null,
 				repeat_unit: null,
 			})
@@ -67,7 +69,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 			last_edited_at: new Date().toISOString(),
 			end_date: formatDate(g.calculationInput.retirementStart),
 			inflation_adjusted: true,
-			label: 'Regular Deposit',
+			label: get(_)('demo.transactions.regularDeposit'),
 			repeat: 1,
 			repeat_unit: g.calculationInput.depositFrequency === 'month' ? 'month' : 'year',
 		})
@@ -89,7 +91,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 				),
 			),
 			inflation_adjusted: true,
-			label: 'Retirement Withdrawal',
+			label: get(_)('demo.transactions.retirementWithdrawal'),
 			repeat: 1,
 			repeat_unit: g.calculationInput.budgetFrequency === 'month' ? 'month' : 'year',
 		})
@@ -104,7 +106,7 @@ export function goalToInvestment(goal: Goal): InvestmentWithColorIndex {
 	return {
 		id: -1, // Demo ID
 		portfolio_id: -1, // Demo portfolio ID
-		name: 'Retirement',
+		name: get(_)('demo.investments.retirement'),
 		apy: goal.type === 'retirement' ? goal.calculationInput.apy : 5.0,
 		type: 'etf',
 		created_at: new Date().toISOString(),
@@ -263,7 +265,7 @@ class DemoStore {
 	}
 
 	getGoalName(goal: Goal): string {
-		return goal.type === 'retirement' ? 'Retirement' : 'Goal'
+		return goal.type === 'retirement' ? get(_)('demo.investments.retirement') : 'Goal'
 	}
 
 	regenerateAllTransactions() {
@@ -324,7 +326,7 @@ class DemoStore {
 				// State 2: Single investment
 				this.addInvestment({
 					portfolio_id: -1,
-					name: 'Retirement Investment',
+					name: get(_)('demo.investments.retirementInvestment'),
 					apy: 5.5,
 					type: 'etf',
 					advanced_fees: false,
@@ -403,7 +405,7 @@ class DemoStore {
 						last_edited_at: now,
 						end_date: null,
 						inflation_adjusted: true,
-						label: 'Initial Investment',
+						label: get(_)('demo.transactions.initialInvestment'),
 						repeat: null,
 						repeat_unit: null,
 					})
@@ -418,7 +420,7 @@ class DemoStore {
 						last_edited_at: now,
 						end_date: '2045-02-01',
 						inflation_adjusted: true,
-						label: 'Monthly Contribution',
+						label: get(_)('demo.transactions.monthlyContribution'),
 						repeat: 1,
 						repeat_unit: 'month',
 					})
@@ -433,14 +435,17 @@ class DemoStore {
 						last_edited_at: now,
 						end_date: '2065-02-28',
 						inflation_adjusted: true,
-						label: 'Monthly Retirement Withdrawal',
+						label: get(_)('demo.transactions.monthlyRetirementWithdrawal'),
 						repeat: 1,
 						repeat_unit: 'month',
 					})
 
 					// Map transactions to goal
 					for (let i = 0; i < 3; i++) {
-						this.transactionGoalMap.set(transactionId + i + 1, 'Retirement')
+						this.transactionGoalMap.set(
+							transactionId + i + 1,
+							get(_)('demo.investments.retirement'),
+						)
 					}
 				})
 				break
@@ -516,7 +521,7 @@ class DemoStore {
 						last_edited_at: now,
 						end_date: null,
 						inflation_adjusted: true,
-						label: 'Initial Investment',
+						label: get(_)('demo.transactions.initialInvestment'),
 						repeat: null,
 						repeat_unit: null,
 					})
@@ -531,7 +536,7 @@ class DemoStore {
 						last_edited_at: now,
 						end_date: '2045-02-01',
 						inflation_adjusted: true,
-						label: 'Monthly Contribution',
+						label: get(_)('demo.transactions.monthlyContribution'),
 						repeat: 1,
 						repeat_unit: 'month',
 					})
@@ -546,14 +551,17 @@ class DemoStore {
 						last_edited_at: now,
 						end_date: '2065-02-28',
 						inflation_adjusted: true,
-						label: 'Monthly Retirement Withdrawal',
+						label: get(_)('demo.transactions.monthlyRetirementWithdrawal'),
 						repeat: 1,
 						repeat_unit: 'month',
 					})
 
 					// Map transactions to goal
 					for (let i = 0; i < 3; i++) {
-						this.transactionGoalMap.set(transactionId + i + 1, 'Retirement')
+						this.transactionGoalMap.set(
+							transactionId + i + 1,
+							get(_)('demo.investments.retirement'),
+						)
 					}
 				})
 				break
@@ -608,7 +616,7 @@ class DemoStore {
 		this.portfolio = {
 			id: -1, // Demo ID
 			client: clientId,
-			name: 'Demo Portfolio',
+			name: get(_)('demo.portfolio.demoPortfolio'),
 			currency,
 			start_date: startDate,
 			end_date: endDate,

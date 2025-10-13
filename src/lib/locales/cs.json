@@ -771,5 +771,22 @@
 				"kalkulDemoRequestBody": "Dobrý den, zajímá mě Kalkul a rád bych si požádal o demo."
 			}
 		}
+	},
+	"demo": {
+		"transactions": {
+			"initialSavings": "Počáteční úspory",
+			"regularDeposit": "Pravidelný vklad",
+			"retirementWithdrawal": "Renta",
+			"initialInvestment": "Počáteční investice",
+			"monthlyContribution": "Měsíční příspěvek",
+			"monthlyRetirementWithdrawal": "Měsíční renta"
+		},
+		"investments": {
+			"retirement": "Důchod",
+			"retirementInvestment": "Důchodová investice"
+		},
+		"portfolio": {
+			"demoPortfolio": "Demo portfolio"
+		}
 	}
 }

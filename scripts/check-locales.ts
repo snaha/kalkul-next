@@ -99,6 +99,14 @@ function scanSourceFiles() {
 			}
 		}
 
+		// Also find get(_)('key') patterns used in TypeScript files
+		const getTexts = file.matchAll(/get\(_\)\([\s]*'(.*?)'/gim)
+		for (const localizedText of getTexts) {
+			if (!localizedTextSet.has(localizedText[1])) {
+				localizedTextSet.add(localizedText[1])
+			}
+		}
+
 		// Check for $_() calls with logic instead of simple string literals
 		const logicInLocalizationCalls = file.matchAll(/\$_\(\s*([^'"][^)]*)\s*\)/gim)
 		for (const match of logicInLocalizationCalls) {
@@ -111,6 +119,21 @@ function scanSourceFiles() {
 				content.includes('||')
 			) {
 				console.log(`⚠️  Logic detected in $_() call in ${filePath}: ${match[0]}`)
+			}
+		}
+
+		// Check for get(_)() calls with logic instead of simple string literals
+		const logicInGetCalls = file.matchAll(/get\(_\)\(\s*([^'"][^)]*)\s*\)/gim)
+		for (const match of logicInGetCalls) {
+			const content = match[1].trim()
+			// Skip if it's just a simple variable or object access without operators
+			if (
+				content.includes('?') ||
+				content.includes(':') ||
+				content.includes('&&') ||
+				content.includes('||')
+			) {
+				console.log(`⚠️  Logic detected in get(_)() call in ${filePath}: ${match[0]}`)
 			}
 		}
 
