@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+export const PASSWORD_MIN_LENGTH = 12
+
 export const emailFormSchema = z.object({
 	email: z.string().email({ message: 'error.emailError' }),
 })
@@ -7,21 +9,6 @@ export const emailFormSchema = z.object({
 export const loginFormSchema = emailFormSchema.extend({
 	password: z.string().min(1),
 })
-
-export const resetPasswordFormSchema = z
-	.object({
-		newPassword: z.string().min(12, { message: 'error.passwordLengthError' }),
-		confirmNewPassword: z.string(),
-	})
-	.superRefine((data, ctx) => {
-		if (data.newPassword !== data.confirmNewPassword) {
-			ctx.addIssue({
-				code: 'custom',
-				path: ['confirmNewPassword'],
-				message: 'error.confirmPasswordError',
-			})
-		}
-	})
 
 export const figiSchema = z.object({
 	compositeFIGI: z.string().nullable(),

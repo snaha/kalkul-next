@@ -10,15 +10,14 @@
 		"forgotPassword": {
 			"forgotPassword": "Forgot password?",
 			"forgotPasswordText": "Enter the email associated with your account and you will receive a link to reset your password.",
-			"resetPasswordLocal": "If there’s an account associated {email}, you will receive an email to your {link} with instructions to reset your password.",
-			"resetPasswordRemote": "If there’s an account {email} you will receive an email with instructions to reset your password.",
+			"resetPasswordLocal": "If there's an account associated {email}, you will receive an email to your {link} with instructions to reset your password.",
+			"resetPasswordRemote": "If there's an account {email} you will receive an email with instructions to reset your password.",
 			"resetLink": "Send me a reset link",
 			"email": "Email",
-			"cancel": "Cancel",
 			"goBack": "Go back to ",
 			"login": "Login",
 			"emailSent": "Email sent!",
-			"checkSpam": "Don’t see the email? Please check your spam folder."
+			"checkSpam": "Don't see the email? Please check your spam folder."
 		},
 		"landing": {
 			"title": "Empowering independent financial planning",
@@ -335,9 +334,7 @@
 		"resetPassword": {
 			"resetPassword": "Reset password",
 			"password": "Password",
-			"confirmPassword": "Confirm password",
-			"resetPasswordButton": "Reset password",
-			"cancel": "Cancel"
+			"resetPasswordButton": "Reset password"
 		},
 		"signUp": {
 			"signUp": "Sign up",
@@ -716,7 +713,6 @@
 	"error": {
 		"emailError": "This doesn't look like a correct email",
 		"passwordLengthError": "Password must be at least 12 characters",
-		"confirmPasswordError": "Passwords don't match",
 		"birthDateError": "Birthdate cannot be in the future.",
 		"birthDateUndefined": "Please set valid birthdate",
 		"invalidYear": "Invalid year",

@@ -1,26 +1,25 @@
 <script lang="ts">
-	import Logo from '$lib/components/icons/logo.svelte'
 	import Button from '$lib/components/ui/button.svelte'
-	import Input from '$lib/components/ui/input/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import { Checkmark, Close, WarningAltFilled } from 'carbon-icons-svelte'
+	import { WarningAltFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import adapter from '$lib/adapters'
 	import { goto } from '$app/navigation'
 	import routes from '$lib/routes'
-	import { resetPasswordFormSchema } from '$lib/schemas'
-	import type { z, ZodFormattedError } from 'zod'
+	import { PASSWORD_MIN_LENGTH } from '$lib/schemas'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import Vertical from '$lib/components/ui/vertical.svelte'
+	import PasswordInput from '$lib/components/ui/input/password-input.svelte'
+	import Horizontal from '$lib/components/ui/horizontal.svelte'
 
 	let newPassword = $state('')
-	let confirmNewPassword = $state('')
 	let error = $state('')
-	let formErrors: ZodFormattedError<z.infer<typeof resetPasswordFormSchema>> | undefined =
-		$state(undefined)
-	let formValid = $state(false)
-	let passwordTouched = $state(false)
-	let confirmPasswordTouched = $state(false)
+	let passwordError: string | undefined = $state()
 
 	async function resetPassword(newPassword: string) {
+		if (!validate()) {
+			return
+		}
 		try {
 			await adapter.resetPassword(newPassword)
 			goto(routes.HOME)
@@ -29,74 +28,48 @@
 		}
 	}
 
-	function onPasswordBlur() {
-		if (newPassword?.trim() === '') {
-			passwordTouched = false
+	function isPasswordValid() {
+		return newPassword.length >= PASSWORD_MIN_LENGTH
+	}
+
+	function validatePassword() {
+		if (isPasswordValid()) {
+			passwordError = undefined
 		} else {
-			passwordTouched = true
+			passwordError = $_('error.passwordLengthError')
 		}
 	}
 
-	function onConfirmPasswordBlur() {
-		if (confirmNewPassword && confirmNewPassword !== newPassword) {
-			confirmPasswordTouched = true
-		} else {
-			confirmPasswordTouched = false
-		}
+	function onPasswordFocus() {
+		passwordError = undefined
 	}
 
-	$effect(() => {
-		const res = resetPasswordFormSchema.safeParse({ newPassword, confirmNewPassword })
-		if (res.success) {
-			formErrors = undefined
-			formValid = true
-		} else {
-			formErrors = res.error.format()
-			formValid = false
-		}
-	})
+	function validate() {
+		validatePassword()
+		return passwordError === undefined
+	}
 </script>
 
-{#snippet newPasswordError()}
-	{#if formErrors?.newPassword?._errors}
-		{#each formErrors?.newPassword?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
-{/snippet}
-{#snippet confirmNewPassError()}
-	{#if formErrors?.confirmNewPassword?._errors}
-		{#each formErrors?.confirmNewPassword?._errors as error}
-			{$_(error)}
-		{/each}
-	{/if}
+{#snippet passwordErrorSnippet()}
+	<Horizontal --horizontal-gap="var(--half-padding)">
+		<WarningAltFilled size={24} />
+		{passwordError}
+	</Horizontal>
 {/snippet}
 
-<main>
-	<a href={routes.HOME} class="logo"><Logo size={40} /></a>
-	<div class="reset-password">
+<Fullscreen>
+	<Vertical class="max-width560" --vertical-gap="var(--double-padding)">
 		<Typography variant="h4">{$_('page.resetPassword.resetPassword')}</Typography>
 		<form>
-			<Input
-				type="password"
+			<PasswordInput
+				dimension="compact"
+				variant="solid"
 				label={$_('page.resetPassword.password')}
 				bind:value={newPassword}
-				onblur={onPasswordBlur}
-				error={passwordTouched && newPassword.trim() !== '' && formErrors?.newPassword?._errors
-					? newPasswordError
-					: undefined}
-			></Input>
-			<Input
-				type="password"
-				label={$_('page.resetPassword.confirmPassword')}
-				bind:value={confirmNewPassword}
-				onblur={onConfirmPasswordBlur}
-				error={confirmPasswordTouched &&
-				confirmNewPassword.trim() !== '' &&
-				formErrors?.confirmNewPassword?._errors
-					? confirmNewPassError
-					: undefined}
-			></Input>
+				onfocus={onPasswordFocus}
+				error={passwordError ? passwordErrorSnippet : undefined}
+				helperText={passwordError ? undefined : $_('error.passwordMinimumLength')}
+			></PasswordInput>
 		</form>
 		{#if error}
 			<div class="error">
@@ -105,36 +78,15 @@
 			</div>
 		{/if}
 		<div class="buttons">
-			<Button disabled={!formValid} dimension="compact" onclick={() => resetPassword(newPassword)}
-				><Checkmark size={24} />{$_('page.resetPassword.resetPasswordButton')}</Button
-			>
-			<Button variant="secondary" dimension="compact" onclick={() => goto(routes.HOME)}
-				><Close size={24} />{$_('page.resetPassword.cancel')}</Button
+			<Button dimension="compact" onclick={() => resetPassword(newPassword)}
+				>{$_('page.resetPassword.resetPasswordButton')}</Button
 			>
 		</div>
-	</div>
-</main>
+	</Vertical>
+</Fullscreen>
 
 <style>
-	main {
-		display: flex;
-		width: 100%;
-		height: 100vh;
-		align-items: center;
-		justify-content: center;
-		margin: var(--double-padding);
-	}
-	.logo {
-		position: fixed;
-		display: flex;
-		top: var(--double-padding);
-		left: var(--double-padding);
-		color: var(--colors-ultra-high);
-	}
-	.reset-password {
-		display: flex;
-		flex-direction: column;
-		gap: var(--double-padding);
+	:global(.max-width560) {
 		max-width: 560px;
 		width: 100%;
 	}

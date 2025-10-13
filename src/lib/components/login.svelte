@@ -15,6 +15,7 @@
 	import Vertical from './ui/vertical.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
 	import Fullscreen from './fullscreen.svelte'
+	import PasswordInput from './ui/input/password-input.svelte'
 
 	type User = z.infer<typeof loginFormSchema>
 
@@ -107,11 +108,10 @@
 				oninput={() => (error = '')}
 				onkeydown={onKeyDown}
 			></Input>
-			<Input
+			<PasswordInput
 				variant="solid"
 				dimension="compact"
 				bind:value={password}
-				type="password"
 				label={$_('common.password')}
 				error={passwordTouched && password.trim() !== '' && loginFormErrors?.password?._errors
 					? passwordError
@@ -119,7 +119,7 @@
 				onblur={onPasswordBlur}
 				oninput={() => (error = '')}
 				onkeydown={onKeyDown}
-			></Input>
+			></PasswordInput>
 			{#if error}
 				<div class="error">
 					<WarningAltFilled size={24} />

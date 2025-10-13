@@ -14,7 +14,6 @@
 			"resetPasswordRemote": "Pokud existuje účet {email}, obdržíte e-mail s instrukcemi k obnovení hesla.",
 			"resetLink": "Poslat odkaz k obnovení",
 			"email": "E-mail",
-			"cancel": "Zrušit",
 			"goBack": "Zpět na ",
 			"login": "Přihlášení",
 			"emailSent": "E-mail byl odeslán!",
@@ -335,9 +334,7 @@
 		"resetPassword": {
 			"resetPassword": "Obnovit heslo",
 			"password": "Heslo",
-			"confirmPassword": "Potvrdit heslo",
-			"resetPasswordButton": "Obnovit heslo",
-			"cancel": "Zrušit"
+			"resetPasswordButton": "Obnovit heslo"
 		},
 		"signUp": {
 			"signUp": "Zaregistrovat se",
@@ -716,7 +713,6 @@
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",
 		"passwordLengthError": "Heslo musí mít alespoň 12 znaků",
-		"confirmPasswordError": "Hesla se neshodují",
 		"birthDateError": "Datum narození nemůže být v budoucnosti.",
 		"birthDateUndefined": "Zadejte platné datum narození",
 		"invalidYear": "Neplatný rok",

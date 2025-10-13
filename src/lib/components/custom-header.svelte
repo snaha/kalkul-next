@@ -4,6 +4,7 @@
 	import Button from './ui/button.svelte'
 	import routes from '$lib/routes'
 	import Horizontal from './ui/horizontal.svelte'
+	import BetaBadge from './beta-badge.svelte'
 
 	let { hasCloseButton = true } = $props()
 </script>
@@ -13,6 +14,7 @@
 		<a class="logo-link clickable" href={routes.HOME}>
 			<Logo size={40} />
 		</a>
+		<BetaBadge />
 	</Horizontal>
 	{#if hasCloseButton}
 		<Button dimension="compact" variant="ghost" class="clickable" onclick={() => history.back()}>
