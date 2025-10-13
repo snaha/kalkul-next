@@ -91,7 +91,7 @@
 	</Vertical>
 
 	<!-- svelte-ignore a11y_missing_attribute -->
-	<img class="screenshot" style="width: 1302px" src="images/landing/hero-image.png" />
+	<img class="screenshot" style="width: 1302px" src="images/landing/01_Hero.png" />
 
 	<Divider --margin="0" />
 
@@ -186,7 +186,7 @@
 			</Vertical>
 
 			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/hero-image.png" />
+			<img class="screenshot" style="width: 710px" src="images/landing/02_BigPicture.png" />
 		</ResponsiveLayout>
 		<ResponsiveLayout --responsive-gap="var(--double-padding)" reverse>
 			<Vertical
@@ -215,8 +215,8 @@
 				</Vertical>
 			</Vertical>
 
-			<!-- svelte-ignore a11y_missing_attribute -->-->
-			<img class="screenshot" style="width: 710px" src="images/landing/hero-image.png" />
+			<!-- svelte-ignore a11y_missing_attribute -->
+			<img class="screenshot" style="width: 710px" src="images/landing/03_Investment.png" />
 		</ResponsiveLayout>
 
 		<ResponsiveLayout --responsive-gap="var(--double-padding)">
@@ -247,7 +247,7 @@
 			</Vertical>
 
 			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/goals-change.png" />
+			<img class="screenshot" style="width: 710px" src="images/landing/04_Rebalance.png" />
 		</ResponsiveLayout>
 
 		<ResponsiveLayout --responsive-gap="var(--double-padding)" reverse>
@@ -278,7 +278,7 @@
 			</Vertical>
 
 			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/goals-change.png" />
+			<img class="screenshot" style="width: 710px" src="images/landing/05_Visualizations.png" />
 		</ResponsiveLayout>
 
 		<ResponsiveLayout --responsive-gap="var(--double-padding)">
@@ -309,7 +309,7 @@
 			</Vertical>
 
 			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/flexible-sharing.png" />
+			<img class="screenshot" style="width: 710px" src="images/landing/06_Sharing.png" />
 		</ResponsiveLayout>
 	</Vertical>
 
