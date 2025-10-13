@@ -27,6 +27,7 @@
 		showDeposited: boolean
 		showWithdrawn: boolean
 		showFees: boolean
+		disableInteraction?: boolean
 	}
 
 	let {
@@ -45,6 +46,7 @@
 		showDeposited,
 		showWithdrawn,
 		showFees,
+		disableInteraction = false,
 	}: Props = $props()
 
 	const breakdownChartData = $derived(
@@ -265,12 +267,17 @@
 			type="bar"
 			labels={filterLabels()}
 			datasets={filterChartData()}
+			disableHover={disableInteraction}
 			options={{
-				interaction: {
-					intersect: false,
-					mode: 'nearest',
-					axis: 'y',
-				},
+				interaction: disableInteraction
+					? {
+							mode: undefined,
+						}
+					: {
+							intersect: false,
+							mode: 'nearest',
+							axis: 'y',
+						},
 				elements: {
 					point: {
 						radius: 0,
@@ -309,82 +316,86 @@
 					},
 					tooltip: {
 						enabled: false,
-						external: (context) => {
-							const { tooltip } = context
+						external: disableInteraction
+							? undefined
+							: (context) => {
+									const { tooltip } = context
 
-							if (tooltip.opacity === 0) {
-								tooltipData = []
-							} else {
-								tooltipPosition = {
-									x: cursorX,
-									y: tooltip.caretY,
-								}
-								tooltipData = tooltip.dataPoints
-									.filter((d) => d.raw !== 0 && !d?.dataset?.label?.startsWith('_hidden'))
-									.map((d) => {
-										const dataset = d.dataset as CustomDataset<'bar'>
-										return {
-											dataIndex: d.dataIndex,
-											value: d.raw as number,
-											colorIndex: dataset.colorIndex,
-											name: dataset.label,
+									if (tooltip.opacity === 0) {
+										tooltipData = []
+									} else {
+										tooltipPosition = {
+											x: cursorX,
+											y: tooltip.caretY,
 										}
-									})
-							}
-							const graphWidth = context.chart.width
-							const tooltipWidth = 321
+										tooltipData = tooltip.dataPoints
+											.filter((d) => d.raw !== 0 && !d?.dataset?.label?.startsWith('_hidden'))
+											.map((d) => {
+												const dataset = d.dataset as CustomDataset<'bar'>
+												return {
+													dataIndex: d.dataIndex,
+													value: d.raw as number,
+													colorIndex: dataset.colorIndex,
+													name: dataset.label,
+												}
+											})
+									}
+									const graphWidth = context.chart.width
+									const tooltipWidth = 321
 
-							tooltipPosition.y += 32
+									tooltipPosition.y += 32
 
-							if (tooltipPosition.x < graphWidth / 2) {
-								tooltipPosition.x += tooltipWidth + 16 + tooltipWidth / 2
-							} else {
-								tooltipPosition.x += tooltipWidth / 2 - 48
-							}
-						},
+									if (tooltipPosition.x < graphWidth / 2) {
+										tooltipPosition.x += tooltipWidth + 16 + tooltipWidth / 2
+									} else {
+										tooltipPosition.x += tooltipWidth / 2 - 48
+									}
+								},
 					},
 				},
 			}}
-			plugins={[
-				{
-					id: 'cursorPosition',
-					beforeEvent(chart, args) {
-						const event = args.event
+			plugins={disableInteraction
+				? []
+				: [
+						{
+							id: 'cursorPosition',
+							beforeEvent(chart, args) {
+								const event = args.event
 
-						if (event && event.type === 'mousemove') {
-							cursorX = event.x ?? 0
+								if (event && event.type === 'mousemove') {
+									cursorX = event.x ?? 0
 
-							// ✅ Manually trigger external tooltip logic
-							const tooltip = chart.tooltip
-							const external = chart.options.plugins?.tooltip?.external
-							if (external && tooltip && typeof external === 'function') {
-								external.call(tooltip, { chart, tooltip })
-							}
-						}
-					},
-				},
+									// ✅ Manually trigger external tooltip logic
+									const tooltip = chart.tooltip
+									const external = chart.options.plugins?.tooltip?.external
+									if (external && tooltip && typeof external === 'function') {
+										external.call(tooltip, { chart, tooltip })
+									}
+								}
+							},
+						},
 
-				{
-					id: 'horizontalLine',
-					afterDraw(chart) {
-						const tooltip = chart.tooltip
-						if (tooltip && tooltip.opacity > 0) {
-							const ctx = chart.ctx
-							const y = tooltip.caretY
-							const xAxis = chart.scales.x
+						{
+							id: 'horizontalLine',
+							afterDraw(chart) {
+								const tooltip = chart.tooltip
+								if (tooltip && tooltip.opacity > 0) {
+									const ctx = chart.ctx
+									const y = tooltip.caretY
+									const xAxis = chart.scales.x
 
-							ctx.save()
-							ctx.beginPath()
-							ctx.moveTo(xAxis.left, y)
-							ctx.lineTo(xAxis.right, y)
-							ctx.lineWidth = 1
-							ctx.strokeStyle = 'gray'
-							ctx.stroke()
-							ctx.restore()
-						}
-					},
-				},
-			]}
+									ctx.save()
+									ctx.beginPath()
+									ctx.moveTo(xAxis.left, y)
+									ctx.lineTo(xAxis.right, y)
+									ctx.lineWidth = 1
+									ctx.strokeStyle = 'gray'
+									ctx.stroke()
+									ctx.restore()
+								}
+							},
+						},
+					]}
 		/>
 	</div>
 </Horizontal>
@@ -423,6 +434,7 @@
 		}
 	})()}
 	{clientBirthDate}
+	disabled={disableInteraction}
 />
 
 <style>

@@ -14,6 +14,7 @@
 		showWithdrawals: boolean
 		showFees: boolean
 		clientBirthDate?: Date
+		disableInteraction?: boolean
 	}
 
 	let {
@@ -24,6 +25,7 @@
 		showWithdrawals,
 		showFees,
 		clientBirthDate,
+		disableInteraction = false,
 	}: Props = $props()
 
 	let transactionTooltipData: TooltipData[] = $state([])
@@ -150,11 +152,16 @@
 	bind:width={chartWidth}
 	labels={graphTransactionsData.data[0]?.graphLabels}
 	datasets={chartDatasets}
+	disableHover={disableInteraction}
 	options={{
-		interaction: {
-			intersect: false,
-			mode: 'index',
-		},
+		interaction: disableInteraction
+			? {
+					mode: undefined,
+				}
+			: {
+					intersect: false,
+					mode: 'index',
+				},
 		scales: {
 			y: {
 				stacked: true,
@@ -192,89 +199,93 @@
 			},
 			tooltip: {
 				enabled: false,
-				external: (context) => {
-					const { tooltip } = context
+				external: disableInteraction
+					? undefined
+					: (context) => {
+							const { tooltip } = context
 
-					if (tooltip.opacity === 0) {
-						transactionTooltipData = []
-					} else {
-						tooltipPosition = {
-							x: tooltip.caretX,
-							y: tooltip.caretY,
-						}
-
-						transactionTooltipData = tooltip.dataPoints
-							.filter((d) => d.raw !== 0)
-							.map((d) => {
-								const dataset = d.dataset as CustomDataset<'bar'>
-								return {
-									dataIndex: d.dataIndex,
-									value: d.raw as number,
-									colorIndex: dataset.colorIndex,
-									name: dataset.label,
-									type: dataset.colorIndex !== undefined ? 'transaction' : 'fee',
+							if (tooltip.opacity === 0) {
+								transactionTooltipData = []
+							} else {
+								tooltipPosition = {
+									x: tooltip.caretX,
+									y: tooltip.caretY,
 								}
-							})
-					}
-					const graphWidth = context.chart.width
-					const tooltipWidth = 321
 
-					tooltipPosition.y += 32
+								transactionTooltipData = tooltip.dataPoints
+									.filter((d) => d.raw !== 0)
+									.map((d) => {
+										const dataset = d.dataset as CustomDataset<'bar'>
+										return {
+											dataIndex: d.dataIndex,
+											value: d.raw as number,
+											colorIndex: dataset.colorIndex,
+											name: dataset.label,
+											type: dataset.colorIndex !== undefined ? 'transaction' : 'fee',
+										}
+									})
+							}
+							const graphWidth = context.chart.width
+							const tooltipWidth = 321
 
-					if (tooltipPosition.x < graphWidth / 2) {
-						tooltipPosition.x += tooltipWidth + 16
-					} else {
-						tooltipPosition.x -= 16
-					}
-				},
+							tooltipPosition.y += 32
+
+							if (tooltipPosition.x < graphWidth / 2) {
+								tooltipPosition.x += tooltipWidth + 16
+							} else {
+								tooltipPosition.x -= 16
+							}
+						},
 			},
 		},
 		animation: false,
 	}}
-	plugins={[
-		{
-			id: 'verticalLine',
-			afterDraw(chart) {
-				if (chart?.tooltip && chart.tooltip.opacity > 0) {
-					const ctx = chart.ctx
-					const x = chart.tooltip.caretX
-					const yAxis = chart.scales.y
+	plugins={disableInteraction
+		? [
+				{
+					id: 'verticalLine',
+					afterDraw(chart) {
+						if (chart?.tooltip && chart.tooltip.opacity > 0) {
+							const ctx = chart.ctx
+							const x = chart.tooltip.caretX
+							const yAxis = chart.scales.y
 
-					ctx.save()
-					ctx.beginPath()
-					ctx.moveTo(x, yAxis.top)
-					ctx.lineTo(x, yAxis.bottom)
-					ctx.lineWidth = 1
-					ctx.strokeStyle = 'gray'
-					ctx.stroke()
-					ctx.restore()
-				}
-			},
-		},
-		{
-			id: 'withdrawalErrorIndicator',
-			afterDraw(chart) {
-				const errorIndices = zeroCrossingIndices()
-				if (errorIndices.length === 0) return
+							ctx.save()
+							ctx.beginPath()
+							ctx.moveTo(x, yAxis.top)
+							ctx.lineTo(x, yAxis.bottom)
+							ctx.lineWidth = 1
+							ctx.strokeStyle = 'gray'
+							ctx.stroke()
+							ctx.restore()
+						}
+					},
+				},
+				{
+					id: 'withdrawalErrorIndicator',
+					afterDraw(chart) {
+						const errorIndices = zeroCrossingIndices()
+						if (errorIndices.length === 0) return
 
-				const ctx = chart.ctx
-				const yAxis = chart.scales.y
-				const xAxis = chart.scales.x
-				const lineY = yAxis.bottom
+						const ctx = chart.ctx
+						const yAxis = chart.scales.y
+						const xAxis = chart.scales.x
+						const lineY = yAxis.bottom
 
-				ctx.save()
+						ctx.save()
 
-				// Draw red line from first exhaustion to end
-				drawExhaustionLine(ctx, xAxis, lineY, errorIndices[0])
+						// Draw red line from first exhaustion to end
+						drawExhaustionLine(ctx, xAxis, lineY, errorIndices[0])
 
-				// Draw warning icon for EACH exhausted investment
-				const iconY = lineY - 20
-				drawExclamationMarks(ctx, xAxis, iconY, errorIndices)
+						// Draw warning icon for EACH exhausted investment
+						const iconY = lineY - 20
+						drawExclamationMarks(ctx, xAxis, iconY, errorIndices)
 
-				ctx.restore()
-			},
-		},
-	]}
+						ctx.restore()
+					},
+				},
+			]
+		: []}
 />
 <TooltipTransaction
 	{tooltipPosition}
@@ -299,4 +310,5 @@
 		}
 	})()}
 	{clientBirthDate}
+	disabled={disableInteraction}
 />

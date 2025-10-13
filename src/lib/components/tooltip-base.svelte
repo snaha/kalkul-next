@@ -9,6 +9,7 @@
 		clientBirthDate?: Date
 		year: number
 		adjustWithInflation: boolean
+		disabled?: boolean
 	}
 </script>
 
@@ -27,6 +28,7 @@
 		clientBirthDate,
 		year,
 		adjustWithInflation,
+		disabled = false,
 	}: TooltipGraphProps = $props()
 
 	function getClientAge(year: number, clientBirthDate?: Date): string | undefined {
@@ -42,34 +44,36 @@
 	}
 </script>
 
-<div
-	class="tooltip"
-	class:visible={tooltipData.length > 0}
-	style={`transform: translate(calc(${tooltipPosition.x}px - 100%),calc(${tooltipPosition.y}px - 50%)`}
->
-	{#if tooltipData.length > 0}
-		<div class="tooltip-header">
-			<Horizontal --horizontal-gap="var(--half-padding)">
-				<Typography variant="h5" class="color-light">{year}</Typography>
-				{#if adjustWithInflation}
-					<InflationBadge>{$_('common.inflationAdjusted')}</InflationBadge>
-				{/if}
-			</Horizontal>
+{#if !disabled}
+	<div
+		class="tooltip"
+		class:visible={tooltipData.length > 0 && !disabled}
+		style={`transform: translate(calc(${tooltipPosition.x}px - 100%),calc(${tooltipPosition.y}px - 50%)`}
+	>
+		{#if tooltipData.length > 0}
+			<div class="tooltip-header">
+				<Horizontal --horizontal-gap="var(--half-padding)">
+					<Typography variant="h5" class="color-light">{year}</Typography>
+					{#if adjustWithInflation}
+						<InflationBadge>{$_('common.inflationAdjusted')}</InflationBadge>
+					{/if}
+				</Horizontal>
 
-			{#if getClientAge(year, clientBirthDate)}
-				<Badge dimension="small" class="age-badge">
-					<UserAvatarFilledAlt size={16} />
-					<Typography variant="small" --typography-color="var(--colors-dark-ultra-high)">
-						{getClientAge(year, clientBirthDate)}</Typography
-					>
-				</Badge>
+				{#if getClientAge(year, clientBirthDate)}
+					<Badge dimension="small" class="age-badge">
+						<UserAvatarFilledAlt size={16} />
+						<Typography variant="small" --typography-color="var(--colors-dark-ultra-high)">
+							{getClientAge(year, clientBirthDate)}</Typography
+						>
+					</Badge>
+				{/if}
+			</div>
+			{#if children}
+				{@render children()}
 			{/if}
-		</div>
-		{#if children}
-			{@render children()}
 		{/if}
-	{/if}
-</div>
+	</div>
+{/if}
 
 <style>
 	:global(.color-light) {

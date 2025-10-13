@@ -48,6 +48,7 @@
 		sidebarButton?: Snippet
 		isEmpty?: boolean
 		clientBirthDate?: Date
+		disableInteraction?: boolean
 	}
 
 	let {
@@ -64,6 +65,7 @@
 		sidebarButton,
 		isEmpty,
 		clientBirthDate,
+		disableInteraction = false,
 	}: Props = $props()
 
 	const data = $derived(simulationData.data)
@@ -293,7 +295,12 @@
 					></Select>
 				{/snippet}
 				{#if fullscreenGraph === 'value'}
-					<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
+					<GraphPortfolioValue
+						{graphValueData}
+						{adjustWithInflation}
+						{clientBirthDate}
+						{disableInteraction}
+					/>
 					<LoadingOverlay visible={isCalculating} />
 				{:else if fullscreenGraph === 'transactions'}
 					<GraphPortfolioTransactions
@@ -304,6 +311,7 @@
 						{showWithdrawals}
 						{showFees}
 						{clientBirthDate}
+						{disableInteraction}
 					/>
 					<LoadingOverlay visible={isCalculating} />
 				{:else}
@@ -323,6 +331,7 @@
 						showDeposited={showBreakdownDeposited}
 						showWithdrawn={showBreakdownWithdrawn}
 						showFees={showBreakdownFees}
+						{disableInteraction}
 					/>
 					<LoadingOverlay visible={isCalculating} />
 				{/if}
@@ -372,11 +381,17 @@
 							showDeposited={showBreakdownDeposited}
 							showWithdrawn={showBreakdownWithdrawn}
 							showFees={showBreakdownFees}
+							{disableInteraction}
 						/>
 						<LoadingOverlay visible={isCalculating} />
 					</Vertical>
 				{:else}
-					<GraphPortfolioValue {graphValueData} {adjustWithInflation} {clientBirthDate} />
+					<GraphPortfolioValue
+						{graphValueData}
+						{adjustWithInflation}
+						{clientBirthDate}
+						{disableInteraction}
+					/>
 					<LoadingOverlay visible={isCalculating} />
 				{/if}
 			</div>
@@ -410,6 +425,7 @@
 					{showWithdrawals}
 					{showFees}
 					{clientBirthDate}
+					{disableInteraction}
 				/>
 				<LoadingOverlay visible={isCalculating} />
 			</div>

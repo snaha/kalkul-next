@@ -20,6 +20,7 @@
 		plugins?: Plugin<ChartType>[]
 		zeroCrossingIndex?: number // Optional index where the total value first hits zero
 		width?: number // Expose chart width to parent
+		disableHover?: boolean // Disable hover effects on points
 	}
 
 	Chart.defaults.font.family = getCSSVariableValue('--font-family-sans-serif')
@@ -39,6 +40,7 @@
 		plugins = [],
 		zeroCrossingIndex,
 		width = $bindable(0),
+		disableHover = false,
 	}: Props = $props()
 
 	let canvas: HTMLCanvasElement | null = $state(null)
@@ -48,9 +50,9 @@
 		return datasets.map((d, i) => ({
 			borderColor: SERIES_COLORS[d.colorIndex ?? i % SERIES_COLORS.length],
 			backgroundColor: SERIES_COLORS[d.colorIndex ?? i % SERIES_COLORS.length],
-			pointHoverRadius: 6,
+			pointHoverRadius: disableHover ? 0 : 6,
 			pointBorderWidth: 2,
-			pointHoverBorderWidth: 1,
+			pointHoverBorderWidth: disableHover ? 0 : 1,
 			pointHoverBorderColor: Chart.defaults.borderColor,
 			...d,
 		}))
@@ -106,8 +108,7 @@
 				plugins,
 			})
 			chart.resize()
-		}
-		if (chart) {
+		} else if (chart) {
 			chart.data.labels = labels
 			chart.data.datasets = setDatasetColors(plainDatasets)
 			// Also update options in case zero-crossing index or withdrawal errors changed

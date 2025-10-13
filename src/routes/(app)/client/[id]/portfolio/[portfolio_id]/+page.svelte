@@ -223,6 +223,7 @@
 						isEmpty={transactions.length === 0}
 						clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
 						{sidebarButton}
+						disableInteraction={graphData.isCalculating}
 					/>
 				</section>
 			</main>
@@ -277,6 +278,7 @@
 							{investmentsViewStore}
 							isEmpty={transactions.length === 0}
 							clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
+							disableInteraction={true}
 						/>
 						<ContentLayout centered={false}>
 							<Button
