@@ -285,7 +285,10 @@
 				label={$_('component.editTransaction.inflationAdjusted')}
 				bind:checked={inflationAdjusted}
 			></Toggle>
-			<HelperTooltip helperText={$_('component.viewHeader.inflationAdjustmentTooltip')} />
+			<HelperTooltip
+				position="left"
+				helperText={$_('component.viewHeader.inflationAdjustmentTooltip')}
+			/>
 		</Horizontal>
 		<Input
 			dimension="compact"

@@ -21,7 +21,7 @@
 	}: Props = $props()
 </script>
 
-<Tooltip {show} large {position} {helperText}
+<Tooltip {show} {position} {helperText}
 	><Button
 		dimension="compact"
 		variant="ghost"

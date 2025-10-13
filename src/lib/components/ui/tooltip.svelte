@@ -166,10 +166,12 @@
 			line-height: var(--line-height-small);
 			font-family: var(--font-family-sans-serif);
 			letter-spacing: var(--letter-spacing-small);
-			white-space: nowrap;
-			z-index: 1000;
+			z-index: 100;
 			border-radius: 0.75rem;
 			transition: opacity 0.2s ease;
+			max-width: 300px;
+			min-width: 300px;
+			overflow: visible;
 
 			&.large {
 				border-radius: 1.25rem;
