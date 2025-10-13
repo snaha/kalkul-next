@@ -70,6 +70,25 @@
 	const goalTransactions = $derived(currentGoal ? goalToTransactions(currentGoal) : [])
 
 	/**
+	 * Translates labels in graph data to use localized goal names
+	 */
+	function translateGraphDataLabels(data: PortfolioSimulation): PortfolioSimulation {
+		const goalName = $_('demo.investments.retirement')
+
+		return {
+			...data,
+			data: data.data.map((item) => ({
+				...item,
+				label: goalName,
+			})),
+			total: {
+				...data.total,
+				label: goalName,
+			},
+		}
+	}
+
+	/**
 	 * Gets hardcoded graph data based on the current demo state.
 	 * Returns undefined if no hardcoded data is available for the current state.
 	 */
@@ -78,36 +97,38 @@
 
 		switch (state) {
 			case 1:
-				return goalOnlyData as PortfolioSimulation
+				return translateGraphDataLabels(goalOnlyData as PortfolioSimulation)
 			case 2:
-				return singleInvestmentData as PortfolioSimulation
+				return translateGraphDataLabels(singleInvestmentData as PortfolioSimulation)
 			case 3:
-				return equalInvestmentsData as PortfolioSimulation
+				return translateGraphDataLabels(equalInvestmentsData as PortfolioSimulation)
 			case 4:
-				return finalData as PortfolioSimulation
+				return translateGraphDataLabels(finalData as PortfolioSimulation)
 			default:
 				return undefined
 		}
 	}
 
-	// Empty simulation data structure
-	const emptySimulationData: PortfolioSimulation = {
-		data: [],
-		total: {
-			label: 'Total',
-			graphLabels: [],
-			graphDeposits: [],
-			graphWithdrawals: [],
-			graphInvestmentValues: [],
-			graphFeeValues: [],
-			graphInflationDeposits: [],
-			graphInflationWithdrawals: [],
-			graphInflationInvestmentValues: [],
-			graphInflationFeeValues: [],
-		},
-		isCalculating: false,
-		progress: 100,
-	}
+	// Empty simulation data structure with translated label
+	const emptySimulationData = $derived.by((): PortfolioSimulation => {
+		return {
+			data: [],
+			total: {
+				label: $_('demo.investments.retirement'),
+				graphLabels: [],
+				graphDeposits: [],
+				graphWithdrawals: [],
+				graphInvestmentValues: [],
+				graphFeeValues: [],
+				graphInflationDeposits: [],
+				graphInflationWithdrawals: [],
+				graphInflationInvestmentValues: [],
+				graphInflationFeeValues: [],
+			},
+			isCalculating: false,
+			progress: 100,
+		}
+	})
 
 	// Get data based on selected tab - always use hardcoded data or empty
 	const graphInvestments = $derived(selectedTab === 'goals' ? goalInvestments : investments)
