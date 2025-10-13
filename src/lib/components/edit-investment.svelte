@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DeleteModal from './delete-modal.svelte'
-	import { Checkmark, Close, DocumentImport, InformationFilled } from 'carbon-icons-svelte'
+	import { Close, DocumentImport, InformationFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
@@ -15,15 +15,15 @@
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
-	import { asyncTimeout, capitalizeFirstLetter } from '$lib/utils'
+	import { capitalizeFirstLetter } from '$lib/utils'
 	import Toggle from './ui/toggle.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import ImportInvestmentModal from './import-investment-modal.svelte'
 	import HelperTooltip from './helper-tooltip.svelte'
-	import Loader from './ui/loader.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import LoaderButton from './loader-button.svelte'
 
 	type Props = {
 		portfolio: Portfolio
@@ -50,8 +50,7 @@
 	let managementFee = $state(0)
 	let managementFeeType: FeeType = $state('percentage')
 
-	let createClicked = $state(false)
-	const createDisabled = $derived(name === '' || createClicked)
+	const createDisabled = $derived(name === '')
 	const formType: 'edit' | 'create' = $derived(investment ? 'edit' : 'create')
 	let showConfirmModal = $state(false)
 
@@ -84,9 +83,6 @@
 	})
 
 	async function createInvestment() {
-		createClicked = true
-		await asyncTimeout(0)
-
 		await adapter.addInvestment({
 			portfolio_id: portfolio.id,
 			name,
@@ -109,9 +105,6 @@
 		if (!investment) {
 			return
 		}
-
-		createClicked = true
-		await asyncTimeout(0)
 
 		await adapter.updateInvestment({
 			id: investment.id,
@@ -361,37 +354,25 @@
 
 	<ResponsiveLayout --responsive-justify-content="stretch">
 		{#if formType === 'create'}
-			<Button
+			<LoaderButton
 				variant="strong"
 				dimension="compact"
 				onclick={createInvestment}
-				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="large" color="low" />{:else}<Checkmark
-						size={24}
-					/>{/if}{$_('component.editInvestment.createInvestment')}</Button
+				disabled={createDisabled}>{$_('component.editInvestment.createInvestment')}</LoaderButton
 			>
 		{:else}
-			<Button
+			<LoaderButton
 				variant="strong"
 				dimension="compact"
 				onclick={updateInvestment}
-				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="large" color="low" />{/if}{$_(
-					'common.saveChanges',
-				)}</Button
+				disabled={createDisabled}>{$_('common.saveChanges')}</LoaderButton
 			>
 		{/if}
 		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
 		{#if formType === 'edit'}
 			{#if !layoutStore.mobile}<div class="grower"></div>{/if}
-			<Button
-				variant="ghost"
-				dimension="compact"
-				onclick={confirmDeleteInvestment}
-				disabled={createDisabled}
-				danger>Delete</Button
+			<Button variant="ghost" dimension="compact" onclick={confirmDeleteInvestment} danger
+				>Delete</Button
 			>
 		{/if}
 	</ResponsiveLayout>

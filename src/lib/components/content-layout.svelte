@@ -9,16 +9,10 @@
 		class?: string
 	}
 
-	let {
-		children,
-		centered = true,
-		centerAlign,
-		centerVertical,
-		class: className = '',
-	}: Props = $props()
+	let { children, centered = true, centerAlign, class: className = '' }: Props = $props()
 </script>
 
-<main class:centered class:centerAlign class:centerVertical class={className}>
+<main class:centered class:centerAlign class={className}>
 	{@render children()}
 </main>
 

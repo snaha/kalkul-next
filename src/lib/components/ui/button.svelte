@@ -33,15 +33,15 @@
 	let {
 		dimension = 'default',
 		variant = 'strong',
-		active,
+		active = $bindable(),
 		hover,
 		focus,
-		disabled,
+		disabled = $bindable(),
 		href,
 		class: className = '',
 		leftAlign = false,
 		flexGrow = false,
-		busy = false,
+		busy = $bindable(false),
 		danger = false,
 		children,
 		mode = 'auto',
@@ -59,13 +59,12 @@
 		class:hover
 		class:focus
 		class:danger
+		class:busy
 		{href}
 		{disabled}
 		{...restProps}
 	>
-		{#if children}
-			{@render children()}
-		{/if}
+		{@render children?.()}
 	</svelte:element>
 </span>
 
@@ -76,6 +75,7 @@
 		flex-direction: row;
 		justify-content: stretch;
 		align-items: stretch;
+		position: relative;
 
 		&.disabled {
 			opacity: 0.25;
@@ -106,6 +106,9 @@
 		font-family: var(--font-family-sans-serif);
 		text-decoration: none;
 		white-space: nowrap;
+		&.busy {
+			cursor: wait;
+		}
 	}
 
 	.leftAlign {

@@ -8,10 +8,12 @@
 		children,
 		hasCustomHeader = authStore.user ? false : true,
 		hasCloseButton,
+		centerAlign = false,
 	}: {
 		children: Snippet
 		hasCustomHeader?: boolean
 		hasCloseButton?: boolean
+		centerAlign?: boolean
 	} = $props()
 </script>
 
@@ -20,6 +22,6 @@
 {:else}
 	<Header />
 {/if}
-<ContentLayout>
+<ContentLayout {centerAlign}>
 	{@render children()}
 </ContentLayout>

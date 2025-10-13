@@ -9,14 +9,14 @@
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
-	import { asyncTimeout, capitalizeFirstLetter, formatAge } from '$lib/utils'
+	import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 	import DateAge from './date-age.svelte'
 	import DeleteModal from './delete-modal.svelte'
 	import Vertical from './ui/vertical.svelte'
-	import Loader from './ui/loader.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import LoaderButton from './loader-button.svelte'
 
 	type Props = {
 		client: Client
@@ -41,8 +41,7 @@
 	initialEndDate.setFullYear(nowDate.getFullYear() + initialHorizonYears)
 	let endDate = $state(initialEndDate)
 	let showConfirmModal = $state(false)
-	let createClicked = $state(false)
-	let createDisabled = $derived(name === '' || createClicked)
+	let createDisabled = $derived(name === '')
 	let formType: 'edit' | 'create' = $derived(portfolio ? 'edit' : 'create')
 
 	$effect(() => {
@@ -63,9 +62,6 @@
 	})
 
 	async function createPortfolio() {
-		createClicked = true
-		await asyncTimeout(0)
-
 		await adapter.addPortfolio({
 			client: client.id,
 			name,
@@ -82,9 +78,6 @@
 		if (!portfolio) {
 			return
 		}
-
-		createClicked = true
-		await asyncTimeout(0)
 
 		await adapter.updatePortfolio({
 			id: portfolio.id,
@@ -230,26 +223,18 @@
 
 	<ResponsiveLayout --responsive-justify-content="stretch">
 		{#if formType === 'create'}
-			<Button
+			<LoaderButton
 				variant="strong"
 				dimension="compact"
 				onclick={createPortfolio}
-				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="large" color="low" />{/if}{$_(
-					'component.editPortfolio.createPortfolio',
-				)}</Button
+				disabled={createDisabled}>{$_('component.editPortfolio.createPortfolio')}</LoaderButton
 			>
 		{:else}
-			<Button
+			<LoaderButton
 				variant="strong"
 				dimension="compact"
 				onclick={updatePortfolio}
-				busy={createClicked}
-				disabled={createDisabled}
-				>{#if createClicked}<Loader dimension="large" color="low" />{/if}{$_(
-					'common.saveChanges',
-				)}</Button
+				disabled={createDisabled}>{$_('common.saveChanges')}</LoaderButton
 			>
 		{/if}
 		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>

@@ -19,7 +19,7 @@
 	} from '$lib/@snaha/kalkul-maths'
 	import adapter from '$lib/adapters'
 	import Select from '$lib/components/ui/select/select.svelte'
-	import { asyncTimeout, capitalizeFirstLetter, formatCurrency } from '$lib/utils'
+	import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
 	import {
 		formatDate,
 		incrementDate,
@@ -34,8 +34,8 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import { calculateNumOccurrences } from '$lib/@snaha/kalkul-maths'
 	import HelperTooltip from './helper-tooltip.svelte'
-	import Loader from './ui/loader.svelte'
 	import InvestmentColorBox from './investment-color-box.svelte'
+	import LoaderButton from './loader-button.svelte'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
@@ -59,7 +59,6 @@
 	let endDate = $state(new Date())
 	let period = $state(30)
 	let periodUnit: Period = $state('year')
-	let createClicked = $state(false)
 
 	const numOccurrences = $derived(
 		calculateNumOccurrences({
@@ -95,8 +94,7 @@
 	const createDisabled = $derived(
 		amount === undefined ||
 			amount <= 0 ||
-			(isRecurring && totalAmounts.nominal === 0 && totalAmounts.adjusted === 0) ||
-			createClicked,
+			(isRecurring && totalAmounts.nominal === 0 && totalAmounts.adjusted === 0),
 	)
 	const formType = $derived(transaction ? 'edit' : 'create')
 
@@ -121,9 +119,6 @@
 			return
 		}
 
-		createClicked = true
-		await asyncTimeout(0)
-
 		await adapter.addTransaction({
 			investment_id: investment.id,
 			type: transactionType,
@@ -142,9 +137,6 @@
 		if (!transaction || amount === undefined || amount <= 0) {
 			return
 		}
-
-		createClicked = true
-		await asyncTimeout(0)
 
 		await adapter.updateTransaction({
 			id: transaction.id,
@@ -252,7 +244,7 @@
 	<Vertical class="rounded">
 		<div class="horizontal">
 			In
-			<InvestmentColorBox colorIndex={investment.colorIndex} />
+			<InvestmentColorBox colorIndex={investment.colorIndex ?? 0} />
 			{investment.name}
 		</div>
 		<div class="horizontal flex-end">
@@ -533,26 +525,18 @@
 		<div class="spacer"></div>
 		<Vertical --vertical-align-items="stretch">
 			{#if formType === 'create'}
-				<Button
+				<LoaderButton
 					variant="strong"
 					dimension="compact"
 					onclick={createTransaction}
-					disabled={createDisabled}
-					busy={createClicked}
-					>{#if createClicked}<Loader dimension="small" color="low" />{/if}{$_(
-						'common.create',
-					)}</Button
+					disabled={createDisabled}>{$_('common.create')}</LoaderButton
 				>
 			{:else}
-				<Button
+				<LoaderButton
 					variant="strong"
 					dimension="compact"
 					onclick={editTransaction}
-					disabled={createDisabled}
-					busy={createClicked}
-					>{#if createClicked}<Loader dimension="small" color="low" />{/if}{$_(
-						'common.done',
-					)}</Button
+					disabled={createDisabled}>{$_('common.done')}</LoaderButton
 				>
 			{/if}
 			<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>

@@ -162,11 +162,11 @@
 {/snippet}
 
 {#if isLoading}
-	<ContentLayout>
+	<ContentLayout centerVertical>
 		<Loader />
 	</ContentLayout>
 {:else if !portfolio || !client}
-	<ContentLayout>
+	<ContentLayout centerVertical>
 		404 - {$_('common.notFound')}
 	</ContentLayout>
 {:else}

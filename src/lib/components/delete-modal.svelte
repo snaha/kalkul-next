@@ -3,7 +3,8 @@
 	import Modal, { type ModalProps } from './ui/modal.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
-	import { Close, TrashCan } from 'carbon-icons-svelte'
+	import { Close } from 'carbon-icons-svelte'
+	import LoaderButton from './loader-button.svelte'
 
 	type Props = {
 		confirm: () => void
@@ -30,11 +31,11 @@
 
 		<Typography>{text}</Typography>
 		<section class="buttons">
-			<Button variant="strong" dimension="compact" onclick={confirm}
-				><TrashCan size={24} />{$_('component.deleteModal.confirmDelete')}</Button
+			<LoaderButton variant="strong" dimension="compact" onclick={confirm}
+				>{$_('component.deleteModal.confirmDelete')}</LoaderButton
 			>
 			<Button variant="secondary" dimension="compact" onclick={oncancel}
-				><Close size={24} />{$_('component.deleteModal.cancelDelete')}</Button
+				>{$_('component.deleteModal.cancelDelete')}</Button
 			>
 			<div class="grower"></div>
 		</section>

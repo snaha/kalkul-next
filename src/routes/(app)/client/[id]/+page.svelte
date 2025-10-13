@@ -56,6 +56,12 @@
 	let portfolioToBeDeleted: number | undefined = $state()
 	let showConfirmDeleteClientModal = $state(false)
 
+	$effect(() => {
+		if (!clientStore.loading && !client) {
+			goto(routes.HOME)
+		}
+	})
+
 	function addPortfolio() {
 		goto(routes.CLIENT_NEW_PORTFOLIO(clientId))
 	}

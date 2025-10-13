@@ -12,11 +12,10 @@
 	import type { z, ZodFormattedError } from 'zod'
 	import { emailFormSchema } from '$lib/schemas'
 	import Vertical from './ui/vertical.svelte'
-	import { asyncTimeout } from '$lib/utils'
-	import Loader from './ui/loader.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import ResponsiveLayout from './ui/responsive-layout.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import LoaderButton from './loader-button.svelte'
 
 	type Props = {
 		close: () => void
@@ -35,10 +34,7 @@
 	let emailError: ZodFormattedError<z.infer<typeof emailFormSchema>> | undefined = $state()
 	let emailValid = $state(true)
 	let emailTouched = $state(false)
-	let createClicked = $state(false)
-	const createDisabled = $derived(
-		name === '' || !birthDate || birthDate > date || !emailValid || createClicked,
-	)
+	const createDisabled = $derived(name === '' || !birthDate || birthDate > date || !emailValid)
 
 	$effect(() => {
 		if (client) {
@@ -56,9 +52,6 @@
 		}
 
 		try {
-			createClicked = true
-			await asyncTimeout(0)
-
 			const client: ClientNoId = {
 				name,
 				birth_date: birthDate.toDateString(),
@@ -70,7 +63,6 @@
 			close()
 		} catch (e) {
 			error = (e as Error).message
-			createClicked = false
 		}
 	}
 
@@ -84,9 +76,6 @@
 		if (!client || !birthDate) {
 			return
 		}
-
-		createClicked = true
-		await asyncTimeout(0)
 
 		await adapter.updateClient({
 			id: client.id,
@@ -180,25 +169,18 @@
 	{/if}
 	<ResponsiveLayout --responsive-justify-content="stretch">
 		{#if formType === 'create'}
-			<Button
-				variant="strong"
-				dimension="compact"
-				onclick={create}
-				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="large" color="low" />{/if}
+			<LoaderButton variant="strong" dimension="compact" onclick={create} disabled={createDisabled}>
 				{$_('page.client.createClient')}
-			</Button>
+			</LoaderButton>
 		{:else}
-			<Button
+			<LoaderButton
 				variant="strong"
 				dimension="compact"
 				onclick={updateClient}
 				disabled={createDisabled}
-				busy={createClicked}
-				>{#if createClicked}<Loader dimension="large" color="low" />{/if}
-				Save changes
-			</Button>
+			>
+				{$_('common.saveChanges')}
+			</LoaderButton>
 		{/if}
 		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
 		{#if formType === 'edit'}

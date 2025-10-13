@@ -103,16 +103,21 @@
 				color={hidden ? 'transparent' : undefined}
 			/>
 		</div>
-		<InvestmentColorBox colorIndex={investment.colorIndex} />
+		<InvestmentColorBox colorIndex={investment.colorIndex ?? 0}>
+			{#if isCalculating}
+				<Vertical
+					--vertical-justify-content="center"
+					--vertical-align-items="center"
+					style="min-height: 24px;"><Loader dimension="small" color="high" /></Vertical
+				>
+			{/if}
+		</InvestmentColorBox>
 		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
 		<FlexItem />
 		{#if exhaustionWarning && !open}
 			<Badge variant="error">
 				<WarningAltFilled size={16} />
 			</Badge>
-		{/if}
-		{#if isCalculating}
-			<Loader dimension="small" />
 		{/if}
 		{#if focused}
 			<Button

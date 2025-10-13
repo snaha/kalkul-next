@@ -455,7 +455,7 @@
 								<InvestmentColorBox
 									width="24px"
 									height="16px"
-									colorIndex={investment.colorIndex}
+									colorIndex={investment.colorIndex ?? 0}
 								/><Typography
 									variant="small"
 									nowrap

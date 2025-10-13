@@ -7,10 +7,10 @@
 	import { subscriptionStore } from '$lib/stores/subscription.svelte'
 	import { goto } from '$app/navigation'
 	import { loadSubscriptions } from '$lib/payments/load'
-	import ContentLayout from '$lib/components/content-layout.svelte'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
+	import Fullscreen from '$lib/components/fullscreen.svelte'
 
 	let { children } = $props()
 
@@ -35,14 +35,14 @@
 </script>
 
 {#if authStore.loading}
-	<ContentLayout>
+	<Fullscreen centerAlign>
 		<Loader />
-	</ContentLayout>
+	</Fullscreen>
 {:else if authStore.isLoggedIn}
 	{#if subscriptionStore.loading}
-		<ContentLayout>
+		<Fullscreen centerAlign>
 			<Loader />
-		</ContentLayout>
+		</Fullscreen>
 	{:else if PUBLIC_DISABLE_PAYWALL === 'true' || subscriptionStore.getActiveSubscription()}
 		{#if children}
 			{@render children()}

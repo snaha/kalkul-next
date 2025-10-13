@@ -123,7 +123,7 @@
 				color={hidden ? 'transparent' : undefined}
 			/>
 		</div>
-		<InvestmentColorBox colorIndex={investment.colorIndex} />
+		<InvestmentColorBox colorIndex={investment.colorIndex ?? 0} />
 		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
 		<FlexItem />
 		{#if exhaustionWarning && !open}
