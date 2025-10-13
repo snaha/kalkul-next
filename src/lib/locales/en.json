@@ -512,7 +512,8 @@
 			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo.",
 			"deletePortfolioWarningTitle": "Delete portfolio?",
 			"linkSharing": "Link sharing",
-			"pdfExport": "PDF export"
+			"pdfExport": "PDF export",
+			"exportGraphData": "Export graph data"
 		},
 		"PDFExport": {
 			"value": "Value",

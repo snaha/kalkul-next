@@ -917,6 +917,26 @@ VALUES
     '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249'
   );
 
+-- Retirement Demo Client
+INSERT INTO
+  "public"."client" (
+    "id",
+    "email",
+    "created_at",
+    "name",
+    "birth_date",
+    "advisor"
+  )
+VALUES
+  (
+    '6',
+    'retirement.demo@kalkul.app',
+    '2025-10-10 12:00:00.000000+00',
+    'Demo Manifest',
+    '1980-02-02',
+    '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249'
+  );
+
 INSERT INTO
   "public"."portfolio" (
     "id",
@@ -942,6 +962,42 @@ VALUES
     '5',
     'USD',
     'zero-crossing-demo-2025'
+  ),
+  (
+    '7',
+    '2025-10-10 12:00:00.000000+00',
+    'Retirement Demo - 4. Final',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-01-01',
+    '2065-02-02',
+    '0.025',
+    '6',
+    'EUR',
+    'retirement-demo-2025'
+  ),
+  (
+    '8',
+    '2025-10-10 12:00:00.000000+00',
+    'Retirement Demo - 1. Goal only',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-01-01',
+    '2065-02-02',
+    '0.025',
+    '6',
+    'EUR',
+    'retirement-demo-simple-2025'
+  ),
+  (
+    '10',
+    '2025-10-10 12:00:00.000000+00',
+    'Retirement Demo - 2. Single investment',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-01-01',
+    '2065-02-02',
+    '0.025',
+    '6',
+    'EUR',
+    'retirement-demo-single-2025'
   );
 
 INSERT INTO
@@ -1367,6 +1423,122 @@ SELECT
 FROM "public"."investment"
 WHERE "id" = '15';
 
+-- Retirement Demo Investments
+INSERT INTO
+  "public"."investment" (
+    "id",
+    "created_at",
+    "last_edited_at",
+    "portfolio_id",
+    "apy",
+    "entry_fee",
+    "exit_fee",
+    "success_fee",
+    "management_fee",
+    "ter",
+    "exit_fee_type",
+    "management_fee_type",
+    "entry_fee_type",
+    "name"
+  )
+VALUES
+  (
+    '19',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '7',
+    '7.2',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Eurizon AM Slovakia – Akciové Portfólio'
+  ),
+  (
+    '20',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '7',
+    '8.68',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Americký akciový fond (Tatra banka)'
+  ),
+  (
+    '21',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '7',
+    '3.55',
+    '1.5',
+    '0',
+    '0',
+    '0',
+    '0.95',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'TAM – Dlhopisový fond'
+  ),
+  (
+    '22',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '7',
+    '5.35',
+    '1.0',
+    '0',
+    '0',
+    '0',
+    '0.7',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Zlato'
+  ),
+  (
+    '23',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '8',
+    '4.5',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Retirement Investment'
+  ),
+  (
+    '28',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '10',
+    '7.2',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Eurizon AM Slovakia – Akciové Portfólio'
+  );
+
 -- Transactions for extended portfolio
 INSERT INTO "public"."transaction" (
   "id",
@@ -1727,6 +1899,618 @@ SELECT
   "inflation_adjusted"
 FROM "public"."transaction"
 WHERE "id" = '3004';
+
+-- Retirement Demo Transactions
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  -- Eurizon AM Slovakia transactions (15%)
+  (
+    '7001',
+    '2025-10-10 12:00:00.000000+00',
+    '1688.7',
+    '2025-01-01 00:00:00+00',
+    null,
+    '19',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7002',
+    '2025-10-10 12:00:00.000000+00',
+    '27.03',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '19',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7003',
+    '2025-10-10 12:00:00.000000+00',
+    '62.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '19',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Americký akciový fond transactions (24%)
+  (
+    '7004',
+    '2025-10-10 12:00:00.000000+00',
+    '2701.92',
+    '2025-01-01 00:00:00+00',
+    null,
+    '20',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7005',
+    '2025-10-10 12:00:00.000000+00',
+    '43.25',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '20',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7006',
+    '2025-10-10 12:00:00.000000+00',
+    '140',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '20',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- TAM - Dlhopisový fond transactions (51%)
+  (
+    '7007',
+    '2025-10-10 12:00:00.000000+00',
+    '5741.58',
+    '2025-01-01 00:00:00+00',
+    null,
+    '21',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7008',
+    '2025-10-10 12:00:00.000000+00',
+    '91.91',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '21',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7009',
+    '2025-10-10 12:00:00.000000+00',
+    '112.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '21',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Zlato transactions (10%)
+  (
+    '7010',
+    '2025-10-10 12:00:00.000000+00',
+    '1125.8',
+    '2025-01-01 00:00:00+00',
+    null,
+    '22',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7011',
+    '2025-10-10 12:00:00.000000+00',
+    '18.02',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '22',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '7012',
+    '2025-10-10 12:00:00.000000+00',
+    '35',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '22',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  );
+
+-- Simple Retirement Demo Transactions (aggregated)
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  (
+    '8001',
+    '2025-10-10 12:00:00.000000+00',
+    '11258',
+    '2025-01-01 00:00:00+00',
+    null,
+    '23',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '8002',
+    '2025-10-10 12:00:00.000000+00',
+    '180.21',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '23',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '8003',
+    '2025-10-10 12:00:00.000000+00',
+    '350',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '23',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  );
+
+-- Retirement Demo Portfolio - Single Investment
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  (
+    '10001',
+    '2025-10-10 12:00:00.000000+00',
+    '11258',
+    '2025-01-01 00:00:00+00',
+    null,
+    '28',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '10002',
+    '2025-10-10 12:00:00.000000+00',
+    '180.21',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '28',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '10003',
+    '2025-10-10 12:00:00.000000+00',
+    '350',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '28',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  );
+
+-- Retirement Demo Portfolio - Equal Weights
+INSERT INTO
+  "public"."portfolio" (
+    "id",
+    "created_at",
+    "name",
+    "last_edited_at",
+    "start_date",
+    "end_date",
+    "inflation_rate",
+    "client",
+    "currency",
+    "link"
+  )
+VALUES
+  (
+    '9',
+    '2025-10-10 12:00:00.000000+00',
+    'Retirement Demo - 3. Equal investments',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-01-01',
+    '2065-02-02',
+    '0.025',
+    '6',
+    'EUR',
+    'retirement-demo-equal-2025'
+  );
+
+-- Retirement Demo Investments - Equal Weights
+INSERT INTO
+  "public"."investment" (
+    "id",
+    "created_at",
+    "last_edited_at",
+    "portfolio_id",
+    "apy",
+    "entry_fee",
+    "exit_fee",
+    "success_fee",
+    "management_fee",
+    "ter",
+    "exit_fee_type",
+    "management_fee_type",
+    "entry_fee_type",
+    "name"
+  )
+VALUES
+  (
+    '24',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '9',
+    '7.2',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Eurizon AM Slovakia – Akciové Portfólio'
+  ),
+  (
+    '25',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '9',
+    '8.68',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Americký akciový fond (Tatra banka)'
+  ),
+  (
+    '26',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '9',
+    '3.55',
+    '1.5',
+    '0',
+    '0',
+    '0',
+    '0.95',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'TAM – Dlhopisový fond'
+  ),
+  (
+    '27',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '9',
+    '5.35',
+    '1.0',
+    '0',
+    '0',
+    '0',
+    '0.7',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Zlato'
+  );
+
+-- Retirement Demo Transactions - Equal Weights (25% each)
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  -- Eurizon AM Slovakia transactions (25%)
+  (
+    '9001',
+    '2025-10-10 12:00:00.000000+00',
+    '2814.5',
+    '2025-01-01 00:00:00+00',
+    null,
+    '24',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9002',
+    '2025-10-10 12:00:00.000000+00',
+    '45.05',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '24',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9003',
+    '2025-10-10 12:00:00.000000+00',
+    '95.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '24',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Americký akciový fond transactions (25%)
+  (
+    '9004',
+    '2025-10-10 12:00:00.000000+00',
+    '2814.5',
+    '2025-01-01 00:00:00+00',
+    null,
+    '25',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9005',
+    '2025-10-10 12:00:00.000000+00',
+    '45.05',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '25',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9006',
+    '2025-10-10 12:00:00.000000+00',
+    '138.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '25',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- TAM - Dlhopisový fond transactions (25%)
+  (
+    '9007',
+    '2025-10-10 12:00:00.000000+00',
+    '2814.5',
+    '2025-01-01 00:00:00+00',
+    null,
+    '26',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9008',
+    '2025-10-10 12:00:00.000000+00',
+    '45.05',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '26',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9009',
+    '2025-10-10 12:00:00.000000+00',
+    '46.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '26',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Zlato transactions (25%)
+  (
+    '9010',
+    '2025-10-10 12:00:00.000000+00',
+    '2814.5',
+    '2025-01-01 00:00:00+00',
+    null,
+    '27',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9011',
+    '2025-10-10 12:00:00.000000+00',
+    '45.05',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '27',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '9012',
+    '2025-10-10 12:00:00.000000+00',
+    '69.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '27',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  );
 
 -- Reset sequences to ensure proper ID generation
 DO $$

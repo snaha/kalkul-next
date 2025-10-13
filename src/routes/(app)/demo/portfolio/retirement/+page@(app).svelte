@@ -5,8 +5,8 @@
 	// Demo mode - use mock client matching Client type
 	const client = {
 		id: -1,
-		name: 'Demo' + ' ' + 'Client', // Internal: not user-facing
-		birth_date: '1990-01-01',
+		name: 'Demo' + ' ' + 'Manifest', // Internal: not user-facing
+		birth_date: '1980-02-02',
 		advisor: '',
 		created_at: new Date().toISOString(),
 		email: 'demo@example.com',

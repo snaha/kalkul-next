@@ -120,14 +120,18 @@
 	function rebalance() {
 		if (!goal) return
 
+		// Always use state 4
+		demoStore.demoState = 4
+
+		// Update the percentages
 		goal.linkedInvestments.forEach((li) => {
 			const weight = investmentWeights.find((w) => w.investmentId === li.investmentId)
 			if (weight) {
 				li.percentage = weight.percentage
 			}
 		})
-
 		demoStore.regenerateAllTransactions()
+
 		close()
 	}
 

@@ -512,7 +512,8 @@
 			"deletePortfolioWarning": "Toto portfolio a všechny investice v něm budou nenávratně smazány. Operaci nelze vrátit zpět.",
 			"deletePortfolioWarningTitle": "Smazat portfolio?",
 			"linkSharing": "Sdílení odkazem",
-			"pdfExport": "Export do PDF"
+			"pdfExport": "Export do PDF",
+			"exportGraphData": "Exportovat data grafu"
 		},
 		"PDFExport": {
 			"value": "Hodnota",

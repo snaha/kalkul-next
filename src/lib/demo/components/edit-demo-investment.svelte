@@ -101,6 +101,8 @@
 			ter: advancedFees ? 0 : Number(ter),
 			type,
 		})
+
+		demoStore.setState(2)
 		close()
 	}
 

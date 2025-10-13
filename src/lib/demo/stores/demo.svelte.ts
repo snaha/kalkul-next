@@ -3,7 +3,7 @@ import {
 	calculateRequiredDeposit,
 	type RetirementCalculationInput,
 } from '$lib/demo/maths/retirement-calc'
-import type { Portfolio, Investment, Transaction } from '$lib/types'
+import type { Portfolio, Investment, Transaction, InvestmentWithColorIndex } from '$lib/types'
 
 export const RETIREMENT_DEFAULTS = {
 	RETIREMENT_AGE: 65,
@@ -13,7 +13,7 @@ export const RETIREMENT_DEFAULTS = {
 	DESIRED_BUDGET: 0,
 	BUDGET_FREQUENCY: 'month' as const,
 	CURRENT_SAVINGS: 0,
-	APY: 5.5,
+	APY: 4.5,
 	DEPOSIT_FREQUENCY: 'month' as const,
 }
 
@@ -99,7 +99,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 	return []
 }
 
-export function goalToInvestment(goal: Goal): Investment {
+export function goalToInvestment(goal: Goal): InvestmentWithColorIndex {
 	// Convert goal to a demo investment
 	return {
 		id: -1, // Demo ID
@@ -118,8 +118,11 @@ export function goalToInvestment(goal: Goal): Investment {
 		management_fee_type: null,
 		success_fee: null,
 		ter: null,
+		colorIndex: 4, // Use the fifth color from SERIES_COLORS
 	}
 }
+
+export type DemoState = 1 | 2 | 3 | 4
 
 class DemoStore {
 	goals = $state<Goal[]>([])
@@ -129,6 +132,9 @@ class DemoStore {
 	investments = $state<Investment[]>([])
 	transactions = $state<Transaction[]>([])
 	transactionGoalMap = $state<Map<number, string>>(new Map())
+
+	// Track the current demo state (1: goal only, 2: single investment, 3: equal weights, 4: custom weights)
+	demoState = $state<DemoState>(1)
 
 	addGoal(goal: Goal) {
 		this.goals.push(goal)
@@ -290,27 +296,295 @@ class DemoStore {
 		})
 	}
 
+	/**
+	 * Sets the demo state and populates the corresponding data
+	 */
+	setState(state: DemoState) {
+		// Clear all existing investments and transactions
+		this.investments = []
+		this.transactions = []
+		this.transactionGoalMap = new Map()
+
+		// Clear linked investments from goals
+		this.goals.forEach((goal) => {
+			goal.linkedInvestments = []
+		})
+
+		// Set the state
+		this.demoState = state
+
+		// Populate data based on state
+		switch (state) {
+			case 1:
+				// State 1: Goal only (no investments)
+				// Already cleared above, nothing more to do
+				break
+
+			case 2:
+				// State 2: Single investment
+				this.addInvestment({
+					portfolio_id: -1,
+					name: 'Retirement Investment',
+					apy: 5.5,
+					type: 'etf',
+					advanced_fees: false,
+					entry_fee: null,
+					entry_fee_type: null,
+					exit_fee: null,
+					exit_fee_type: null,
+					management_fee: null,
+					management_fee_type: null,
+					success_fee: null,
+					ter: null,
+				})
+				break
+
+			case 3: {
+				// State 3: 4 investments with equal weights (25% each)
+				// Hardcoded transactions based on 25% distribution
+				const now = new Date().toISOString()
+				const investmentIds = [-1, -2, -3, -4] // IDs for the 4 investments
+				const names = [
+					'Eurizon AM Slovakia – Akciové Portfólio',
+					'Americký akciový fond (Tatra banka)',
+					'TAM – Dlhopisový fond',
+					'Zlato',
+				]
+				const apys = [7.2, 8.68, 3.55, 5.35]
+				const types = ['mutual_fund', 'mutual_fund', 'bond', 'commodity'] as const
+
+				// Create 4 investments
+				investmentIds.forEach((id, index) => {
+					this.investments.push({
+						id,
+						portfolio_id: -1,
+						name: names[index],
+						apy: apys[index],
+						type: types[index],
+						advanced_fees: false,
+						entry_fee: null,
+						entry_fee_type: null,
+						exit_fee: null,
+						exit_fee_type: null,
+						management_fee: null,
+						management_fee_type: null,
+						success_fee: null,
+						ter: null,
+						created_at: now,
+						last_edited_at: now,
+					})
+				})
+
+				// Link all investments to goal with 25% each
+				const goal = this.goals[0]
+				if (goal) {
+					investmentIds.forEach((id) => {
+						goal.linkedInvestments.push({
+							investmentId: id,
+							percentage: 25,
+						})
+					})
+				}
+
+				// Hardcoded transactions based on seed.sql portfolio 9
+				// Equal weights means 25% of deposits but different withdrawal amounts
+				const withdrawalAmounts = [95.5, 138.5, 46.5, 69.5] // From seed.sql
+
+				let transactionId = -1
+				investmentIds.forEach((investmentId, index) => {
+					// Initial investment: 2814.5 for each (inflation adjusted)
+					this.transactions.push({
+						id: transactionId--,
+						investment_id: investmentId,
+						amount: 2814.5,
+						date: '2025-01-01',
+						type: 'deposit',
+						created_at: now,
+						last_edited_at: now,
+						end_date: null,
+						inflation_adjusted: true,
+						label: 'Initial Investment',
+						repeat: null,
+						repeat_unit: null,
+					})
+					// Monthly contribution: 45.05 for each (inflation adjusted)
+					this.transactions.push({
+						id: transactionId--,
+						investment_id: investmentId,
+						amount: 45.05,
+						date: '2025-02-01',
+						type: 'deposit',
+						created_at: now,
+						last_edited_at: now,
+						end_date: '2045-02-01',
+						inflation_adjusted: true,
+						label: 'Monthly Contribution',
+						repeat: 1,
+						repeat_unit: 'month',
+					})
+					// Monthly retirement withdrawal: different for each investment
+					this.transactions.push({
+						id: transactionId--,
+						investment_id: investmentId,
+						amount: withdrawalAmounts[index],
+						date: '2045-03-01',
+						type: 'withdrawal',
+						created_at: now,
+						last_edited_at: now,
+						end_date: '2065-02-28',
+						inflation_adjusted: true,
+						label: 'Monthly Retirement Withdrawal',
+						repeat: 1,
+						repeat_unit: 'month',
+					})
+
+					// Map transactions to goal
+					for (let i = 0; i < 3; i++) {
+						this.transactionGoalMap.set(transactionId + i + 1, 'Retirement')
+					}
+				})
+				break
+			}
+
+			case 4: {
+				// State 4: 4 investments with custom weights
+				// Hardcoded transactions based on custom distribution
+				// Eurizon: 15%, Americký: 24%, TAM: 51%, Zlato: 10%
+				const now = new Date().toISOString()
+				const investmentIds = [-1, -2, -3, -4]
+				const names = [
+					'Eurizon AM Slovakia – Akciové Portfólio',
+					'Americký akciový fond (Tatra banka)',
+					'TAM – Dlhopisový fond',
+					'Zlato',
+				]
+				const apys = [7.2, 8.68, 3.55, 5.35]
+				const types = ['mutual_fund', 'mutual_fund', 'bond', 'commodity'] as const
+				const percentages = [15, 24, 51, 10]
+
+				// Create 4 investments
+				investmentIds.forEach((id, index) => {
+					this.investments.push({
+						id,
+						portfolio_id: -1,
+						name: names[index],
+						apy: apys[index],
+						type: types[index],
+						advanced_fees: false,
+						entry_fee: null,
+						entry_fee_type: null,
+						exit_fee: null,
+						exit_fee_type: null,
+						management_fee: null,
+						management_fee_type: null,
+						success_fee: null,
+						ter: null,
+						created_at: now,
+						last_edited_at: now,
+					})
+				})
+
+				// Link all investments to goal with custom percentages
+				const goal = this.goals[0]
+				if (goal) {
+					investmentIds.forEach((id, index) => {
+						goal.linkedInvestments.push({
+							investmentId: id,
+							percentage: percentages[index],
+						})
+					})
+				}
+
+				// Hardcoded transactions with custom weights
+				// Custom percentages: 15%, 24%, 51%, 10%
+				// Note: No transaction data exists in seed.sql for portfolio 7 (state 4)
+				// Using proportional distribution based on percentages
+				const initialAmounts = percentages.map((pct) => 11258 * (pct / 100))
+				const monthlyDepositAmounts = percentages.map((pct) => 180.21 * (pct / 100))
+				const withdrawalAmounts = percentages.map((pct) => 350 * (pct / 100))
+
+				let transactionId = -1
+				investmentIds.forEach((investmentId, index) => {
+					// Initial investment distributed by percentage (inflation adjusted)
+					this.transactions.push({
+						id: transactionId--,
+						investment_id: investmentId,
+						amount: initialAmounts[index],
+						date: '2025-01-01',
+						type: 'deposit',
+						created_at: now,
+						last_edited_at: now,
+						end_date: null,
+						inflation_adjusted: true,
+						label: 'Initial Investment',
+						repeat: null,
+						repeat_unit: null,
+					})
+					// Monthly contribution distributed by percentage (inflation adjusted)
+					this.transactions.push({
+						id: transactionId--,
+						investment_id: investmentId,
+						amount: monthlyDepositAmounts[index],
+						date: '2025-02-01',
+						type: 'deposit',
+						created_at: now,
+						last_edited_at: now,
+						end_date: '2045-02-01',
+						inflation_adjusted: true,
+						label: 'Monthly Contribution',
+						repeat: 1,
+						repeat_unit: 'month',
+					})
+					// Monthly retirement withdrawal distributed by percentage
+					this.transactions.push({
+						id: transactionId--,
+						investment_id: investmentId,
+						amount: withdrawalAmounts[index],
+						date: '2045-03-01',
+						type: 'withdrawal',
+						created_at: now,
+						last_edited_at: now,
+						end_date: '2065-02-28',
+						inflation_adjusted: true,
+						label: 'Monthly Retirement Withdrawal',
+						repeat: 1,
+						repeat_unit: 'month',
+					})
+
+					// Map transactions to goal
+					for (let i = 0; i < 3; i++) {
+						this.transactionGoalMap.set(transactionId + i + 1, 'Retirement')
+					}
+				})
+				break
+			}
+		}
+
+		// Explicitly set the state (in case addInvestment changed it)
+		this.demoState = state
+	}
+
 	initializeDemoPortfolio(clientId: number, currency = 'EUR') {
 		const today = new Date()
 
 		// Add default retirement goal if no goals exist
 		if (this.goals.length === 0) {
-			const depositStart = new Date()
-			const retirementStart = new Date(today.getFullYear() + 42, today.getMonth(), today.getDate())
+			const depositStart = new Date('2025-01-01')
+			const retirementStart = new Date('2045-03-01')
 
 			this.goals = [
 				{
 					type: 'retirement',
 					currency,
 					linkedInvestments: [],
-					customDepositAmount: 180.57,
+					customDepositAmount: 180.21,
 					calculationInput: {
-						apy: 5.5,
+						apy: 4.5,
 						budgetFrequency: 'month',
 						currentSavings: 11258,
 						depositFrequency: 'month',
 						depositStart,
-						desiredBudget: 3500,
+						desiredBudget: 350,
 						inflation: 2.5,
 						retirementLength: 20,
 						retirementStart,
@@ -347,6 +621,9 @@ class DemoStore {
 		// Start with empty investments and transactions
 		this.investments = []
 		this.transactions = []
+
+		// Initialize demo state to 1 (goal only)
+		this.demoState = 1
 	}
 }
 

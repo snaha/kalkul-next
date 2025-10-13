@@ -12,15 +12,16 @@
 		generateYears,
 	} from '$lib/demo/maths/retirement-calc'
 	import routes from '$lib/routes'
+	import { DEMO_CLIENT_NAME, DEMO_CLIENT_BIRTH_DATE, DEMO_CLIENT_EMAIL } from '$lib/demo/utils'
 
 	// Demo mode - use mock client matching Client type
 	const client = {
 		id: -1,
-		name: 'Demo' + ' ' + 'Client', // Internal: not user-facing
-		birth_date: '1990-01-01',
+		name: DEMO_CLIENT_NAME,
+		birth_date: DEMO_CLIENT_BIRTH_DATE,
 		advisor: '',
 		created_at: new Date().toISOString(),
-		email: 'demo@example.com',
+		email: DEMO_CLIENT_EMAIL,
 	}
 
 	// Get retirement goal
@@ -87,6 +88,8 @@
 	}
 
 	function createPlan() {
+		// Set demo state to 1 and populate data (goal only, no investments)
+		demoStore.setState(1)
 		// Navigate to demo page to create the plan
 		goto(routes.DEMO())
 	}

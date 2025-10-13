@@ -5,8 +5,8 @@
 	import routes from '$lib/routes'
 	import { page } from '$app/state'
 	import { goto } from '$app/navigation'
-	import { untrack } from 'svelte'
 	import { demoStore, goalToTransactions, goalToInvestment } from '$lib/demo/stores/demo.svelte'
+	import { DEMO_CLIENT_NAME, DEMO_CLIENT_BIRTH_DATE, DEMO_CLIENT_EMAIL } from '$lib/demo/utils'
 	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
@@ -19,19 +19,25 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import InvestmentsSidebar from '$lib/demo/components/investments-sidebar.svelte'
-	import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
+	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
 	import TabBar from '$lib/components/ui/tab-bar/tab-bar.svelte'
 	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
 	import GoalsSidebar from '$lib/demo/components/goals-sidebar.svelte'
 
+	// Import pre-calculated graph data for demo states
+	import goalOnlyData from '$lib/demo/data/1-goal-only-graph-data.json'
+	import singleInvestmentData from '$lib/demo/data/2-single-investment-graph-data.json'
+	import equalInvestmentsData from '$lib/demo/data/3-equal-investments-graph-data.json'
+	import finalData from '$lib/demo/data/4-final-graph-data.json'
+
 	// Demo mode - use mock client matching Client type
 	const client = {
 		id: -1,
-		name: 'Demo' + ' ' + 'Client', // Internal: not user-facing
-		birth_date: '1990-01-01',
+		name: DEMO_CLIENT_NAME,
+		birth_date: DEMO_CLIENT_BIRTH_DATE,
 		advisor: '',
 		created_at: new Date().toISOString(),
-		email: 'demo@example.com',
+		email: DEMO_CLIENT_EMAIL,
 	}
 
 	// Initialize demo portfolio if not already initialized
@@ -39,6 +45,8 @@
 		if (!demoStore.portfolio) {
 			const currency = demoStore.goals[0]?.currency ?? 'EUR'
 			demoStore.initializeDemoPortfolio(-1, currency)
+			// Set to state 1 only on initial load
+			demoStore.setState(1)
 		}
 	})
 
@@ -54,36 +62,80 @@
 
 	// Prepare goal data
 	const currentGoal = $derived(demoStore.goals[0])
-	const goalInvestments = $derived(currentGoal ? [goalToInvestment(currentGoal)] : [])
+	const goalInvestments = $derived(
+		currentGoal
+			? [{ ...goalToInvestment(currentGoal), colorIndex: 4 } as InvestmentWithColorIndex]
+			: [],
+	)
 	const goalTransactions = $derived(currentGoal ? goalToTransactions(currentGoal) : [])
 
-	// Create two separate simulation stores
-	const goalsSimulation = withPortfolioSimulationStore()
-	const investmentsSimulation = withPortfolioSimulationStore()
+	/**
+	 * Gets hardcoded graph data based on the current demo state.
+	 * Returns undefined if no hardcoded data is available for the current state.
+	 */
+	function getHardcodedGraphData(): PortfolioSimulation | undefined {
+		const state = demoStore.demoState
 
-	// Calculate both simulations
-	$effect(() => {
-		if (portfolio && goalTransactions.length > 0) {
-			untrack(() => {
-				goalsSimulation.calculateIteratively(portfolio, goalInvestments, goalTransactions)
-			})
+		switch (state) {
+			case 1:
+				return goalOnlyData as PortfolioSimulation
+			case 2:
+				return singleInvestmentData as PortfolioSimulation
+			case 3:
+				return equalInvestmentsData as PortfolioSimulation
+			case 4:
+				return finalData as PortfolioSimulation
+			default:
+				return undefined
 		}
-	})
+	}
 
-	$effect(() => {
-		if (portfolio && transactions) {
-			untrack(() => {
-				investmentsSimulation.calculateIteratively(portfolio, investments, transactions)
-			})
-		}
-	})
+	// Empty simulation data structure
+	const emptySimulationData: PortfolioSimulation = {
+		data: [],
+		total: {
+			label: 'Total',
+			graphLabels: [],
+			graphDeposits: [],
+			graphWithdrawals: [],
+			graphInvestmentValues: [],
+			graphFeeValues: [],
+			graphInflationDeposits: [],
+			graphInflationWithdrawals: [],
+			graphInflationInvestmentValues: [],
+			graphInflationFeeValues: [],
+		},
+		isCalculating: false,
+		progress: 100,
+	}
 
-	// Get data based on selected tab
+	// Get data based on selected tab - always use hardcoded data or empty
 	const graphInvestments = $derived(selectedTab === 'goals' ? goalInvestments : investments)
 	const graphTransactions = $derived(selectedTab === 'goals' ? goalTransactions : transactions)
-	const graphData = $derived(
-		selectedTab === 'goals' ? goalsSimulation.simulationData : investmentsSimulation.simulationData,
-	)
+
+	// Always use hardcoded data, never calculate
+	const graphData = $derived.by(() => {
+		const hardcodedData = getHardcodedGraphData()
+		if (!hardcodedData) return emptySimulationData
+
+		if (selectedTab === 'goals') {
+			if (investments.length > 0) {
+				// Show total from hardcoded investments simulation
+				return {
+					data: [hardcodedData.total],
+					total: hardcodedData.total,
+					isCalculating: false,
+					progress: 100,
+				}
+			} else {
+				// No investments, show hardcoded goal-only simulation
+				return hardcodedData
+			}
+		} else {
+			// Investments tab - use hardcoded data
+			return hardcodedData
+		}
+	})
 
 	const investmentsViewStore = $derived(withInvestmentsViewStore(investments))
 
@@ -91,7 +143,7 @@
 	const goalsTabLabel = $_('page.goals.title')
 	const investmentsTabLabel = $_('common.investments')
 
-	let adjustWithInflation = $state(false)
+	let adjustWithInflation = $state(true)
 	let dialog: HTMLDialogElement | undefined = $state()
 	let editedTransaction: Transaction | undefined = $state()
 	let selectedInvestment: InvestmentWithColorIndex | undefined = $state()
@@ -140,89 +192,16 @@
 		demoStore.deleteInvestment(investmentId)
 	}
 
-	// DEMO: Prefill investments for demonstration
-	function addDemoInvestments() {
-		// Clear all existing investments
-		demoStore.investments = []
-		demoStore.transactions = []
-		demoStore.transactionGoalMap = new Map()
-
-		// Clear linked investments from goals
-		demoStore.goals.forEach((goal) => {
-			goal.linkedInvestments = []
-		})
-
-		// DEMO PREFILL VALUES - Add predefined investments
-		demoStore.addInvestment({
-			portfolio_id: -1,
-			name: 'Eurizon AM Slovakia – Akciové Portfólio',
-			apy: 7.2,
-			type: 'mutual_fund',
-			advanced_fees: false,
-			entry_fee: null,
-			entry_fee_type: null,
-			exit_fee: null,
-			exit_fee_type: null,
-			management_fee: null,
-			management_fee_type: null,
-			success_fee: null,
-			ter: null,
-		})
-
-		demoStore.addInvestment({
-			portfolio_id: -1,
-			name: 'Americký akciový fond (Tatra banka)',
-			apy: 8.68,
-			type: 'mutual_fund',
-			advanced_fees: false,
-			entry_fee: null,
-			entry_fee_type: null,
-			exit_fee: null,
-			exit_fee_type: null,
-			management_fee: null,
-			management_fee_type: null,
-			success_fee: null,
-			ter: null,
-		})
-
-		demoStore.addInvestment({
-			portfolio_id: -1,
-			name: 'TAM – Dlhopisový fond',
-			apy: 3.55,
-			type: 'bond',
-			advanced_fees: false,
-			entry_fee: null,
-			entry_fee_type: null,
-			exit_fee: null,
-			exit_fee_type: null,
-			management_fee: null,
-			management_fee_type: null,
-			success_fee: null,
-			ter: null,
-		})
-
-		demoStore.addInvestment({
-			portfolio_id: -1,
-			name: 'Zlato',
-			apy: 5.35,
-			type: 'commodity',
-			advanced_fees: false,
-			entry_fee: null,
-			entry_fee_type: null,
-			exit_fee: null,
-			exit_fee_type: null,
-			management_fee: null,
-			management_fee_type: null,
-			success_fee: null,
-			ter: null,
-		})
-	}
-
-	// DEMO: Keyboard listener to prefill investments for demonstration
+	// DEMO: Keyboard listeners to set demo states
 	$effect(() => {
 		function handleKeydown(event: KeyboardEvent) {
+			// ArrowRight: State 3 - Equal weights (25% each)
 			if (event.key === 'ArrowRight') {
-				addDemoInvestments()
+				demoStore.setState(3)
+			}
+			// ArrowDown: State 4 - Custom weights (15%, 24%, 51%, 10%)
+			else if (event.key === 'ArrowDown') {
+				demoStore.setState(4)
 			}
 		}
 
@@ -262,7 +241,11 @@
 					/>
 				</TabContent>
 
-				<TabContent value={investmentsTabLabel} id="investments">
+				<TabContent
+					value={investmentsTabLabel}
+					id="investments"
+					disabled={investments.length === 0}
+				>
 					<InvestmentsSidebar
 						{isGraphFullscreened}
 						{isSidebarFlexible}
@@ -333,6 +316,7 @@
 					bind:adjustWithInflation
 					bind:isMenuOpen
 					bind:isShareMenuOpen
+					simulationData={graphData}
 				/>
 			</div>
 
@@ -395,6 +379,7 @@
 							bind:adjustWithInflation
 							bind:isMenuOpen
 							bind:isShareMenuOpen
+							simulationData={graphData}
 						/>
 					</ContentLayout>
 

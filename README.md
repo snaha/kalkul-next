@@ -103,15 +103,16 @@ supabase gen types --lang=typescript --project-id=<project-id> > src/lib/typesdb
 
 ## Environment Variables
 
-| Variable                   | Default                  | Description                        |
-| -------------------------- | ------------------------ | ---------------------------------- |
-| `PUBLIC_SUPABASE_URL`      | `http://127.0.0.1:64321` | Supabase URL                       |
-| `PUBLIC_SUPABASE_ANON_KEY` | Local dev key            | Supabase anon key                  |
-| `VITE_ROUTER`              |                          | Router type (`hash` or `pathname`) |
-| `VITE_BASE_URL`            |                          | Base path for deployment           |
-| `VITE_API_URL`             |                          | API endpoints URL                  |
-| `VITE_ADAPTER`             |                          | Adapter (`static` or `node`)       |
-| `CORS_ALLOWED_ORIGIN`      |                          | CORS allowed origin                |
+| Variable                        | Default                  | Description                                            |
+| ------------------------------- | ------------------------ | ------------------------------------------------------ |
+| `PUBLIC_SUPABASE_URL`           | `http://127.0.0.1:64321` | Supabase URL                                           |
+| `PUBLIC_SUPABASE_ANON_KEY`      | Local dev key            | Supabase anon key                                      |
+| `VITE_ROUTER`                   |                          | Router type (`hash` or `pathname`)                     |
+| `VITE_BASE_URL`                 |                          | Base path for deployment                               |
+| `VITE_API_URL`                  |                          | API endpoints URL                                      |
+| `VITE_ADAPTER`                  |                          | Adapter (`static` or `node`)                           |
+| `VITE_ENABLE_GRAPH_DATA_EXPORT` | `false`                  | Enable "Export graph data" button for demo development |
+| `CORS_ALLOWED_ORIGIN`           |                          | CORS allowed origin                                    |
 
 ## Testing
 

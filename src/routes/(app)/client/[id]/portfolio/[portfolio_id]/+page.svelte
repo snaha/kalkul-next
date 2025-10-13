@@ -196,6 +196,7 @@
 						bind:adjustWithInflation
 						bind:isMenuOpen
 						bind:isShareMenuOpen
+						simulationData={graphData}
 					/>
 				</div>
 
@@ -258,6 +259,7 @@
 								bind:adjustWithInflation
 								bind:isMenuOpen
 								bind:isShareMenuOpen
+								simulationData={graphData}
 							/>
 						</ContentLayout>
 

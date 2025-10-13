@@ -101,7 +101,7 @@
 		function handleKeydown(event: KeyboardEvent) {
 			if (event.key === 'ArrowRight') {
 				// DEMO PREFILL VALUES
-				desiredBudget = 3500
+				desiredBudget = 350
 				currentSavings = 11258
 			}
 		}

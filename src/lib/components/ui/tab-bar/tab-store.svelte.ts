@@ -4,14 +4,16 @@ export type TabStore = {
 	selected: number
 	readonly items: (string | Snippet)[]
 	readonly ids: (string | undefined)[]
+	readonly disabled: boolean[]
 
-	addItem: (item: string | Snippet, id: string | undefined) => void
+	addItem: (item: string | Snippet, id: string | undefined, disabled: boolean) => void
 }
 
 export function withTabStore(): TabStore {
 	let selected = $state(0)
 	const items: (string | Snippet)[] = $state([])
 	const ids: (string | undefined)[] = $state([])
+	const disabled: boolean[] = $state([])
 
 	return {
 		get selected() {
@@ -22,13 +24,15 @@ export function withTabStore(): TabStore {
 		},
 		items,
 		ids,
-		addItem(item, id) {
+		disabled,
+		addItem(item, id, isDisabled = false) {
 			if (items.includes(item)) {
 				console.warn(`Duplicate tab item, ignored: ${item}`)
 				return
 			}
 			items.push(item)
 			ids.push(id)
+			disabled.push(isDisabled)
 		},
 	}
 }

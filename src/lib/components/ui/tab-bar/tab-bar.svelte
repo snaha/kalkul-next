@@ -71,6 +71,7 @@
 						variant="ghost"
 						active={selectedTabIndex === i}
 						{dimension}
+						disabled={store.disabled[i]}
 						onclick={() => selectTab(i)}>{item}</Button
 					>
 				{:else}
@@ -79,6 +80,7 @@
 						variant="ghost"
 						active={selectedTabIndex === i}
 						{dimension}
+						disabled={store.disabled[i]}
 						onclick={() => selectTab(i)}
 					>
 						{@render item()}

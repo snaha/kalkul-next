@@ -6,15 +6,16 @@
 		value: string | Snippet
 		children: Snippet
 		id?: string | undefined
+		disabled?: boolean
 	}
 
-	let { value = $bindable(), children, id }: Props = $props()
+	let { value = $bindable(), children, id, disabled = false }: Props = $props()
 
 	const store = getContext<TabStore>('tab-store')
 	let selected = $derived(store.items[store.selected] === value)
 
 	onMount(() => {
-		store.addItem(value, id)
+		store.addItem(value, id, disabled)
 	})
 </script>
 
