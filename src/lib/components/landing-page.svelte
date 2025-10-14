@@ -15,6 +15,7 @@
 	import Horizontal from './ui/horizontal.svelte'
 	import Divider from './ui/divider.svelte'
 	import Badge from './ui/badge.svelte'
+	import ContentLayout from './content-layout.svelte'
 
 	type Props = {
 		isMobile: boolean
@@ -52,367 +53,374 @@
 		<Button variant="strong" dimension="compact" href={routes.SIGNUP}>{$_('common.signup')}</Button>
 	</div>
 </header>
-<main class:mobile={isMobile}>
+<ContentLayout>
 	<Vertical
-		--vertical-gap="var(--double-padding)"
+		--vertical-gap={isMobile ? 'var(--double-padding)' : 'var(--quadruple-padding)'}
 		--vertical-justify-content="center"
 		--vertical-align-items="center"
 	>
-		<Typography variant={isMobile ? 'h2' : 'h1'} center>{$_('page.landing.title')}</Typography>
-		<Typography variant="large" center>{$_('page.landing.subtitle')}</Typography>
-
 		<Vertical
-			class={isMobile ? 'max-width560' : 'max-width320'}
-			--vertical-gap="var(--padding)"
-			--vertical-align-items="stretch"
+			--vertical-gap="var(--double-padding)"
+			--vertical-justify-content="center"
+			--vertical-align-items="center"
 		>
-			<Button variant="strong" dimension="large" href={routes.SIGNUP}
-				>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+			<Typography variant={isMobile ? 'h2' : 'h1'} center>{$_('page.landing.title')}</Typography>
+			<Typography variant="large" center>{$_('page.landing.subtitle')}</Typography>
+
+			<Vertical
+				class={isMobile ? 'max-width560' : 'max-width320'}
+				--vertical-gap="var(--padding)"
+				--vertical-align-items="stretch"
 			>
+				<Button variant="strong" dimension="large" href={routes.SIGNUP}
+					>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+				>
+				<ResponsiveLayout
+					--responsive-align-items="stretch"
+					--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
+					class="max-width560"
+				>
+					<Button
+						variant="ghost"
+						dimension="compact"
+						href={routes.SAMPLE_PORTFOLIO_LINK}
+						target="_blank">{$_('common.viewSamplePortfolio')}</Button
+					>
+					<Button
+						variant="ghost"
+						dimension="compact"
+						href={`mailto:support@kalkul.app?subject=${$_('email.templates.newsletter2025September.kalkulDemoRequest')}&body=${$_('email.templates.newsletter2025September.kalkulDemoRequestBody')}`}
+						target="_blank">{$_('page.landing.requestDemo')}</Button
+					>
+				</ResponsiveLayout>
+			</Vertical>
+		</Vertical>
+
+		<!-- svelte-ignore a11y_missing_attribute -->
+		<img class="screenshot" style="width: 1302px" src="images/landing/01_Hero.png" />
+
+		<Divider --margin="0" />
+
+		<Vertical --vertical-gap="var(--double-padding)">
+			<Horizontal --horizontal-justify-content="center">
+				<Typography variant="large" italic center accent
+					>{$_('page.landing.stopJuggling')}</Typography
+				>
+			</Horizontal>
 			<ResponsiveLayout
+				--responsive-justify-content="stretch"
 				--responsive-align-items="stretch"
-				--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
-				class="max-width560"
+				--responsive-gap="var(--double-padding)"
 			>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					href={routes.SAMPLE_PORTFOLIO_LINK}
-					target="_blank">{$_('common.viewSamplePortfolio')}</Button
+				<Vertical
+					class="flex bg-base box"
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="stretch"
+					--vertical-align-items="center"
 				>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					href={`mailto:support@kalkul.app?subject=${$_('email.templates.newsletter2025September.kalkulDemoRequest')}&body=${$_('email.templates.newsletter2025September.kalkulDemoRequestBody')}`}
-					target="_blank">{$_('page.landing.requestDemo')}</Button
+					<!-- svelte-ignore a11y_missing_attribute -->
+					<img
+						src="images/landing/collaboration-2--streamline-bangalore.svg"
+						width="200"
+						height="200"
+					/>
+					<Typography variant="h4" center>{$_('page.landing.unifiedPortfoliosTitle')}</Typography>
+					<Typography center>{$_('page.landing.unifiedPortfoliosDescription')}</Typography>
+				</Vertical>
+
+				<Vertical
+					class="flex bg-base box"
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="stretch"
+					--vertical-align-items="center"
 				>
+					<!-- svelte-ignore a11y_missing_attribute -->
+					<img src="images/landing/business-strategy-introduction.svg" width="200" height="200" />
+					<Typography variant="h4" center>{$_('page.landing.flexiblePlanningTitle')}</Typography>
+					<Typography center>{$_('page.landing.flexiblePlanningDescription')}</Typography>
+				</Vertical>
+
+				<Vertical
+					class="flex bg-base box"
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="stretch"
+					--vertical-align-items="center"
+				>
+					<!-- svelte-ignore a11y_missing_attribute -->
+					<img src="images/landing/business-presentation.svg" width="200" height="200" />
+					<Typography variant="h4" center
+						>{$_('page.landing.insightfulPresentationsTitle')}</Typography
+					>
+					<Typography center>{$_('page.landing.insightfulPresentationsDescription')}</Typography>
+				</Vertical>
 			</ResponsiveLayout>
 		</Vertical>
-	</Vertical>
 
-	<!-- svelte-ignore a11y_missing_attribute -->
-	<img class="screenshot" style="width: 1302px" src="images/landing/01_Hero.png" />
+		<Divider --margin="0" />
 
-	<Divider --margin="0" />
-
-	<Vertical --vertical-gap="var(--double-padding)">
-		<Horizontal --horizontal-justify-content="center">
-			<Typography variant="large" italic center accent>{$_('page.landing.stopJuggling')}</Typography
-			>
-		</Horizontal>
-		<ResponsiveLayout
-			--responsive-justify-content="stretch"
-			--responsive-align-items="stretch"
-			--responsive-gap="var(--double-padding)"
-		>
-			<Vertical
-				class="flex bg-base box"
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="stretch"
-				--vertical-align-items="center"
-			>
-				<!-- svelte-ignore a11y_missing_attribute -->
-				<img
-					src="images/landing/collaboration-2--streamline-bangalore.svg"
-					width="200"
-					height="200"
-				/>
-				<Typography variant="h4" center>{$_('page.landing.unifiedPortfoliosTitle')}</Typography>
-				<Typography center>{$_('page.landing.unifiedPortfoliosDescription')}</Typography>
-			</Vertical>
-
-			<Vertical
-				class="flex bg-base box"
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="stretch"
-				--vertical-align-items="center"
-			>
-				<!-- svelte-ignore a11y_missing_attribute -->
-				<img src="images/landing/business-strategy-introduction.svg" width="200" height="200" />
-				<Typography variant="h4" center>{$_('page.landing.flexiblePlanningTitle')}</Typography>
-				<Typography center>{$_('page.landing.flexiblePlanningDescription')}</Typography>
-			</Vertical>
-
-			<Vertical
-				class="flex bg-base box"
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="stretch"
-				--vertical-align-items="center"
-			>
-				<!-- svelte-ignore a11y_missing_attribute -->
-				<img src="images/landing/business-presentation.svg" width="200" height="200" />
-				<Typography variant="h4" center
-					>{$_('page.landing.insightfulPresentationsTitle')}</Typography
+		<Vertical --vertical-gap="var(--quadruple-padding)">
+			<Horizontal --horizontal-justify-content="center">
+				<Typography variant="large" italic center accent
+					>{$_('page.landing.builtWithAdvisors')}</Typography
 				>
-				<Typography center>{$_('page.landing.insightfulPresentationsDescription')}</Typography>
-			</Vertical>
-		</ResponsiveLayout>
-	</Vertical>
+			</Horizontal>
 
-	<Divider --margin="0" />
-
-	<Vertical --vertical-gap="var(--quadruple-padding)">
-		<Horizontal --horizontal-justify-content="center">
-			<Typography variant="large" italic center accent
-				>{$_('page.landing.builtWithAdvisors')}</Typography
-			>
-		</Horizontal>
-
-		<ResponsiveLayout --responsive-gap="var(--double-padding)">
-			<Vertical
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="center"
-				class="max-width560"
-			>
-				<Vertical --vertical-gap="0">
-					<Typography accent>{$_('page.landing.bigPicturePlanningLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.bigPicturePlanningTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.bigPicturePlanningDescription')}</Typography>
-				<Vertical --vertical-gap="0">
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.calculateGoalsQuickly')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.adjustAssumptions')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.strategyFirst')}</Typography>
-					</Horizontal>
-				</Vertical>
-			</Vertical>
-
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/02_BigPicture.png" />
-		</ResponsiveLayout>
-		<ResponsiveLayout --responsive-gap="var(--double-padding)" reverse>
-			<Vertical
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="center"
-				class="max-width560"
-			>
-				<Vertical --vertical-gap="0">
-					<Typography accent>{$_('page.landing.granularInvestmentLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.granularInvestmentTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.granularInvestmentDescription')}</Typography>
-				<Vertical --vertical-gap="0">
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.importDataByIsin')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.setPreciseReturns')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.supportGoals')}</Typography>
-					</Horizontal>
-				</Vertical>
-			</Vertical>
-
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/03_Investment.png" />
-		</ResponsiveLayout>
-
-		<ResponsiveLayout --responsive-gap="var(--double-padding)">
-			<Vertical
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="center"
-				class="max-width560"
-			>
-				<Vertical --vertical-gap="0">
-					<Typography accent>{$_('page.landing.dynamicRebalancingLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.dynamicRebalancingTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.dynamicRebalancingDescription')}</Typography>
-				<Vertical --vertical-gap="0">
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.modifyGoalsFreely')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.weightEachInvestment')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.automaticRecalculation')}</Typography>
-					</Horizontal>
-				</Vertical>
-			</Vertical>
-
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/04_Rebalance.png" />
-		</ResponsiveLayout>
-
-		<ResponsiveLayout --responsive-gap="var(--double-padding)" reverse>
-			<Vertical
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="center"
-				class="max-width560"
-			>
-				<Vertical --vertical-gap="0">
-					<Typography accent>{$_('page.landing.powerfulVisualizationsLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.powerfulVisualizationsTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.powerfulVisualizationsDescription')}</Typography>
-				<Vertical --vertical-gap="0">
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.interactiveCharts')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.fullscreenMode')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.presentAnywhere')}</Typography>
-					</Horizontal>
-				</Vertical>
-			</Vertical>
-
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/05_Visualizations.png" />
-		</ResponsiveLayout>
-
-		<ResponsiveLayout --responsive-gap="var(--double-padding)">
-			<Vertical
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="center"
-				class="max-width560"
-			>
-				<Vertical --vertical-gap="0">
-					<Typography accent>{$_('page.landing.flexibleSharingLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.flexibleSharingTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.flexibleSharingDescription')}</Typography>
-				<Vertical --vertical-gap="0">
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.meetEveryPreference')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.maintainControl')}</Typography>
-					</Horizontal>
-					<Horizontal --horizontal-gap="var(--half-padding)">
-						<Checkmark size={20} color="var(--colors-high)" />
-						<Typography>{$_('page.landing.automaticUpdates')}</Typography>
-					</Horizontal>
-				</Vertical>
-			</Vertical>
-
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<img class="screenshot" style="width: 710px" src="images/landing/06_Sharing.png" />
-		</ResponsiveLayout>
-	</Vertical>
-
-	<Divider --margin="0" />
-
-	<Vertical --vertical-gap="var(--double-padding)">
-		<Horizontal --horizontal-justify-content="center">
-			<Typography variant="large" italic center accent
-				>{$_('page.landing.whyAdvisorsTrust')}</Typography
-			>
-		</Horizontal>
-		<ResponsiveLayout
-			--responsive-justify-content="stretch"
-			--responsive-align-items="stretch"
-			--responsive-gap="var(--double-padding)"
-		>
-			<Vertical
-				class="flex"
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="start"
-				--vertical-align-items="start"
-			>
-				<Vertical --vertical-gap="var(--quarter-padding)">
-					<Typography accent>{$_('page.landing.advisorDrivenLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.advisorDrivenTitle')}</Typography>
-				</Vertical>
-
-				<Typography>{$_('page.landing.advisorDrivenDescription')}</Typography>
-			</Vertical>
-
-			<Vertical
-				class="flex"
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="start"
-				--vertical-align-items="start"
-			>
-				<Vertical --vertical-gap="var(--quarter-padding)">
-					<Typography accent>{$_('page.landing.noHiddenAgendaLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.noHiddenAgendaTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.noHiddenAgendaDescription')}</Typography>
-			</Vertical>
-
-			<Vertical
-				class="flex"
-				--vertical-gap="var(--padding)"
-				--vertical-justify-content="start"
-				--vertical-align-items="start"
-			>
-				<Vertical --vertical-gap="var(--quarter-padding)">
-					<Typography accent>{$_('page.landing.localExpertiseLabel')}</Typography>
-					<Typography variant="h4">{$_('page.landing.localExpertiseTitle')}</Typography>
-				</Vertical>
-				<Typography>{$_('page.landing.localExpertiseDescription')}</Typography>
-			</Vertical>
-		</ResponsiveLayout>
-	</Vertical>
-
-	<Divider --margin="0" />
-
-	<Vertical
-		--vertical-gap="var(--double-padding)"
-		--vertical-justify-content="center"
-		--vertical-align-items="center"
-	>
-		<Vertical --vertical-gap="0" --vertical-align-items="center">
-			<Typography variant="h3">{$_('page.landing.joinFreeBeta')}</Typography>
-
-			<Typography variant="large">{$_('page.landing.joinFreeBetaSubtitle')}</Typography>
-		</Vertical>
-
-		<Vertical
-			class={isMobile ? 'max-width560' : 'max-width320'}
-			--vertical-gap="var(--padding)"
-			--vertical-align-items="stretch"
-		>
-			<Button variant="strong" dimension="large" href={routes.SIGNUP}
-				>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
-			>
-			<ResponsiveLayout
-				--responsive-align-items="stretch"
-				--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
-				class="max-width560"
-			>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					href={routes.SAMPLE_PORTFOLIO_LINK}
-					target="_blank">{$_('common.viewSamplePortfolio')}</Button
+			<ResponsiveLayout --responsive-gap="var(--double-padding)">
+				<Vertical
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="center"
+					class="max-width560"
 				>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					href={`mailto:support@kalkul.app?subject=${$_('email.templates.newsletter2025September.kalkulDemoRequest')}&body=${$_('email.templates.newsletter2025September.kalkulDemoRequestBody')}`}
-					target="_blank">{$_('page.landing.requestDemo')}</Button
+					<Vertical --vertical-gap="0">
+						<Typography accent>{$_('page.landing.bigPicturePlanningLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.bigPicturePlanningTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.bigPicturePlanningDescription')}</Typography>
+					<Vertical --vertical-gap="0">
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.calculateGoalsQuickly')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.adjustAssumptions')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.strategyFirst')}</Typography>
+						</Horizontal>
+					</Vertical>
+				</Vertical>
+
+				<!-- svelte-ignore a11y_missing_attribute -->
+				<img class="screenshot" style="width: 710px" src="images/landing/02_BigPicture.png" />
+			</ResponsiveLayout>
+			<ResponsiveLayout --responsive-gap="var(--double-padding)" reverse>
+				<Vertical
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="center"
+					class="max-width560"
 				>
+					<Vertical --vertical-gap="0">
+						<Typography accent>{$_('page.landing.granularInvestmentLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.granularInvestmentTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.granularInvestmentDescription')}</Typography>
+					<Vertical --vertical-gap="0">
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.importDataByIsin')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.setPreciseReturns')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.supportGoals')}</Typography>
+						</Horizontal>
+					</Vertical>
+				</Vertical>
+
+				<!-- svelte-ignore a11y_missing_attribute -->
+				<img class="screenshot" style="width: 710px" src="images/landing/03_Investment.png" />
+			</ResponsiveLayout>
+
+			<ResponsiveLayout --responsive-gap="var(--double-padding)">
+				<Vertical
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="center"
+					class="max-width560"
+				>
+					<Vertical --vertical-gap="0">
+						<Typography accent>{$_('page.landing.dynamicRebalancingLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.dynamicRebalancingTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.dynamicRebalancingDescription')}</Typography>
+					<Vertical --vertical-gap="0">
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.modifyGoalsFreely')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.weightEachInvestment')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.automaticRecalculation')}</Typography>
+						</Horizontal>
+					</Vertical>
+				</Vertical>
+
+				<!-- svelte-ignore a11y_missing_attribute -->
+				<img class="screenshot" style="width: 710px" src="images/landing/04_Rebalance.png" />
+			</ResponsiveLayout>
+
+			<ResponsiveLayout --responsive-gap="var(--double-padding)" reverse>
+				<Vertical
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="center"
+					class="max-width560"
+				>
+					<Vertical --vertical-gap="0">
+						<Typography accent>{$_('page.landing.powerfulVisualizationsLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.powerfulVisualizationsTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.powerfulVisualizationsDescription')}</Typography>
+					<Vertical --vertical-gap="0">
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.interactiveCharts')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.fullscreenMode')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.presentAnywhere')}</Typography>
+						</Horizontal>
+					</Vertical>
+				</Vertical>
+
+				<!-- svelte-ignore a11y_missing_attribute -->
+				<img class="screenshot" style="width: 710px" src="images/landing/05_Visualizations.png" />
+			</ResponsiveLayout>
+
+			<ResponsiveLayout --responsive-gap="var(--double-padding)">
+				<Vertical
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="center"
+					class="max-width560"
+				>
+					<Vertical --vertical-gap="0">
+						<Typography accent>{$_('page.landing.flexibleSharingLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.flexibleSharingTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.flexibleSharingDescription')}</Typography>
+					<Vertical --vertical-gap="0">
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.meetEveryPreference')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.maintainControl')}</Typography>
+						</Horizontal>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Checkmark size={20} color="var(--colors-high)" />
+							<Typography>{$_('page.landing.automaticUpdates')}</Typography>
+						</Horizontal>
+					</Vertical>
+				</Vertical>
+
+				<!-- svelte-ignore a11y_missing_attribute -->
+				<img class="screenshot" style="width: 710px" src="images/landing/06_Sharing.png" />
 			</ResponsiveLayout>
 		</Vertical>
+
+		<Divider --margin="0" />
+
+		<Vertical --vertical-gap="var(--double-padding)">
+			<Horizontal --horizontal-justify-content="center">
+				<Typography variant="large" italic center accent
+					>{$_('page.landing.whyAdvisorsTrust')}</Typography
+				>
+			</Horizontal>
+			<ResponsiveLayout
+				--responsive-justify-content="stretch"
+				--responsive-align-items="stretch"
+				--responsive-gap="var(--double-padding)"
+			>
+				<Vertical
+					class="flex"
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="start"
+					--vertical-align-items="start"
+				>
+					<Vertical --vertical-gap="var(--quarter-padding)">
+						<Typography accent>{$_('page.landing.advisorDrivenLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.advisorDrivenTitle')}</Typography>
+					</Vertical>
+
+					<Typography>{$_('page.landing.advisorDrivenDescription')}</Typography>
+				</Vertical>
+
+				<Vertical
+					class="flex"
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="start"
+					--vertical-align-items="start"
+				>
+					<Vertical --vertical-gap="var(--quarter-padding)">
+						<Typography accent>{$_('page.landing.noHiddenAgendaLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.noHiddenAgendaTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.noHiddenAgendaDescription')}</Typography>
+				</Vertical>
+
+				<Vertical
+					class="flex"
+					--vertical-gap="var(--padding)"
+					--vertical-justify-content="start"
+					--vertical-align-items="start"
+				>
+					<Vertical --vertical-gap="var(--quarter-padding)">
+						<Typography accent>{$_('page.landing.localExpertiseLabel')}</Typography>
+						<Typography variant="h4">{$_('page.landing.localExpertiseTitle')}</Typography>
+					</Vertical>
+					<Typography>{$_('page.landing.localExpertiseDescription')}</Typography>
+				</Vertical>
+			</ResponsiveLayout>
+		</Vertical>
+
+		<Divider --margin="0" />
+
+		<Vertical
+			--vertical-gap="var(--double-padding)"
+			--vertical-justify-content="center"
+			--vertical-align-items="center"
+		>
+			<Vertical --vertical-gap="0" --vertical-align-items="center">
+				<Typography variant="h3">{$_('page.landing.joinFreeBeta')}</Typography>
+
+				<Typography variant="large">{$_('page.landing.joinFreeBetaSubtitle')}</Typography>
+			</Vertical>
+
+			<Vertical
+				class={isMobile ? 'max-width560' : 'max-width320'}
+				--vertical-gap="var(--padding)"
+				--vertical-align-items="stretch"
+			>
+				<Button variant="strong" dimension="large" href={routes.SIGNUP}
+					>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+				>
+				<ResponsiveLayout
+					--responsive-align-items="stretch"
+					--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
+					class="max-width560"
+				>
+					<Button
+						variant="ghost"
+						dimension="compact"
+						href={routes.SAMPLE_PORTFOLIO_LINK}
+						target="_blank">{$_('common.viewSamplePortfolio')}</Button
+					>
+					<Button
+						variant="ghost"
+						dimension="compact"
+						href={`mailto:support@kalkul.app?subject=${$_('email.templates.newsletter2025September.kalkulDemoRequest')}&body=${$_('email.templates.newsletter2025September.kalkulDemoRequestBody')}`}
+						target="_blank">{$_('page.landing.requestDemo')}</Button
+					>
+				</ResponsiveLayout>
+			</Vertical>
+		</Vertical>
+		<Horizontal --horizontal-justify-content="center" --horizontal-align-items="center">
+			<Badge>{$_('email.common.madeWithLove')}</Badge>
+		</Horizontal>
 	</Vertical>
-	<Horizontal --horizontal-justify-content="center" --horizontal-align-items="center">
-		<Badge>{$_('email.common.madeWithLove')}</Badge>
-	</Horizontal>
-</main>
+</ContentLayout>
 <Footer />
 
 <style>
@@ -429,16 +437,6 @@
 	.right {
 		display: flex;
 		gap: var(--half-padding);
-	}
-	main {
-		display: flex;
-		width: 100%;
-		flex: 1;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: var(--double-padding);
-		gap: var(--quadruple-padding);
 	}
 	:global(.max-width720) {
 		max-width: 720px;
@@ -461,10 +459,6 @@
 	:global(.box) {
 		padding: var(--padding);
 		border: 1px solid var(--colors-low);
-	}
-	.mobile {
-		padding: var(--padding);
-		gap: var(--double-padding);
 	}
 	img.screenshot {
 		background-color: transparent;
