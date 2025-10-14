@@ -464,7 +464,7 @@
 			"text": "Pokud potřebujete pomoct, máte dotazy, návrhy nebo zpětnou vazbu, připojte se na náš Discord server pro nejrychlejší podporu, nebo nám napište e-mail na {email}.",
 			"joinTheConversation": "Připojte se na Discord",
 			"newToKalkulTip": "→ Nový v Kalkulu? Doporučujeme zkontrolovat náš rychlý průvodce. Najdete v něm vše potřebné pro začátek.",
-			"checkQuickStartGuide": "Podívejte se na náš rychlý průvodce"
+			"checkQuickStartGuide": "Rychlý průvodce"
 		},
 		"footer": {
 			"termsOfService": "Podmínky služby",
@@ -564,6 +564,7 @@
 		"investmentExplanation": "V klientském portfoliu můžete vytvořit tolik investic, kolik chcete. Jakmile budete mít nastavenou alespoň jednu investici, zobrazí se na této stránce podrobné informace o celém portfoliu.",
 		"addTransactionTitle": "Přidat transakci",
 		"addTransactionText": "V levé postranní liště stiskněte tlačítko \"Přidat transakci\" v požadované kartě investice.",
+		"addTransactionMobileText": "Stiskněte 'Přidat transakci' na jakékoliv kartě investice.",
 		"transactionExplanation": "Transakce definují množství peněz, které jsou pro tuto konkrétní investici v průběhu času vloženy nebo vybrány.",
 		"watchIntroVideo": "Sledovat úvodní video",
 		"viewSamplePortfolio": "Zobrazit ukázkové portfolio"

@@ -7,9 +7,6 @@
 		FolderShared,
 		UserProfile,
 		TrashCan,
-		LogoYoutube,
-		Launch,
-		Rocket,
 		ArrowRight,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
@@ -130,20 +127,20 @@
 		>
 			<Vertical --vertical-gap="var(--half-padding)">
 				<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
-					><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+					>{$_('component.help.checkQuickStartGuide')}</Button
 				>
 				<Button
-					variant="solid"
+					variant="ghost"
+					dimension="compact"
+					href={routes.SAMPLE_PORTFOLIO_LINK}
+					target="_blank">{$_('helpBox.viewSamplePortfolio')}</Button
+				>
+				<Button
+					variant="ghost"
 					dimension="compact"
 					onclick={() => {
 						isVideoPlayer = true
-					}}><LogoYoutube size={24} />{$_('helpBox.watchIntroVideo')}</Button
-				>
-				<Button
-					variant="solid"
-					dimension="compact"
-					href={routes.SAMPLE_PORTFOLIO_LINK}
-					target="_blank"><Launch size={24} />{$_('helpBox.viewSamplePortfolio')}</Button
+					}}>{$_('helpBox.watchIntroVideo')}</Button
 				>
 			</Vertical>
 		</HelpBox>

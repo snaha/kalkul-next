@@ -59,6 +59,7 @@
 <div title="Click here for help"></div>
 <PasswordInput helperText="Minimum 12 characters" />
 <PasswordInput helperText={passwordError ? undefined : 'Minimum 12 characters'} />
+<HelpBox boxText="Press 'Add transaction' on any investment card." />
 
 <!-- 9. Copyright text -->
 <footer>© 2025 Company Name</footer>

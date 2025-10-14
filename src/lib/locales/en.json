@@ -464,7 +464,7 @@
 			"text": "If you need help, have questions, suggestions, or feedback, join our Discord server for the fastest support, or email us at {email}.",
 			"joinTheConversation": "Join our Discord",
 			"newToKalkulTip": "→ New to Kalkul? We recommend checking our quick start guide. You'll find everything you need to get started.",
-			"checkQuickStartGuide": "Check out our quick start guide"
+			"checkQuickStartGuide": "Quick start guide"
 		},
 		"footer": {
 			"termsOfService": "Terms of service",
@@ -564,6 +564,7 @@
 		"investmentExplanation": "You can create as many investments as you want in a client portfolio. Once you have at least one investment set up, this page will display detailed information about the whole portfolio.",
 		"addTransactionTitle": "Add a transaction",
 		"addTransactionText": "In the left sidebar, press the \"Add transaction\" button within the desired investment card.",
+		"addTransactionMobileText": "Press 'Add transaction' on any investment card.",
 		"transactionExplanation": "Transactions define the amount of money that is deposited or withdrawn for this specific investment over time.",
 		"watchIntroVideo": "Watch intro video",
 		"viewSamplePortfolio": "View sample portfolio"

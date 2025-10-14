@@ -5,7 +5,43 @@ const LOCALE_DIR = `${SOURCE_DIR}/lib/locales`
 const DEFAULT_LOCALE = 'cs'
 
 // Patterns for detecting hardcoded user-facing text (generic Unicode patterns)
-const HARDCODED_TEXT_PATTERNS = [
+interface PatternConfig {
+	pattern: RegExp
+	description: string
+	filterMatch?: (attrName: string) => boolean
+}
+
+// Technical/structural attributes that should be excluded from localization checks
+const TECHNICAL_ATTRS = [
+	'href',
+	'src',
+	'srcset',
+	'class',
+	'style',
+	'type',
+	'name',
+	'id',
+	'for',
+	'method',
+	'action',
+	'target',
+	'rel',
+	'xmlns',
+	'viewBox',
+	'd',
+	'fill',
+	'stroke',
+	'transform',
+	'xmlns:xlink',
+	'role',
+	'aria-label',
+	'data-testid',
+]
+
+// Filter function for checking if an attribute is technical
+const isTechnicalAttr = (attrName: string) => !TECHNICAL_ATTRS.includes(attrName)
+
+const HARDCODED_TEXT_PATTERNS: PatternConfig[] = [
 	// Text between regular HTML/Svelte tags (not after self-closing tags)
 	// Uses 's' flag (dotAll) to allow matching across newlines
 	// Script and style tags are filtered out before pattern matching
@@ -24,10 +60,19 @@ const HARDCODED_TEXT_PATTERNS = [
 		pattern: /\/>\s*([^\p{So}\p{Sm}]\p{L}[\p{L}\s\p{P}]*)<(?:\/|\w)/gu,
 		description: 'Text content after self-closing tags',
 	},
-	// Hardcoded strings in user-facing attributes
+	// Hardcoded strings in user-facing attributes (double-quoted)
+	// Matches: attributeName="Text with capital" or attributeName="text with spaces"
+	// Excludes technical attributes and lowercase single-word/kebab-case values
 	{
-		pattern: /(?:placeholder|title|alt|helperText)=["']([^"']+)["']/gu,
+		pattern: /(\w+)="([A-Z][^"]*|[^"]*\s[^"]*)"/gu,
 		description: 'Hardcoded text in HTML attributes',
+		filterMatch: isTechnicalAttr,
+	},
+	// Hardcoded strings in user-facing attributes (single-quoted)
+	{
+		pattern: /(\w+)='([A-Z][^']*|[^']*\s[^']*)'/gu,
+		description: 'Hardcoded text in HTML attributes',
+		filterMatch: isTechnicalAttr,
 	},
 	// Direct text content that might be user-facing (like "Made with")
 	{
@@ -59,6 +104,7 @@ const EXCLUDE_PATTERNS = [
 	/^\d+$/, // Pure numbers
 	/^[\w.-]+@[\w.-]+$/, // Email addresses
 	/^https?:\/\//, // URLs
+	/^data:/, // Data URIs (including base64)
 	/^\/[/\w-]*$/, // File paths
 	/^#[0-9a-fA-F]{3,8}$/, // Color codes
 	/^[\d.]+%$/, // Percentages
@@ -71,6 +117,7 @@ const EXCLUDE_PATTERNS = [
 	/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/, // Simple variable names or property access
 	/^\w+\s*[<>]=?\s*\w+/, // Comparisons
 	/^=\s*\w+/, // Assignment operators or comparison starting with =
+	/^[A-Za-z0-9+/=]{20,}/, // Base64-like strings (20+ chars of base64 alphabet)
 ]
 
 function scanSourceFiles() {
@@ -193,7 +240,7 @@ function scanForHardcodedText(scanDir: string = SOURCE_DIR) {
 		})
 
 		// Check each pattern
-		HARDCODED_TEXT_PATTERNS.forEach(({ pattern, description }) => {
+		HARDCODED_TEXT_PATTERNS.forEach(({ pattern, description, filterMatch }) => {
 			const regex = new RegExp(pattern.source, pattern.flags)
 			let match
 
@@ -204,8 +251,17 @@ function scanForHardcodedText(scanDir: string = SOURCE_DIR) {
 					: templateOnly
 
 			while ((match = regex.exec(searchText)) !== null) {
+				// For patterns with filterMatch, check the attribute name (captured in group 1)
+				if (filterMatch && match[1]) {
+					const attrName = match[1]
+					if (!filterMatch(attrName)) {
+						continue // Skip this match if filterMatch returns false
+					}
+				}
+
 				// Extract the actual text content (usually in capture group 1 or 2)
-				const textContent = match[2] || match[1]
+				// If filterMatch exists, text is in group 2, otherwise group 1
+				const textContent = filterMatch ? match[2] : match[2] || match[1]
 				if (!textContent) continue
 
 				// Skip if text matches any exclude pattern

@@ -11,7 +11,6 @@
 		FolderDetails,
 		Launch,
 		OverflowMenuVertical,
-		Rocket,
 		Share,
 		TrashCan,
 	} from 'carbon-icons-svelte'
@@ -294,7 +293,7 @@
 			variant="strong"
 			dimension="compact"
 			href={`${routes.GET_STARTED}#${getStartedSections.CREATE_PORTFOLIO}`}
-			target="_blank"><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+			target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
 		>
 	</HelpBox>
 {/if}

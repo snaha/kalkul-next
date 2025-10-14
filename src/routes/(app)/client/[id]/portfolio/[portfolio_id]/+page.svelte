@@ -1,12 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
-	import {
-		Add,
-		ArrowLeft,
-		Rocket,
-		SidePanelCloseFilled,
-		SidePanelOpenFilled,
-	} from 'carbon-icons-svelte'
+	import { Add, ArrowLeft, SidePanelCloseFilled, SidePanelOpenFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import routes, { getStartedSections } from '$lib/routes'
@@ -276,7 +270,7 @@
 							simulationData={graphData}
 							bind:adjustWithInflation
 							{investmentsViewStore}
-							isEmpty={transactions.length === 0}
+							isEmpty={false}
 							clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
 							disableInteraction={true}
 						/>
@@ -305,23 +299,39 @@
 				variant="strong"
 				dimension="compact"
 				href={`${routes.GET_STARTED}#${getStartedSections.ADD_INVESTMENT}`}
-				target="_blank"><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+				target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
 			>
 		</HelpBox>
 	{:else if transactions.length === 0}
-		<HelpBox
-			open={layoutStore.mobile ? false : true}
-			title={$_('helpBox.addTransactionTitle')}
-			boxText={$_('helpBox.addTransactionText')}
-			text={$_('helpBox.transactionExplanation')}
-		>
-			<Button
-				variant="strong"
-				dimension="compact"
-				href={`${routes.GET_STARTED}#${getStartedSections.ADD_TRANSACTION}`}
-				target="_blank"><Rocket size={24} />{$_('component.help.checkQuickStartGuide')}</Button
+		{#if layoutStore.mobile && mobileScreen === 'investments'}
+			<HelpBox
+				open={false}
+				title={$_('helpBox.addTransactionTitle')}
+				boxText={$_('helpBox.addTransactionMobileText')}
+				text={$_('helpBox.transactionExplanation')}
 			>
-		</HelpBox>
+				<Button
+					variant="strong"
+					dimension="compact"
+					href={`${routes.GET_STARTED}#${getStartedSections.ADD_TRANSACTION}`}
+					target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
+				>
+			</HelpBox>
+		{:else if !layoutStore.mobile}
+			<HelpBox
+				open={true}
+				title={$_('helpBox.addTransactionTitle')}
+				boxText={$_('helpBox.addTransactionText')}
+				text={$_('helpBox.transactionExplanation')}
+			>
+				<Button
+					variant="strong"
+					dimension="compact"
+					href={`${routes.GET_STARTED}#${getStartedSections.ADD_TRANSACTION}`}
+					target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
+				>
+			</HelpBox>
+		{/if}
 	{/if}
 {/if}
 
