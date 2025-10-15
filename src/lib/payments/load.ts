@@ -1,3 +1,4 @@
+import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 import { authorizedFetch } from '$lib/auth'
 import { apiRoutes } from '$lib/routes'
 import { subscriptionStore } from '$lib/stores/subscription.svelte'
@@ -6,6 +7,10 @@ import type { StripeSubscription } from '$lib/types'
 export async function loadSubscriptions() {
 	try {
 		subscriptionStore.reset()
+
+		if (PUBLIC_DISABLE_PAYWALL === 'true') {
+			return
+		}
 
 		const subscriptionsResponse = await authorizedFetch(apiRoutes.SUBSCRIPTIONS)
 		if (!subscriptionsResponse.ok) {
