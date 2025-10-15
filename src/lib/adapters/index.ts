@@ -23,6 +23,7 @@ export interface Adapter {
 		password: string,
 		language: string,
 		newsletterConsent: boolean,
+		promotionCode?: string,
 	) => Promise<void>
 	signIn: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>

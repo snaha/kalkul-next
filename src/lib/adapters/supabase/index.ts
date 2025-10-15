@@ -139,7 +139,13 @@ export default class Supabase implements Adapter {
 		}
 	}
 
-	async signUp(email: string, password: string, language: string, newsletterConsent: boolean) {
+	async signUp(
+		email: string,
+		password: string,
+		language: string,
+		newsletterConsent: boolean,
+		promotionCode?: string,
+	) {
 		// Convert email address to lower-case
 		email = email.toLowerCase()
 
@@ -147,6 +153,7 @@ export default class Supabase implements Adapter {
 			prefer_language: language,
 			newsletter_consent: newsletterConsent,
 			first_visit: true,
+			...(promotionCode && { promotion_code: promotionCode }),
 		}
 		const { error } = await this.supabase.auth.signUp({
 			email,

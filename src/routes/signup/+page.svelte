@@ -22,6 +22,7 @@
 	import type { AuthError } from '@supabase/supabase-js'
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import BetaBadge from '$lib/components/beta-badge.svelte'
+	import { PROMOTION_STORAGE_KEY } from '$lib/payments'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -82,7 +83,22 @@
 		}
 		try {
 			if (email && $locale) {
-				await adapter.signUp(email, password, $locale.split('-')[0], newsletterConsent)
+				// Get promotion code from localStorage if it exists
+				const promotionCode = localStorage.getItem(PROMOTION_STORAGE_KEY) ?? undefined
+
+				await adapter.signUp(
+					email,
+					password,
+					$locale.split('-')[0],
+					newsletterConsent,
+					promotionCode,
+				)
+
+				// Clear promotion code from localStorage after successful signup
+				if (promotionCode) {
+					localStorage.removeItem(PROMOTION_STORAGE_KEY)
+				}
+
 				success = true
 			}
 		} catch (e) {

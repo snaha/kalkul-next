@@ -51,6 +51,7 @@ export type TypedUserMetadata = {
 	prefer_language: string
 	newsletter_consent: boolean
 	first_visit: boolean
+	promotion_code?: string
 }
 
 export type StripeSubscription = Tables<'stripe_subscription'>
