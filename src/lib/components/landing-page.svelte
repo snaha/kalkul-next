@@ -16,6 +16,7 @@
 	import Divider from './ui/divider.svelte'
 	import Badge from './ui/badge.svelte'
 	import ContentLayout from './content-layout.svelte'
+	import ComingSoonBadge from './coming-soon-badge.svelte'
 
 	type Props = {
 		isMobile: boolean
@@ -169,10 +170,14 @@
 				<Vertical
 					--vertical-gap="var(--padding)"
 					--vertical-justify-content="center"
+					--vertical-align-items="start"
 					class="max-width560"
 				>
 					<Vertical --vertical-gap="0">
-						<Typography accent>{$_('page.landing.bigPicturePlanningLabel')}</Typography>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Typography accent>{$_('page.landing.bigPicturePlanningLabel')}</Typography>
+							<ComingSoonBadge />
+						</Horizontal>
 						<Typography variant="h4">{$_('page.landing.bigPicturePlanningTitle')}</Typography>
 					</Vertical>
 					<Typography>{$_('page.landing.bigPicturePlanningDescription')}</Typography>
@@ -199,6 +204,7 @@
 				<Vertical
 					--vertical-gap="var(--padding)"
 					--vertical-justify-content="center"
+					--vertical-align-items="start"
 					class="max-width560"
 				>
 					<Vertical --vertical-gap="0">
@@ -230,10 +236,14 @@
 				<Vertical
 					--vertical-gap="var(--padding)"
 					--vertical-justify-content="center"
+					--vertical-align-items="start"
 					class="max-width560"
 				>
 					<Vertical --vertical-gap="0">
-						<Typography accent>{$_('page.landing.dynamicRebalancingLabel')}</Typography>
+						<Horizontal --horizontal-gap="var(--half-padding)">
+							<Typography accent>{$_('page.landing.dynamicRebalancingLabel')}</Typography>
+							<ComingSoonBadge />
+						</Horizontal>
 						<Typography variant="h4">{$_('page.landing.dynamicRebalancingTitle')}</Typography>
 					</Vertical>
 					<Typography>{$_('page.landing.dynamicRebalancingDescription')}</Typography>
@@ -261,6 +271,7 @@
 				<Vertical
 					--vertical-gap="var(--padding)"
 					--vertical-justify-content="center"
+					--vertical-align-items="start"
 					class="max-width560"
 				>
 					<Vertical --vertical-gap="0">
@@ -292,6 +303,7 @@
 				<Vertical
 					--vertical-gap="var(--padding)"
 					--vertical-justify-content="center"
+					--vertical-align-items="start"
 					class="max-width560"
 				>
 					<Vertical --vertical-gap="0">

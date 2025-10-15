@@ -21,7 +21,6 @@
 		},
 		"landing": {
 			"title": "Podpora nezávislého finančního plánování",
-			"titleHigh": "výjimečné",
 			"subtitle": "Vytvářejte platformově nezávislá portfolia rychleji—od počátečních cílů klientů po detailní strukturu investic, vše na jednom místě. Aplikace Kalkul vám vrací hodiny sjednocením vašeho pracovního postupu a pomáhá vytvářet poutavé plány, které budují důvěru klientů.",
 			"getStarted": "Začít",
 			"requestDemo": "Požádat o ukázku",
@@ -74,10 +73,7 @@
 			"localExpertiseTitle": "České kořeny, odbornost v EU",
 			"localExpertiseDescription": "Se sídlem v České republice s hlubokými znalostmi trhu střední Evropy. Rozumíme regulačnímu prostředí, investiční krajině a specifickým výzvám poradců zde. Kalkul není přizpůsobený americký nástroj—je vytvořen pro trh EU.",
 			"joinFreeBeta": "Připojte se k naší bezplatné Beta verzi!",
-			"joinFreeBetaSubtitle": "Získejte včasný přístup, pomozte formovat funkce a zajistěte si exkluzivní ceny při veřejném spuštění.",
-			"betaAccessTitle": "Získejte již dnes přístup k Kalkul Beta zdarma a jako první!",
-			"betaAccessDescription": "Přidejte se k exkluzivní skupině prozíravých profesionálů, kteří nám pomáhají formovat budoucnost nezávislých financí.",
-			"betaDiscountText": "Beta uživatelé obdrží exkluzivní slevu při veřejném spuštění."
+			"joinFreeBetaSubtitle": "Získejte včasný přístup, pomozte formovat funkce a zajistěte si exkluzivní ceny při veřejném spuštění."
 		},
 		"getStarted": {
 			"title": "Začínáme s Kalkulem",
@@ -710,7 +706,8 @@
 		"realValue": "Reálná hodnota",
 		"nominalValue": "Nominální hodnota",
 		"totalReal": "Celkem (reálná)",
-		"totalNominal": "Celkem (nominální)"
+		"totalNominal": "Celkem (nominální)",
+		"comingSoon": "Připravujeme"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",

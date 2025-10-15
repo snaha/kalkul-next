@@ -21,7 +21,6 @@
 		},
 		"landing": {
 			"title": "Empowering independent financial planning",
-			"titleHigh": "Outstanding",
 			"subtitle": "Build platform-agnostic portfolios faster—from initial client goals to detailed investment structure, all in one place. The Kalkul app gives you back hours by unifying your workflow and helps you create engaging plans that build client trust.",
 			"getStarted": "Get started",
 			"requestDemo": "Request a demo",
@@ -74,10 +73,7 @@
 			"localExpertiseTitle": "Czech roots, EU expertise",
 			"localExpertiseDescription": "Headquartered in Czech Republic with deep Central European market knowledge. We understand the regulatory environment, investment landscape, and specific advisor challenges here. Kalkul isn't adapted from a US tool—it is built for the EU market.",
 			"joinFreeBeta": "Join our free Beta!",
-			"joinFreeBetaSubtitle": "Get early access, help shape features, and secure exclusive pricing at public launch.",
-			"betaAccessTitle": "Get early and free access to Kalkul Beta today!",
-			"betaAccessDescription": "Join an exclusive group of forward-thinking professionals who are helping us shape the future of independent finance.",
-			"betaDiscountText": "Beta users will receive an exclusive discount at public launch."
+			"joinFreeBetaSubtitle": "Get early access, help shape features, and secure exclusive pricing at public launch."
 		},
 		"getStarted": {
 			"title": "Getting started with Kalkul",
@@ -710,7 +706,8 @@
 		"realValue": "Real value",
 		"nominalValue": "Nominal value",
 		"totalReal": "Total (real)",
-		"totalNominal": "Total (nominal)"
+		"totalNominal": "Total (nominal)",
+		"comingSoon": "Coming soon"
 	},
 	"error": {
 		"emailError": "This doesn't look like a correct email",

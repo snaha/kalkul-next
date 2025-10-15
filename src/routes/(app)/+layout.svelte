@@ -9,8 +9,8 @@
 	import { loadSubscriptions } from '$lib/payments/load'
 	import { PUBLIC_DISABLE_PAYWALL } from '$env/static/public'
 	import { layoutStore } from '$lib/stores/layout.svelte'
-	import BetaLandingPage from '$lib/components/beta-landing-page.svelte'
 	import Fullscreen from '$lib/components/fullscreen.svelte'
+	import LandingPage from '$lib/components/landing-page.svelte'
 
 	let { children } = $props()
 
@@ -51,5 +51,5 @@
 {:else if page.url.pathname !== routes.HOME && !layoutStore.mobile}
 	<Login />
 {:else}
-	<BetaLandingPage isMobile={layoutStore.mobile} />
+	<LandingPage isMobile={layoutStore.mobile} />
 {/if}
