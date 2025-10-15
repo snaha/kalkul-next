@@ -1,11 +1,11 @@
 {
 	"page": {
 		"moneyfest": {
-			"cta": "Získejte exkluzivní přístup dříve než ostatní díky MoneyFestu 2025!",
-			"title": "Pomozte formovat budoucnost nezávislého finančního plánování, přidejte se ke komunitě <span style='font-weight: 700;'>Kalkul</span>.",
-			"subtitle": "Kalkul je nová aplikace, která pomáhá nezávislým profesionálním poradcům vytvářet, vizualizovat a sdílet finanční plány s klienty.",
-			"button": "Začněte ještě dnes",
-			"disclaimer": "Kalkul je dostupný v omezené bezplatné beta verzi, určené pouze k testování."
+			"cta": "Zaregistrujte se nyní a získejte <span style='font-weight: 700;'>exkluzivní odměny z konference MoneyFest</span>!",
+			"description": "Získejte bezplatný přístup jako první, ovlivněte produkt svou zpětnou vazbou a získejte 50% slevu na cenu při spuštění—očekávané veřejné vydání: začátek roku 2026.",
+			"button": "Začněte zdarma",
+			"noCreditCard": "Zcela zdarma, není potřeba kreditní karta, žádné závazky.",
+			"disclaimer": "Aktivně vyvíjíme Kalkul se zpětnou vazbou poradců. Některé funkce zvýrazněné na našem webu jsou stále ve vývoji a budou postupně uvolňovány, jak budou zdokonalovány."
 		},
 		"forgotPassword": {
 			"forgotPassword": "Zapomněli jste heslo?",
