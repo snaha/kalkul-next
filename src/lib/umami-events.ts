@@ -7,6 +7,7 @@ export const UMAMI_EVENTS = {
 
 	// Moneyfest landing page
 	MONEYFEST_BUTTON: 'moneyfest-button',
+	MONEYFEST_WHAT_IS_KALKUL: 'moneyfest-what-is-kalkul',
 
 	// Get started guide
 	GET_STARTED_OPEN_APP: 'get-started-open-app',

@@ -11,6 +11,7 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
+	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
 
 	onMount(() => {
 		localStorage.setItem(PROMOTION_STORAGE_KEY, PROMOTION.MONEYFEST_SK_2025)
@@ -40,13 +41,20 @@
 			</Typography>
 		</Vertical>
 
-		<Button
-			variant="strong"
-			dimension="compact"
-			onclick={() => umami?.track(UMAMI_EVENTS.MONEYFEST_BUTTON)}
-			href={routes.SIGNUP}>Začněte zdarma<ArrowRight size={24} /></Button
-		>
-
+		<ResponsiveLayout --responsive-justify-content="stretch" class="max-width560">
+			<Button
+				variant="secondary"
+				dimension="compact"
+				onclick={() => umami?.track(UMAMI_EVENTS.MONEYFEST_WHAT_IS_KALKUL)}
+				href={routes.HOME}>Co je to Kalkul?</Button
+			>
+			<Button
+				variant="strong"
+				dimension="compact"
+				onclick={() => umami?.track(UMAMI_EVENTS.MONEYFEST_BUTTON)}
+				href={routes.SIGNUP}>Začněte zdarma<ArrowRight size={24} /></Button
+			>
+		</ResponsiveLayout>
 		<Typography variant="small">
 			Zcela zdarma, není potřeba kreditní karta, žádné závazky.
 		</Typography>
