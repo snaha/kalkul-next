@@ -12,6 +12,7 @@
 	import { _ } from 'svelte-i18n'
 	import { Launch } from 'carbon-icons-svelte'
 	import { page } from '$app/state'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	type Props = {
 		onPrimaryActionClick?: () => void
@@ -44,26 +45,42 @@
 			<Button
 				variant="strong"
 				href={routes.HOME}
-				onclick={() => onPrimaryActionClick?.()}
+				onclick={() => {
+					umami?.track(UMAMI_EVENTS.GET_STARTED_OPEN_APP)
+					onPrimaryActionClick?.()
+				}}
 				target="_blank"
 				class="stretch"><Launch size={24} />{$_('page.getStarted.openApp')}</Button
 			>
-			<Button variant="secondary" href={routes.DISCORD} target="_blank" class="stretch"
-				><Discord size={24} />{$_('page.getStarted.joinDiscord')}</Button
+			<Button
+				variant="secondary"
+				onclick={() => umami?.track(UMAMI_EVENTS.GET_STARTED_JOIN_DISCORD)}
+				href={routes.DISCORD}
+				target="_blank"
+				class="stretch"><Discord size={24} />{$_('page.getStarted.joinDiscord')}</Button
 			>
 		</ResponsiveLayout>
 
 		<Typography italic={true} class="text-center">{$_('page.getStarted.keepPageOpen')}</Typography>
 	</Vertical>
 	<Vertical --vertical-gap="var(--padding)" --vertical-align-items="center" class="max-560">
-		<FaqBox title={$_('page.getStarted.whatIsKalkul.title')}>
+		<FaqBox
+			title={$_('page.getStarted.whatIsKalkul.title')}
+			trackId={UMAMI_EVENTS.GET_STARTED_FAQ_WHAT_IS_KALKUL}
+		>
 			<Typography>{$_('page.getStarted.whatIsKalkul.content')}</Typography>
 		</FaqBox>
-		<FaqBox title={$_('page.getStarted.isFree.title')}>
+		<FaqBox
+			title={$_('page.getStarted.isFree.title')}
+			trackId={UMAMI_EVENTS.GET_STARTED_FAQ_IS_KALKUL_FREE}
+		>
 			<Typography>{$_('page.getStarted.isFree.content')}</Typography>
 			<Typography italic>{$_('page.getStarted.isFree.laterNote')}</Typography>
 		</FaqBox>
-		<FaqBox title={$_('page.getStarted.whyDiscord.title')}>
+		<FaqBox
+			title={$_('page.getStarted.whyDiscord.title')}
+			trackId={UMAMI_EVENTS.GET_STARTED_FAQ_WHY_DISCORD}
+		>
 			<Typography>{$_('page.getStarted.whyDiscord.content')}</Typography>
 			<Typography italic>{$_('page.getStarted.whyDiscord.newToDiscord')}</Typography>
 			<Horizontal --horizontal-justify-content="center"

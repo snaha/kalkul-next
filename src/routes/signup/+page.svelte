@@ -23,6 +23,7 @@
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import { PROMOTION_STORAGE_KEY } from '$lib/payments'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -83,6 +84,8 @@
 		}
 		try {
 			if (email && $locale) {
+				umami?.track(UMAMI_EVENTS.SIGNUP_BUTTON)
+
 				// Get promotion code from localStorage if it exists
 				const promotionCode = localStorage.getItem(PROMOTION_STORAGE_KEY) ?? undefined
 

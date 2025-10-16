@@ -10,6 +10,7 @@
 	import HelpModal from './help-modal.svelte'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	let showHelpModal = $state(false)
 
@@ -36,8 +37,14 @@
 	</div>
 
 	<div class="user-info">
-		<Button mode="dark" dimension="small" variant="ghost" onclick={() => (showHelpModal = true)}
-			><ChatBot size={16} />{$_('component.header.helpButton')}</Button
+		<Button
+			mode="dark"
+			dimension="small"
+			variant="ghost"
+			onclick={() => {
+				umami?.track(UMAMI_EVENTS.HEADER_HELP)
+				showHelpModal = true
+			}}><ChatBot size={16} />{$_('component.header.helpButton')}</Button
 		>
 
 		<Dropdown buttonDimension="small" mode="dark" left>

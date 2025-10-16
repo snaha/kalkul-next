@@ -10,6 +10,7 @@
 	import { PROMOTION, PROMOTION_STORAGE_KEY } from '$lib/payments'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import BetaBadge from '$lib/components/beta-badge.svelte'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	onMount(() => {
 		localStorage.setItem(PROMOTION_STORAGE_KEY, PROMOTION.MONEYFEST_SK_2025)
@@ -39,8 +40,11 @@
 			</Typography>
 		</Vertical>
 
-		<Button variant="strong" dimension="compact" href={routes.SIGNUP}
-			>Začněte zdarma<ArrowRight size={24} /></Button
+		<Button
+			variant="strong"
+			dimension="compact"
+			onclick={() => umami?.track(UMAMI_EVENTS.MONEYFEST_BUTTON)}
+			href={routes.SIGNUP}>Začněte zdarma<ArrowRight size={24} /></Button
 		>
 
 		<Typography variant="small">

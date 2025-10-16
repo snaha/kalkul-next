@@ -45,6 +45,7 @@
 	import DesktopOnly from '$lib/components/desktop-only.svelte'
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	const clientId = parseInt(page.params.id, 10)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -292,6 +293,7 @@
 		<Button
 			variant="strong"
 			dimension="compact"
+			onclick={() => umami?.track(UMAMI_EVENTS.HELP_BOX_GET_STARTED)}
 			href={`${routes.GET_STARTED}#${getStartedSections.CREATE_PORTFOLIO}`}
 			target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
 		>

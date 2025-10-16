@@ -17,6 +17,7 @@
 	import Badge from './ui/badge.svelte'
 	import ContentLayout from './content-layout.svelte'
 	import ComingSoonBadge from './coming-soon-badge.svelte'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	type Props = {
 		isMobile: boolean
@@ -73,8 +74,11 @@
 				--vertical-gap="var(--padding)"
 				--vertical-align-items="stretch"
 			>
-				<Button variant="strong" dimension="large" href={routes.SIGNUP}
-					>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
+				<Button
+					variant="strong"
+					dimension="large"
+					onclick={() => umami?.track(UMAMI_EVENTS.LANDING_GET_STARTED)}
+					href={routes.SIGNUP}>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
 				>
 				<ResponsiveLayout
 					--responsive-align-items="stretch"
@@ -84,12 +88,14 @@
 					<Button
 						variant="ghost"
 						dimension="compact"
+						onclick={() => umami?.track(UMAMI_EVENTS.LANDING_SAMPLE_PORTFOLIO)}
 						href={routes.SAMPLE_PORTFOLIO_LINK}
 						target="_blank">{$_('common.viewSamplePortfolio')}</Button
 					>
 					<Button
 						variant="ghost"
 						dimension="compact"
+						onclick={() => umami?.track(UMAMI_EVENTS.LANDING_REQUEST_DEMO)}
 						href={`mailto:support@kalkul.app?subject=${$_('email.templates.newsletter2025September.kalkulDemoRequest')}&body=${$_('email.templates.newsletter2025September.kalkulDemoRequestBody')}`}
 						target="_blank">{$_('page.landing.requestDemo')}</Button
 					>
@@ -409,7 +415,11 @@
 				--vertical-gap="var(--padding)"
 				--vertical-align-items="stretch"
 			>
-				<Button variant="strong" dimension="large" href={routes.SIGNUP}
+				<Button
+					variant="strong"
+					dimension="large"
+					href={routes.SIGNUP}
+					onclick={() => umami?.track(UMAMI_EVENTS.LANDING_GET_STARTED)}
 					>{$_('page.landing.getStarted')}<ArrowRight size={24} /></Button
 				>
 				<ResponsiveLayout
@@ -420,12 +430,14 @@
 					<Button
 						variant="ghost"
 						dimension="compact"
+						onclick={() => umami?.track(UMAMI_EVENTS.LANDING_SAMPLE_PORTFOLIO)}
 						href={routes.SAMPLE_PORTFOLIO_LINK}
 						target="_blank">{$_('common.viewSamplePortfolio')}</Button
 					>
 					<Button
 						variant="ghost"
 						dimension="compact"
+						onclick={() => umami?.track(UMAMI_EVENTS.LANDING_REQUEST_DEMO)}
 						href={`mailto:support@kalkul.app?subject=${$_('email.templates.newsletter2025September.kalkulDemoRequest')}&body=${$_('email.templates.newsletter2025September.kalkulDemoRequestBody')}`}
 						target="_blank">{$_('page.landing.requestDemo')}</Button
 					>

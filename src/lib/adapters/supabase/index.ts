@@ -21,6 +21,7 @@ import { investmentStore } from '$lib/stores/investment.svelte'
 import { transactionStore } from '$lib/stores/transaction.svelte'
 import { apiRoutes } from '$lib/routes'
 import { subscriptionStore } from '$lib/stores/subscription.svelte'
+import { umami } from '$lib/umami-events'
 
 const POSTGRES_NO_ROWS_ERROR_CODE = 'PGRST116'
 
@@ -105,6 +106,8 @@ export default class Supabase implements Adapter {
 							'investment_id',
 							investmentStore.data.map((investment) => investment.id),
 						)
+
+						umami?.identity(authStore.user.id)
 					}
 				} else if (event === 'INITIAL_SESSION') {
 					const { error } = await this.supabase.auth.refreshSession()

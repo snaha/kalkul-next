@@ -36,6 +36,7 @@
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
+	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	let showConfirmModal = $state(false)
 	let showWelcome = $state(authStore.user?.user_metadata.first_visit ? true : false)
@@ -126,12 +127,17 @@
 			text={$_('helpBox.clientListExplanation')}
 		>
 			<Vertical --vertical-gap="var(--half-padding)">
-				<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
-					>{$_('component.help.checkQuickStartGuide')}</Button
+				<Button
+					variant="strong"
+					dimension="compact"
+					onclick={() => umami?.track(UMAMI_EVENTS.HELP_BOX_GET_STARTED)}
+					href={routes.GET_STARTED}
+					target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
 				>
 				<Button
 					variant="ghost"
 					dimension="compact"
+					onclick={() => umami?.track(UMAMI_EVENTS.HELP_BOX_VIEW_PORTFOLIO)}
 					href={routes.SAMPLE_PORTFOLIO_LINK}
 					target="_blank">{$_('helpBox.viewSamplePortfolio')}</Button
 				>
@@ -140,6 +146,7 @@
 					dimension="compact"
 					onclick={() => {
 						isVideoPlayer = true
+						umami?.track(UMAMI_EVENTS.HELP_BOX_WATCH_VIDEO)
 					}}>{$_('helpBox.watchIntroVideo')}</Button
 				>
 			</Vertical>

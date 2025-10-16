@@ -5,13 +5,15 @@
 	import Typography from './ui/typography.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import type { Snippet } from 'svelte'
+	import { umami, type UmamiEventName } from '$lib/umami-events'
 
 	type Props = {
 		title: string
 		children: Snippet
+		trackId: UmamiEventName
 	}
 
-	let { title, children }: Props = $props()
+	let { title, children, trackId }: Props = $props()
 
 	let expanded = $state(false)
 </script>
@@ -20,7 +22,10 @@
 	class="gray"
 	--vertical-align-items="stretch"
 	--vertical-gap="0"
-	onclick={() => (expanded = !expanded)}
+	onclick={() => {
+		umami?.track(trackId)
+		expanded = !expanded
+	}}
 >
 	<Horizontal --horizontal-gap="0" --horizontal-justify-content="stretch">
 		<Typography variant="large">FAQ</Typography>
