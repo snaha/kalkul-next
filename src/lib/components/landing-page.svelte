@@ -98,7 +98,7 @@
 		</Vertical>
 
 		<!-- svelte-ignore a11y_missing_attribute -->
-		<img class="screenshot" style="width: 1302px" src="images/landing/01_Hero.png" />
+		<img class="screenshot" src="images/landing/01_Hero.png" />
 
 		<Divider --margin="0" />
 
@@ -159,7 +159,11 @@
 
 		<Divider --margin="0" />
 
-		<Vertical --vertical-gap="var(--quadruple-padding)">
+		<Vertical
+			--vertical-gap="var(--quadruple-padding)"
+			class="max-width1920"
+			--vertical-align-items={isMobile ? 'center' : 'stretch'}
+		>
 			<Horizontal --horizontal-justify-content="center">
 				<Typography variant="large" italic center accent
 					>{$_('page.landing.builtWithAdvisors')}</Typography
@@ -395,9 +399,9 @@
 			--vertical-align-items="center"
 		>
 			<Vertical --vertical-gap="0" --vertical-align-items="center">
-				<Typography variant="h3">{$_('page.landing.joinFreeBeta')}</Typography>
+				<Typography variant="h3" center>{$_('page.landing.joinFreeBeta')}</Typography>
 
-				<Typography variant="large">{$_('page.landing.joinFreeBetaSubtitle')}</Typography>
+				<Typography variant="large" center>{$_('page.landing.joinFreeBetaSubtitle')}</Typography>
 			</Vertical>
 
 			<Vertical
@@ -462,6 +466,14 @@
 		max-width: 560px;
 		width: 100%;
 	}
+	:global(.max-width1024) {
+		max-width: 1024px;
+		width: 100%;
+	}
+	:global(.max-width1920) {
+		max-width: 1920px;
+		width: 100%;
+	}
 	:global(.flex) {
 		flex: 1;
 	}
@@ -478,5 +490,6 @@
 		width: auto;
 		height: auto;
 		aspect-ratio: 1.7786;
+		flex: 1;
 	}
 </style>
