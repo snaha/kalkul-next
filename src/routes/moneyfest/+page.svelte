@@ -12,6 +12,7 @@
 	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
 
 	onMount(() => {
 		localStorage.setItem(PROMOTION_STORAGE_KEY, PROMOTION.MONEYFEST_SK_2025)
@@ -41,7 +42,10 @@
 			</Typography>
 		</Vertical>
 
-		<ResponsiveLayout --responsive-justify-content="stretch" class="max-width560">
+		<ResponsiveLayout
+			--responsive-justify-content={layoutStore.mobile ? 'stretch' : 'center'}
+			class="max-width560"
+		>
 			<Button
 				variant="secondary"
 				dimension="compact"
