@@ -1,12 +1,5 @@
 {
 	"page": {
-		"moneyfest": {
-			"cta": "Sign up now for <span style='font-weight: 700;'>exclusive Moneyfest rewards</span>!",
-			"description": "Get free early access, shape the product with your feedback, and get 50% discount on launch pricing—expected public release: early 2026.",
-			"button": "Get started for free",
-			"noCreditCard": "Completely free, no credit card required, no commitments.",
-			"disclaimer": "We're actively developing Kalkul with advisor input. Some features highlighted on our website are still in development and will roll out progressively as they're perfected."
-		},
 		"forgotPassword": {
 			"forgotPassword": "Forgot password?",
 			"forgotPasswordText": "Enter the email associated with your account and you will receive a link to reset your password.",
@@ -684,7 +677,6 @@
 		"noTransactionYet": "No transaction yet",
 		"noClientYet": "No client yet",
 		"resetPasswordLink": "Reset password link",
-		"introImg": "Intro img",
 		"verificationLinkSent": "Verification link sent",
 		"noPortfolioYet": "No portfolio yet",
 		"noInvestmentsYet": "No investments yet",

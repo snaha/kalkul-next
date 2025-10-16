@@ -1,7 +1,7 @@
+<!-- localization-exclude -->
 <script lang="ts">
 	import { ArrowRight } from 'carbon-icons-svelte'
 	import Button from '$lib/components/ui/button.svelte'
-	import { _ } from 'svelte-i18n'
 	import routes from '$lib/routes'
 	import { base } from '$app/paths'
 	import Typography from '$lib/components/ui/typography.svelte'
@@ -24,32 +24,34 @@
 		--vertical-align-items="center"
 	>
 		<Vertical --vertical-gap="var(--padding)">
-			<img src={`${base}/images/manifest-kalkul.svg`} alt={$_('common.introImg')} />
-			<img src={`${base}/images/manifest-kalkul-collaboration.svg`} alt={$_('common.introImg')} />
+			<img src={`${base}/images/manifest-kalkul.svg`} alt="Úvodní obrázek" />
+			<img src={`${base}/images/manifest-kalkul-collaboration.svg`} alt="Úvodní obrázek" />
 		</Vertical>
 		<Vertical --vertical-gap="var(--half-padding)">
 			<Typography variant="large">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html $_('page.moneyfest.cta')}
+				{@html "Zaregistrujte se nyní a získejte <span style='font-weight: 700;'>exkluzivní odměny z konference MoneyFest</span>!"}
 			</Typography>
 
 			<Typography>
-				{$_('page.moneyfest.description')}
+				Získejte bezplatný přístup jako první, ovlivněte produkt svou zpětnou vazbou a získejte 50%
+				slevu na cenu při spuštění—očekávané veřejné vydání: začátek roku 2026.
 			</Typography>
 		</Vertical>
 
 		<Button variant="strong" dimension="compact" href={routes.SIGNUP}
-			>{$_('page.moneyfest.button')}<ArrowRight size={24} /></Button
+			>Začněte zdarma<ArrowRight size={24} /></Button
 		>
 
 		<Typography variant="small">
-			{$_('page.moneyfest.noCreditCard')}
+			Zcela zdarma, není potřeba kreditní karta, žádné závazky.
 		</Typography>
 
 		<Vertical --vertical-gap="var(--half-padding)">
 			<BetaBadge />
 			<Typography variant="small" accent>
-				{$_('page.moneyfest.disclaimer')}
+				Aktivně vyvíjíme Kalkul se zpětnou vazbou poradců. Některé funkce zvýrazněné na našem webu
+				jsou stále ve vývoji a budou postupně uvolňovány, jak budou zdokonalovány.
 			</Typography>
 		</Vertical>
 	</Vertical>
