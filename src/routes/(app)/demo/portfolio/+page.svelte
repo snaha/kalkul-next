@@ -2,11 +2,13 @@
 	import Button from '$lib/components/ui/button.svelte'
 	import { Add, ArrowLeft, SidePanelCloseFilled, SidePanelOpenFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
+	import { get } from 'svelte/store'
 	import routes from '$lib/routes'
 	import { page } from '$app/state'
 	import { goto } from '$app/navigation'
-	import { demoStore, goalToTransactions, goalToInvestment } from '$lib/demo/stores/demo.svelte'
+	import { demoStore } from '$lib/demo/stores/demo.svelte'
 	import { DEMO_CLIENT_NAME, DEMO_CLIENT_BIRTH_DATE, DEMO_CLIENT_EMAIL } from '$lib/demo/utils'
+	import { formatDate } from '$lib/@snaha/kalkul-maths'
 	import PortfolioHeader from '$lib/components/portfolio-header.svelte'
 	import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
@@ -19,16 +21,9 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import InvestmentsSidebar from '$lib/demo/components/investments-sidebar.svelte'
-	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
 	import TabBar from '$lib/components/ui/tab-bar/tab-bar.svelte'
 	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
 	import GoalsSidebar from '$lib/demo/components/goals-sidebar.svelte'
-
-	// Import pre-calculated graph data for demo states
-	import goalOnlyData from '$lib/demo/data/1-goal-only-graph-data.json'
-	import singleInvestmentData from '$lib/demo/data/2-single-investment-graph-data.json'
-	import equalInvestmentsData from '$lib/demo/data/3-equal-investments-graph-data.json'
-	import finalData from '$lib/demo/data/4-final-graph-data.json'
 
 	// Demo mode - use mock client matching Client type
 	const client = {
@@ -43,10 +38,37 @@
 	// Initialize demo portfolio if not already initialized
 	$effect(() => {
 		if (!demoStore.portfolio) {
-			const currency = demoStore.goals[0]?.currency ?? 'EUR'
-			demoStore.initializeDemoPortfolio(-1, currency)
-			// Set to state 1 only on initial load
-			demoStore.setState(1)
+			// Only initialize if we don't have any goals/state loaded
+			if (demoStore.goals.length === 0) {
+				demoStore.initializeDemoPortfolio(-1, 'EUR')
+			} else {
+				// Goals exist but no portfolio - create portfolio without resetting state
+				const goal = demoStore.goals[0]
+				if (goal && goal.type === 'retirement') {
+					const { depositStart, retirementStart, retirementLength, inflation } =
+						goal.calculationInput
+					const startDate = formatDate(depositStart)
+					const endDate = formatDate(
+						new Date(
+							retirementStart.getFullYear() + retirementLength,
+							retirementStart.getMonth(),
+							retirementStart.getDate(),
+						),
+					)
+					demoStore.portfolio = {
+						id: -1,
+						client: -1,
+						name: get(_)('demo.portfolio.demoPortfolio'),
+						currency: goal.currency,
+						start_date: startDate,
+						end_date: endDate,
+						inflation_rate: inflation / 100,
+						created_at: new Date().toISOString(),
+						last_edited_at: new Date().toISOString(),
+						link: null,
+					}
+				}
+			}
 		}
 	})
 
@@ -60,103 +82,10 @@
 	// Track selected tab
 	let selectedTab = $state<'goals' | 'investments'>('goals')
 
-	// Prepare goal data
-	const currentGoal = $derived(demoStore.goals[0])
-	const goalInvestments = $derived(
-		currentGoal
-			? [{ ...goalToInvestment(currentGoal), colorIndex: 4 } as InvestmentWithColorIndex]
-			: [],
-	)
-	const goalTransactions = $derived(currentGoal ? goalToTransactions(currentGoal) : [])
-
-	/**
-	 * Translates labels in graph data to use localized goal names
-	 */
-	function translateGraphDataLabels(data: PortfolioSimulation): PortfolioSimulation {
-		const goalName = $_('demo.investments.retirement')
-
-		return {
-			...data,
-			data: data.data.map((item) => ({
-				...item,
-				label: goalName,
-			})),
-			total: {
-				...data.total,
-				label: goalName,
-			},
-		}
-	}
-
-	/**
-	 * Gets hardcoded graph data based on the current demo state.
-	 * Returns undefined if no hardcoded data is available for the current state.
-	 */
-	function getHardcodedGraphData(): PortfolioSimulation | undefined {
-		const state = demoStore.demoState
-
-		switch (state) {
-			case 1:
-				return translateGraphDataLabels(goalOnlyData as PortfolioSimulation)
-			case 2:
-				return translateGraphDataLabels(singleInvestmentData as PortfolioSimulation)
-			case 3:
-				return translateGraphDataLabels(equalInvestmentsData as PortfolioSimulation)
-			case 4:
-				return translateGraphDataLabels(finalData as PortfolioSimulation)
-			default:
-				return undefined
-		}
-	}
-
-	// Empty simulation data structure with translated label
-	const emptySimulationData = $derived.by((): PortfolioSimulation => {
-		return {
-			data: [],
-			total: {
-				label: $_('demo.investments.retirement'),
-				graphLabels: [],
-				graphDeposits: [],
-				graphWithdrawals: [],
-				graphInvestmentValues: [],
-				graphFeeValues: [],
-				graphInflationDeposits: [],
-				graphInflationWithdrawals: [],
-				graphInflationInvestmentValues: [],
-				graphInflationFeeValues: [],
-			},
-			isCalculating: false,
-			progress: 100,
-		}
-	})
-
-	// Get data based on selected tab - always use hardcoded data or empty
-	const graphInvestments = $derived(selectedTab === 'goals' ? goalInvestments : investments)
-	const graphTransactions = $derived(selectedTab === 'goals' ? goalTransactions : transactions)
-
-	// Always use hardcoded data, never calculate
-	const graphData = $derived.by(() => {
-		const hardcodedData = getHardcodedGraphData()
-		if (!hardcodedData) return emptySimulationData
-
-		if (selectedTab === 'goals') {
-			if (investments.length > 0) {
-				// Show total from hardcoded investments simulation
-				return {
-					data: [hardcodedData.total],
-					total: hardcodedData.total,
-					isCalculating: false,
-					progress: 100,
-				}
-			} else {
-				// No investments, show hardcoded goal-only simulation
-				return hardcodedData
-			}
-		} else {
-			// Investments tab - use hardcoded data
-			return hardcodedData
-		}
-	})
+	// Get data based on selected tab from the store
+	const graphInvestments = $derived(demoStore.getGraphInvestments(selectedTab))
+	const graphTransactions = $derived(demoStore.getGraphTransactions(selectedTab))
+	const graphData = $derived(demoStore.getGraphData(selectedTab))
 
 	const investmentsViewStore = $derived(withInvestmentsViewStore(investments))
 
@@ -220,9 +149,9 @@
 			if (event.key === 'ArrowRight') {
 				demoStore.setState(3)
 			}
-			// ArrowDown: State 4 - Custom weights (15%, 24%, 51%, 10%)
+			// ArrowDown: State 5 - Two goals
 			else if (event.key === 'ArrowDown') {
-				demoStore.setState(4)
+				demoStore.setState(5)
 			}
 		}
 

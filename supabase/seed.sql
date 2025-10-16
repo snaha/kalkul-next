@@ -2512,6 +2512,365 @@ VALUES
     true
   );
 
+-- Duplicate Portfolio 7 as "5. Two Goals"
+INSERT INTO
+  "public"."portfolio" (
+    "id",
+    "created_at",
+    "name",
+    "last_edited_at",
+    "start_date",
+    "end_date",
+    "inflation_rate",
+    "client",
+    "currency",
+    "link"
+  )
+VALUES
+  (
+    '11',
+    '2025-10-10 12:00:00.000000+00',
+    'Retirement Demo - 5. Two Goals',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-01-01',
+    '2065-02-02',
+    '0.025',
+    '6',
+    'EUR',
+    'retirement-demo-two-goals-2025'
+  );
+
+-- Duplicate Investments from Portfolio 7
+INSERT INTO
+  "public"."investment" (
+    "id",
+    "created_at",
+    "last_edited_at",
+    "portfolio_id",
+    "apy",
+    "entry_fee",
+    "exit_fee",
+    "success_fee",
+    "management_fee",
+    "ter",
+    "exit_fee_type",
+    "management_fee_type",
+    "entry_fee_type",
+    "name"
+  )
+VALUES
+  (
+    '29',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '11',
+    '7.2',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Eurizon AM Slovakia – Akciové Portfólio'
+  ),
+  (
+    '30',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '11',
+    '8.68',
+    '2.5',
+    '0',
+    '0',
+    '0',
+    '1.45',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Americký akciový fond (Tatra banka)'
+  ),
+  (
+    '31',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '11',
+    '3.55',
+    '1.5',
+    '0',
+    '0',
+    '0',
+    '0.95',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'TAM – Dlhopisový fond'
+  ),
+  (
+    '32',
+    '2025-10-10 12:00:00.000000+00',
+    '2025-10-10 12:00:00.000000+00',
+    '11',
+    '5.35',
+    '1.0',
+    '0',
+    '0',
+    '0',
+    '0.7',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Zlato'
+  );
+
+-- Duplicate Transactions from Portfolio 7
+INSERT INTO
+  "public"."transaction" (
+    "id",
+    "created_at",
+    "amount",
+    "date",
+    "end_date",
+    "investment_id",
+    "label",
+    "repeat",
+    "repeat_unit",
+    "type",
+    "last_edited_at",
+    "inflation_adjusted"
+  )
+VALUES
+  -- Eurizon AM Slovakia transactions (Investment 29)
+  (
+    '11001',
+    '2025-10-10 12:00:00.000000+00',
+    '1688.7',
+    '2025-01-01 00:00:00+00',
+    null,
+    '29',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11002',
+    '2025-10-10 12:00:00.000000+00',
+    '27.03',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '29',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11003',
+    '2025-10-10 12:00:00.000000+00',
+    '62.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '29',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Americký akciový fond transactions (Investment 30)
+  (
+    '11004',
+    '2025-10-10 12:00:00.000000+00',
+    '2701.92',
+    '2025-01-01 00:00:00+00',
+    null,
+    '30',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11005',
+    '2025-10-10 12:00:00.000000+00',
+    '43.25',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '30',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11006',
+    '2025-10-10 12:00:00.000000+00',
+    '140',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '30',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- TAM - Dlhopisový fond transactions (Investment 31)
+  (
+    '11007',
+    '2025-10-10 12:00:00.000000+00',
+    '5741.58',
+    '2025-01-01 00:00:00+00',
+    null,
+    '31',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11008',
+    '2025-10-10 12:00:00.000000+00',
+    '91.91',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '31',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11009',
+    '2025-10-10 12:00:00.000000+00',
+    '112.5',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '31',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Zlato transactions (Investment 32)
+  (
+    '11010',
+    '2025-10-10 12:00:00.000000+00',
+    '1125.8',
+    '2025-01-01 00:00:00+00',
+    null,
+    '32',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11011',
+    '2025-10-10 12:00:00.000000+00',
+    '18.02',
+    '2025-02-01 00:00:00+00',
+    '2045-02-01 00:00:00+00',
+    '32',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  (
+    '11012',
+    '2025-10-10 12:00:00.000000+00',
+    '35',
+    '2045-03-01 00:00:00+00',
+    '2065-02-28 00:00:00+00',
+    '32',
+    'Monthly Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-10 12:00:00.000000+00',
+    true
+  ),
+  -- Ben's Education Fund transactions (Goal 2)
+  (
+    '11013',
+    '2025-10-15 10:58:22.204217+00',
+    '500',
+    '2033-02-02 00:00:00+00',
+    '2036-02-01 00:00:00+00',
+    '30',
+    'Ben''s Education Expenses',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-15 10:58:22.204217+00',
+    true
+  ),
+  (
+    '11014',
+    '2025-10-15 10:59:17.14477+00',
+    '170',
+    '2025-10-15 00:00:00+00',
+    '2033-02-14 00:00:00+00',
+    '30',
+    'Ben''s Education Fund - Monthly Savings',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-15 10:59:17.14477+00',
+    true
+  ),
+  (
+    '11015',
+    '2025-10-15 11:04:35.015671+00',
+    '500',
+    '2033-02-02 00:00:00+00',
+    '2036-02-01 00:00:00+00',
+    '29',
+    'Ben''s Education Expenses',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-15 11:04:35.015671+00',
+    false
+  ),
+  (
+    '11016',
+    '2025-10-15 11:05:22.602429+00',
+    '160',
+    '2025-10-15 00:00:00+00',
+    '2033-02-14 00:00:00+00',
+    '29',
+    'Ben''s Education Fund - Monthly Savings',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-15 11:05:22.602429+00',
+    false
+  );
+
 -- Reset sequences to ensure proper ID generation
 DO $$
 BEGIN

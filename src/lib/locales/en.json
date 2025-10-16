@@ -769,11 +769,12 @@
 			"retirementWithdrawal": "Retirement Withdrawal",
 			"initialInvestment": "Initial Investment",
 			"monthlyContribution": "Monthly Contribution",
-			"monthlyRetirementWithdrawal": "Monthly Retirement Withdrawal"
+			"monthlyRetirementWithdrawal": "Monthly Retirement Withdrawal",
+			"educationWithdrawal": "Education Withdrawal"
 		},
 		"investments": {
 			"retirement": "Retirement",
-			"retirementInvestment": "Retirement Investment"
+			"education": "Kid's Education"
 		},
 		"portfolio": {
 			"demoPortfolio": "Demo Portfolio"

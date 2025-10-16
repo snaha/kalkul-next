@@ -7,6 +7,7 @@ export type TabStore = {
 	readonly disabled: boolean[]
 
 	addItem: (item: string | Snippet, id: string | undefined, disabled: boolean) => void
+	updateDisabled: (item: string | Snippet, disabled: boolean) => void
 }
 
 export function withTabStore(): TabStore {
@@ -33,6 +34,12 @@ export function withTabStore(): TabStore {
 			items.push(item)
 			ids.push(id)
 			disabled.push(isDisabled)
+		},
+		updateDisabled(item, isDisabled) {
+			const index = items.indexOf(item)
+			if (index !== -1) {
+				disabled[index] = isDisabled
+			}
 		},
 	}
 }

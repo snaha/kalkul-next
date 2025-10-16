@@ -86,23 +86,8 @@
 		createClicked = true
 		await asyncTimeout(0)
 
-		demoStore.addInvestment({
-			portfolio_id: portfolio.id,
-			name,
-			apy: Number(apy),
-			entry_fee: Number(entryFee),
-			entry_fee_type: entryFeeType,
-			exit_fee: Number(exitFee),
-			exit_fee_type: exitFeeType,
-			success_fee: advancedFees ? Number(successFee) : 0,
-			management_fee: advancedFees ? Number(managementFee) : 0,
-			management_fee_type: managementFeeType,
-			advanced_fees: advancedFees,
-			ter: advancedFees ? 0 : Number(ter),
-			type,
-		})
-
-		demoStore.setState(2)
+		// In demo mode, just transition to state 2 (single investment)
+		demoStore.addInvestment()
 		close()
 	}
 

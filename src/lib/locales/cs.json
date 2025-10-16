@@ -769,11 +769,12 @@
 			"retirementWithdrawal": "Renta",
 			"initialInvestment": "Počáteční investice",
 			"monthlyContribution": "Měsíční příspěvek",
-			"monthlyRetirementWithdrawal": "Měsíční renta"
+			"monthlyRetirementWithdrawal": "Měsíční renta",
+			"educationWithdrawal": "Výběr na vzdělání"
 		},
 		"investments": {
 			"retirement": "Důchod",
-			"retirementInvestment": "Důchodová investice"
+			"education": "Vzdělání"
 		},
 		"portfolio": {
 			"demoPortfolio": "Demo portfolio"

@@ -17,6 +17,11 @@
 	onMount(() => {
 		store.addItem(value, id, disabled)
 	})
+
+	// Reactively update disabled state when prop changes
+	$effect(() => {
+		store.updateDisabled(value, disabled)
+	})
 </script>
 
 {#if selected}

@@ -121,7 +121,7 @@
 		if (!goal) return
 
 		// Always use state 4
-		demoStore.demoState = 4
+		demoStore.setState(4)
 
 		// Update the percentages
 		goal.linkedInvestments.forEach((li) => {
