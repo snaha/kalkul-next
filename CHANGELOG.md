@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.15.0](https://github.com/snaha/kalkul/compare/v0.14.0...v0.15.0) (2025-10-16)
+
+
+### Features
+
+* add two goal data and improve demo stability ([#1023](https://github.com/snaha/kalkul/issues/1023)) ([c34102a](https://github.com/snaha/kalkul/commit/c34102ab1fa3e5d45e78fd15476c0e97d1548a4e))
+* demo flow ([#998](https://github.com/snaha/kalkul/issues/998)) ([b24714b](https://github.com/snaha/kalkul/commit/b24714bd485342edcd7794065ae0a4c542f8978d))
+* hardcoded demo data ([#1005](https://github.com/snaha/kalkul/issues/1005)) ([1919f98](https://github.com/snaha/kalkul/commit/1919f98044bd0eebf4c7363e6dc58b753406b6f3))
+* landing page ([#996](https://github.com/snaha/kalkul/issues/996)) ([f68d9f0](https://github.com/snaha/kalkul/commit/f68d9f007c1840a59cb6c500b97a920d1fc92188))
+* moneyfest promo code ([#1018](https://github.com/snaha/kalkul/issues/1018)) ([c6c4f28](https://github.com/snaha/kalkul/commit/c6c4f28be39ed95feffc52e6f4527926f6b3e55d))
+* moneyfest what is kalkul button ([#1029](https://github.com/snaha/kalkul/issues/1029)) ([f3b5eee](https://github.com/snaha/kalkul/commit/f3b5eee0dfdbb9c3ab6402498a9137fcf240d3bf))
+* umami analytics event tracking ([#1028](https://github.com/snaha/kalkul/issues/1028)) ([ea8b9b6](https://github.com/snaha/kalkul/commit/ea8b9b63e22ada80beef1ed602cc2d0263475388))
+
+
+### Bug Fixes
+
+* disable subscriptionStore loading ([#1019](https://github.com/snaha/kalkul/issues/1019)) ([c5db465](https://github.com/snaha/kalkul/commit/c5db46581251a424d57b7c3bed430e5d1c457e5a))
+* disable tooltip on mobile ([#1007](https://github.com/snaha/kalkul/issues/1007)) ([da76187](https://github.com/snaha/kalkul/commit/da761870939df2e707c648e60fe19e1c8821e783))
+* get started date ([#1020](https://github.com/snaha/kalkul/issues/1020)) ([265e33c](https://github.com/snaha/kalkul/commit/265e33c751ea13d437783162c24feb1077a97fb4))
+* hardcoded czech moneyfest page ([#1025](https://github.com/snaha/kalkul/issues/1025)) ([c992912](https://github.com/snaha/kalkul/commit/c99291240caac96f2ba9a495e29bad419dd05e06))
+* inflation tooltip ([#1009](https://github.com/snaha/kalkul/issues/1009)) ([03b7bd1](https://github.com/snaha/kalkul/commit/03b7bd12ba23439dfde37cd25ad37ee990d699f0))
+* landing page czech copy ([#1024](https://github.com/snaha/kalkul/issues/1024)) ([b79cce2](https://github.com/snaha/kalkul/commit/b79cce2b7bbf6bf818d38551155714cbe9d7415d))
+* landing page improvements ([#1022](https://github.com/snaha/kalkul/issues/1022)) ([c04ede4](https://github.com/snaha/kalkul/commit/c04ede48cc27f816d5365cb93f7f3d14ce246dc7))
+* loader improvements ([#1006](https://github.com/snaha/kalkul/issues/1006)) ([6915fcc](https://github.com/snaha/kalkul/commit/6915fcc9c42b68ebbd7011704474c53786bf2532))
+* mobile onboarding flow ([#1016](https://github.com/snaha/kalkul/issues/1016)) ([46b1243](https://github.com/snaha/kalkul/commit/46b12432d5e5c224425f29488f55c5a962165ad9))
+* moneyfest button layout ([#1030](https://github.com/snaha/kalkul/issues/1030)) ([ec494f4](https://github.com/snaha/kalkul/commit/ec494f45d786353b72e2d405e3434946fdc06105))
+* reset password on mobile ([#1003](https://github.com/snaha/kalkul/issues/1003)) ([9b5e6bf](https://github.com/snaha/kalkul/commit/9b5e6bf5a0f0c23199a887d8d5a1e17032fa0883)), closes [#997](https://github.com/snaha/kalkul/issues/997)
+* retirement calculation ([#1011](https://github.com/snaha/kalkul/issues/1011)) ([8ed666d](https://github.com/snaha/kalkul/commit/8ed666d27771090b049054b3528455d972efe056))
+* translate demo data to cz ([#1008](https://github.com/snaha/kalkul/issues/1008)) ([c399629](https://github.com/snaha/kalkul/commit/c39962922895565ed4b2fd2a7e925f2e7ab3dd10))
+* translate graph demo data ([#1010](https://github.com/snaha/kalkul/issues/1010)) ([4777364](https://github.com/snaha/kalkul/commit/47773649dd70c8538950fb3ecf3bc221f68068e6))
+* updated moneyfest page ([#1017](https://github.com/snaha/kalkul/issues/1017)) ([18c919c](https://github.com/snaha/kalkul/commit/18c919c600b58dce2da499f9cbef18e119fdb1a8))
+* website images ([#1013](https://github.com/snaha/kalkul/issues/1013)) ([d99b74e](https://github.com/snaha/kalkul/commit/d99b74eec6ab655052f13882ac7cfd8f150f4284))
+* website layout ([#1015](https://github.com/snaha/kalkul/issues/1015)) ([a816ae3](https://github.com/snaha/kalkul/commit/a816ae3b803446b507fafaf5709191faf3a48657))
+* wide landing improvements ([#1026](https://github.com/snaha/kalkul/issues/1026)) ([45f9bb9](https://github.com/snaha/kalkul/commit/45f9bb9c5239c19da8b1078d318e9b1700b4a4d0))
+
 ## [0.14.0](https://github.com/snaha/kalkul/compare/v0.13.0...v0.14.0) (2025-10-07)
 
 
