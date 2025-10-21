@@ -18,7 +18,7 @@ import { getState5Data } from '$lib/demo/data/5-two-goals-state'
 export const RETIREMENT_DEFAULTS = {
 	RETIREMENT_AGE: 65,
 	RETIREMENT_LENGTH: 20,
-	CURRENCY: 'EUR',
+	CURRENCY: 'CZK',
 	INFLATION: 2.5,
 	DESIRED_BUDGET: 0,
 	BUDGET_FREQUENCY: 'month' as const,
@@ -397,7 +397,7 @@ class DemoStore {
 		this.goalTransactions = data.goalTransactions
 	}
 
-	initializeDemoPortfolio(clientId: number, currency = 'EUR') {
+	initializeDemoPortfolio(clientId: number, currency = 'CZK') {
 		const today = new Date()
 
 		// Load state 1 (goal only) - this sets goals, investments, transactions, graphData, etc.
