@@ -144,13 +144,9 @@
 		function handleKeydown(event: KeyboardEvent) {
 			if (event.key === 'ArrowRight') {
 				// DEMO PREFILL VALUES
-				const eurizonInvestment = demoStore.investments.find(
-					(inv) => inv.name === 'Eurizon AM Slovakia – Akciové Portfólio',
-				)
-				const tatrabanka = demoStore.investments.find(
-					(inv) => inv.name === 'Americký akciový fond (Tatra banka)',
-				)
-				const tam = demoStore.investments.find((inv) => inv.name === 'TAM – Dlhopisový fond')
+				const eurizonInvestment = demoStore.investments.find((inv) => inv.name === 'Evropské akcie')
+				const tatrabanka = demoStore.investments.find((inv) => inv.name === 'Americké akcie')
+				const tam = demoStore.investments.find((inv) => inv.name === 'České dluhopisy')
 				const gold = demoStore.investments.find((inv) => inv.name === 'Zlato')
 
 				// First clear all locks

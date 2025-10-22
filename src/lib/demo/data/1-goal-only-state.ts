@@ -12,7 +12,7 @@ export function getState1Data(): DemoStateData {
 				linkedInvestments: [],
 				customDepositAmount: 4505.25,
 				calculationInput: {
-					apy: 4.5,
+					apy: 5.5,
 					budgetFrequency: 'month',
 					currentSavings: 281450,
 					depositFrequency: 'month',
@@ -251,7 +251,7 @@ export function getState1Data(): DemoStateData {
 				id: -1,
 				portfolio_id: -1,
 				name: get(_)('demo.investments.retirement'),
-				apy: 4.5,
+				apy: 5.5,
 				type: 'etf',
 				created_at: new Date().toISOString(),
 				last_edited_at: new Date().toISOString(),

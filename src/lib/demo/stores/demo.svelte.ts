@@ -23,7 +23,7 @@ export const RETIREMENT_DEFAULTS = {
 	DESIRED_BUDGET: 0,
 	BUDGET_FREQUENCY: 'month' as const,
 	CURRENT_SAVINGS: 0,
-	APY: 4.5,
+	APY: 5.5,
 	DEPOSIT_FREQUENCY: 'month' as const,
 }
 

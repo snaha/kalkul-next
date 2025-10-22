@@ -12,7 +12,7 @@ export function getState2Data(): DemoStateData {
 				linkedInvestments: [{ investmentId: -1, percentage: 100 }],
 				customDepositAmount: 4505.25,
 				calculationInput: {
-					apy: 4.5,
+					apy: 5.5,
 					budgetFrequency: 'month',
 					currentSavings: 281450,
 					depositFrequency: 'month',
@@ -28,7 +28,7 @@ export function getState2Data(): DemoStateData {
 			{
 				id: -1,
 				portfolio_id: -1,
-				name: 'Eurizon AM Slovakia – Akciové Portfólio',
+				name: 'Evropské akcie',
 				apy: 7.2,
 				type: 'mutual_fund',
 				advanced_fees: false,
@@ -97,7 +97,7 @@ export function getState2Data(): DemoStateData {
 		graphData: {
 			data: [
 				{
-					label: 'Eurizon AM Slovakia – Akciové Portfólio',
+					label: 'Evropské akcie',
 					graphLabels: [
 						'2025',
 						'2026',
@@ -354,7 +354,7 @@ export function getState2Data(): DemoStateData {
 				id: -1,
 				portfolio_id: -1,
 				name: get(_)('demo.investments.retirement'),
-				apy: 4.5,
+				apy: 5.5,
 				type: 'etf',
 				created_at: new Date().toISOString(),
 				last_edited_at: new Date().toISOString(),

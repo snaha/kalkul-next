@@ -1456,7 +1456,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Eurizon AM Slovakia – Akciové Portfólio'
+    'Evropské akcie'
   ),
   (
     '20',
@@ -1472,7 +1472,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Americký akciový fond (Tatra banka)'
+    'Americké akcie'
   ),
   (
     '21',
@@ -1488,7 +1488,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'TAM – Dlhopisový fond'
+    'České dluhopisy'
   ),
   (
     '22',
@@ -1536,7 +1536,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Eurizon AM Slovakia – Akciové Portfólio'
+    'Evropské akcie'
   );
 
 -- Transactions for extended portfolio
@@ -1917,7 +1917,7 @@ INSERT INTO
     "inflation_adjusted"
   )
 VALUES
-  -- Eurizon AM Slovakia transactions (15%)
+  -- Evropské akcie transactions (15%)
   (
     '7001',
     '2025-10-10 12:00:00.000000+00',
@@ -1960,7 +1960,7 @@ VALUES
     '2025-10-10 12:00:00.000000+00',
     true
   ),
-  -- Americký akciový fond transactions (24%)
+  -- Americké akcie transactions (24%)
   (
     '7004',
     '2025-10-10 12:00:00.000000+00',
@@ -2271,7 +2271,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Eurizon AM Slovakia – Akciové Portfólio'
+    'Evropské akcie'
   ),
   (
     '25',
@@ -2287,7 +2287,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Americký akciový fond (Tatra banka)'
+    'Americké akcie'
   ),
   (
     '26',
@@ -2303,7 +2303,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'TAM – Dlhopisový fond'
+    'České dluhopisy'
   ),
   (
     '27',
@@ -2339,7 +2339,7 @@ INSERT INTO
     "inflation_adjusted"
   )
 VALUES
-  -- Eurizon AM Slovakia transactions (25%)
+  -- Evropské akcie transactions (25%)
   (
     '9001',
     '2025-10-10 12:00:00.000000+00',
@@ -2382,7 +2382,7 @@ VALUES
     '2025-10-10 12:00:00.000000+00',
     true
   ),
-  -- Americký akciový fond transactions (25%)
+  -- Americké akcie transactions (25%)
   (
     '9004',
     '2025-10-10 12:00:00.000000+00',
@@ -2573,7 +2573,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Eurizon AM Slovakia – Akciové Portfólio'
+    'Evropské akcie'
   ),
   (
     '30',
@@ -2589,7 +2589,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'Americký akciový fond (Tatra banka)'
+    'Americké akcie'
   ),
   (
     '31',
@@ -2605,7 +2605,7 @@ VALUES
     'percentage',
     'percentage',
     'ongoing',
-    'TAM – Dlhopisový fond'
+    'České dluhopisy'
   ),
   (
     '32',
@@ -2641,7 +2641,7 @@ INSERT INTO
     "inflation_adjusted"
   )
 VALUES
-  -- Eurizon AM Slovakia transactions (Investment 29)
+  -- Evropské akcie transactions (Investment 29)
   (
     '11001',
     '2025-10-10 12:00:00.000000+00',
@@ -2684,7 +2684,7 @@ VALUES
     '2025-10-10 12:00:00.000000+00',
     true
   ),
-  -- Americký akciový fond transactions (Investment 30)
+  -- Americké akcie transactions (Investment 30)
   (
     '11004',
     '2025-10-10 12:00:00.000000+00',

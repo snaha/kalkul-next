@@ -162,7 +162,7 @@
 		function handleKeydown(event: KeyboardEvent) {
 			if (event.key === 'ArrowRight') {
 				// DEMO PREFILL VALUES
-				name = 'Eurizon AM Slovakia – Akciové Portfólio'
+				name = 'Evropské akcie'
 				apy = 8.68
 				ter = 1.45
 				entryFee = 2.5

@@ -17,7 +17,7 @@ export function getState4Data(): DemoStateData {
 				],
 				customDepositAmount: 4505.25,
 				calculationInput: {
-					apy: 4.5,
+					apy: 5.5,
 					budgetFrequency: 'month',
 					currentSavings: 281450,
 					depositFrequency: 'month',
@@ -33,7 +33,7 @@ export function getState4Data(): DemoStateData {
 			{
 				id: -1,
 				portfolio_id: -1,
-				name: 'Eurizon AM Slovakia – Akciové Portfólio',
+				name: 'Evropské akcie',
 				apy: 7.2,
 				type: 'mutual_fund',
 				advanced_fees: false,
@@ -51,7 +51,7 @@ export function getState4Data(): DemoStateData {
 			{
 				id: -2,
 				portfolio_id: -1,
-				name: 'Americký akciový fond (Tatra banka)',
+				name: 'Americké akcie',
 				apy: 8.68,
 				type: 'mutual_fund',
 				advanced_fees: false,
@@ -69,7 +69,7 @@ export function getState4Data(): DemoStateData {
 			{
 				id: -3,
 				portfolio_id: -1,
-				name: 'TAM – Dlhopisový fond',
+				name: 'České dluhopisy',
 				apy: 3.55,
 				type: 'bond',
 				advanced_fees: false,
@@ -291,7 +291,7 @@ export function getState4Data(): DemoStateData {
 		graphData: {
 			data: [
 				{
-					label: 'Eurizon AM Slovakia – Akciové Portfólio',
+					label: 'Evropské akcie',
 					graphLabels: [
 						'2025',
 						'2026',
@@ -415,7 +415,7 @@ export function getState4Data(): DemoStateData {
 					],
 				},
 				{
-					label: 'Americký akciový fond (Tatra banka)',
+					label: 'Americké akcie',
 					graphLabels: [
 						'2025',
 						'2026',
@@ -539,7 +539,7 @@ export function getState4Data(): DemoStateData {
 					],
 				},
 				{
-					label: 'TAM – Dlhopisový fond',
+					label: 'České dluhopisy',
 					graphLabels: [
 						'2025',
 						'2026',
@@ -926,7 +926,7 @@ export function getState4Data(): DemoStateData {
 				id: -1,
 				portfolio_id: -1,
 				name: get(_)('demo.investments.retirement'),
-				apy: 4.5,
+				apy: 5.5,
 				type: 'etf',
 				created_at: new Date().toISOString(),
 				last_edited_at: new Date().toISOString(),
