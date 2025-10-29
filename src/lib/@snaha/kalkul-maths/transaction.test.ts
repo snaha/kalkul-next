@@ -248,8 +248,8 @@ describe('#calculateTotalDisplayAmount', () => {
 
 		const result = calculateTotalDisplayAmount([transaction], 'withdrawal', 0.03, '2024-01-01')
 
-		expect(result.nominal).toBe(24000)
-		expect(result.adjusted).toBeCloseTo(23678.04, 2)
+		expect(result.nominal).toBe(-24000)
+		expect(result.adjusted).toBeCloseTo(-23678.04, 2)
 	})
 
 	it('handles inflation-adjusted recurring transactions with UI inflation display', () => {
@@ -265,8 +265,8 @@ describe('#calculateTotalDisplayAmount', () => {
 
 		const result = calculateTotalDisplayAmount([transaction], 'withdrawal', 0.03, '2024-01-01')
 
-		expect(result.nominal).toBeCloseTo(24328.1, 2)
-		expect(result.adjusted).toBeCloseTo(24000, 2)
+		expect(result.nominal).toBeCloseTo(-24328.1, 2)
+		expect(result.adjusted).toBeCloseTo(-24000, 2)
 	})
 
 	it('demonstrates the core fix: $24,327 vs $24,000 discrepancy resolved', () => {
@@ -289,8 +289,8 @@ describe('#calculateTotalDisplayAmount', () => {
 		)
 
 		expect(mathematicalResult).toBeCloseTo(24328.1, 2)
-		expect(displayResult.adjusted).toBeCloseTo(24000, 2)
-		expect(mathematicalResult - displayResult.adjusted).toBeCloseTo(328.1, 2)
+		expect(displayResult.adjusted).toBeCloseTo(-24000, 2)
+		expect(mathematicalResult + displayResult.adjusted).toBeCloseTo(328.1, 2)
 	})
 
 	it('handles the user example: $1000 now + $1000 in 1 year = $1970 with inflation', () => {
@@ -301,8 +301,8 @@ describe('#calculateTotalDisplayAmount', () => {
 
 		const result = calculateTotalDisplayAmount(transactions, 'withdrawal', 0.03, '2024-01-01')
 
-		expect(result.nominal).toBe(2000)
-		expect(result.adjusted).toBeCloseTo(1970.81, 2)
+		expect(result.nominal).toBe(-2000)
+		expect(result.adjusted).toBeCloseTo(-1970.81, 2)
 	})
 
 	it('handles inflation-adjusted deposits showing real vs nominal values', () => {
@@ -334,8 +334,8 @@ describe('#calculateTotalDisplayAmount', () => {
 
 		// With 2% deflation, real value should be higher than nominal
 		// Real value: compound calculation
-		expect(result.nominal).toBe(1000.0)
-		expect(result.adjusted).toBeCloseTo(1020.45, 2)
+		expect(result.nominal).toBe(-1000.0)
+		expect(result.adjusted).toBeCloseTo(-1020.45, 2)
 	})
 
 	it('handles zero inflation correctly', () => {
@@ -390,8 +390,8 @@ describe('#calculateTotalDisplayAmount', () => {
 
 		// Withdrawals: 500 (no adjustment)
 		// Real value: compound calculation
-		expect(withdrawalResult.nominal).toBe(500.0)
-		expect(withdrawalResult.adjusted).toBeCloseTo(454.46, 2)
+		expect(withdrawalResult.nominal).toBe(-500.0)
+		expect(withdrawalResult.adjusted).toBeCloseTo(-454.46, 2)
 	})
 
 	it('handles yearly recurring inflation-adjusted deposits with 10% inflation', () => {
@@ -430,7 +430,7 @@ describe('#calculateTotalDisplayAmount', () => {
 		// Year 1: 1000, Year 2: compound calculation
 		// Total nominal: compound calculation ~2120.26
 		// Total real: 2 * 1000 = 2000
-		expect(result.nominal).toBeCloseTo(2120.26, 2)
-		expect(result.adjusted).toBe(2000.0)
+		expect(result.nominal).toBeCloseTo(-2120.26, 2)
+		expect(result.adjusted).toBe(-2000.0)
 	})
 })

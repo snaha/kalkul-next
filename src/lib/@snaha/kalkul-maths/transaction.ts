@@ -96,12 +96,13 @@ export function calculateTotalDisplayAmount(
 	transactions
 		.filter((transaction) => transaction.type === type)
 		.forEach((transaction) => {
+			const signMultiplier = transaction.type === 'withdrawal' ? -1 : 1
 			// If no portfolio context, use original calculation
 			if (!portfolioStartDate) {
 				const periods = calculateNumOccurrences(transaction)
 				const amount = transaction.amount * periods
-				adjustedTotal += amount
-				nominalTotal += amount
+				adjustedTotal += amount * signMultiplier
+				nominalTotal += amount * signMultiplier
 				return
 			}
 
@@ -125,8 +126,8 @@ export function calculateTotalDisplayAmount(
 					inflationRate,
 				)
 
-				adjustedTotal += real
-				nominalTotal += nominal
+				adjustedTotal += real * signMultiplier
+				nominalTotal += nominal * signMultiplier
 				return
 			}
 
@@ -137,8 +138,8 @@ export function calculateTotalDisplayAmount(
 			const endDate = new Date(transaction.end_date)
 
 			if (!transaction.repeat_unit || !transaction.repeat) {
-				adjustedTotal += transaction.amount
-				nominalTotal += transaction.amount
+				adjustedTotal += transaction.amount * signMultiplier
+				nominalTotal += transaction.amount * signMultiplier
 				return
 			}
 
@@ -169,8 +170,8 @@ export function calculateTotalDisplayAmount(
 				currentDate = incrementDate(currentDate, transaction.repeat_unit, transaction.repeat)
 			}
 
-			adjustedTotal += adjustedForTransaction
-			nominalTotal += nominalForTransaction
+			adjustedTotal += adjustedForTransaction * signMultiplier
+			nominalTotal += nominalForTransaction * signMultiplier
 		})
 
 	return { adjusted: adjustedTotal, nominal: nominalTotal }
