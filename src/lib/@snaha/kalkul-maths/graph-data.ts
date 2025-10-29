@@ -142,10 +142,15 @@ function calculateInflationAdjustedSum(
 	periodEnd: Date,
 	startDate: Date,
 	inflationRate: number,
+	exhaustionDate?: Date,
 ): number {
 	let sum = 0
 	for (const [date, entry] of transactionEntries) {
 		const d = new Date(date)
+		// Skip transactions after exhaustion date (but include the transaction that causes exhaustion)
+		if (exhaustionDate && d > exhaustionDate) {
+			continue
+		}
 		if (d >= periodStart && d <= periodEnd) {
 			const yearsAtEvent = differenceInDays(d, startDate) / DAYS_PER_YEAR
 			const inflationAtEvent = DECIMAL_1.add(inflationRate).pow(yearsAtEvent)
@@ -205,6 +210,7 @@ export function getGraphData(
 			periodEnd,
 			startDate,
 			portfolio.inflation_rate,
+			exhaustionWarning?.date,
 		)
 
 		// Process withdrawals for this period (convert to real terms using baseline date)
@@ -214,6 +220,7 @@ export function getGraphData(
 			periodEnd,
 			startDate,
 			portfolio.inflation_rate,
+			exhaustionWarning?.date,
 		)
 
 		// Store both nominal and inflation-adjusted values

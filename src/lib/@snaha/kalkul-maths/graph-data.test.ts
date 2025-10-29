@@ -570,6 +570,106 @@ describe('inflation-adjusted transactions on graph', () => {
 			expect(graph.graphInflationDeposits[idx2005]).toBeLessThan(500)
 		}
 	})
+
+	it('should stop showing inflation-adjusted withdrawals after investment exhaustion', () => {
+		const transactions = [
+			// Initial deposit
+			{
+				amount: 1000,
+				date: '2024-01-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 0,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'deposit' as const,
+			},
+			// Withdrawal that causes exhaustion
+			{
+				amount: 1500,
+				date: '2024-02-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 1,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'withdrawal' as const,
+			},
+			// Withdrawals scheduled after exhaustion
+			{
+				amount: 500,
+				date: '2024-03-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 2,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'withdrawal' as const,
+			},
+			{
+				amount: 500,
+				date: '2024-04-01',
+				end_date: null,
+				repeat: null,
+				repeat_unit: null,
+				inflation_adjusted: false,
+				investment_id: 1,
+				created_at: '2024-01-01',
+				id: 3,
+				label: null,
+				last_edited_at: '2024-01-01',
+				type: 'withdrawal' as const,
+			},
+		]
+
+		const testPortfolio = {
+			...portfolio,
+			start_date: '2024-01-01',
+			end_date: '2024-06-30',
+		}
+
+		const base = getBaseData(transactions, testPortfolio.inflation_rate, testPortfolio.start_date)
+		const graph = getGraphData(
+			{
+				...base,
+				startDate: new Date(testPortfolio.start_date),
+				endDate: new Date(testPortfolio.end_date),
+			},
+			{ ...DEFAULT_INVESTMENT, apy: 0 }, // No growth to ensure exhaustion
+			testPortfolio,
+		)
+
+		// Find the indices for each month
+		const idxFeb = graph.graphLabels.findIndex((l) => l.includes('2024-2'))
+		const idxMar = graph.graphLabels.findIndex((l) => l.includes('2024-3'))
+		const idxApr = graph.graphLabels.findIndex((l) => l.includes('2024-4'))
+
+		// February should show the partial withdrawal that exhausted the investment
+		expect(idxFeb).toBeGreaterThanOrEqual(0)
+		expect(Math.abs(graph.graphInflationWithdrawals[idxFeb])).toBeGreaterThan(0)
+		expect(Math.abs(graph.graphInflationWithdrawals[idxFeb])).toBeLessThan(1500)
+
+		// March and April should show zero withdrawals (post-exhaustion)
+		// This is the key fix: previously these would incorrectly show non-zero values
+		if (idxMar >= 0) {
+			expect(Math.abs(graph.graphInflationWithdrawals[idxMar])).toBe(0)
+		}
+		if (idxApr >= 0) {
+			expect(Math.abs(graph.graphInflationWithdrawals[idxApr])).toBe(0)
+		}
+	})
 })
 
 describe('per-investment caching', () => {
