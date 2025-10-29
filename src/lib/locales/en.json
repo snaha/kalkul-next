@@ -435,8 +435,9 @@
 			"createPortfolio": "Create portfolio",
 			"deletePortfolio": "Delete portfolio",
 			"portfolioName": "Portfolio name",
-			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There’s no undo.",
-			"deletePortfolioWarningTitle": "Delete portfolio?"
+			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo.",
+			"deletePortfolioWarningTitle": "Delete portfolio?",
+			"invalidDateRangeError": "Invalid date range: end date must be later than start date"
 		},
 		"editTransaction": {
 			"addTransaction": "Add transaction",

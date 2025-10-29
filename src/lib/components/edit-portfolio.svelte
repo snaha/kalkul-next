@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Close } from 'carbon-icons-svelte'
+	import { Close, WarningAltFilled } from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/ui/button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
@@ -41,7 +41,8 @@
 	initialEndDate.setFullYear(nowDate.getFullYear() + initialHorizonYears)
 	let endDate = $state(initialEndDate)
 	let showConfirmModal = $state(false)
-	let createDisabled = $derived(name === '')
+	let horizonError = $state(false)
+	let createDisabled = $derived(name === '' || horizonError)
 	let formType: 'edit' | 'create' = $derived(portfolio ? 'edit' : 'create')
 
 	$effect(() => {
@@ -58,6 +59,9 @@
 	$effect(() => {
 		if (startDate || endDate) {
 			horizon = formatAge(new Date(startDate), new Date(endDate))
+			if (startDate > endDate) {
+				horizonError = true
+			}
 		}
 	})
 
@@ -145,7 +149,7 @@
 	}
 </script>
 
-<Vertical class="max-width-560">
+<Vertical class="max-width-560" --vertical-gap="var(--double-padding)">
 	<Horizontal>
 		{#if formType === 'create'}
 			<Typography variant="h4">{$_('component.editPortfolio.addPortfolio')}</Typography>
@@ -155,71 +159,81 @@
 		<div class="grower"></div>
 		<Button variant="ghost" dimension="compact" onclick={close}><Close size={24} /></Button>
 	</Horizontal>
-	<div class="spacer"></div>
-	<Input
-		autofocus={!layoutStore.mobile}
-		dimension="compact"
-		variant="solid"
-		placeholder={$_('component.editPortfolio.portfolioName')}
-		label={$_('component.editPortfolio.portfolioName')}
-		bind:value={name}
-	></Input>
-	<section class="horizontal">
-		<Select
-			variant="solid"
-			dimension="compact"
-			bind:value={currency}
-			placeholder={$_('common.currency')}
-			label={$_('common.currency')}
-			class="grower"
-			items={[
-				{ value: 'EUR', label: 'EUR' },
-				{ value: 'USD', label: 'USD' },
-				{ value: 'CZK', label: 'CZK' },
-			]}
-		></Select>
+	<Vertical --vertical-gap="var(--padding)">
 		<Input
-			type="number"
-			variant="solid"
+			autofocus={!layoutStore.mobile}
 			dimension="compact"
-			placeholder={$_('common.inflation')}
-			label={$_('common.inflation')}
-			unit="%"
-			bind:value={inflation}
-			step={'.01'}
-			class="grower"
+			variant="solid"
+			placeholder={$_('component.editPortfolio.portfolioName')}
+			label={$_('component.editPortfolio.portfolioName')}
+			bind:value={name}
 		></Input>
-	</section>
+		<section class="horizontal">
+			<Select
+				variant="solid"
+				dimension="compact"
+				bind:value={currency}
+				placeholder={$_('common.currency')}
+				label={$_('common.currency')}
+				class="grower"
+				items={[
+					{ value: 'EUR', label: 'EUR' },
+					{ value: 'USD', label: 'USD' },
+					{ value: 'CZK', label: 'CZK' },
+				]}
+			></Select>
+			<Input
+				type="number"
+				variant="solid"
+				dimension="compact"
+				placeholder={$_('common.inflation')}
+				label={$_('common.inflation')}
+				unit="%"
+				bind:value={inflation}
+				step={'.01'}
+				class="grower"
+			></Input>
+		</section>
+	</Vertical>
 	<Divider />
 
-	<DateAge
-		dimension="compact"
-		dateInputLabel={$_('common.startDate')}
-		bind:date={startDate}
-		ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioStart')}
-		agePlaceholder={$_('common.clientAge')}
-		birthDate={new Date(client.birth_date)}
-	/>
+	<Vertical --vertical-gap="var(--padding)">
+		<DateAge
+			dimension="compact"
+			dateInputLabel={$_('common.startDate')}
+			bind:date={startDate}
+			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioStart')}
+			agePlaceholder={$_('common.clientAge')}
+			birthDate={new Date(client.birth_date)}
+		/>
 
-	<Input
-		variant="solid"
-		dimension="compact"
-		placeholder={$_('component.editPortfolio.horizon')}
-		label={$_('component.editPortfolio.horizon')}
-		unit={$_('common.years')}
-		bind:value={horizon}
-		oninput={onHorizonInput}
-		onblur={checkHorizonInput}
-	></Input>
+		<Input
+			variant="solid"
+			dimension="compact"
+			placeholder={$_('component.editPortfolio.horizon')}
+			label={$_('component.editPortfolio.horizon')}
+			unit={$_('common.years')}
+			bind:value={horizon}
+			oninput={onHorizonInput}
+			onblur={checkHorizonInput}
+		></Input>
 
-	<DateAge
-		dimension="compact"
-		dateInputLabel={$_('common.endDate')}
-		bind:date={endDate}
-		ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioEnd')}
-		agePlaceholder={$_('common.clientAge')}
-		birthDate={new Date(client.birth_date)}
-	/>
+		<DateAge
+			dimension="compact"
+			dateInputLabel={$_('common.endDate')}
+			bind:date={endDate}
+			ageLabel={$_('common.clientAge') + ' ' + $_('component.editPortfolio.atPortfolioEnd')}
+			agePlaceholder={$_('common.clientAge')}
+			birthDate={new Date(client.birth_date)}
+		/>
+	</Vertical>
+
+	{#if horizonError}
+		<Horizontal --horizontal-gap="var(--half-padding)" class="error-bar">
+			<WarningAltFilled size={24} />
+			{$_('component.editPortfolio.invalidDateRangeError')}
+		</Horizontal>
+	{/if}
 
 	<ResponsiveLayout --responsive-justify-content="stretch">
 		{#if formType === 'create'}
@@ -267,9 +281,6 @@
 		flex: 1;
 		min-width: 0;
 	}
-	.spacer {
-		margin-top: var(--half-padding);
-	}
 	.grower {
 		flex: 1;
 	}
@@ -282,5 +293,10 @@
 	.horizontal :global(.grower .relative),
 	.horizontal :global(.grower input) {
 		min-width: 0;
+	}
+	:global(.error-bar) {
+		background-color: var(--colors-red);
+		color: var(--colors-ultra-low);
+		padding: var(--half-padding) !important;
 	}
 </style>

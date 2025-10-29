@@ -436,7 +436,8 @@
 			"deletePortfolio": "Smazat portfolio",
 			"portfolioName": "Název portfolia",
 			"deletePortfolioWarning": "Toto portfolio a všechny investice v něm budou nenávratně smazány. Operaci nelze vrátit zpět.",
-			"deletePortfolioWarningTitle": "Smazat portfolio?"
+			"deletePortfolioWarningTitle": "Smazat portfolio?",
+			"invalidDateRangeError": "Neplatné časové rozmezí: datum konce musí být pozdější než datum začátku"
 		},
 		"editTransaction": {
 			"addTransaction": "Přidat transakci",
