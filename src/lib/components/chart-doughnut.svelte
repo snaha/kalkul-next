@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte'
 	import { SERIES_COLORS } from '$lib/colors'
 	import { getCSSVariableValue } from '$lib/css-vars'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
@@ -134,35 +135,43 @@
 					animation: false,
 				},
 			})
-			chart.resize()
+			// Wrap Chart.js method calls in untrack() to prevent infinite reactive loops
+			untrack(() => {
+				chart?.resize()
+			})
 		}
 		if (chart) {
-			chart.data.labels = labels
-			chart.data.datasets = [setDataset()]
-			if (chart.options.plugins && chart.options.plugins.tooltip) {
-				chart.options.plugins.tooltip.enabled = false
-				chart.options.plugins.tooltip.external = (context) => {
-					const { tooltip } = context
-					if (tooltip.opacity === 0) {
-						tooltipData = []
-					} else {
-						// Fixed position: 16px to the right of the chart, aligned with top
-						// Adjust for TooltipBase centering: add tooltip width to x, adjust y to align top
-						tooltipPosition = {
-							x: context.chart.width + 16 + 321, // 321 is tooltip width
-							y: 0, // Add approximate half tooltip height to compensate for -50% centering
+			// Track reactive dependencies but untrack Chart.js operations
+			untrack(() => {
+				if (chart) {
+					chart.data.labels = labels
+					chart.data.datasets = [setDataset()]
+					if (chart.options.plugins && chart.options.plugins.tooltip) {
+						chart.options.plugins.tooltip.enabled = false
+						chart.options.plugins.tooltip.external = (context) => {
+							const { tooltip } = context
+							if (tooltip.opacity === 0) {
+								tooltipData = []
+							} else {
+								// Fixed position: 16px to the right of the chart, aligned with top
+								// Adjust for TooltipBase centering: add tooltip width to x, adjust y to align top
+								tooltipPosition = {
+									x: context.chart.width + 16 + 321, // 321 is tooltip width
+									y: 0, // Add approximate half tooltip height to compensate for -50% centering
+								}
+								tooltipData = tooltip.dataPoints.map((d) => ({
+									dataIndex: d.dataIndex,
+									value: d.raw as number,
+									name: d.label,
+									colorIndex: investments[d.dataIndex]?.colorIndex ?? d.dataIndex,
+								}))
+							}
 						}
-						tooltipData = tooltip.dataPoints.map((d) => ({
-							dataIndex: d.dataIndex,
-							value: d.raw as number,
-							name: d.label,
-							colorIndex: investments[d.dataIndex]?.colorIndex ?? d.dataIndex,
-						}))
 					}
-				}
-			}
 
-			chart.update()
+					chart.update()
+				}
+			})
 		}
 	})
 	let prevChartWidth: number = $state(0)
@@ -174,7 +183,10 @@
 			if ((actChartWidth !== prevChartWidth || actChartHeight !== prevChartHeight) && chart) {
 				prevChartHeight = actChartHeight
 				prevChartWidth = actChartWidth
-				chart.resize()
+				// Wrap Chart.js resize() in untrack() to prevent reactive loops
+				untrack(() => {
+					chart?.resize()
+				})
 			}
 		}, 500)
 		return () => {

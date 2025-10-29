@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte'
 	import { SERIES_COLORS } from '$lib/colors'
 	import { getCSSVariableValue } from '$lib/css-vars'
 	import Chart, {
@@ -107,16 +108,25 @@
 				}),
 				plugins,
 			})
-			chart.resize()
-		} else if (chart) {
-			chart.data.labels = labels
-			chart.data.datasets = setDatasetColors(plainDatasets)
-			// Also update options in case zero-crossing index or withdrawal errors changed
-			chart.options = enhanceOptionsWithNegativeValueStyling({
-				...DEFAULT_OPTIONS,
-				...options,
+			// Wrap Chart.js method calls in untrack() to prevent infinite reactive loops
+			// Chart.js uses defineProperty which Svelte intercepts, causing reactivity issues
+			untrack(() => {
+				chart?.resize()
 			})
-			chart.update()
+		} else if (chart) {
+			// Track reactive dependencies but untrack Chart.js operations
+			untrack(() => {
+				if (chart) {
+					chart.data.labels = labels
+					chart.data.datasets = setDatasetColors(plainDatasets)
+					// Also update options in case zero-crossing index or withdrawal errors changed
+					chart.options = enhanceOptionsWithNegativeValueStyling({
+						...DEFAULT_OPTIONS,
+						...options,
+					})
+					chart.update()
+				}
+			})
 		}
 	})
 	let prevChartWidth: number = $state(0)
@@ -129,7 +139,10 @@
 				prevChartHeight = actChartHeight
 				prevChartWidth = actChartWidth
 				width = actChartWidth // Expose width to parent
-				chart.resize()
+				// Wrap Chart.js resize() in untrack() to prevent reactive loops
+				untrack(() => {
+					chart?.resize()
+				})
 			}
 		}, 100)
 		return () => {
