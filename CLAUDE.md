@@ -29,7 +29,11 @@ See `README.md` for development commands, project structure, and conventions.
    - All database queries go through the adapter layer
    - Types are generated from database schema (`src/lib/typesdb.ts`)
    - Run `pnpm supabase gen types` after schema changes
-   - **IMPORTANT**: All database changes go in `seed.sql` only, never touch remote DB!
+   - **IMPORTANT**: Database schema changes go in migration files in `supabase/migrations/`, NOT in `seed.sql`
+   - Use `pnpm supabase migration new <migration_name>` to create a new migration file
+   - Migration files are named with timestamp prefix (e.g., `20241108093852_transactions.sql`)
+   - `seed.sql` is only for seeding test/development data, not schema changes
+   - Never touch remote DB directly - always use migrations
 
 4. **Internationalization (i18n)**
 
