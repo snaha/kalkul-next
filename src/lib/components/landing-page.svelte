@@ -103,8 +103,13 @@
 			</Vertical>
 		</Vertical>
 
-		<!-- svelte-ignore a11y_missing_attribute -->
-		<img class="screenshot" src="images/landing/01_Hero.png" />
+		<img
+			class="screenshot"
+			src="images/landing/01_Hero.png"
+			width="3000"
+			height="1800"
+			alt={$_('page.landing.heroScreenshotAlt')}
+		/>
 
 		<Divider --margin="0" />
 
@@ -499,9 +504,8 @@
 	img.screenshot {
 		background-color: transparent;
 		max-width: 100%;
-		width: auto;
-		height: auto;
-		aspect-ratio: 1.7786;
+		max-inline-size: 100%;
+		block-size: auto;
 		flex: 1;
 	}
 </style>
