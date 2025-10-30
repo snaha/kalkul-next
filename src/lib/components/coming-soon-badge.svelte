@@ -20,7 +20,6 @@
 		letter-spacing: 1px;
 		user-select: none;
 		text-transform: uppercase;
-		max-width: 100px;
 		white-space: nowrap;
 	}
 </style>
