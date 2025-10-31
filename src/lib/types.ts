@@ -55,3 +55,14 @@ export type TypedUserMetadata = {
 }
 
 export type StripeSubscription = Tables<'stripe_subscription'>
+
+export interface ApiToken {
+	id: string
+	token_prefix: string
+	name: string
+	created_at: string
+	last_used_at: string | null
+	is_active: boolean
+	user_id: string
+	token_hash: string // New field
+}

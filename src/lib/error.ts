@@ -6,6 +6,10 @@ type ErrorJSON = {
 	cause?: unknown
 }
 
+type JSONErrorOptions = ResponseInit & {
+	cause: unknown
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function unknownToObject(value: unknown | undefined): any {
 	try {
@@ -21,13 +25,15 @@ function unknownToObject(value: unknown | undefined): any {
 	}
 }
 
-export function jsonError(message: string, options?: { status?: number; cause?: unknown }) {
+export function jsonError(message: string, options?: Partial<JSONErrorOptions>) {
 	const status = options?.status ?? 400
+	const statusText = options?.statusText
+	const headers = options?.headers
 	const cause = unknownToObject(options?.cause)
 	const errorJson: ErrorJSON = {
 		error: message,
 		cause,
 	}
-	console.error({ errorJson, status })
-	return json(errorJson, { status })
+	console.error({ errorJson, status, statusText, headers })
+	return json(errorJson, { status, statusText, headers })
 }

@@ -13,6 +13,7 @@ export default {
 	ACCOUNT: `${routePrefix}/account`,
 	ACCOUNT_CHANGE_EMAIL: `${routePrefix}/account/change-email`,
 	ACCOUNT_CHANGE_PASSWORD: `${routePrefix}/account/change-password`,
+	API_TOKENS: `${routePrefix}/api-tokens`,
 	DEPOSIT: (index?: number) => `${routePrefix}/deposit${index === undefined ? '' : `/${index}`}`,
 	WITHDRAWAL: (index?: number) =>
 		`${routePrefix}/withdrawal${index === undefined ? '' : `/${index}`}`,
@@ -82,4 +83,6 @@ export const apiRoutes = {
 	SUCCESS: (sessionId: string) => `${routeApiPrefix}/api/payments/success/${sessionId}`,
 	NEWSLETTER_SUBSCRIBE: `${routeApiPrefix}/api/newsletter/subscribe`,
 	NEWSLETTER_UNSUBSCRIBE: `${routeApiPrefix}/api/newsletter/unsubscribe`,
+	MCP: `${routeApiPrefix}/api/mcp`,
+	EMAIL: `${routeApiPrefix}/api/email`,
 } as const

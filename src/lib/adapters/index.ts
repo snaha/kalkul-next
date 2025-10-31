@@ -1,4 +1,5 @@
 import type {
+	ApiToken,
 	Client,
 	ClientNoId,
 	Investment,
@@ -11,6 +12,7 @@ import type {
 } from '$lib/types'
 import type Stripe from 'stripe'
 import SupabaseAdapter from './supabase'
+import type { Session, User, UserAttributes } from '@supabase/supabase-js'
 
 export interface Adapter {
 	// This is run when the app is mounted and should start app wide subscriptions
@@ -37,18 +39,25 @@ export interface Adapter {
 	addClient: (client: ClientNoId) => Promise<number>
 	updateClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>
 	deleteClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>
+	getClients: () => Promise<Client[]>
 
 	addPortfolio: (portfolio: Omit<Portfolio, MetaFields>) => Promise<number>
 	updatePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
 	deletePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
+	getPortfolios: (clientId: number) => Promise<Portfolio[]>
 
 	addInvestment: (investment: Omit<Investment, MetaFields>) => Promise<number>
 	updateInvestment: (investment: Partial<Investment> & Pick<Investment, 'id'>) => Promise<void>
 	deleteInvestment: (investment: Partial<Investment> & Pick<Investment, 'id'>) => Promise<void>
+	getInvestments: (portfolioId: number) => Promise<Investment[]>
+	getInvestment: (investmentId: number) => Promise<Investment | undefined>
 
 	addTransaction: (transaction: Omit<Transaction, MetaFields>) => Promise<number>
 	updateTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
 	deleteTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
+	getTransactions: (investmentId: number) => Promise<Transaction[]>
+	getTransaction: (transactionId: number) => Promise<Transaction | undefined>
+	getPortfolio: (portfolioId: number) => Promise<Portfolio | undefined>
 
 	portfolioView: (id: string) => Promise<PortfolioView | undefined>
 
@@ -67,6 +76,40 @@ export interface Adapter {
 		subscription: Stripe.Subscription,
 	) => Promise<StripeSubscription>
 	getStripeSubscriptionByUserId: (userId: string) => Promise<StripeSubscription | undefined>
+
+	// Authentication and user management
+	generateAuthLink: (
+		email: string,
+	) => Promise<{ data: { properties: { action_link: string } } | null; error: Error | null }>
+	verifyOtp: (
+		token_hash: string,
+		type: 'magiclink',
+	) => Promise<{ data: { session: Session | null }; error: Error | null }>
+	setSession: (session: Session) => Promise<void>
+	adminGetUserById: (
+		userId: string,
+	) => Promise<{ data: { user: User | null }; error: Error | null }>
+	adminUpdateUserById: (
+		userId: string,
+		updates: UserAttributes,
+	) => Promise<{ data: { user: User | null }; error: Error | null }>
+	adminDeleteUser: (userId: string) => Promise<{ error: Error | null }>
+
+	// New methods for API token management
+	getApiTokens: (userId: string) => Promise<ApiToken[]>
+	getApiToken: (tokenHash: string) => Promise<ApiToken | undefined>
+	createApiToken: (
+		userId: string,
+		tokenHash: string,
+		tokenPrefix: string,
+		name: string,
+	) => Promise<ApiToken>
+	deleteApiToken: (tokenId: string, userId: string) => Promise<void>
+	updateApiToken: (
+		tokenId: string,
+		userId: string,
+		updates: { name?: string; is_active?: boolean; last_used_at?: string },
+	) => Promise<ApiToken>
 }
 
 export default new SupabaseAdapter() as Adapter

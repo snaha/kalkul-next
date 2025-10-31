@@ -21,7 +21,8 @@
 		"supabase:gen-types": "supabase gen types --lang=typescript --local > src/lib/typesdb.ts",
 		"generate-exchanges": "tsx scripts/exchange-country",
 		"send-newsletter": "tsx scripts/send-newsletter",
-		"send-batch-email": "tsx scripts/send-batch-email"
+		"send-batch-email": "tsx scripts/send-batch-email",
+		"mcp:post": "tsx scripts/mcp-post.ts"
 	},
 	"devDependencies": {
 		"@castlenine/svelte-qrcode": "^2.3.0",

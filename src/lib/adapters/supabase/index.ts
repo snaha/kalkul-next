@@ -1,18 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type Session, type UserAttributes } from '@supabase/supabase-js'
 import { page } from '$app/state'
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 import type { Adapter } from '..'
 import { authStore } from '$lib/stores/auth.svelte'
-import {
-	type Transaction,
-	type Client,
-	type ClientNoId,
-	type Investment,
-	type MetaFields,
-	type Portfolio,
-	type Store,
-	type StripeSubscription,
-	type TypedUserMetadata,
+import type {
+	ApiToken,
+	Client,
+	ClientNoId,
+	Investment,
+	MetaFields,
+	Portfolio,
+	StripeSubscription,
+	Store,
+	Transaction,
+	TypedUserMetadata,
 } from '$lib/types'
 import type Stripe from 'stripe'
 import { clientStore } from '$lib/stores/clients.svelte'
@@ -280,6 +281,15 @@ export default class Supabase implements Adapter {
 		return this.deleteData('client', client, clientStore)
 	}
 
+	async getClients() {
+		const res = await this.supabase.from('client').select('*')
+		if (res.error) {
+			throw new Error('Error fetching data:', res.error)
+		} else {
+			return res.data as Client[]
+		}
+	}
+
 	private async addData<T>(tableName: string, value: Omit<T, MetaFields>, store: Store<T>) {
 		const { data, error } = await this.supabase.from(tableName).insert(value).select('id').single()
 		if (error) {
@@ -312,6 +322,15 @@ export default class Supabase implements Adapter {
 		return this.deleteData('portfolio', portfolio, portfolioStore)
 	}
 
+	async getPortfolios(clientId: number) {
+		const res = await this.supabase.from('portfolio').select('*').eq('client', clientId)
+		if (res.error) {
+			throw new Error(`Error fetching portfolios: ${res.error.message}`)
+		} else {
+			return res.data as Portfolio[]
+		}
+	}
+
 	async addInvestment(investment: Omit<Investment, MetaFields>) {
 		return this.addData('investment', investment, investmentStore)
 	}
@@ -324,7 +343,59 @@ export default class Supabase implements Adapter {
 		return this.deleteData('investment', investment, investmentStore)
 	}
 
+	async getInvestments(portfolioId: number) {
+		const res = await this.supabase.from('investment').select('*').eq('portfolio_id', portfolioId)
+		if (res.error) {
+			throw new Error(`Error fetching investments: ${res.error.message}`)
+		} else {
+			return res.data as Investment[]
+		}
+	}
+
+	async getInvestment(investmentId: number) {
+		const res = await this.supabase.from('investment').select('*').eq('id', investmentId).single()
+		if (res.error) {
+			if (res.error.code === POSTGRES_NO_ROWS_ERROR_CODE) {
+				return undefined // No rows found
+			}
+			throw new Error(`Error fetching investment: ${res.error.message}`)
+		} else {
+			return res.data as Investment
+		}
+	}
+
+	private validateTransactionInvariants(transaction: Partial<Transaction>): void {
+		const { repeat, repeat_unit, end_date } = transaction
+
+		// Check if it's intended as a single transaction
+		const isSingleTransaction = repeat === null || repeat === undefined
+		// Check if it's intended as a recurring transaction
+		const isRecurringTransaction = repeat !== null && repeat !== undefined
+
+		if (isSingleTransaction) {
+			// Single transaction: all recurring fields must be null
+			if (repeat_unit !== null && repeat_unit !== undefined) {
+				throw new Error('Single transaction must have repeat_unit as null')
+			}
+			if (end_date !== null && end_date !== undefined) {
+				throw new Error('Single transaction must have end_date as null')
+			}
+		} else if (isRecurringTransaction) {
+			// Recurring transaction: all recurring fields must be present
+			if (!repeat_unit || typeof repeat_unit !== 'string') {
+				throw new Error('Recurring transaction must have a valid repeat_unit string')
+			}
+			if (!end_date || typeof end_date !== 'string') {
+				throw new Error('Recurring transaction must have a valid end_date string')
+			}
+			if (typeof repeat !== 'number' || repeat <= 0) {
+				throw new Error('Recurring transaction must have a positive repeat number')
+			}
+		}
+	}
+
 	async addTransaction(transaction: Omit<Transaction, MetaFields>) {
+		this.validateTransactionInvariants(transaction)
 		return this.addData('transaction', transaction, transactionStore)
 	}
 
@@ -346,6 +417,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async updateTransaction(transaction: Partial<Transaction> & Pick<Transaction, 'id'>) {
+		this.validateTransactionInvariants(transaction)
 		this.updateData('transaction', transaction, transactionStore)
 	}
 
@@ -364,6 +436,42 @@ export default class Supabase implements Adapter {
 
 	async deleteTransaction(transaction: Partial<Transaction> & Pick<Transaction, 'id'>) {
 		return this.deleteData('transaction', transaction, transactionStore)
+	}
+
+	async getTransactions(investmentId: number) {
+		const res = await this.supabase
+			.from('transaction')
+			.select('*')
+			.eq('investment_id', investmentId)
+		if (res.error) {
+			throw new Error(`Error fetching transactions: ${res.error.message}`)
+		} else {
+			return res.data as Transaction[]
+		}
+	}
+
+	async getTransaction(transactionId: number) {
+		const res = await this.supabase.from('transaction').select('*').eq('id', transactionId).single()
+		if (res.error) {
+			if (res.error.code === POSTGRES_NO_ROWS_ERROR_CODE) {
+				return undefined // No rows found
+			}
+			throw new Error(`Error fetching transaction: ${res.error.message}`)
+		} else {
+			return res.data as Transaction
+		}
+	}
+
+	async getPortfolio(portfolioId: number) {
+		const res = await this.supabase.from('portfolio').select('*').eq('id', portfolioId).single()
+		if (res.error) {
+			if (res.error.code === POSTGRES_NO_ROWS_ERROR_CODE) {
+				return undefined // No rows found
+			}
+			throw new Error(`Error fetching portfolio: ${res.error.message}`)
+		} else {
+			return res.data as Portfolio
+		}
 	}
 
 	async portfolioView(link_id: string) {
@@ -537,5 +645,134 @@ export default class Supabase implements Adapter {
 		}
 
 		return data
+	}
+
+	// Authentication and user management
+	async generateAuthLink(email: string) {
+		const { data, error } = await this.supabase.auth.admin.generateLink({
+			type: 'magiclink',
+			email: email,
+		})
+		return { data: data as { properties: { action_link: string } } | null, error }
+	}
+
+	async verifyOtp(token_hash: string, type: 'magiclink') {
+		const { data, error } = await this.supabase.auth.verifyOtp({
+			token_hash: token_hash,
+			type: type,
+		})
+		return { data: { session: data.session }, error }
+	}
+
+	async setSession(session: Session) {
+		const { error } = await this.supabase.auth.setSession({
+			access_token: session.access_token,
+			refresh_token: session.refresh_token,
+		})
+		if (error) {
+			console.error('Failed to set session', error)
+			throw new Error(error.message)
+		}
+	}
+
+	async adminGetUserById(userId: string) {
+		const { data, error } = await this.supabase.auth.admin.getUserById(userId)
+		return { data, error }
+	}
+
+	async adminUpdateUserById(userId: string, updates: UserAttributes) {
+		const { data, error } = await this.supabase.auth.admin.updateUserById(userId, updates)
+		return { data, error }
+	}
+
+	async adminDeleteUser(userId: string) {
+		const { error } = await this.supabase.auth.admin.deleteUser(userId)
+		return { error }
+	}
+
+	async getApiTokens(userId: string): Promise<ApiToken[]> {
+		const { data, error } = await this.supabase
+			.from('api_tokens')
+			.select('id, token_prefix, name, created_at, last_used_at, is_active, user_id')
+			.eq('user_id', userId)
+			.order('created_at', { ascending: false })
+
+		if (error) {
+			console.error('Failed to fetch API tokens', error)
+			throw new Error(error.message)
+		}
+		return data as ApiToken[]
+	}
+
+	async getApiToken(tokenHash: string): Promise<ApiToken | undefined> {
+		const { data, error } = await this.supabase
+			.from('api_tokens')
+			.select('id, token_prefix, token_hash, name, created_at, last_used_at, is_active, user_id')
+			.eq('token_hash', tokenHash)
+			.order('created_at', { ascending: false })
+			.single()
+
+		if (error) {
+			console.error('Failed to fetch API tokens', error)
+			throw new Error(error.message)
+		}
+		return data
+	}
+
+	async createApiToken(
+		userId: string,
+		tokenHash: string,
+		tokenPrefix: string,
+		name: string,
+	): Promise<ApiToken> {
+		const { data, error } = await this.supabase
+			.from('api_tokens')
+			.insert({
+				user_id: userId,
+				token_hash: tokenHash,
+				token_prefix: tokenPrefix,
+				name: name.trim(),
+			})
+			.select('id, token_prefix, name, created_at, last_used_at, is_active, user_id')
+			.single()
+
+		if (error) {
+			console.error('Failed to create API token', error)
+			throw new Error(error.message)
+		}
+		return data as ApiToken
+	}
+
+	async deleteApiToken(tokenId: string, userId: string): Promise<void> {
+		const { error } = await this.supabase
+			.from('api_tokens')
+			.delete()
+			.eq('id', tokenId)
+			.eq('user_id', userId)
+
+		if (error) {
+			console.error('Failed to delete API token', error)
+			throw new Error(error.message)
+		}
+	}
+
+	async updateApiToken(
+		tokenId: string,
+		userId: string,
+		updates: { name?: string; is_active?: boolean; last_used_at?: string },
+	): Promise<ApiToken> {
+		const { data, error } = await this.supabase
+			.from('api_tokens')
+			.update(updates)
+			.eq('id', tokenId)
+			.eq('user_id', userId)
+			.select('id, token_prefix, name, created_at, last_used_at, is_active, user_id')
+			.single()
+
+		if (error) {
+			console.error('Failed to update API token', error)
+			throw new Error(error.message)
+		}
+		return data as ApiToken
 	}
 }

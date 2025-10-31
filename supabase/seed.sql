@@ -1,3 +1,4 @@
+-- Demo user
 INSERT INTO
   auth.users (
     id,
@@ -56,6 +57,22 @@ VALUES
     NOW(),
     NOW(),
     NOW()
+  );
+
+-- API Token for Demo User
+INSERT INTO
+  "public"."api_tokens" (
+    "user_id",
+    "token_hash",
+    "token_prefix",
+    "name"
+  )
+VALUES
+  (
+    '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249',
+    '642bb919b51d5dd8974707b140fad6112b747c3a8870ab7eaa21641e4394ab64',
+    'kalkul_12345',
+    'Demo API Token'
   );
 
 INSERT INTO
