@@ -2,7 +2,7 @@ import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/publi
 import { CORS_ALLOWED_ORIGIN } from '$env/static/private'
 import { apiRoutes } from '$lib/routes'
 import { createServerClient } from '@supabase/ssr'
-import { type Handle } from '@sveltejs/kit'
+import { json, type Handle } from '@sveltejs/kit'
 import { jsonError } from '$lib/error'
 import { hashToken, isValidTokenFormat, constantTimeCompare } from '$lib/api-token'
 import { serviceAdapter } from '$lib/adapters/service'
@@ -23,6 +23,25 @@ export const handle: Handle = async ({ event, resolve }) => {
 				Location: nonWwwUrl.toString(),
 			},
 		})
+	}
+
+	const { pathname } = event.url
+	// Handle OAuth discovery endpoints for authless mode
+	if (pathname.startsWith('/.well-known/oauth-protected-resource')) {
+		return json({
+			resource: `${event.url.origin}${apiRoutes.MCP}`,
+			authorization_servers: [],
+			bearer_methods_supported: [],
+		})
+	}
+
+	if (pathname.startsWith('/.well-known/oauth-authorization-server')) {
+		return new Response(null, { status: 204 })
+	}
+
+	// Handle the /register endpoint that Claude tries
+	if (pathname === '/register') {
+		return new Response(null, { status: 204 })
 	}
 
 	// For non-API routes (check for /api/ with trailing slash to avoid matching /api-tokens)
