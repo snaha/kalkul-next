@@ -4,7 +4,7 @@ The Kalkul MCP (Model Context Protocol) server provides AI agents with access to
 
 ## Overview
 
-The MCP server is implemented as a SvelteKit API endpoint at `/api/mcp` and exposes all the functionality from the `Adapter` interface, allowing AI agents to:
+The MCP server is implemented as a SvelteKit API endpoint at `/api/mcp` and follows the full Model Context Protocol specification using JSON-RPC 2.0. It exposes all the functionality from the `Adapter` interface, allowing AI agents to:
 
 - Manage user authentication
 - Create and manage clients
@@ -12,6 +12,8 @@ The MCP server is implemented as a SvelteKit API endpoint at `/api/mcp` and expo
 - Add investments and transactions
 - Access market data
 - Perform all CRUD operations on financial planning data
+
+The server implements the complete MCP lifecycle including the `initialize` handshake, ensuring full compatibility with MCP clients like Claude Desktop and ChatGPT.
 
 ## Authentication
 
@@ -50,6 +52,8 @@ curl -X POST https://kalkul.app/api/mcp \
   -H "Authorization: Bearer kalkul_your_token_here" \
   -H "Content-Type: application/json" \
   -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
     "method": "tools/call",
     "params": {
       "name": "get_clients",
@@ -65,6 +69,8 @@ curl -X POST https://kalkul.app/api/mcp \
   -H "X-API-Key: kalkul_your_token_here" \
   -H "Content-Type: application/json" \
   -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
     "method": "tools/call",
     "params": {
       "name": "get_clients",
@@ -79,6 +85,8 @@ curl -X POST https://kalkul.app/api/mcp \
 curl -X POST "https://kalkul.app/api/mcp?token=kalkul_your_token_here" \
   -H "Content-Type: application/json" \
   -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
     "method": "tools/call",
     "params": {
       "name": "get_clients",
@@ -126,14 +134,146 @@ Replace `kalkul_your_token_here` with your actual token from `/api-tokens`.
 
 - **GET** `/api/mcp` - Returns server information and usage instructions
 - **GET** `/api/mcp?method=tools/list` - Returns list of available tools
-- **POST** `/api/mcp` - Handles JSON-RPC style tool execution requests
+- **POST** `/api/mcp` - Handles JSON-RPC 2.0 requests including initialization and tool execution
 
-## Request Format
+## MCP Protocol Lifecycle
 
-The server accepts JSON-RPC style requests:
+The server follows the Model Context Protocol lifecycle:
+
+### 1. Initialize Handshake
+
+First, clients must send an `initialize` request:
 
 ```json
 {
+	"jsonrpc": "2.0",
+	"id": 1,
+	"method": "initialize",
+	"params": {
+		"protocolVersion": "2024-11-05",
+		"capabilities": {},
+		"clientInfo": {
+			"name": "your-client-name",
+			"version": "1.0.0"
+		}
+	}
+}
+```
+
+Server response:
+
+```json
+{
+	"jsonrpc": "2.0",
+	"id": 1,
+	"result": {
+		"protocolVersion": "2024-11-05",
+		"capabilities": {
+			"tools": {
+				"listChanged": false
+			}
+		},
+		"serverInfo": {
+			"name": "kalkul-financial-planning",
+			"version": "1.0.0"
+		}
+	}
+}
+```
+
+### 2. Complete Initialization (Optional)
+
+Clients can send an `initialized` notification:
+
+```json
+{
+	"jsonrpc": "2.0",
+	"method": "notifications/initialized"
+}
+```
+
+Server responds with `202 Accepted` (no body).
+
+### 3. List Available Tools
+
+```json
+{
+	"jsonrpc": "2.0",
+	"id": 2,
+	"method": "tools/list",
+	"params": {}
+}
+```
+
+Server response:
+
+```json
+{
+	"jsonrpc": "2.0",
+	"id": 2,
+	"result": {
+		"tools": [
+			{
+				"name": "get_clients",
+				"description": "Get all clients for the current user",
+				"inputSchema": {
+					"type": "object",
+					"properties": {},
+					"required": []
+				}
+			}
+			// ... more tools
+		]
+	}
+}
+```
+
+### 4. Call Tools
+
+```json
+{
+	"jsonrpc": "2.0",
+	"id": 3,
+	"method": "tools/call",
+	"params": {
+		"name": "get_clients",
+		"arguments": {}
+	}
+}
+```
+
+Server response:
+
+```json
+{
+	"jsonrpc": "2.0",
+	"id": 3,
+	"result": {
+		"content": [
+			{
+				"type": "text",
+				"text": "[{\"id\": 1, \"name\": \"John Doe\", ...}]"
+			}
+		]
+	}
+}
+```
+
+## Request Format
+
+The server accepts JSON-RPC 2.0 requests. All requests must include:
+
+- `jsonrpc`: Must be `"2.0"`
+- `id`: Request identifier (number or string) - omit for notifications
+- `method`: The method name (`initialize`, `tools/list`, `tools/call`, etc.)
+- `params`: Method parameters (optional, depending on method)
+
+Example:
+
+```json
+{
+	"jsonrpc": "2.0",
+	"id": 1,
 	"method": "tools/call",
 	"params": {
 		"name": "tool_name",
@@ -147,31 +287,43 @@ The server accepts JSON-RPC style requests:
 
 ## Response Format
 
-Responses follow this structure:
+All responses follow JSON-RPC 2.0 format:
+
+**Success response:**
 
 ```json
 {
-	"content": [
-		{
-			"type": "text",
-			"text": "Response message or JSON data"
-		}
-	],
-	"isError": false
+	"jsonrpc": "2.0",
+	"id": 1,
+	"result": {
+		"content": [
+			{
+				"type": "text",
+				"text": "Response message or JSON data"
+			}
+		]
+	}
 }
 ```
 
-Error responses:
+**Error response:**
 
 ````json
 {
-  "content": [
-    {
-      "type": "text",
-      "text": "Error message"
-    }
-  ],
-  "isError": true
+	"jsonrpc": "2.0",
+	"id": 1,
+	"error": {
+		"code": -32000,
+		"message": "Error message",
+		"data": {
+			"content": [
+				{
+					"type": "text",
+					"text": "Additional error details"
+				}
+			]
+		}
+	}
 }
 
 ## Available Tools
@@ -383,21 +535,23 @@ All requests require authentication via Personal Access Token. Include your toke
 
 ```bash
 Authorization: Bearer kalkul_your_token_here
-```
+````
 
 Example request to add a client:
 
 ```json
 {
-  "method": "tools/call",
-  "params": {
-    "name": "add_client",
-    "arguments": {
-      "first_name": "John",
-      "last_name": "Doe",
-      "email": "john.doe@example.com"
-    }
-  }
+	"jsonrpc": "2.0",
+	"id": 1,
+	"method": "tools/call",
+	"params": {
+		"name": "add_client",
+		"arguments": {
+			"first_name": "John",
+			"last_name": "Doe",
+			"email": "john.doe@example.com"
+		}
+	}
 }
 ```
 
@@ -405,21 +559,23 @@ Example request to add a portfolio:
 
 ```json
 {
-  "method": "tools/call",
-  "params": {
-    "name": "add_portfolio",
-    "arguments": {
-      "client_id": 1,
-      "name": "Retirement Plan",
-      "start_date": "2024-01-01",
-      "end_date": "2044-01-01",
-      "initial_age": 35,
-      "currency": "USD",
-      "inflation_rate": 0.025
-    }
-  }
+	"jsonrpc": "2.0",
+	"id": 2,
+	"method": "tools/call",
+	"params": {
+		"name": "add_portfolio",
+		"arguments": {
+			"client_id": 1,
+			"name": "Retirement Plan",
+			"start_date": "2024-01-01",
+			"end_date": "2044-01-01",
+			"initial_age": 35,
+			"currency": "USD",
+			"inflation_rate": 0.025
+		}
+	}
 }
-````
+```
 
 ## Integration
 

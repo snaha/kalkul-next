@@ -16,7 +16,7 @@ import { serviceAdapter } from '$lib/adapters/service' // New import
 import { createClient } from '@supabase/supabase-js' // Re-added
 
 // MCP-compatible API for Kalkul Financial Planning Database Operations
-// This implements a simplified JSON-RPC style interface that MCP clients can use
+// This implements the full Model Context Protocol (MCP) JSON-RPC 2.0 interface
 
 interface MCPTool {
 	name: string
@@ -28,11 +28,23 @@ interface MCPTool {
 	}
 }
 
-interface MCPRequest {
+// JSON-RPC 2.0 request format
+interface JsonRpcRequest {
+	jsonrpc: '2.0'
+	id?: number | string
 	method: string
-	params?: {
-		name?: string
-		arguments?: Record<string, unknown>
+	params?: Record<string, unknown>
+}
+
+// JSON-RPC 2.0 response format
+interface JsonRpcResponse {
+	jsonrpc: '2.0'
+	id: number | string | undefined
+	result?: unknown
+	error?: {
+		code: number
+		message: string
+		data?: unknown
 	}
 }
 
@@ -1495,38 +1507,128 @@ export const GET: RequestHandler = async ({ url }) => {
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
-		const body: MCPRequest = await request.json()
+		const body = (await request.json()) as JsonRpcRequest
 
+		// Validate JSON-RPC 2.0 format
+		if (body.jsonrpc !== '2.0') {
+			return json(
+				{
+					jsonrpc: '2.0',
+					id: body.id,
+					error: {
+						code: -32600,
+						message: 'Invalid Request: jsonrpc must be "2.0"',
+					},
+				} as JsonRpcResponse,
+				{ status: 400 },
+			)
+		}
+
+		// Handle initialize method (MCP handshake)
+		if (body.method === 'initialize') {
+			// Client sends protocolVersion, capabilities, and clientInfo
+			// We accept them but return our own server capabilities
+			return json({
+				jsonrpc: '2.0',
+				id: body.id,
+				result: {
+					protocolVersion: '2024-11-05',
+					capabilities: {
+						tools: {
+							listChanged: false,
+						},
+					},
+					serverInfo: {
+						name: 'kalkul-financial-planning',
+						version: '1.0.0',
+					},
+				},
+			} as JsonRpcResponse)
+		}
+
+		// Handle initialized notification (completes handshake)
+		if (body.method === 'notifications/initialized') {
+			// Notifications don't have responses, but we return 202 Accepted
+			return new Response(undefined, { status: 202 })
+		}
+
+		// Handle tools/list method
 		if (body.method === 'tools/list') {
 			return json({
-				tools: TOOLS,
-			})
+				jsonrpc: '2.0',
+				id: body.id,
+				result: {
+					tools: TOOLS,
+				},
+			} as JsonRpcResponse)
 		}
 
-		if (body.method === 'tools/call' && body.params?.name && body.params?.arguments) {
-			const response = await handleToolCall(body.params.name, body.params.arguments, locals)
-			return json(response)
+		// Handle tools/call method
+		if (body.method === 'tools/call') {
+			const params = body.params as {
+				name: string
+				arguments: Record<string, unknown>
+			}
+
+			if (!params?.name || !params?.arguments) {
+				return json(
+					{
+						jsonrpc: '2.0',
+						id: body.id,
+						error: {
+							code: -32602,
+							message: 'Invalid params: name and arguments are required for tools/call',
+						},
+					} as JsonRpcResponse,
+					{ status: 400 },
+				)
+			}
+
+			const response = await handleToolCall(params.name, params.arguments, locals)
+
+			// Return JSON-RPC response format
+			if (response.isError) {
+				return json({
+					jsonrpc: '2.0',
+					id: body.id,
+					error: {
+						code: -32000,
+						message: response.error?.message || 'Tool execution failed',
+						data: response.content,
+					},
+				} as JsonRpcResponse)
+			}
+
+			return json({
+				jsonrpc: '2.0',
+				id: body.id,
+				result: response,
+			} as JsonRpcResponse)
 		}
 
+		// Unknown method
 		return json(
 			{
+				jsonrpc: '2.0',
+				id: body.id,
 				error: {
-					code: 'INVALID_REQUEST',
-					message:
-						'Invalid request format. Expected method "tools/list" or "tools/call" with name and arguments.',
+					code: -32601,
+					message: `Method not found: ${body.method}`,
 				},
-			},
-			{ status: 400 },
+			} as JsonRpcResponse,
+			{ status: 404 },
 		)
 	} catch (error) {
 		console.error('MCP server error:', error)
 		return json(
 			{
+				jsonrpc: '2.0',
+				id: undefined,
 				error: {
-					code: 'INTERNAL_ERROR',
-					message: error instanceof Error ? error.message : 'Unknown error',
+					code: -32603,
+					message: error instanceof Error ? error.message : 'Internal error',
 				},
-			},
+			} as JsonRpcResponse,
 			{ status: 500 },
 		)
 	}
