@@ -331,10 +331,15 @@ All responses follow JSON-RPC 2.0 format:
 ### ChatGPT Required Tools
 
 #### `search`
-Search across clients, portfolios, and investments.
-- **query** (string, required): Search query (searches names, labels, descriptions)
-- **entity_type** (string, optional): Type of entity to search. Use "all" to search everything. Enum: ["client", "portfolio", "investment", "all"]
+Search for entities by text matching OR list all entities of a type. Searches names, emails, and labels for the query string. Use `list_all=true` to get all entities without text filtering.
+- **query** (string, optional): Text to search for in names, emails, and labels (case-insensitive substring match). Example: "retirement" will find clients/portfolios/investments with "retirement" in their name. Not required if `list_all` is true.
+- **entity_type** (string, optional): Type of entity to search within. Use "all" to search across all entity types. Required when `list_all` is true to specify which entities to list. Enum: ["client", "portfolio", "investment", "all"]
+- **list_all** (boolean, optional): Set to true to list all entities of the specified `entity_type` without text filtering. When true, `query` is ignored. Use this to get all clients, all portfolios, or all investments. Default: false
 - **limit** (number, optional): Maximum number of results to return. Default: 10
+
+**Examples:**
+- List all clients: `{"list_all": true, "entity_type": "client"}`
+- Search for portfolios with "retirement": `{"query": "retirement", "entity_type": "portfolio"}`
 
 #### `fetch`
 Fetch complete details for a specific entity by ID.
@@ -439,29 +444,34 @@ Delete an investment.
 ### Transaction Management Tools
 
 #### `add_transaction`
-Add a transaction (deposit or withdrawal) to an investment.
+Add a transaction (deposit or withdrawal) to an investment. Transactions can be one-time or recurring.
 - **investment_id** (number, required): Investment ID
 - **type** (string, required): Transaction type ("deposit" or "withdrawal")
 - **amount** (number, required): Transaction amount
-- **start_date** (string, required): Transaction start date (YYYY-MM-DD)
-- **end_date** (string, optional): Transaction end date (YYYY-MM-DD, optional for one-time)
-- **repeat_unit** (string, optional): Repeat unit for recurring transactions ("month" or "year")
-- **repeat** (number, optional): Repeat frequency (e.g., every 2 months). Default: 1
+- **start_date** (string, required): Transaction start date (YYYY-MM-DD). For one-time transactions, this is the only date. For recurring transactions, this is when the recurring pattern starts.
+- **end_date** (string, optional): Transaction end date (YYYY-MM-DD). Only required for recurring transactions to specify when they stop. Omit for one-time transactions.
+- **repeat_unit** (string, optional): Frequency unit for recurring transactions: "month" or "year". Omit for one-time transactions. Example: "month" means the transaction repeats monthly.
+- **repeat** (number, optional): How often the transaction repeats, combined with repeat_unit. Default: 1. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months; repeat=1 with repeat_unit="year" means annually. Omit for one-time transactions.
 - **label** (string, optional): Transaction label
-- **inflation_adjusted** (boolean, optional): Whether the transaction amount is inflation adjusted
+- **inflation_adjusted** (boolean, optional): Whether the transaction amount should be adjusted for inflation over time
+
+**Examples:**
+- One-time deposit: `{"investment_id": 1, "type": "deposit", "amount": 10000, "start_date": "2024-01-01"}`
+- Monthly recurring deposit: `{"investment_id": 1, "type": "deposit", "amount": 500, "start_date": "2024-01-01", "end_date": "2044-12-31", "repeat_unit": "month", "repeat": 1}`
+- Quarterly withdrawal: `{"investment_id": 1, "type": "withdrawal", "amount": 2000, "start_date": "2025-01-01", "end_date": "2045-01-01", "repeat_unit": "month", "repeat": 3}`
 
 #### `update_transaction`
-Update transaction information.
+Update transaction information. Can change a one-time transaction to recurring or vice versa.
 - **id** (number, required): Transaction ID
 - **investment_id** (number, optional): Investment ID
-- **type** (string, optional): Transaction type
+- **type** (string, optional): Transaction type ("deposit" or "withdrawal")
 - **amount** (number, optional): Transaction amount
 - **start_date** (string, optional): Transaction start date (YYYY-MM-DD)
-- **end_date** (string, optional): Transaction end date (YYYY-MM-DD)
-- **repeat_unit** (string, optional): Repeat unit
-- **repeat** (number, optional): Repeat frequency
+- **end_date** (string, optional): Transaction end date (YYYY-MM-DD). Set for recurring transactions, omit or set to null for one-time transactions.
+- **repeat_unit** (string, optional): Frequency unit for recurring transactions: "month" or "year". Set to null to convert to one-time transaction.
+- **repeat** (number, optional): How often the transaction repeats, combined with repeat_unit. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months.
 - **label** (string, optional): Transaction label
-- **inflation_adjusted** (boolean, optional): Whether the transaction amount is inflation adjusted
+- **inflation_adjusted** (boolean, optional): Whether the transaction amount should be adjusted for inflation over time
 
 #### `delete_transaction`
 Delete a transaction.

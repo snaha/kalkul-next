@@ -184,18 +184,27 @@ const TOOLS: MCPTool[] = [
 	// ChatGPT required tools
 	{
 		name: 'search',
-		description: 'Search across clients, portfolios, and investments',
+		description:
+			'Search for entities by text matching OR list all entities of a type. Searches names, emails, and labels for the query string. Use list_all=true to get all entities without text filtering.',
 		inputSchema: {
 			type: 'object',
 			properties: {
 				query: {
 					type: 'string',
-					description: 'Search query (searches names, labels, descriptions)',
+					description:
+						'Text to search for in names, emails, and labels (case-insensitive substring match). Example: "retirement" will find clients/portfolios/investments with "retirement" in their name. Not required if list_all is true.',
 				},
 				entity_type: {
 					type: 'string',
 					enum: ['client', 'portfolio', 'investment', 'all'],
-					description: 'Type of entity to search. Use "all" to search everything',
+					description:
+						'Type of entity to search within. Use "all" to search across all entity types. Required when list_all is true to specify which entities to list.',
+				},
+				list_all: {
+					type: 'boolean',
+					description:
+						'Set to true to list all entities of the specified entity_type without text filtering. When true, query is ignored. Use this to get all clients, all portfolios, or all investments.',
+					default: false,
 				},
 				limit: {
 					type: 'number',
@@ -203,7 +212,7 @@ const TOOLS: MCPTool[] = [
 					default: 10,
 				},
 			},
-			required: ['query'],
+			required: [],
 		},
 	},
 	{
@@ -450,31 +459,40 @@ const TOOLS: MCPTool[] = [
 	},
 	{
 		name: 'add_transaction',
-		description: 'Add a transaction (deposit or withdrawal) to an investment',
+		description:
+			'Add a transaction (deposit or withdrawal) to an investment. Transactions can be one-time or recurring.',
 		inputSchema: {
 			type: 'object',
 			properties: {
 				investment_id: { type: 'number', description: 'Investment ID (required)' },
 				type: { type: 'string', description: 'Transaction type ("deposit" or "withdrawal")' },
 				amount: { type: 'number', description: 'Transaction amount' },
-				start_date: { type: 'string', description: 'Transaction start date (YYYY-MM-DD)' },
+				start_date: {
+					type: 'string',
+					description:
+						'Transaction start date (YYYY-MM-DD). For one-time transactions, this is the only date. For recurring transactions, this is when the recurring pattern starts.',
+				},
 				end_date: {
 					type: 'string',
-					description: 'Transaction end date (YYYY-MM-DD, optional for one-time)',
+					description:
+						'Transaction end date (YYYY-MM-DD, optional). Only required for recurring transactions to specify when they stop. Omit for one-time transactions.',
 				},
 				repeat_unit: {
 					type: 'string',
-					description: 'Repeat unit for recurring transactions ("month" or "year")',
+					description:
+						'Frequency unit for recurring transactions: "month" or "year". Omit for one-time transactions. Example: "month" means the transaction repeats monthly.',
 				},
 				repeat_frequency: {
 					type: 'number',
-					description: 'Repeat frequency (e.g., every 2 months)',
+					description:
+						'How often the transaction repeats, combined with repeat_unit. Default: 1. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months; repeat=1 with repeat_unit="year" means annually. Omit for one-time transactions.',
 					default: 1,
 				},
-				label: { type: 'string', description: 'Transaction label' },
+				label: { type: 'string', description: 'Transaction label (optional)' },
 				inflation_adjusted: {
 					type: 'boolean',
-					description: 'Whether the transaction amount is inflation adjusted',
+					description:
+						'Whether the transaction amount should be adjusted for inflation over time (optional)',
 				},
 			},
 			required: ['investment_id', 'type', 'amount', 'start_date'],
@@ -482,22 +500,38 @@ const TOOLS: MCPTool[] = [
 	},
 	{
 		name: 'update_transaction',
-		description: 'Update transaction information',
+		description:
+			'Update transaction information. Can change a one-time transaction to recurring or vice versa.',
 		inputSchema: {
 			type: 'object',
 			properties: {
 				id: { type: 'number', description: 'Transaction ID' },
 				investment_id: { type: 'number', description: 'Investment ID' },
-				type: { type: 'string', description: 'Transaction type' },
+				type: { type: 'string', description: 'Transaction type ("deposit" or "withdrawal")' },
 				amount: { type: 'number', description: 'Transaction amount' },
-				start_date: { type: 'string', description: 'Transaction start date' },
-				end_date: { type: 'string', description: 'Transaction end date' },
-				repeat_unit: { type: 'string', description: 'Repeat unit' },
-				repeat: { type: 'number', description: 'Repeat frequency' },
+				start_date: {
+					type: 'string',
+					description: 'Transaction start date (YYYY-MM-DD)',
+				},
+				end_date: {
+					type: 'string',
+					description:
+						'Transaction end date (YYYY-MM-DD). Set for recurring transactions, omit or set to null for one-time transactions.',
+				},
+				repeat_unit: {
+					type: 'string',
+					description:
+						'Frequency unit for recurring transactions: "month" or "year". Set to null to convert to one-time transaction.',
+				},
+				repeat: {
+					type: 'number',
+					description:
+						'How often the transaction repeats, combined with repeat_unit. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months.',
+				},
 				label: { type: 'string', description: 'Transaction label' },
 				inflation_adjusted: {
 					type: 'boolean',
-					description: 'Whether the transaction amount is inflation adjusted',
+					description: 'Whether the transaction amount should be adjusted for inflation over time',
 				},
 			},
 			required: ['id'],
@@ -692,22 +726,45 @@ async function handleToolCall(
 			case 'search': {
 				const parsed = z
 					.object({
-						query: z.string(),
+						query: z.string().optional(),
 						entity_type: z.enum(['client', 'portfolio', 'investment', 'all']).optional(),
 						limit: z.number().optional(),
+						list_all: z.boolean().optional(),
 					})
 					.parse(args)
 
-				const query = parsed.query.toLowerCase()
+				const listAll = parsed.list_all || false
+				const query = parsed.query?.toLowerCase() || ''
 				const entityType = parsed.entity_type || 'all'
 				const limit = parsed.limit || 10
 				const results: Array<{ id: number; type: string; name: string; description: string }> = []
+
+				// Validate: if list_all is true, entity_type must be specified
+				if (listAll && entityType === 'all') {
+					return {
+						content: [
+							{
+								type: 'text',
+								text: JSON.stringify(
+									{
+										error:
+											'When list_all is true, entity_type must be specified (client, portfolio, or investment)',
+									},
+									null,
+									2,
+								),
+							},
+						],
+						isError: true,
+					}
+				}
 
 				// Search clients
 				if (entityType === 'all' || entityType === 'client') {
 					const clients = await authenticatedAdapter.getClients()
 					for (const client of clients) {
 						if (
+							listAll ||
 							client.name.toLowerCase().includes(query) ||
 							client.email.toLowerCase().includes(query)
 						) {
@@ -728,6 +785,7 @@ async function handleToolCall(
 						const portfolios = await authenticatedAdapter.getPortfolios(client.id)
 						for (const portfolio of portfolios) {
 							if (
+								listAll ||
 								portfolio.name.toLowerCase().includes(query) ||
 								portfolio.link?.toLowerCase().includes(query)
 							) {
@@ -750,7 +808,7 @@ async function handleToolCall(
 						for (const portfolio of portfolios) {
 							const investments = await authenticatedAdapter.getInvestments(portfolio.id)
 							for (const investment of investments) {
-								if (investment.name.toLowerCase().includes(query)) {
+								if (listAll || investment.name.toLowerCase().includes(query)) {
 									results.push({
 										id: investment.id,
 										type: 'investment',
@@ -771,7 +829,9 @@ async function handleToolCall(
 							type: 'text',
 							text: JSON.stringify(
 								{
-									query: parsed.query,
+									query: parsed.query || '(list all)',
+									list_all: listAll,
+									entity_type: entityType,
 									results: topResults,
 									total_found: results.length,
 									returned: topResults.length,
