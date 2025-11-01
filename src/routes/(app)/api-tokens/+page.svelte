@@ -102,7 +102,7 @@
 	}
 
 	function copyToken() {
-		navigator.clipboard.writeText(createdToken)
+		navigator.clipboard.writeText(kalkulMCPTokenURL)
 		tokenCopied = true
 		setTimeout(() => {
 			tokenCopied = false
