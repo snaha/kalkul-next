@@ -84,18 +84,17 @@ const identifierSchema = z.object({
 })
 
 const addClientArgsSchema = z.object({
-	first_name: z.string(),
-	last_name: z.string(),
-	email: z.string().email(),
-	birth_date: z.string().optional(),
+	name: z.string(),
+	birth_date: z.string(),
+	email: z.string().email().optional(),
 })
 
 const updateClientArgsSchema = z
 	.object({
 		id: z.number(),
-		name: z.string().optional(),
+		name: z.string(),
+		birth_date: z.string(),
 		email: z.string().email().optional(),
-		birth_date: z.string().optional(),
 	})
 	.passthrough()
 
@@ -141,9 +140,9 @@ const addTransactionArgsSchema = z.object({
 	investment_id: z.number(),
 	type: z.enum(['deposit', 'withdrawal']),
 	amount: z.number(),
-	start_date: z.string(),
+	date: z.string(),
 	end_date: z.string().optional(),
-	repeat_unit: z.enum(['month', 'year']).optional(),
+	repeat_unit: z.enum(['day', 'week', 'month', 'year']).optional(),
 	repeat: z.number().optional(),
 	label: z.string().optional(),
 	inflation_adjusted: z.boolean().optional(),
@@ -155,9 +154,9 @@ const updateTransactionArgsSchema = z
 		investment_id: z.number().optional(),
 		type: z.enum(['deposit', 'withdrawal']).optional(),
 		amount: z.number().optional(),
-		start_date: z.string().optional(),
+		date: z.string(),
 		end_date: z.string().optional(),
-		repeat_unit: z.enum(['month', 'year']).optional(),
+		repeat_unit: z.enum(['day', 'week', 'month', 'year']).optional(),
 		repeat: z.number().optional(),
 		label: z.string().optional(),
 		inflation_adjusted: z.boolean().optional(),
@@ -250,16 +249,14 @@ const TOOLS: MCPTool[] = [
 		inputSchema: {
 			type: 'object',
 			properties: {
-				first_name: { type: 'string', description: 'Client first name' },
-				last_name: { type: 'string', description: 'Client last name' },
+				name: { type: 'string', description: 'Client full name' },
 				birth_date: {
 					type: 'string',
-					description: 'Client birth date (YYYY-MM-DD, optional)',
-					default: '1980-01-01',
+					description: 'Client birth date (YYYY-MM-DD, required)',
 				},
-				email: { type: 'string', description: 'Client email address (required)' },
+				email: { type: 'string', description: 'Client email address (optional)' },
 			},
-			required: ['first_name', 'last_name', 'email'],
+			required: ['name', 'birth_date'],
 		},
 	},
 	{
@@ -269,11 +266,11 @@ const TOOLS: MCPTool[] = [
 			type: 'object',
 			properties: {
 				id: { type: 'number', description: 'Client ID' },
-				first_name: { type: 'string', description: 'Client first name' },
-				last_name: { type: 'string', description: 'Client last name' },
-				email: { type: 'string', description: 'Client email address' },
+				name: { type: 'string', description: 'Client full name' },
+				birth_date: { type: 'string', description: 'Client birth date (YYYY-MM-DD)' },
+				email: { type: 'string', description: 'Client email address (optional)' },
 			},
-			required: ['id'],
+			required: ['id', 'name', 'birth_date'],
 		},
 	},
 	{
@@ -467,10 +464,10 @@ const TOOLS: MCPTool[] = [
 				investment_id: { type: 'number', description: 'Investment ID (required)' },
 				type: { type: 'string', description: 'Transaction type ("deposit" or "withdrawal")' },
 				amount: { type: 'number', description: 'Transaction amount' },
-				start_date: {
+				date: {
 					type: 'string',
 					description:
-						'Transaction start date (YYYY-MM-DD). For one-time transactions, this is the only date. For recurring transactions, this is when the recurring pattern starts.',
+						'Transaction date (YYYY-MM-DD, required). For one-time transactions, this is the only date. For recurring transactions, this is when the recurring pattern starts.',
 				},
 				end_date: {
 					type: 'string',
@@ -479,13 +476,14 @@ const TOOLS: MCPTool[] = [
 				},
 				repeat_unit: {
 					type: 'string',
+					enum: ['day', 'week', 'month', 'year'],
 					description:
-						'Frequency unit for recurring transactions: "month" or "year". Omit for one-time transactions. Example: "month" means the transaction repeats monthly.',
+						'Frequency unit for recurring transactions: must be exactly "day", "week", "month", or "year" (string). Omit for one-time transactions. Example: "month" means the transaction repeats monthly.',
 				},
-				repeat_frequency: {
+				repeat: {
 					type: 'number',
 					description:
-						'How often the transaction repeats, combined with repeat_unit. Default: 1. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months; repeat=1 with repeat_unit="year" means annually. Omit for one-time transactions.',
+						'How often the transaction repeats, combined with repeat_unit. MUST be a number (not a string). Default: 1. Examples: repeat=1 (number) with repeat_unit="month" means every month; repeat=3 (number) with repeat_unit="month" means every 3 months; repeat=1 (number) with repeat_unit="year" means annually. Omit for one-time transactions.',
 					default: 1,
 				},
 				label: { type: 'string', description: 'Transaction label (optional)' },
@@ -495,7 +493,7 @@ const TOOLS: MCPTool[] = [
 						'Whether the transaction amount should be adjusted for inflation over time (optional)',
 				},
 			},
-			required: ['investment_id', 'type', 'amount', 'start_date'],
+			required: ['investment_id', 'type', 'amount', 'date'],
 		},
 	},
 	{
@@ -509,9 +507,9 @@ const TOOLS: MCPTool[] = [
 				investment_id: { type: 'number', description: 'Investment ID' },
 				type: { type: 'string', description: 'Transaction type ("deposit" or "withdrawal")' },
 				amount: { type: 'number', description: 'Transaction amount' },
-				start_date: {
+				date: {
 					type: 'string',
-					description: 'Transaction start date (YYYY-MM-DD)',
+					description: 'Transaction date (YYYY-MM-DD, required)',
 				},
 				end_date: {
 					type: 'string',
@@ -520,13 +518,14 @@ const TOOLS: MCPTool[] = [
 				},
 				repeat_unit: {
 					type: 'string',
+					enum: ['day', 'week', 'month', 'year'],
 					description:
-						'Frequency unit for recurring transactions: "month" or "year". Set to null to convert to one-time transaction.',
+						'Frequency unit for recurring transactions: must be exactly "day", "week", "month", or "year" (string). Set to null to convert to one-time transaction.',
 				},
 				repeat: {
 					type: 'number',
 					description:
-						'How often the transaction repeats, combined with repeat_unit. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months.',
+						'How often the transaction repeats, combined with repeat_unit. MUST be a number (not a string). Examples: repeat=1 (number) with repeat_unit="month" means every month; repeat=3 (number) with repeat_unit="month" means every 3 months.',
 				},
 				label: { type: 'string', description: 'Transaction label' },
 				inflation_adjusted: {
@@ -921,9 +920,9 @@ async function handleToolCall(
 			case 'add_client': {
 				const parsed = addClientArgsSchema.parse(args)
 				const clientData: ClientNoId = {
-					name: `${parsed.first_name} ${parsed.last_name}`,
-					birth_date: parsed.birth_date || '1980-01-01',
-					email: parsed.email,
+					name: parsed.name,
+					birth_date: parsed.birth_date,
+					email: parsed.email || '',
 				}
 				const clientId = await authenticatedAdapter.addClient(clientData)
 				return {
@@ -1170,7 +1169,7 @@ async function handleToolCall(
 					investment_id: parsed.investment_id,
 					type: parsed.type,
 					amount: parsed.amount,
-					date: parsed.start_date,
+					date: parsed.date,
 					end_date: parsed.end_date ?? null,
 					repeat_unit: parsed.repeat_unit ?? null,
 					repeat: parsed.repeat ?? null,
@@ -1192,7 +1191,7 @@ async function handleToolCall(
 					investment_id,
 					type,
 					amount,
-					start_date,
+					date,
 					end_date,
 					repeat_unit,
 					repeat,
@@ -1202,10 +1201,10 @@ async function handleToolCall(
 
 				const updateData = {
 					id,
+					date,
 					...(investment_id ? { investment_id } : {}),
 					...(type ? { type } : {}),
 					...(amount ? { amount } : {}),
-					...(start_date ? { date: start_date } : {}),
 					...(end_date ? { end_date } : {}),
 					...(repeat_unit ? { repeat_unit } : {}),
 					...(repeat ? { repeat } : {}),

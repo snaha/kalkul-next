@@ -354,17 +354,16 @@ Get all clients for the current user.
 
 #### `add_client`
 Create a new client profile.
-- **first_name** (string, required): Client first name
-- **last_name** (string, required): Client last name
-- **email** (string, required): Client email address
-- **birth_date** (string, optional): Client birth date (YYYY-MM-DD, optional). Default: "1980-01-01"
+- **name** (string, required): Client full name
+- **birth_date** (string, required): Client birth date (YYYY-MM-DD)
+- **email** (string, optional): Client email address
 
 #### `update_client`
 Update client information.
 - **id** (number, required): Client ID
-- **name** (string, optional): Client full name
+- **name** (string, required): Client full name
+- **birth_date** (string, required): Client birth date (YYYY-MM-DD)
 - **email** (string, optional): Client email address
-- **birth_date** (string, optional): Client birth date (YYYY-MM-DD)
 
 #### `delete_client`
 Delete a client and all associated data.
@@ -448,17 +447,17 @@ Add a transaction (deposit or withdrawal) to an investment. Transactions can be 
 - **investment_id** (number, required): Investment ID
 - **type** (string, required): Transaction type ("deposit" or "withdrawal")
 - **amount** (number, required): Transaction amount
-- **start_date** (string, required): Transaction start date (YYYY-MM-DD). For one-time transactions, this is the only date. For recurring transactions, this is when the recurring pattern starts.
+- **date** (string, required): Transaction date (YYYY-MM-DD, required). For one-time transactions, this is the only date. For recurring transactions, this is when the recurring pattern starts.
 - **end_date** (string, optional): Transaction end date (YYYY-MM-DD). Only required for recurring transactions to specify when they stop. Omit for one-time transactions.
-- **repeat_unit** (string, optional): Frequency unit for recurring transactions: "month" or "year". Omit for one-time transactions. Example: "month" means the transaction repeats monthly.
-- **repeat** (number, optional): How often the transaction repeats, combined with repeat_unit. Default: 1. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months; repeat=1 with repeat_unit="year" means annually. Omit for one-time transactions.
+- **repeat_unit** (string, optional): Frequency unit for recurring transactions: must be exactly "day", "week", "month", or "year" (string). Omit for one-time transactions. Example: "month" means the transaction repeats monthly.
+- **repeat** (number, optional): How often the transaction repeats, combined with repeat_unit. MUST be a number (not a string). Default: 1. Examples: repeat=1 (number) with repeat_unit="month" means every month; repeat=3 (number) with repeat_unit="month" means every 3 months; repeat=1 (number) with repeat_unit="year" means annually. Omit for one-time transactions.
 - **label** (string, optional): Transaction label
 - **inflation_adjusted** (boolean, optional): Whether the transaction amount should be adjusted for inflation over time
 
 **Examples:**
-- One-time deposit: `{"investment_id": 1, "type": "deposit", "amount": 10000, "start_date": "2024-01-01"}`
-- Monthly recurring deposit: `{"investment_id": 1, "type": "deposit", "amount": 500, "start_date": "2024-01-01", "end_date": "2044-12-31", "repeat_unit": "month", "repeat": 1}`
-- Quarterly withdrawal: `{"investment_id": 1, "type": "withdrawal", "amount": 2000, "start_date": "2025-01-01", "end_date": "2045-01-01", "repeat_unit": "month", "repeat": 3}`
+- One-time deposit: `{"investment_id": 1, "type": "deposit", "amount": 10000, "date": "2024-01-01"}`
+- Monthly recurring deposit: `{"investment_id": 1, "type": "deposit", "amount": 500, "date": "2024-01-01", "end_date": "2044-12-31", "repeat_unit": "month", "repeat": 1}`
+- Quarterly withdrawal: `{"investment_id": 1, "type": "withdrawal", "amount": 2000, "date": "2025-01-01", "end_date": "2045-01-01", "repeat_unit": "month", "repeat": 3}`
 
 #### `update_transaction`
 Update transaction information. Can change a one-time transaction to recurring or vice versa.
@@ -466,10 +465,10 @@ Update transaction information. Can change a one-time transaction to recurring o
 - **investment_id** (number, optional): Investment ID
 - **type** (string, optional): Transaction type ("deposit" or "withdrawal")
 - **amount** (number, optional): Transaction amount
-- **start_date** (string, optional): Transaction start date (YYYY-MM-DD)
+- **date** (string, required): Transaction date (YYYY-MM-DD, required)
 - **end_date** (string, optional): Transaction end date (YYYY-MM-DD). Set for recurring transactions, omit or set to null for one-time transactions.
-- **repeat_unit** (string, optional): Frequency unit for recurring transactions: "month" or "year". Set to null to convert to one-time transaction.
-- **repeat** (number, optional): How often the transaction repeats, combined with repeat_unit. Examples: repeat=1 with repeat_unit="month" means every month; repeat=3 with repeat_unit="month" means every 3 months.
+- **repeat_unit** (string, optional): Frequency unit for recurring transactions: must be exactly "day", "week", "month", or "year" (string). Set to null to convert to one-time transaction.
+- **repeat** (number, optional): How often the transaction repeats, combined with repeat_unit. MUST be a number (not a string). Examples: repeat=1 (number) with repeat_unit="month" means every month; repeat=3 (number) with repeat_unit="month" means every 3 months.
 - **label** (string, optional): Transaction label
 - **inflation_adjusted** (boolean, optional): Whether the transaction amount should be adjusted for inflation over time
 
