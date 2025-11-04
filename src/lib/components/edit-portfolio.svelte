@@ -61,6 +61,8 @@
 			horizon = formatAge(new Date(startDate), new Date(endDate))
 			if (startDate > endDate) {
 				horizonError = true
+			} else {
+				horizonError = false
 			}
 		}
 	})
