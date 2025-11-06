@@ -2,7 +2,7 @@ import { formatDate } from '$lib/@snaha/kalkul-maths'
 import {
 	calculateRequiredDeposit,
 	type RetirementCalculationInput,
-} from '$lib/demo/maths/retirement-calc'
+} from '$lib/@snaha/kalkul-calculators/retirement/retirement'
 import type { Portfolio, Investment, Transaction, InvestmentWithColorIndex } from '$lib/types'
 import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
 import { _ } from 'svelte-i18n'
@@ -21,10 +21,10 @@ export const RETIREMENT_DEFAULTS = {
 	CURRENCY: 'CZK',
 	INFLATION: 2.5,
 	DESIRED_BUDGET: 0,
-	BUDGET_FREQUENCY: 'month' as const,
+	BUDGET_PERIOD: 'month' as const,
 	CURRENT_SAVINGS: 0,
 	APY: 5.5,
-	DEPOSIT_FREQUENCY: 'month' as const,
+	DEPOSIT_PERIOD: 'month' as const,
 }
 
 export type LinkedInvestment = {
@@ -87,7 +87,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 			inflation_adjusted: true,
 			label: get(_)('demo.transactions.regularDeposit'),
 			repeat: 1,
-			repeat_unit: g.calculationInput.depositFrequency === 'month' ? 'month' : 'year',
+			repeat_unit: g.calculationInput.depositPeriod === 'month' ? 'month' : 'year',
 		})
 
 		// Add withdrawals during retirement/education
@@ -113,7 +113,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 			inflation_adjusted: true,
 			label: withdrawalLabel,
 			repeat: 1,
-			repeat_unit: g.calculationInput.budgetFrequency === 'month' ? 'month' : 'year',
+			repeat_unit: g.calculationInput.budgetPeriod === 'month' ? 'month' : 'year',
 		})
 
 		return transactions
@@ -134,7 +134,7 @@ export function goalToInvestment(goal: Goal): InvestmentWithColorIndex {
 		portfolio_id: -1, // Demo portfolio ID
 		name,
 		apy: goal.calculationInput.apy,
-		type: 'etf',
+		type: 'goal',
 		created_at: new Date().toISOString(),
 		last_edited_at: new Date().toISOString(),
 		advanced_fees: false,

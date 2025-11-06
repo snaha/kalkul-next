@@ -17,10 +17,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
-          extensions?: Json
           operationName?: string
           query?: string
           variables?: Json
+          extensions?: Json
         }
         Returns: Json
       }
@@ -34,6 +34,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_used_at: string | null
+          name: string
+          token_hash: string
+          token_prefix: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          name: string
+          token_hash: string
+          token_prefix: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          name?: string
+          token_hash?: string
+          token_prefix?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       client: {
         Row: {
           advisor: string
@@ -61,6 +94,45 @@ export type Database = {
         }
         Relationships: []
       }
+      goal_investment_link: {
+        Row: {
+          created_at: string
+          goal_id: number
+          id: number
+          investment_id: number
+          percentage: number | null
+        }
+        Insert: {
+          created_at?: string
+          goal_id: number
+          id?: number
+          investment_id: number
+          percentage?: number | null
+        }
+        Update: {
+          created_at?: string
+          goal_id?: number
+          id?: number
+          investment_id?: number
+          percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_investment_link_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "investment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "goal_investment_link_investment_id_fkey"
+            columns: ["investment_id"]
+            isOneToOne: false
+            referencedRelation: "investment"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investment: {
         Row: {
           advanced_fees: boolean | null
@@ -70,6 +142,7 @@ export type Database = {
           entry_fee_type: string | null
           exit_fee: number | null
           exit_fee_type: string | null
+          goal_data: Json | null
           id: number
           last_edited_at: string | null
           management_fee: number | null
@@ -88,6 +161,7 @@ export type Database = {
           entry_fee_type?: string | null
           exit_fee?: number | null
           exit_fee_type?: string | null
+          goal_data?: Json | null
           id?: number
           last_edited_at?: string | null
           management_fee?: number | null
@@ -106,6 +180,7 @@ export type Database = {
           entry_fee_type?: string | null
           exit_fee?: number | null
           exit_fee_type?: string | null
+          goal_data?: Json | null
           id?: number
           last_edited_at?: string | null
           management_fee?: number | null

@@ -336,7 +336,7 @@ export default class Supabase implements Adapter {
 	}
 
 	async updateInvestment(investment: Partial<Investment> & Pick<Investment, 'id'>) {
-		return this.updateData('investment', investment, investmentStore)
+		return this.updateData('investment', investment, investmentStore as Store<Investment>)
 	}
 
 	async deleteInvestment(investment: Partial<Investment> & Pick<Investment, 'id'>) {
@@ -362,6 +362,16 @@ export default class Supabase implements Adapter {
 		} else {
 			return res.data as Investment
 		}
+	}
+
+	// Goal methods (goals are investments with goal_data)
+	async addGoal(goal: Omit<Investment, MetaFields>) {
+		// Goals are investments with goal_data set
+		return this.addData('investment', goal, investmentStore)
+	}
+
+	async updateGoal(goal: Partial<Investment> & Pick<Investment, 'id'>) {
+		return this.updateData('investment', goal, investmentStore as Store<Investment>)
 	}
 
 	private validateTransactionInvariants(transaction: Partial<Transaction>): void {

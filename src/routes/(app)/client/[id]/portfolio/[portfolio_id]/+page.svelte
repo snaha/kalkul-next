@@ -24,34 +24,98 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import InvestmentsSidebar from '$lib/components/investments-sidebar.svelte'
+	import GoalsSidebar from '$lib/components/goals-sidebar.svelte'
+	import TabBar from '$lib/components/ui/tab-bar/tab-bar.svelte'
+	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
 	import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
+	import { isGoalsEnabledForEmail } from '$lib/feature-flags'
+	import { authStore } from '$lib/stores/auth.svelte'
 
 	const clientId = $derived(parseInt(page.params.id, 10))
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
-	const investments = $derived(investmentStore.filter(portfolioId))
-	const investmentIds = $derived(investments.map((investment) => investment.id))
-	const transactions = $derived(
+
+	// Check if goals feature is enabled for the logged-in user (advisor)
+	const goalsFeatureEnabled = $derived(isGoalsEnabledForEmail(authStore.user?.email))
+
+	// Tab selection state - defaults based on feature flag, but can be changed by user
+	let selectedTab = $state<'goals' | 'investments'>(
+		isGoalsEnabledForEmail(authStore.user?.email) ? 'goals' : 'investments',
+	)
+
+	// Filter goals and regular investments using store methods
+	const goals = $derived(investmentStore.filterGoals(portfolioId))
+	const regularInvestments = $derived(investmentStore.filterRegularInvestments(portfolioId))
+
+	// Separate simulations for goals and investments to avoid recalculation on tab switch
+	const goalsSimulation = withPortfolioSimulationStore()
+	const investmentsSimulation = withPortfolioSimulationStore()
+
+	// Get transactions for goals and investments separately
+	const goalIds = $derived(goals.map((goal) => goal.id))
+	const goalTransactions = $derived(
+		transactionStore.data.filter((transaction) => goalIds.includes(transaction.investment_id)),
+	)
+
+	const investmentIds = $derived(regularInvestments.map((investment) => investment.id))
+	const investmentTransactions = $derived(
 		transactionStore.data.filter((transaction) =>
 			investmentIds.includes(transaction.investment_id),
 		),
 	)
 
-	const portfolioSimulation = withPortfolioSimulationStore()
-	const graphData = $derived(portfolioSimulation.simulationData)
-
-	// Recalculate when portfolio, investments, or transactions change
+	// Calculate goals data when goals change (only if feature enabled)
 	$effect(() => {
-		if (portfolio && !isLoading && transactions) {
-			// setTimeout with 0 delay yields control to the browser, allowing:
-			// 1. The UI to update (show loading state) before heavy calculations
-			// 2. The browser to remain responsive during calculation
+		// Explicitly reference dependencies to ensure Svelte tracks them
+		const currentGoals = goals
+		const currentTransactions = goalTransactions
+
+		if (portfolio && !isLoading && goalsFeatureEnabled && currentGoals.length > 0) {
 			setTimeout(() => {
-				portfolioSimulation.calculateIteratively(portfolio, investments, transactions)
+				goalsSimulation.calculateIteratively(portfolio, currentGoals, currentTransactions)
 			}, 0)
 		}
 	})
+
+	// Calculate investments data when investments change (always, but filters out goals if feature enabled)
+	$effect(() => {
+		// Explicitly reference dependencies to ensure Svelte tracks them
+		const currentInvestments = regularInvestments
+		const currentTransactions = investmentTransactions
+
+		if (portfolio && !isLoading && currentInvestments.length > 0) {
+			setTimeout(() => {
+				investmentsSimulation.calculateIteratively(
+					portfolio,
+					currentInvestments,
+					currentTransactions,
+				)
+			}, 0)
+		}
+	})
+
+	// Switch between goal and investment data based on selected tab (or just investments if feature disabled)
+	const investments = $derived(
+		goalsFeatureEnabled && selectedTab === 'goals' ? goals : regularInvestments,
+	)
+
+	const graphData = $derived(
+		goalsFeatureEnabled && selectedTab === 'goals'
+			? goalsSimulation.simulationData
+			: investmentsSimulation.simulationData,
+	)
+
+	const transactions = $derived(
+		goalsFeatureEnabled && selectedTab === 'goals' ? goalTransactions : investmentTransactions,
+	)
+
+	// Check if portfolio is empty - when goals enabled, check both goals and investments; otherwise just investments
+	const hasAnyInvestments = $derived(
+		goalsFeatureEnabled
+			? goals.length > 0 || regularInvestments.length > 0
+			: regularInvestments.length > 0,
+	)
 
 	const investmentsViewStore = $derived(
 		withInvestmentsViewStore(investmentStore.filter(portfolioId)),
@@ -74,6 +138,10 @@
 	let isGraphFullscreened = $state(false)
 	let isSidebarOpen = $state(true)
 	const isSidebarFlexible = $derived(layoutStore.mobile)
+
+	// Tab labels - need to be at top level to avoid store subscription in snippet
+	const goalsTabLabel = $derived($_('page.goals.title'))
+	const investmentsTabLabel = $derived($_('common.investments'))
 	let isHeaderHovered = $state(false)
 	let isMenuOpen = $state(false)
 	let isShareMenuOpen = $state(false)
@@ -121,24 +189,77 @@
 
 {#snippet investmentSidebar()}
 	{#if client && portfolio}
-		<InvestmentsSidebar
-			{isGraphFullscreened}
-			{isSidebarFlexible}
-			bind:isSidebarOpen
-			{editedTransaction}
-			{selectedInvestment}
-			{client}
-			{portfolio}
-			{investments}
-			{investmentsViewStore}
-			transactionCount={transactions.length}
-			{adjustWithInflation}
-			viewOnly={false}
-			{graphData}
-			{closeDialog}
-			{openTransaction}
-			{addInvestment}
-		/>
+		{#if goalsFeatureEnabled}
+			<Vertical --vertical-gap="0" class="sidebar-tabs-container">
+				<TabBar
+					bind:selectedTabId={selectedTab}
+					ulClass="sidebar-tab-ul"
+					liClass="sidebar-tab-li"
+					buttonClass="sidebar-tab-button"
+				>
+					<TabContent value={goalsTabLabel} id="goals">
+						<GoalsSidebar
+							{isGraphFullscreened}
+							{isSidebarFlexible}
+							bind:isSidebarOpen
+							{editedTransaction}
+							{selectedInvestment}
+							{client}
+							{portfolio}
+							{goals}
+							{adjustWithInflation}
+							viewOnly={false}
+							{graphData}
+							{closeDialog}
+							{openTransaction}
+							addGoal={() => {
+								goto(routes.RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId))
+							}}
+						/>
+					</TabContent>
+
+					<TabContent value={investmentsTabLabel} id="investments">
+						<InvestmentsSidebar
+							{isGraphFullscreened}
+							{isSidebarFlexible}
+							bind:isSidebarOpen
+							{editedTransaction}
+							{selectedInvestment}
+							{client}
+							{portfolio}
+							investments={regularInvestments}
+							{investmentsViewStore}
+							transactionCount={transactions.length}
+							{adjustWithInflation}
+							viewOnly={false}
+							{graphData}
+							{closeDialog}
+							{openTransaction}
+							{addInvestment}
+						/>
+					</TabContent>
+				</TabBar>
+			</Vertical>
+		{:else}
+			<InvestmentsSidebar
+				{isGraphFullscreened}
+				{isSidebarFlexible}
+				bind:isSidebarOpen
+				{editedTransaction}
+				{selectedInvestment}
+				{client}
+				{portfolio}
+				{investments}
+				{investmentsViewStore}
+				transactionCount={transactions.length}
+				{adjustWithInflation}
+				viewOnly={false}
+				{graphData}
+				{closeDialog}
+				{openTransaction}
+				{addInvestment}
+			/>
+		{/if}
 	{/if}
 {/snippet}
 
@@ -164,7 +285,7 @@
 		404 - {$_('common.notFound')}
 	</ContentLayout>
 {:else}
-	{#if investments.length === 0}
+	{#if !hasAnyInvestments}
 		{@render emptyPage()}
 	{:else}
 		<DesktopOnly>
@@ -288,7 +409,7 @@
 			</main>
 		</MobileOnly>
 	{/if}
-	{#if investments.length === 0}
+	{#if !hasAnyInvestments}
 		<HelpBox
 			open={layoutStore.mobile ? false : true}
 			title={$_('helpBox.addInvestmentTitle')}
@@ -428,5 +549,27 @@
 		transform: translateY(0);
 		opacity: 1;
 		pointer-events: auto;
+	}
+	:global(.sidebar-tabs-container) {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+	:global(.sidebar-tab-ul) {
+		justify-content: space-between;
+		background-color: var(--colors-base);
+		border: 1px solid var(--colors-low);
+		gap: var(--quarter-padding);
+		border-radius: var(--quarter-padding);
+		padding: var(--quarter-padding) !important;
+		margin: var(--half-padding) !important;
+		margin-bottom: 0 !important;
+	}
+	:global(.sidebar-tab-li) {
+		display: flex;
+		flex: 1;
+	}
+	:global(.sidebar-tab-button) {
+		flex-grow: 1 !important;
 	}
 </style>

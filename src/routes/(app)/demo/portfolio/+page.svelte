@@ -168,9 +168,9 @@
 		<Vertical --vertical-gap="0" class="sidebar-tabs-container">
 			<TabBar
 				bind:selectedTabId={selectedTab}
-				ulClass="account-tabbar"
-				liClass="account-tab-li"
-				buttonClass="account-tab-button"
+				ulClass="sidebar-tab-ul"
+				liClass="sidebar-tab-li"
+				buttonClass="sidebar-tab-button"
 			>
 				<TabContent value={goalsTabLabel} id="goals">
 					<GoalsSidebar
@@ -451,7 +451,7 @@
 		display: flex;
 		flex-direction: column;
 	}
-	:global(.account-tabbar) {
+	:global(.sidebar-tab-ul) {
 		justify-content: space-between;
 		background-color: var(--colors-base);
 		border: 1px solid var(--colors-low);
@@ -459,12 +459,13 @@
 		border-radius: var(--quarter-padding);
 		padding: var(--quarter-padding) !important;
 		margin: var(--half-padding) !important;
+		margin-bottom: 0 !important;
 	}
-	:global(.account-tab-li) {
+	:global(.sidebar-tab-li) {
 		display: flex;
 		flex: 1;
 	}
-	:global(.account-tab-button) {
+	:global(.sidebar-tab-button) {
 		flex-grow: 1 !important;
 	}
 </style>

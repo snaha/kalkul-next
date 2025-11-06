@@ -8,25 +8,27 @@ This document outlines an iterative approach to introduce the goal mechanism fro
 
 This section groups the technical PRs into achievable user-facing milestones that can be communicated to customers:
 
-### Milestone 1: Basic Retirement Goals 🎯
+### Milestone 1: Basic Retirement Goals 🎯 ✅ COMPLETED
 
-**What users get**: Create and visualize retirement goals with automatic transaction planning
+**Status**: ✅ Completed
 
-**Tasks included**:
+**What Users Can Now Do:**
 
-- [Task 1](#task-1-database-schema--goals-tab-ui): Database Schema & Goals Tab UI
-- [Task 2](#task-2-goal-calculator--preview): Goal Calculator & Preview
-- [Task 3](#task-3-display-goals-in-sidebar): Display Goals in Sidebar
-- [Task 6](#task-6-goal-based-transaction-generation): Goal-Based Transaction Generation
+Users with goals feature enabled can now:
 
-**Customer message**: _"Plan your retirement with our new goal calculator. See exactly how much you need to save each month to reach your retirement targets, with automatic inflation adjustments."_
+- Create retirement goals using the retirement calculator with customizable parameters (savings, deposits, retirement budget)
+- Preview retirement projections before saving
+- See saved goals in a dedicated Goals tab with visual cards
+- View automatic transaction schedules (deposits and withdrawals) generated from goal parameters on the portfolio graph
+- Track goal progress over time with inflation-adjusted values
+- Switch between Goals and Investments views to see different portfolio perspectives
 
-**Features**:
+**Tasks Completed**:
 
-- Retirement calculator with preview
-- Goals appear in dedicated Goals tab
-- Automatic deposit and withdrawal transaction generation
-- Visual goal tracking in portfolio
+- [Task 1](#task-1-database-schema--goals-tab-ui): Database Schema & Goals Tab UI ✅
+- [Task 2](#task-2-goal-calculator--preview): Goal Calculator & Preview ✅
+- [Task 3](#task-3-display-goals-in-sidebar): Display Goals in Sidebar ✅
+- [Task 4](#task-4-generate-transactions-for-goals-and-display-on-graph): Generate Transactions for Goals and Display on Graph ✅
 
 ---
 
@@ -36,8 +38,8 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 4](#task-4-transfer-transaction-type): Transfer Transaction Type
-- [Task 5](#task-5-link-investments-to-goals-with-simple-rebalancing): Link Investments to Goals with Simple Rebalancing
+- [Task 5](#task-5-transfer-transaction-type): Transfer Transaction Type
+- [Task 6](#task-6-link-investments-to-goals-with-simple-rebalancing): Link Investments to Goals with Simple Rebalancing
 
 **Customer message**: _"Connect your real investments to your retirement goals. Kalkul will show you how your portfolio is allocated across your goals and automatically rebalance yearly to maintain your target allocation."_
 
@@ -56,9 +58,9 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 7](#task-7-manual-transactions-for-goals): Manual Transactions for Goals
-- [Task 8](#task-8-multiple-goal-types): Multiple Goal Types
-- [Task 9](#task-9-goal-editing--management): Goal Editing & Management
+- [Task 8](#task-8-manual-transactions-for-goals): Manual Transactions for Goals
+- [Task 9](#task-9-multiple-goal-types): Multiple Goal Types
+- [Task 10](#task-10-goal-editing--management): Goal Editing & Management
 
 **Customer message**: _"Take full control of your financial goals. Add one-time deposits or withdrawals, plan for your children's education, and easily update your goals as life changes."_
 
@@ -78,7 +80,7 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 13](#task-13-personal-investment-library): Personal Investment Library
+- [Task 14](#task-14-personal-investment-library): Personal Investment Library
 
 **Customer message**: _"Create your personal investment library. Save your favorite ETFs, funds, and stocks once, then reuse them across all your portfolios in seconds."_
 
@@ -97,7 +99,7 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 10](#task-10-additional-goal-calculators): Additional Goal Calculators
+- [Task 11](#task-11-additional-goal-calculators): Additional Goal Calculators
 
 **Customer message**: _"Plan for any major life goal. Whether you're saving for a house down payment or any other significant purchase, Kalkul helps you create a savings plan with automatic inflation adjustments."_
 
@@ -116,8 +118,8 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 11](#task-11-advanced-rebalancing-options): Advanced Rebalancing Options
-- [Task 12](#task-12-time-based-rebalancing-periods): Time-Based Rebalancing Periods
+- [Task 12](#task-12-advanced-rebalancing-options): Advanced Rebalancing Options
+- [Task 13](#task-13-time-based-rebalancing-periods): Time-Based Rebalancing Periods
 
 **Customer message**: _"Invest like a pro with advanced rebalancing strategies. Set different asset allocations for different life phases, choose rebalancing frequency, and let Kalkul manage the details."_
 
@@ -137,7 +139,7 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 14](#task-14-transaction-execution-plan-export): Transaction Execution Plan Export
+- [Task 15](#task-15-transaction-execution-plan-export): Transaction Execution Plan Export
 
 **Customer message**: _"Never miss a transaction with your personalized execution plan. Export a clear schedule showing exactly when and how much to invest, with all your goals aggregated for easy execution."_
 
@@ -157,7 +159,7 @@ This section groups the technical PRs into achievable user-facing milestones tha
 
 **Tasks included**:
 
-- [Task 15](#task-15-additional-calculator-implementations): Additional Calculator Implementations
+- [Task 16](#task-16-additional-calculator-implementations): Additional Calculator Implementations
 
 **Customer message**: _"Plan for every major financial milestone. From buying real estate and paying off debt to building an emergency fund or launching a business - Kalkul has the calculator you need."_
 
@@ -363,40 +365,92 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ## Iterative Task Sequence
 
-### Task 1: Database Schema & Goals Tab UI
+### Task 1: Database Schema & Goals Tab UI ✅ COMPLETED
 
 **GitHub Issue**: [#1042](https://github.com/snaha-net/kalkul.app/issues/1042) - Introduce goal as investment
 
 **Goal**: Foundation + empty goals tab (feature flagged)
 
-**Changes:**
+**Status**: ✅ Completed
 
-- Add `goal_data` JSONB column to `investment` table (contains `type` to identify goal type)
-- Create `goal_investment_link` table
-- Create database migration file in `supabase/migrations/` using `pnpm supabase migration new goals_schema`
-- Update TypeScript types in `typesdb.ts` (run `pnpm supabase gen types` after migration)
-- Add RLS policies for new table
-- **Add Goals/Investments tab bar to portfolio page** (port from demo)
-- **Create `goals-sidebar.svelte` component** (empty state initially)
-- **Create `goal-card.svelte` component** (skeleton)
-- **Add feature flag check**: Only show Goals tab if user email is in `GOALS_ENABLED_FOR_EMAILS`
-- **Filter logic**: Goals are investments where `goal_data IS NOT NULL`
+**Changes Implemented:**
+
+- ✅ Added `goal_data` JSONB column to `investment` table (contains `type` to identify goal type)
+- ✅ Created `goal_investment_link` table with RLS policies
+- ✅ Created database migration file `supabase/migrations/20251101091418_goals_schema.sql`
+- ✅ Updated TypeScript types in `src/lib/types.ts`:
+  - `RetirementGoalData` with `type: 'retirement'`
+  - `EducationGoalData` with `type: 'education'`
+  - `Goal`, `RetirementGoal`, `EducationGoal` types
+  - `GoalInvestmentLink` type
+  - Made `Investment.goal_data` optional for backward compatibility
+- ✅ Added RLS policy for `goal_investment_link` table (follows existing pattern via client.advisor)
+- ✅ Added Goals/Investments tab bar to portfolio page (`src/routes/(app)/client/[id]/portfolio/[portfolio_id]/+page.svelte`)
+- ✅ Created `src/lib/components/goals-sidebar.svelte` component
+- ✅ Created `src/lib/components/goal-card.svelte` component (skeleton for Task 2)
+- ✅ Added feature flag system in `src/lib/feature-flags.ts`:
+  - `GOALS_ENABLED_FOR_EMAILS` array
+  - `isGoalsEnabledForEmail()` function
+  - Enabled for: `goals@kalkul.app`
+- ✅ Implemented filter logic using `$derived`:
+  - Goals: `goal_data !== undefined && goal_data !== null`
+  - Regular investments: `goal_data === undefined || goal_data === null`
+- ✅ Added seed data:
+  - Goals account (goals@kalkul.app) with two portfolios:
+    - Portfolio 101: "Investment only portfolio" with regular investment
+    - Portfolio 102: "Single goal portfolio" with retirement goal
+- ✅ Generated database types with `pnpm supabase gen types`
+
+**Files Created:**
+
+- `supabase/migrations/20251101091418_goals_schema.sql`
+- `src/lib/feature-flags.ts`
+- `src/lib/components/goals-sidebar.svelte`
+- `src/lib/components/goal-card.svelte`
+
+**Files Modified:**
+
+- `src/lib/types.ts` - Added goal type definitions
+- `src/lib/typesdb.ts` - Regenerated from database schema
+- `src/routes/(app)/client/[id]/portfolio/[portfolio_id]/+page.svelte` - Added tabs and filtering
+- `supabase/seed.sql` - Added goals account and test data
+- `src/lib/locales/en.json` - Added `page.goals.title` and `page.goals.linkedInvestments`
+- `src/lib/locales/cs.json` - Added `page.goals.title` and `page.goals.linkedInvestments`
+- `src/lib/adapters/supabase/index.ts` - Type cast fix for `investmentStore`
+
+**Test Data Added:**
+
+- Goals account: `goals@kalkul.app` (password: `demo123`)
+  - Client ID: 100
+  - Portfolio 101: "Investment only portfolio" (regular investment for testing)
+  - Portfolio 102: "Single goal portfolio" with retirement goal:
+    - Investment ID: 1002 with `goal_data.type = 'retirement'`
+    - Initial savings: 350,000 CZK (inflation adjusted)
+    - Monthly contributions: 7,090 CZK (inflation adjusted)
+    - Retirement start: 2050-03-15 (age 65)
+    - Desired budget: 20,000 CZK/month for 20 years (inflation adjusted)
+    - APY: 5.5%, Inflation: 2.5%
+
+**Testing Results:**
+
+- ✅ Migration runs successfully
+- ✅ Goals tab appears only for flagged users (goals@kalkul.app)
+- ✅ Tab switching works between Goals and Investments
+- ✅ TypeScript check passes (0 errors, 0 warnings)
+- ✅ Linting passes
+- ✅ Database reset works correctly
 
 **User Value:**
 
-- Feature-flagged users see empty Goals tab (ready for content)
-- Other users see no changes
-
-**Testing:**
-
-- Migration runs successfully
-- Goals tab appears only for flagged users
-- Tab switching works
-- Empty state displays correctly
+- Feature-flagged users (goals@kalkul.app) see Goals tab
+- Goals tab shows skeleton goal cards (ready for Task 2 implementation)
+- Other users see no changes (feature hidden)
+- Test data exists in database for goals@kalkul.app account
+- Foundation ready for Task 2 (Goal Calculator)
 
 ---
 
-### Task 2: Goal Calculator & Preview
+### Task 2: Goal Calculator & Preview ✅ COMPLETED
 
 **GitHub Issues**:
 
@@ -405,56 +459,231 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 **Goal**: Users can calculate and save retirement goals
 
-**Changes:**
+**Status**: ✅ Completed
 
-- Port retirement calculator: `/demo/portfolio/retirement/` → `/client/[id]/goals/retirement/calculator`
-- Port preview page (what you need vs what you have charts)
-- Save goal as investment with `goal_data` containing `type: 'retirement'` and other data
-- Add routes in `routes.ts`
-- Create goal adapter methods in `adapters/supabase/`
-- Add "Create Goal" button in empty Goals tab
+**Changes Implemented:**
+
+- ✅ Moved retirement calculation logic from `src/lib/demo/maths/retirement-calc.ts` to `src/lib/@snaha/kalkul-calculators/retirement/retirement.ts`
+  - Maintains all existing calculation functions: `calculateWhatYouNeed()`, `calculateWhatYouHave()`, `calculateRequiredDeposit()`, `generateYears()`
+  - All 20 unit tests pass after migration
+- ✅ Created production retirement calculator component (`src/lib/components/goals-retirement-calculator.svelte`)
+  - Adapted from demo version, removed demo-specific code (keyboard shortcuts, demoStore)
+  - Uses real client data and portfolio currency
+  - Accepts `onCalculate` callback for navigation
+- ✅ Created production retirement preview component (`src/lib/components/goals-retirement-preview.svelte`)
+  - Shows "What You Need" vs "What You Have" charts
+  - Allows deposit amount adjustment
+  - Calls `saveGoal` callback to create goal in database
+- ✅ Added routes to `src/lib/routes.ts`:
+  - `RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId)`
+  - `RETIREMENT_GOAL_PREVIEW(clientId, portfolioId)`
+- ✅ Created route pages:
+  - `/client/[id]/portfolio/[portfolio_id]/goals/retirement/calculator/+page@(app).svelte`
+  - `/client/[id]/portfolio/[portfolio_id]/goals/retirement/preview/+page@(app).svelte`
+- ✅ Created temporary state store (`src/lib/stores/goal-calculator.svelte.ts`) to pass data between calculator and preview
+- ✅ Added goal adapter methods to `src/lib/adapters/supabase/index.ts`:
+  - `addGoal(goal)` - Creates investment with `goal_data`
+  - `updateGoal(goal)` - Updates goal data
+  - Added methods to Adapter interface in `src/lib/adapters/index.ts`
+- ✅ Enabled "Add goal" button in `src/lib/components/goals-sidebar.svelte`
+  - Navigates to retirement calculator
+  - Button now functional (was disabled in Task 1)
+- ✅ Updated portfolio page to wire up `addGoal` callback with navigation
+- ✅ Implemented automatic transaction generation:
+  - Created `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.ts` with `retirementGoalToTransactions()`
+  - Generates 3 types of transactions from goal data:
+    1. **Initial Savings** - One-time deposit of current savings (if > 0, inflation-adjusted)
+    2. **Regular Deposits** - Recurring deposits until retirement (if > 0, inflation-adjusted)
+    3. **Retirement Withdrawals** - Recurring withdrawals during retirement (if > 0, inflation-adjusted)
+  - Transactions skip creation if amount is 0 (prevents unnecessary $0 transactions)
+  - Uses localized labels from `demo.transactions.*` keys
+  - 8 comprehensive unit tests covering all edge cases
+- ✅ Fixed navigation redirect issue (await `goto()` before clearing store to prevent $effect race condition)
+- ✅ Implemented delete goal functionality:
+  - Added delete modal to `goal-card.svelte`
+  - Uses existing `DeleteModal` component
+  - Added localization strings to both `en.json` and `cs.json`:
+    - `component.goalCard.deleteGoalWarning`
+    - `component.goalCard.deleteGoalWarningTitle`
+  - Deletes goal (investment) using `adapter.deleteInvestment()`
+
+**Files Created:**
+
+- `src/lib/@snaha/kalkul-calculators/retirement/retirement.ts` (moved from demo)
+- `src/lib/@snaha/kalkul-calculators/retirement/retirement.test.ts` (moved from demo)
+- `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.ts`
+- `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.test.ts`
+- `src/lib/components/goals-retirement-calculator.svelte`
+- `src/lib/components/goals-retirement-preview.svelte`
+- `src/lib/stores/goal-calculator.svelte.ts`
+- `src/routes/(app)/client/[id]/portfolio/[portfolio_id]/goals/retirement/calculator/+page@(app).svelte`
+- `src/routes/(app)/client/[id]/portfolio/[portfolio_id]/goals/retirement/preview/+page@(app).svelte`
+
+**Files Modified:**
+
+- `src/lib/routes.ts` - Added retirement goal routes
+- `src/lib/adapters/supabase/index.ts` - Added `addGoal()` and `updateGoal()` methods
+- `src/lib/adapters/index.ts` - Added goal methods to Adapter interface
+- `src/lib/components/goals-sidebar.svelte` - Enabled "Add goal" button
+- `src/lib/components/goal-card.svelte` - Added delete functionality with modal
+- `src/routes/(app)/client/[id]/portfolio/[portfolio_id]/+page.svelte` - Wired up addGoal callback
+- `src/lib/demo/components/retirement-calculator.svelte` - Updated calculator import path
+- `src/lib/demo/components/retirement-preview.svelte` - No changes needed (demo version, not renamed)
+- `src/lib/demo/stores/demo.svelte.ts` - Updated import path
+- `src/routes/(app)/demo/portfolio/retirement/preview/+page@(app).svelte` - Updated import path
+- `src/lib/locales/en.json` - Added delete goal warning strings
+- `src/lib/locales/cs.json` - Added delete goal warning strings (Czech translations)
+
+**Files Deleted:**
+
+- `src/lib/demo/maths/retirement-calc.ts` (moved to @snaha/kalkul-calculators)
+- `src/lib/demo/maths/retirement-calc.test.ts` (moved to @snaha/kalkul-calculators)
+
+**Testing Results:**
+
+- ✅ Calculator produces correct deposit amounts
+- ✅ Preview charts display "What You Need" vs "What You Have" correctly
+- ✅ Goal saves to database with complete `goal_data` structure
+- ✅ Goal appears in Goals tab after creation
+- ✅ Transactions auto-generate (3 types: initial savings, recurring deposits, withdrawals)
+- ✅ All 20 retirement calculation tests pass
+- ✅ All 8 goal transaction generation tests pass
+- ✅ Demo still works with updated import paths
+- ✅ TypeScript check passes (0 errors, 0 warnings)
+- ✅ ESLint passes
+- ✅ Knip passes (only expected unused types for future tasks)
+- ✅ Navigation redirects correctly after goal creation
+- ✅ Delete goal modal appears and deletes correctly
+- ✅ Zero-amount transactions are skipped (no $0 recurring deposits or withdrawals)
 
 **User Value:**
 
-- Users can calculate and save retirement goals
-- See visual preview of retirement planning
+- Users can create retirement goals through calculator
+- Visual preview shows if savings plan is on track
+- Goals save to database with all calculation parameters
+- Transactions automatically created (initial, recurring deposits, withdrawals)
+- Goals appear in Goals tab and can be deleted
+- Clear "What You Need" vs "What You Have" visualization
+- Deposit amount can be adjusted before saving
+- Navigation flow: Portfolio → Calculator → Preview → Portfolio (with new goal)
 
-**Testing:**
+**Implementation Notes:**
 
-- Calculator produces correct deposit amounts
-- Preview charts display correctly
-- Goal saves to database
-- Goal appears in Goals tab after creation
+- Used temporary store (`goalCalculatorStore`) to pass data between calculator and preview pages
+- Store is cleared after navigation to prevent stale data
+- Transactions use localized labels from existing demo translation keys
+- Goals are stored as investments with `goal_data` JSONB column
+- APY from calculator is stored in investment's `apy` field
+- All fee fields set to 0/null for goals (not applicable)
+- Transaction generation skips $0 amounts to keep transaction list clean
+- Delete functionality follows same pattern as investment deletion
+- **All transactions are inflation-adjusted** (including initial savings) for consistent growth calculations
 
 ---
 
-### Task 3: Display Goals in Sidebar
+### Task 3: Display Goals in Sidebar ✅ COMPLETED
 
 **GitHub Issue**: [#1056](https://github.com/snaha-net/kalkul.app/issues/1056) - Add data colors to goals
 
-**Goal**: Users can see their saved goals
+**Goal**: Users can see their saved goals with visual representation in graph
 
-**Changes:**
+**Status**: ✅ Completed
 
-- Populate `goal-card.svelte` with goal data display
-- Show goal details: name, target, timeline, progress
-- Add goal summary information
-- Read-only view initially
+**Changes Implemented:**
+
+- ✅ `goal-card.svelte` displays in sidebar with goal information
+- ✅ Goals load from database and show in Goals tab
+- ✅ Goal information displayed (name from investment)
+- ✅ Delete functionality works
+- ✅ **Goal-specific colors added to graph visualization:**
+  - Assigned unique colors to each goal (reversed from `SERIES_COLORS` array)
+  - Goals use colors from end of color array to distinguish from investments
+  - Graph properly displays goal transactions in goal's color
+- ✅ **Separate portfolio simulations for goals and investments** (performance optimization)
+  - Separate `goalsSimulation` and `investmentsSimulation` stores
+  - Avoids recalculation on tab switch
+  - Each simulation calculates independently when data changes
+- ✅ **Tab switching implementation:**
+  - Goals default to active tab when feature is enabled for user
+  - Tab selection controls which simulation data is displayed
+  - Correct transactions and investments shown per tab
+- ✅ **Empty state handling:**
+  - `hasAnyInvestments` checks both goals and investments when feature enabled
+  - Shows empty page only when truly empty
+
+**Files Modified:**
+
+- `src/lib/components/goal-card.svelte` - Added reversed color indexing
+- `src/routes/(app)/client/[id]/portfolio/[portfolio_id]/+page.svelte` - Separate simulations, tab switching, filtered transactions
+- `src/lib/feature-flags.ts` - Removed `demo@kalkul.app` from goals feature flag
+
+**Testing Results:**
+
+- ✅ Multiple goals show with distinct colors
+- ✅ Goal colors appear in graph (reversed from investments)
+- ✅ Tab switching works correctly between Goals and Investments
+- ✅ Separate simulations prevent unnecessary recalculation
+- ✅ Goal cards display appropriately
+- ✅ Empty state appears only when no goals and no investments exist
+- ✅ Performance optimized - simulations only recalculate when their specific data changes
 
 **User Value:**
 
-- Visual goal tracking in portfolio
+- Visual goal tracking in portfolio graph
 - See saved goals alongside investments
-
-**Testing:**
-
-- Goals display correctly with all data
-- Multiple goals show properly
-- Goal card expands/collapses
+- Identify goal-related transactions by color (goals use reversed color scheme)
+- Track progress toward goals visually
+- Fast tab switching without recalculating simulations
+- Clear separation between goal-based and investment-based portfolio views
 
 ---
 
-### Task 4: Transfer Transaction Type
+### Task 4: Generate Transactions for Goals and Display on Graph ✅ COMPLETED
+
+**Goal**: Automatically generate and visualize transactions from goal data
+
+**Status**: ✅ Completed
+
+**Changes Implemented:**
+
+- ✅ Created `goal-transactions.ts` calculator in `src/lib/@snaha/kalkul-calculators/retirement/`
+- ✅ Implemented `calculateGoalTransactions()` function to generate deposit/withdrawal transactions from goal data
+- ✅ Goal transactions display on portfolio graph with goal-based grouping
+- ✅ Goal transactions colored by goal (using reversed color scheme from investments)
+- ✅ Calculator generates transactions based on:
+  - Initial savings (one-time deposit)
+  - Regular deposits (monthly/yearly until retirement)
+  - Retirement withdrawals (monthly/yearly during retirement period)
+  - All transactions respect inflation adjustment settings
+
+**Files Created:**
+
+- `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.ts` - Goal transaction generation logic
+- `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.test.ts` - Tests for transaction generation
+
+**Files Modified:**
+
+- `src/routes/(app)/client/[id]/portfolio/[portfolio_id]/+page.svelte` - Display goal transactions on graph
+- `src/lib/stores/goal-calculator.svelte.ts` - Calculate goal transactions iteratively
+
+**Testing Results:**
+
+- ✅ Transactions generate correctly from goal data
+- ✅ Graph displays goal transactions in goal's color
+- ✅ Inflation-adjusted transactions calculated properly
+- ✅ Regular deposits and retirement withdrawals appear on timeline
+- ✅ Goal simulations run with generated transactions
+
+**User Value:**
+
+- Automatic transaction planning from goal parameters
+- Visual representation of savings and withdrawal schedule
+- See exact monthly/yearly contributions needed
+- Track goal progress over time on graph
+
+---
+
+### Task 5: Transfer Transaction Type
 
 **GitHub Issues**:
 
@@ -484,7 +713,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 5: Link Investments to Goals with Simple Rebalancing
+### Task 6: Link Investments to Goals with Simple Rebalancing
 
 **GitHub Issues**:
 
@@ -508,6 +737,11 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 - Save/update links in `goal_investment_link` table with `rebalancing_strategy` field
 - Show linked investments in goal card
 - Add adapter methods for link CRUD
+- **Distribute goal calculator transactions to linked investments:**
+  - Take goal's generated transactions (deposits/withdrawals from Task 4)
+  - Split them across linked investments based on allocation percentages
+  - Create actual investment transactions for each linked investment
+  - Example: 10,000 CZK monthly deposit with 60% stocks / 40% bonds creates two transactions
 - **Generate yearly rebalancing transactions** using transfer type
 - Add `rebalancing_interval` to goal_data (default: 'year')
 - Auto-generate transfer transactions to maintain target percentages
@@ -532,46 +766,38 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 6: Goal-Based Transaction Generation
+### Task 7: Display Investment Transactions in Goals View
 
 **GitHub Issue**: [#1047](https://github.com/snaha-net/kalkul.app/issues/1047) - Show transactions that are not assigned to a goal in 'Goals' view
 
-**Goal**: Transactions auto-populate from goals
+**Goal**: Show investment transactions alongside goals for complete portfolio view
 
 **Changes:**
 
-- Port `goalToTransactions()` logic
-- Generate deposit/withdrawal transactions from goal data
-- **Add `automatic_transaction_ids` array to goal_data** (tracks calculator-generated transactions)
-- Link automatic transactions to calculator fields (e.g., "initial deposit", "regular deposit", "withdrawal")
-- Store transaction IDs in array after generation
-- Display on graph with goal-based grouping
-- Label transactions by goal (like `transactionGoalMap`)
-- Color-code by goal
-- **Show unassigned transactions in Goals view**
-- Display unassigned transactions list in sidebar
-- Add filter toggle to hide/show unassigned transactions in chart
+- Show investment transactions in Goals view (transactions not linked to any goal)
+- Display investment transactions in sidebar alongside goal cards
+- Visual distinction between goal transactions and investment transactions
 - Ensure total portfolio value matches between Goals/Investments views
+- Investment transactions use standard investment colors
 
 **User Value:**
 
-- Automatic transaction planning from goals
-- Visual representation of goal progress
 - See all portfolio activity even in Goals view
-- Clear which transactions are goal-generated
+- Understand complete portfolio picture
+- Identify which transactions are from regular investments vs goals
+- Portfolio value consistency across tabs
 
 **Testing:**
 
-- Transactions generate correctly
-- Transaction IDs stored in goal_data
-- Graph displays goal-based transactions
-- Editing goal recalculates only automatic transactions
-- Portfolio value consistent across views
-- Unassigned transactions visible
+- Investment transactions appear in Goals view
+- Investment transactions visible in sidebar
+- Graph displays both goal and investment transactions
+- Portfolio value consistent across Goals/Investments views
+- Clear visual distinction between transaction sources
 
 ---
 
-### Task 7: Manual Transactions for Goals
+### Task 8: Manual Transactions for Goals
 
 **GitHub Issue**: [#1048](https://github.com/snaha-net/kalkul.app/issues/1048) - Add 'manual' transaction to a goal (not coming from calculator)
 
@@ -603,7 +829,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 8: Multiple Goal Types
+### Task 9: Multiple Goal Types
 
 **GitHub Issue**: [#1044](https://github.com/snaha-net/kalkul.app/issues/1044) - Add kids education calculator
 
@@ -629,7 +855,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 9: Goal Editing & Management
+### Task 10: Goal Editing & Management
 
 **Goal**: Full CRUD operations on goals
 
@@ -655,7 +881,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 10: Additional Goal Calculators
+### Task 11: Additional Goal Calculators
 
 **Goal**: Support more goal types beyond retirement and education
 
@@ -688,7 +914,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 11: Advanced Rebalancing Options
+### Task 12: Advanced Rebalancing Options
 
 **GitHub Issue**: [#1050](https://github.com/snaha-net/kalkul.app/issues/1050) - Rebalancing options for investments under a goal
 
@@ -733,7 +959,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 12: Time-Based Rebalancing Periods
+### Task 13: Time-Based Rebalancing Periods
 
 **GitHub Issue**: [#1051](https://github.com/snaha-net/kalkul.app/issues/1051) - Multiple balances for goal investments over time
 
@@ -779,7 +1005,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 13: Personal Investment Library
+### Task 14: Personal Investment Library
 
 **GitHub Issues**:
 
@@ -815,7 +1041,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 14: Transaction Execution Plan Export
+### Task 15: Transaction Execution Plan Export
 
 **GitHub Issue**: [#1055](https://github.com/snaha-net/kalkul.app/issues/1055) - Transactions execution plan
 
@@ -849,7 +1075,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
 
 ---
 
-### Task 15: Additional Calculator Implementations
+### Task 16: Additional Calculator Implementations
 
 **Goal**: Support comprehensive range of financial calculators
 

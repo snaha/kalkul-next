@@ -1,10 +1,12 @@
-import type { Investment, Store } from '$lib/types'
+import type { Investment, Store, Goal } from '$lib/types'
 
 interface InvestmentStore extends Store<Investment> {
 	data: Investment[]
 	loading: boolean
 	reset: () => void
 	filter: (portfolioId: number) => Investment[]
+	filterGoals: (portfolioId: number) => Goal[]
+	filterRegularInvestments: (portfolioId: number) => Investment[]
 }
 
 function withInvestmentStore(): InvestmentStore {
@@ -31,6 +33,21 @@ function withInvestmentStore(): InvestmentStore {
 		},
 		filter(portfolioId: number) {
 			return data.filter((investment) => investment.portfolio_id === portfolioId)
+		},
+		filterGoals(portfolioId: number) {
+			return data.filter(
+				(investment) =>
+					investment.portfolio_id === portfolioId &&
+					investment.goal_data !== undefined &&
+					investment.goal_data !== null,
+			) as Goal[]
+		},
+		filterRegularInvestments(portfolioId: number) {
+			return data.filter(
+				(investment) =>
+					investment.portfolio_id === portfolioId &&
+					(investment.goal_data === undefined || investment.goal_data === null),
+			)
 		},
 	}
 }

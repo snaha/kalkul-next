@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Close } from 'carbon-icons-svelte'
 	import { _, locale } from 'svelte-i18n'
-	import { goto } from '$app/navigation'
 	import Button from '$lib/components/ui/button.svelte'
+	import LoaderButton from '$lib/components/loader-button.svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import FormattedNumberInput from '$lib/components/ui/input/formatted-number/input.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
-	import type { Client } from '$lib/types'
+	import type { Client, Portfolio } from '$lib/types'
 	import Select from '$lib/components/ui/select/select.svelte'
 	import Divider from '$lib/components/ui/divider.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
@@ -14,50 +14,62 @@
 	import ResponsiveLayout from '$lib/components/ui/responsive-layout.svelte'
 	import DateAge from '$lib/components/date-age.svelte'
 	import DatePicker from '$lib/components/ui/input/date/picker.svelte'
-	import routes from '$lib/routes'
 	import { addYears } from 'date-fns'
 	import type { RetirementCalculationInput } from '$lib/@snaha/kalkul-calculators/retirement/retirement'
-	import { demoStore, RETIREMENT_DEFAULTS, type RetirementGoal } from '$lib/demo/stores/demo.svelte'
 
 	type Props = {
 		client: Client
+		portfolio: Portfolio
 		close: () => void
+		onCalculate: (input: RetirementCalculationInput, currency: string) => void
+		initialData?: {
+			calculationInput: RetirementCalculationInput
+			currency: string
+		}
 	}
 
-	let { client, close }: Props = $props()
+	let { client, portfolio, close, onCalculate, initialData }: Props = $props()
+
+	const RETIREMENT_DEFAULTS = {
+		RETIREMENT_AGE: 65,
+		RETIREMENT_LENGTH: 20,
+		INFLATION: 2.5,
+		DESIRED_BUDGET: 0,
+		BUDGET_PERIOD: 'month' as const,
+		CURRENT_SAVINGS: 0,
+		APY: 5.5,
+		DEPOSIT_PERIOD: 'month' as const,
+	}
 
 	// Calculate client's current age
 	const birthDate = new Date(client.birth_date)
 	const today = new Date()
 	const currentAge = today.getFullYear() - birthDate.getFullYear()
 
-	// Load existing data from store if available, otherwise use defaults
-	const existingData = demoStore.goals[0] as RetirementGoal | undefined
-
 	let clientAge = $state(currentAge)
 	let retirementStart = $state(
-		existingData?.calculationInput.retirementStart ??
+		initialData?.calculationInput.retirementStart ??
 			addYears(birthDate, RETIREMENT_DEFAULTS.RETIREMENT_AGE),
 	)
 	let retirementLength = $state(
-		existingData?.calculationInput.retirementLength ?? RETIREMENT_DEFAULTS.RETIREMENT_LENGTH,
+		initialData?.calculationInput.retirementLength ?? RETIREMENT_DEFAULTS.RETIREMENT_LENGTH,
 	)
-	let currency = $state(existingData?.currency ?? RETIREMENT_DEFAULTS.CURRENCY)
-	let inflation = $state(existingData?.calculationInput.inflation ?? RETIREMENT_DEFAULTS.INFLATION)
+	let currency = $state(initialData?.currency ?? portfolio.currency)
+	let inflation = $state(initialData?.calculationInput.inflation ?? RETIREMENT_DEFAULTS.INFLATION)
 	let desiredBudget = $state<number>(
-		existingData?.calculationInput.desiredBudget ?? RETIREMENT_DEFAULTS.DESIRED_BUDGET,
+		initialData?.calculationInput.desiredBudget ?? RETIREMENT_DEFAULTS.DESIRED_BUDGET,
 	)
 	let budgetPeriod = $state(
-		existingData?.calculationInput.budgetPeriod ?? RETIREMENT_DEFAULTS.BUDGET_PERIOD,
+		initialData?.calculationInput.budgetPeriod ?? RETIREMENT_DEFAULTS.BUDGET_PERIOD,
 	)
 	let currentSavings = $state<number>(
-		existingData?.calculationInput.currentSavings ?? RETIREMENT_DEFAULTS.CURRENT_SAVINGS,
+		initialData?.calculationInput.currentSavings ?? RETIREMENT_DEFAULTS.CURRENT_SAVINGS,
 	)
-	let apy = $state(existingData?.calculationInput.apy ?? RETIREMENT_DEFAULTS.APY)
+	let apy = $state(initialData?.calculationInput.apy ?? RETIREMENT_DEFAULTS.APY)
 	let depositPeriod = $state(
-		existingData?.calculationInput.depositPeriod ?? RETIREMENT_DEFAULTS.DEPOSIT_PERIOD,
+		initialData?.calculationInput.depositPeriod ?? RETIREMENT_DEFAULTS.DEPOSIT_PERIOD,
 	)
-	let depositStart = $state(existingData?.calculationInput.depositStart ?? today)
+	let depositStart = $state(initialData?.calculationInput.depositStart ?? today)
 
 	function cancel(event: Event) {
 		event.preventDefault()
@@ -65,53 +77,20 @@
 	}
 
 	function calculateDeposit() {
-		try {
-			const input: RetirementCalculationInput = {
-				retirementStart,
-				retirementLength,
-				desiredBudget,
-				budgetPeriod: budgetPeriod as 'month' | 'year',
-				currentSavings,
-				apy,
-				inflation,
-				depositStart,
-				depositPeriod: depositPeriod as 'month' | 'year',
-			}
-
-			// Save calculation data to store
-			const goal: RetirementGoal = {
-				type: 'retirement',
-				calculationInput: input,
-				currency,
-				linkedInvestments: demoStore.goals[0]?.linkedInvestments ?? [],
-			}
-			demoStore.goals[0] = goal
-
-			// Navigate to preview page
-			goto(routes.RETIREMENT_PREVIEW())
-		} catch (error) {
-			console.error('Calculation error:', error)
-			// Navigate anyway on error
-			goto(routes.RETIREMENT_PREVIEW())
+		const input: RetirementCalculationInput = {
+			retirementStart,
+			retirementLength,
+			desiredBudget,
+			budgetPeriod: budgetPeriod as 'month' | 'year',
+			currentSavings,
+			apy,
+			inflation,
+			depositStart,
+			depositPeriod: depositPeriod as 'month' | 'year',
 		}
+
+		onCalculate(input, currency)
 	}
-
-	// DEMO: Keyboard listener to prefill form values for demonstration
-	$effect(() => {
-		function handleKeydown(event: KeyboardEvent) {
-			if (event.key === 'ArrowRight') {
-				// DEMO PREFILL VALUES
-				desiredBudget = 8750
-				currentSavings = 281450
-			}
-		}
-
-		window.addEventListener('keydown', handleKeydown)
-
-		return () => {
-			window.removeEventListener('keydown', handleKeydown)
-		}
-	})
 </script>
 
 <Vertical class="max-width-560">
@@ -261,8 +240,8 @@
 	</Horizontal>
 
 	<ResponsiveLayout --responsive-justify-content="stretch">
-		<Button variant="strong" dimension="compact" onclick={calculateDeposit}
-			>{$_('page.retirement.calculateDepositAmount')}</Button
+		<LoaderButton variant="strong" dimension="compact" onclick={calculateDeposit}
+			>{$_('page.retirement.calculateDepositAmount')}</LoaderButton
 		>
 		<Button variant="ghost" dimension="compact" onclick={cancel}>{$_('common.cancel')}</Button>
 	</ResponsiveLayout>

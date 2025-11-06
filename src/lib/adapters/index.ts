@@ -52,6 +52,10 @@ export interface Adapter {
 	getInvestments: (portfolioId: number) => Promise<Investment[]>
 	getInvestment: (investmentId: number) => Promise<Investment | undefined>
 
+	// Goal methods (goals are investments with goal_data)
+	addGoal: (goal: Omit<Investment, MetaFields>) => Promise<number>
+	updateGoal: (goal: Partial<Investment> & Pick<Investment, 'id'>) => Promise<void>
+
 	addTransaction: (transaction: Omit<Transaction, MetaFields>) => Promise<number>
 	updateTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
 	deleteTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>

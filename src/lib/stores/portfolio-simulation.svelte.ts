@@ -151,13 +151,6 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
 			investments: Investment[],
 			transactions: Transaction[],
 		) {
-			// Set calculating flag immediately
-			simulationData = {
-				...simulationData,
-				isCalculating: true,
-				progress: 0,
-			}
-
 			// Reset state for new calculation
 			calculationQueue = undefined
 
@@ -177,6 +170,14 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
 			// Calculate overall date range from all investments
 			const { startDate, endDate } = calculateDateRange(baseData, portfolio)
 
+			// Create empty placeholder data for all investments
+			const { period, count } = getSamplingPeriodCount(startDate, endDate)
+			const graphLabels = generateGraphDateLabels(startDate, endDate, period, count)
+
+			const emptyGraphData: GraphData[] = investments.map((inv) =>
+				createEmptyGraphData(inv.name, graphLabels),
+			)
+
 			calculationQueue = {
 				portfolio,
 				investments,
@@ -188,14 +189,8 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
 				endDate,
 			}
 
-			// Create empty placeholder data for all investments
-			const { period, count } = getSamplingPeriodCount(startDate, endDate)
-			const graphLabels = generateGraphDateLabels(startDate, endDate, period, count)
-
-			const emptyGraphData: GraphData[] = investments.map((inv) =>
-				createEmptyGraphData(inv.name, graphLabels),
-			)
-
+			// Set calculating state and empty data in a single update
+			// This ensures the loading overlay appears at the same time as the data changes
 			simulationData = {
 				data: emptyGraphData,
 				total: createEmptyGraphData('Total', graphLabels),
@@ -203,7 +198,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
 				progress: 0,
 			}
 
-			// Start processing on next tick to allow UI to update with initial state
+			// Start processing immediately to minimize the time showing empty data
 			setTimeout(processNextInvestment, 0)
 		},
 	}

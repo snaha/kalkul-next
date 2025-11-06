@@ -10,19 +10,11 @@
 	let { visible }: Props = $props()
 	let show = $state(false)
 	let shouldAnimate = $state(false)
-	let hasShownOnce = $state(false)
 
 	$effect(() => {
 		if (visible) {
 			show = true
-			if (hasShownOnce) {
-				requestAnimationFrame(() => {
-					shouldAnimate = true
-				})
-			} else {
-				shouldAnimate = true
-				hasShownOnce = true
-			}
+			shouldAnimate = true
 		} else if (show) {
 			shouldAnimate = false
 			setTimeout(() => {
@@ -53,12 +45,12 @@
 		justify-content: center;
 		gap: var(--half-padding);
 		border-radius: var(--border-radius);
-		opacity: 0;
-		transition: opacity 0.3s ease-out;
+		opacity: 1;
 		pointer-events: none;
 	}
 
-	.loading-overlay.visible {
-		opacity: 1;
+	.loading-overlay:not(.visible) {
+		opacity: 0;
+		transition: opacity 0.3s ease-out;
 	}
 </style>

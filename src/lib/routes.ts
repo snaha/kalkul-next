@@ -31,6 +31,11 @@ export default {
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/new-investment`,
 	EDIT_INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/edit-investment/${investmentId}`,
+	// Goal routes
+	RETIREMENT_GOAL_CALCULATOR: (clientId: number, portfolioId: number) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/retirement/calculator`,
+	RETIREMENT_GOAL_PREVIEW: (clientId: number, portfolioId: number) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/retirement/preview`,
 	SHARE: (portfolioId: number) => `${routePrefix}/share/${portfolioId}`,
 	PDF_EXPORT_PARAMS: (clientId: number, portfolioId: number) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/pdf-export-params`,

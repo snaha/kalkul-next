@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import {
-	calculateWhatYouNeed,
+	calculateRequiredDeposit,
 	calculateWhatYouHave,
 	generateYears,
 	type RetirementCalculationInput,
-} from './retirement-calc'
+} from './retirement'
 
 describe('generateYears', () => {
 	it('should generate correct year range', () => {
@@ -20,33 +20,41 @@ describe('generateYears', () => {
 	})
 })
 
-describe('calculateWhatYouNeed', () => {
+describe('calculateRequiredDeposit', () => {
 	const baseInput: RetirementCalculationInput = {
 		retirementStart: new Date('2060-01-01'),
 		retirementLength: 20,
 		desiredBudget: 2000,
-		budgetFrequency: 'month',
+		budgetPeriod: 'month',
 		currentSavings: 0,
 		apy: 4.5,
 		inflation: 2.5,
 		depositStart: new Date('2025-01-01'),
-		depositFrequency: 'month',
+		depositPeriod: 'month',
 	}
 
-	it('should start with small positive value', () => {
-		const result = calculateWhatYouNeed(baseInput)
+	it('should calculate a positive deposit amount', () => {
+		const deposit = calculateRequiredDeposit(baseInput)
+		expect(deposit).toBeGreaterThan(0)
+	})
+
+	it('should produce trajectory that starts with small positive value', () => {
+		const deposit = calculateRequiredDeposit(baseInput)
+		const result = calculateWhatYouHave(baseInput, deposit)
 		// Year-end of first year should have some value
 		expect(result[0]).toBeGreaterThan(0)
 		expect(result[0]).toBeLessThan(50000) // Reasonable for first year
 	})
 
-	it('should end at 0 after retirement', () => {
-		const result = calculateWhatYouNeed(baseInput)
+	it('should produce trajectory that ends at 0 after retirement', () => {
+		const deposit = calculateRequiredDeposit(baseInput)
+		const result = calculateWhatYouHave(baseInput, deposit)
 		expect(result[result.length - 1]).toBe(0)
 	})
 
-	it('should have peak value near retirement start', () => {
-		const result = calculateWhatYouNeed(baseInput)
+	it('should produce trajectory with peak value near retirement start', () => {
+		const deposit = calculateRequiredDeposit(baseInput)
+		const result = calculateWhatYouHave(baseInput, deposit)
 		const retirementStartIndex = 2060 - 2025 // 35 years from start
 		const peak = Math.max(...result)
 
@@ -56,8 +64,9 @@ describe('calculateWhatYouNeed', () => {
 		expect(percentDiff).toBeLessThan(0.02) // Within 2%
 	})
 
-	it('should grow exponentially during accumulation', () => {
-		const result = calculateWhatYouNeed(baseInput)
+	it('should produce trajectory that grows exponentially during accumulation', () => {
+		const deposit = calculateRequiredDeposit(baseInput)
+		const result = calculateWhatYouHave(baseInput, deposit)
 
 		// Check that growth accelerates (exponential pattern)
 		const midpoint1 = 10
@@ -73,8 +82,9 @@ describe('calculateWhatYouNeed', () => {
 		expect(growth3).toBeGreaterThan(growth2)
 	})
 
-	it('should decline during retirement', () => {
-		const result = calculateWhatYouNeed(baseInput)
+	it('should produce trajectory that declines during retirement', () => {
+		const deposit = calculateRequiredDeposit(baseInput)
+		const result = calculateWhatYouHave(baseInput, deposit)
 		const retirementStartIndex = 2060 - 2025
 
 		// Values should decline after retirement starts
@@ -87,8 +97,11 @@ describe('calculateWhatYouNeed', () => {
 		const input1 = { ...baseInput, desiredBudget: 1000 }
 		const input2 = { ...baseInput, desiredBudget: 2000 }
 
-		const result1 = calculateWhatYouNeed(input1)
-		const result2 = calculateWhatYouNeed(input2)
+		const deposit1 = calculateRequiredDeposit(input1)
+		const deposit2 = calculateRequiredDeposit(input2)
+
+		const result1 = calculateWhatYouHave(input1, deposit1)
+		const result2 = calculateWhatYouHave(input2, deposit2)
 
 		// Peak value should be roughly 2x
 		const peak1 = Math.max(...result1)
@@ -98,11 +111,14 @@ describe('calculateWhatYouNeed', () => {
 	})
 
 	it('should handle perYear budget frequency', () => {
-		const monthlyInput = { ...baseInput, desiredBudget: 2000, budgetFrequency: 'month' as const }
-		const yearlyInput = { ...baseInput, desiredBudget: 24000, budgetFrequency: 'year' as const }
+		const monthlyInput = { ...baseInput, desiredBudget: 2000, budgetPeriod: 'month' as const }
+		const yearlyInput = { ...baseInput, desiredBudget: 24000, budgetPeriod: 'year' as const }
 
-		const result1 = calculateWhatYouNeed(monthlyInput)
-		const result2 = calculateWhatYouNeed(yearlyInput)
+		const deposit1 = calculateRequiredDeposit(monthlyInput)
+		const deposit2 = calculateRequiredDeposit(yearlyInput)
+
+		const result1 = calculateWhatYouHave(monthlyInput, deposit1)
+		const result2 = calculateWhatYouHave(yearlyInput, deposit2)
 
 		// Should produce similar results (2000 * 12 = 24000)
 		const peak1 = Math.max(...result1)
@@ -117,12 +133,12 @@ describe('calculateWhatYouHave', () => {
 		retirementStart: new Date('2060-01-01'),
 		retirementLength: 20,
 		desiredBudget: 2000,
-		budgetFrequency: 'month',
+		budgetPeriod: 'month',
 		currentSavings: 10000,
 		apy: 4.5,
 		inflation: 2.5,
 		depositStart: new Date('2025-01-01'),
-		depositFrequency: 'month',
+		depositPeriod: 'month',
 	}
 
 	it('should have year-end value greater than current savings', () => {
@@ -168,7 +184,7 @@ describe('calculateWhatYouHave', () => {
 	})
 
 	it('should handle monthly deposit frequency', () => {
-		const monthlyInput = { ...baseInput, depositFrequency: 'month' as const }
+		const monthlyInput = { ...baseInput, depositPeriod: 'month' as const }
 		const result = calculateWhatYouHave(monthlyInput, 100)
 
 		// With 100/month for ~35 years at 5.5% APY, should accumulate significant amount
@@ -177,11 +193,11 @@ describe('calculateWhatYouHave', () => {
 	})
 
 	it('should handle yearly deposit frequency', () => {
-		const yearlyInput = { ...baseInput, depositFrequency: 'year' as const }
+		const yearlyInput = { ...baseInput, depositPeriod: 'year' as const }
 		const result = calculateWhatYouHave(yearlyInput, 1200)
 
 		// 1200/year should be same as 100/month
-		const monthlyInput = { ...baseInput, depositFrequency: 'month' as const }
+		const monthlyInput = { ...baseInput, depositPeriod: 'month' as const }
 		const monthlyResult = calculateWhatYouHave(monthlyInput, 100)
 
 		const retirementStartIndex = 2060 - 2025
@@ -202,19 +218,18 @@ describe('calculateWhatYouHave', () => {
 		expect(result2[retirementStartIndex]).toBeGreaterThan(result1[retirementStartIndex])
 	})
 
-	it('should match "what you need" when deposit is optimal', () => {
-		const whatYouNeed = calculateWhatYouNeed(baseInput)
+	it('should reach target balance at retirement when using required deposit', () => {
+		const requiredDeposit = calculateRequiredDeposit(baseInput)
 		const retirementStartIndex = 2060 - 2025
-		const targetAtRetirement = whatYouNeed[retirementStartIndex]
 
-		// Try different deposit amounts to find one that gets close
-		// This is more of a sanity check that the calculations are consistent
-		const result = calculateWhatYouHave(baseInput, 500)
+		// Calculate trajectory with required deposit
+		const result = calculateWhatYouHave(baseInput, requiredDeposit)
 		const actualBalance = result[retirementStartIndex]
 
-		// Just verify it produces reasonable values
+		// Should end at approximately 0
+		expect(result[result.length - 1]).toBeCloseTo(0, -2)
+		// Balance at retirement should be reasonable
 		expect(actualBalance).toBeGreaterThan(0)
-		expect(actualBalance).toBeLessThan(targetAtRetirement * 10)
 	})
 })
 
@@ -224,16 +239,17 @@ describe('integration tests', () => {
 			retirementStart: new Date('2060-01-01'),
 			retirementLength: 20,
 			desiredBudget: 2000,
-			budgetFrequency: 'month',
+			budgetPeriod: 'month',
 			currentSavings: 0,
 			apy: 4.5,
 			inflation: 2.5,
 			depositStart: new Date('2025-01-01'),
-			depositFrequency: 'month',
+			depositPeriod: 'month',
 		}
 
 		const years = generateYears(input.depositStart, input.retirementStart, input.retirementLength)
-		const whatYouNeed = calculateWhatYouNeed(input)
+		const requiredDeposit = calculateRequiredDeposit(input)
+		const whatYouNeed = calculateWhatYouHave(input, requiredDeposit)
 		const whatYouHave = calculateWhatYouHave(input, 200)
 
 		// All arrays should have same length
@@ -250,12 +266,12 @@ describe('integration tests', () => {
 			retirementStart: new Date('2030-01-01'),
 			retirementLength: 25,
 			desiredBudget: 3000,
-			budgetFrequency: 'month',
+			budgetPeriod: 'month',
 			currentSavings: 50000,
 			apy: 6.0,
 			inflation: 2.5,
 			depositStart: new Date('2025-01-01'),
-			depositFrequency: 'month',
+			depositPeriod: 'month',
 		}
 
 		const years = generateYears(input.depositStart, input.retirementStart, input.retirementLength)
@@ -299,12 +315,12 @@ describe('integration tests', () => {
 			retirementStart: new Date(`${retirementYear}-01-01`), // Retire at age 50 in 2030
 			retirementLength: 25,
 			desiredBudget: 3000,
-			budgetFrequency: 'month',
+			budgetPeriod: 'month',
 			currentSavings: 50000,
 			apy: 6.0,
 			inflation: 2.5,
 			depositStart: new Date('2025-01-01'), // Start deposits now (age 45)
-			depositFrequency: 'month',
+			depositPeriod: 'month',
 		}
 
 		const whatYouHave = calculateWhatYouHave(input, 1000)

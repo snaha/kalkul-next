@@ -317,7 +317,7 @@
 			"inTodaysMoney": "In today's money",
 			"currentSavings": "Current savings",
 			"earmarkedForRetirement": "Earmarked for retirement",
-			"depositFrequency": "Deposit frequency",
+			"depositPeriod": "Deposit frequency",
 			"depositStart": "Deposit start",
 			"calculateDepositAmount": "Calculate deposit amount",
 			"yearsOld": "Years old",
@@ -378,6 +378,10 @@
 			"duplicatePortfolio": "Duplicate portfolio",
 			"deletePortfolio": "Delete portfolio",
 			"editClient": "Edit client details"
+		},
+		"goals": {
+			"title": "Goals",
+			"linkedInvestments": "Linked Investments"
 		},
 		"share": {
 			"linkSharingToggle": "Share portfolio with a link (view-only)",
@@ -505,7 +509,9 @@
 			"hideInChart": "Hide in chart",
 			"editGoalDetails": "Edit goal details",
 			"duplicateGoal": "Duplicate goal",
-			"deleteGoal": "Delete goal"
+			"deleteGoal": "Delete goal",
+			"deleteGoalWarning": "This goal will be deleted permanently. There's no undo.",
+			"deleteGoalWarningTitle": "Delete goal?"
 		},
 		"login": {
 			"forgotPassword": "Forgot password?",
@@ -804,6 +810,7 @@
 		},
 		"portfolio": {
 			"demoPortfolio": "Demo Portfolio"
-		}
+		},
+		"notImplemented": "This feature is not yet implemented"
 	}
 }

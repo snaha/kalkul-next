@@ -1,5 +1,5 @@
 import type { Period, TransactionType } from './@snaha/kalkul-maths'
-import type { Tables } from './typesdb'
+import type { Tables, Json } from './typesdb'
 import type { ChartDataset, ChartTypeRegistry } from 'chart.js'
 
 export interface Store<T> {
@@ -13,7 +13,8 @@ export type ClientNoId = Omit<Client, 'id' | 'created_at' | 'advisor'>
 
 export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
 export type Portfolio = Tables<'portfolio'>
-export type Investment = Tables<'investment'>
+// Make goal_data optional for backward compatibility with existing code
+export type Investment = Omit<Tables<'investment'>, 'goal_data'> & { goal_data?: Json }
 export type Transaction = Tables<'transaction'> & {
 	repeat_unit: Period | null
 	type: TransactionType
@@ -65,4 +66,42 @@ export interface ApiToken {
 	is_active: boolean
 	user_id: string
 	token_hash: string // New field
+}
+
+// Goal types
+export type RetirementGoalData = {
+	type: 'retirement'
+	depositStart: string // ISO date
+	depositPeriod: 'month' | 'year'
+	currentSavings: number
+	customDepositAmount?: number
+	retirementStart: string // ISO date
+	retirementLength: number // years
+	desiredBudget: number
+	budgetPeriod: 'month' | 'year'
+	apy: number // percentage
+	inflation: number // percentage
+}
+
+export type EducationGoalData = {
+	type: 'education'
+	childName?: string
+	childBirthDate?: string // ISO date
+	depositStart: string // ISO date
+	depositPeriod: 'month' | 'year'
+	currentSavings: number
+	customDepositAmount?: number
+	educationStart: string // ISO date
+	educationDuration: number // years
+	desiredBudget: number
+	budgetPeriod: 'month' | 'year'
+	apy: number // percentage
+	inflation: number // percentage
+}
+
+export type GoalData = RetirementGoalData | EducationGoalData
+
+// Investment with goal data
+export type Goal = Investment & {
+	goal_data: GoalData
 }

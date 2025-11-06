@@ -317,7 +317,7 @@
 			"inTodaysMoney": "V dnešních penězích",
 			"currentSavings": "Aktuální úspory",
 			"earmarkedForRetirement": "Určeno pro důchod",
-			"depositFrequency": "Frekvence vkladů",
+			"depositPeriod": "Frekvence vkladů",
 			"depositStart": "Začátek vkladů",
 			"calculateDepositAmount": "Vypočítat částku vkladu",
 			"yearsOld": "Let",
@@ -378,6 +378,10 @@
 			"duplicatePortfolio": "Duplikovat portfolio",
 			"deletePortfolio": "Smazat portfolio",
 			"editClient": "Upravit údaje klienta"
+		},
+		"goals": {
+			"title": "Cíle",
+			"linkedInvestments": "Propojené investice"
 		},
 		"share": {
 			"linkSharingToggle": "Sdílet portfolio pomocí odkazu (pouze pro čtení)",
@@ -505,7 +509,9 @@
 			"hideInChart": "Skrýt v grafu",
 			"editGoalDetails": "Upravit detaily cíle",
 			"duplicateGoal": "Duplikovat cíl",
-			"deleteGoal": "Smazat cíl"
+			"deleteGoal": "Smazat cíl",
+			"deleteGoalWarning": "Tento cíl bude trvale smazán. Nelze vrátit zpět.",
+			"deleteGoalWarningTitle": "Smazat cíl?"
 		},
 		"login": {
 			"forgotPassword": "Zapomněli jste heslo?",
@@ -804,6 +810,7 @@
 		},
 		"portfolio": {
 			"demoPortfolio": "Demo portfolio"
-		}
+		},
+		"notImplemented": "Tato funkce ještě není implementována"
 	}
 }

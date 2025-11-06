@@ -6,11 +6,10 @@
 	import Typography from '$lib/components/ui/typography.svelte'
 	import { demoStore, type RetirementGoal } from '$lib/demo/stores/demo.svelte'
 	import {
-		calculateWhatYouNeed,
 		calculateRequiredDeposit,
 		calculateWhatYouHave,
 		generateYears,
-	} from '$lib/demo/maths/retirement-calc'
+	} from '$lib/@snaha/kalkul-calculators/retirement/retirement'
 	import routes from '$lib/routes'
 	import { DEMO_CLIENT_NAME, DEMO_CLIENT_BIRTH_DATE, DEMO_CLIENT_EMAIL } from '$lib/demo/utils'
 
@@ -51,7 +50,9 @@
 	})
 
 	// Calculate data for charts
-	const whatYouNeed = $derived(goal ? calculateWhatYouNeed(goal.calculationInput) : [])
+	const whatYouNeed = $derived(
+		goal ? calculateWhatYouHave(goal.calculationInput, requiredDeposit) : [],
+	)
 	const whatYouHave = $derived(
 		goal ? calculateWhatYouHave(goal.calculationInput, depositAmount) : [],
 	)
@@ -100,7 +101,7 @@
 		<RetirementPreview
 			calculatedDeposit={requiredDeposit}
 			currency={goal.currency}
-			frequency={goal.calculationInput.budgetFrequency}
+			frequency={goal.calculationInput.budgetPeriod}
 			bind:depositAmount
 			chartLabels={chartLabels()}
 			whatYouNeedData={whatYouNeed}

@@ -34,6 +34,23 @@ VALUES
     '',
     '',
     ''
+  ),
+  (
+    '4d7b59fb-99fb-5de0-ce5f-cf5f5bd4b350',
+    '00000000-0000-0000-0000-000000000000',
+    'service_role',
+    'authenticated',
+    'goals@kalkul.app',
+    crypt('demo123', gen_salt('bf')),
+    NOW(),
+    NOW(),
+    NOW(),
+    NOW(),
+    NOW(),
+    '',
+    '',
+    '',
+    ''
   );
 
 INSERT INTO
@@ -54,6 +71,16 @@ VALUES
     'email',
     (SELECT id FROM auth.users WHERE email = 'demo@kalkul.app'),
     json_build_object('sub', (SELECT id FROM auth.users WHERE email = 'demo@kalkul.app')),
+    NOW(),
+    NOW(),
+    NOW()
+  ),
+  (
+    (SELECT id FROM auth.users WHERE email = 'goals@kalkul.app'),
+    (SELECT id FROM auth.users WHERE email = 'goals@kalkul.app'),
+    'email',
+    (SELECT id FROM auth.users WHERE email = 'goals@kalkul.app'),
+    json_build_object('sub', (SELECT id FROM auth.users WHERE email = 'goals@kalkul.app')),
     NOW(),
     NOW(),
     NOW()
@@ -116,6 +143,14 @@ VALUES
     'Inflation Demo Client',
     '1990-01-01',
     '3c6a48fa-88fa-4cd9-bd0c-be4f4ac3a249'
+  ),
+  (
+    '100',
+    'goals.client@kalkul.app',
+    '2025-10-30 10:00:00.000000+00',
+    'Goals Client',
+    '1985-03-15',
+    '4d7b59fb-99fb-5de0-ce5f-cf5f5bd4b350'
   );
 
 INSERT INTO
@@ -179,6 +214,30 @@ VALUES
     '4',
     'USD',
     'inflation-demo-portfolio-2025'
+  ),
+  (
+    '102',
+    '2025-10-30 11:00:00.000000+00',
+    'Single goal portfolio',
+    '2025-10-30 11:00:00.000000+00',
+    '2025-01-01',
+    '2070-03-15',
+    '0.025',
+    '100',
+    'CZK',
+    'goals-retirement-plan-2025'
+  ),
+  (
+    '101',
+    '2025-10-30 10:00:00.000000+00',
+    'Investment only portfolio',
+    '2025-10-30 10:00:00.000000+00',
+    '2025-10-30',
+    '2070-03-15',
+    '0.025',
+    '100',
+    'USD',
+    'goals-portfolio-2025'
   );
 
 INSERT INTO
@@ -1556,6 +1615,54 @@ VALUES
     'Evropské akcie'
   );
 
+-- Goals Portfolio Investment
+INSERT INTO "public"."investment" (
+  "id",
+  "created_at",
+  "last_edited_at",
+  "portfolio_id",
+  "apy",
+  "entry_fee",
+  "exit_fee",
+  "success_fee",
+  "management_fee",
+  "exit_fee_type",
+  "management_fee_type",
+  "entry_fee_type",
+  "name"
+)
+VALUES
+  (
+    '1001',
+    '2025-10-30 10:00:00.000000+00',
+    '2025-10-30 10:00:00.000000+00',
+    '101',
+    '7.5',
+    '0',
+    '0',
+    '0',
+    '0',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Global ETF Portfolio'
+  ),
+  (
+    '1002',
+    '2025-10-30 11:00:00.000000+00',
+    '2025-10-30 11:00:00.000000+00',
+    '102',
+    '5.5',
+    '0',
+    '0',
+    '0',
+    '0',
+    'percentage',
+    'percentage',
+    'ongoing',
+    'Retirement Goal'
+  );
+
 -- Transactions for extended portfolio
 INSERT INTO "public"."transaction" (
   "id",
@@ -2886,7 +2993,94 @@ VALUES
     'deposit',
     '2025-10-15 11:05:22.602429+00',
     false
+  ),
+  (
+    '20001',
+    '2025-10-30 10:00:00.000000+00',
+    '10000',
+    '2025-10-30 00:00:00+00',
+    null,
+    '1001',
+    'Initial Investment',
+    null,
+    null,
+    'deposit',
+    '2025-10-30 10:00:00.000000+00',
+    false
+  ),
+  (
+    '20002',
+    '2025-10-30 10:00:00.000000+00',
+    '500',
+    '2025-11-01 00:00:00+00',
+    '2070-03-15 00:00:00+00',
+    '1001',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-30 10:00:00.000000+00',
+    false
+  ),
+  -- Demo retirement goal transactions
+  (
+    '30001',
+    '2025-10-30 11:00:00.000000+00',
+    '350000',
+    '2025-01-01 00:00:00+00',
+    null,
+    '1002',
+    'Initial Savings',
+    null,
+    null,
+    'deposit',
+    '2025-10-30 11:00:00.000000+00',
+    true
+  ),
+  (
+    '30002',
+    '2025-10-30 11:00:00.000000+00',
+    '7090',
+    '2025-02-01 00:00:00+00',
+    '2050-03-15 00:00:00+00',
+    '1002',
+    'Monthly Contribution',
+    '1',
+    'month',
+    'deposit',
+    '2025-10-30 11:00:00.000000+00',
+    true
+  ),
+  (
+    '30003',
+    '2025-10-30 11:00:00.000000+00',
+    '20000',
+    '2050-03-15 00:00:00+00',
+    '2070-03-15 00:00:00+00',
+    '1002',
+    'Retirement Withdrawal',
+    '1',
+    'month',
+    'withdrawal',
+    '2025-10-30 11:00:00.000000+00',
+    true
   );
+
+-- Update goal investment with goal_data
+UPDATE "public"."investment"
+SET "goal_data" = jsonb_build_object(
+  'type', 'retirement',
+  'depositStart', '2025-01-01',
+  'depositPeriod', 'month',
+  'currentSavings', 350000,
+  'retirementStart', '2050-03-15',
+  'retirementLength', 20,
+  'desiredBudget', 20000,
+  'budgetPeriod', 'month',
+  'apy', 5.5,
+  'inflation', 2.5
+)
+WHERE "id" = 1002;
 
 -- Reset sequences to ensure proper ID generation
 DO $$
