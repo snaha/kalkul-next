@@ -53,6 +53,7 @@ export type TypedUserMetadata = {
 	newsletter_consent: boolean
 	first_visit: boolean
 	promotion_code?: string
+	goals_enabled?: boolean
 }
 
 export type StripeSubscription = Tables<'stripe_subscription'>

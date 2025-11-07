@@ -15,7 +15,8 @@ INSERT INTO
     confirmation_token,
     recovery_token,
     email_change_token_new,
-    email_change
+    email_change,
+    raw_user_meta_data
   )
 VALUES
   (
@@ -33,7 +34,8 @@ VALUES
     '',
     '',
     '',
-    ''
+    '',
+    '{}'::jsonb
   ),
   (
     '4d7b59fb-99fb-5de0-ce5f-cf5f5bd4b350',
@@ -50,7 +52,8 @@ VALUES
     '',
     '',
     '',
-    ''
+    '',
+    '{"goals_enabled": true}'::jsonb
   );
 
 INSERT INTO

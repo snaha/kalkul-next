@@ -28,7 +28,7 @@
 	import TabBar from '$lib/components/ui/tab-bar/tab-bar.svelte'
 	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
 	import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
-	import { isGoalsEnabledForEmail } from '$lib/feature-flags'
+	import { isGoalsEnabledForUser } from '$lib/feature-flags'
 	import { authStore } from '$lib/stores/auth.svelte'
 
 	const clientId = $derived(parseInt(page.params.id, 10))
@@ -37,11 +37,11 @@
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
 	// Check if goals feature is enabled for the logged-in user (advisor)
-	const goalsFeatureEnabled = $derived(isGoalsEnabledForEmail(authStore.user?.email))
+	const goalsFeatureEnabled = $derived(isGoalsEnabledForUser(authStore.user))
 
 	// Tab selection state - defaults based on feature flag, but can be changed by user
 	let selectedTab = $state<'goals' | 'investments'>(
-		isGoalsEnabledForEmail(authStore.user?.email) ? 'goals' : 'investments',
+		isGoalsEnabledForUser(authStore.user) ? 'goals' : 'investments',
 	)
 
 	// Filter goals and regular investments using store methods
