@@ -363,7 +363,13 @@
 			"terms": "Terms of service",
 			"privacy": "Privacy policy",
 			"betaAccessDescription": "Get free early access, shape the product with your feedback, and lock in exclusive launch pricing—expected public release: early 2026.",
-			"betaDisclaimer": "We're actively developing Kalkul with advisor input. Some features highlighted on our website are still in development and will roll out progressively as they're perfected."
+			"betaDisclaimer": "We're actively developing Kalkul with advisor input. Some features highlighted on our website are still in development and will roll out progressively as they're perfected.",
+			"newsletterModal": {
+				"title": "Newsletter subscription",
+				"description": "We recommend subscribing to our newsletter so you don't miss important product updates and feature releases as we roll them out during the free beta. We won't spam you—expect about 1 email per month.",
+				"subscribe": "Subscribe and proceed",
+				"dontSubscribe": "Don't subscribe"
+			}
 		},
 		"portfolio": {
 			"noInvestmentYet": "No investment yet",

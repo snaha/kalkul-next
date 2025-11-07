@@ -24,6 +24,7 @@
 	import BetaBadge from '$lib/components/beta-badge.svelte'
 	import { PROMOTION_STORAGE_KEY } from '$lib/payments'
 	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
+	import NewsletterSubscriptionModal from '$lib/components/newsletter-subscription-modal.svelte'
 
 	$effect(() => {
 		if (authStore.isLoggedIn) {
@@ -38,6 +39,7 @@
 	let error = $state('')
 	let success = $state(false)
 	let newsletterConsent = $state(false)
+	let showNewsletterModal = $state(false)
 	const mailpitUrl = `${page.url.protocol}//${page.url.hostname}:64324`
 
 	function isEmailValid() {
@@ -78,7 +80,22 @@
 		return emailError === undefined && passwordError === undefined
 	}
 
-	async function register() {
+	function handleSubmit() {
+		if (!validate()) {
+			return
+		}
+
+		// If newsletter checkbox is not checked, show modal first
+		if (!newsletterConsent) {
+			showNewsletterModal = true
+			return
+		}
+
+		// Otherwise proceed with signup
+		performSignup()
+	}
+
+	async function performSignup() {
 		if (!validate()) {
 			return
 		}
@@ -200,7 +217,7 @@
 						--responsive-gap="var(--padding)"
 						--responsive-justify-content="stretch"
 					>
-						<Button variant="strong" dimension="compact" type="submit" onclick={register}
+						<Button variant="strong" dimension="compact" type="submit" onclick={handleSubmit}
 							>{$_('page.signUp.createAccount')}</Button
 						>
 					</ResponsiveLayout>
@@ -260,6 +277,23 @@
 		</Vertical>
 	{/if}
 </Fullscreen>
+
+<NewsletterSubscriptionModal
+	bind:open={showNewsletterModal}
+	onsubscribe={() => {
+		newsletterConsent = true
+		showNewsletterModal = false
+		performSignup()
+	}}
+	onskip={() => {
+		newsletterConsent = false
+		showNewsletterModal = false
+		performSignup()
+	}}
+	oncancel={() => {
+		showNewsletterModal = false
+	}}
+/>
 
 <style>
 	:global(.registration) {

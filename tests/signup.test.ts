@@ -72,6 +72,9 @@ test.describe('User Registration', () => {
 		await page.locator('input').first().fill(testUser.email)
 		await page.locator('input[type="password"]').fill(testUser.password)
 
+		// Check newsletter checkbox to skip modal
+		await page.locator('input[type="checkbox"]').click()
+
 		// Mock the registration to succeed
 		await page.route('**/auth/v1/signup', async (route) => {
 			await route.fulfill({
@@ -115,6 +118,9 @@ test.describe('User Registration', () => {
 		await page.locator('input').first().fill(testUser.email)
 		await page.locator('input[type="password"]').fill(testUser.password)
 
+		// Check newsletter checkbox to skip modal
+		await page.locator('input[type="checkbox"]').click()
+
 		// Mock the registration to fail
 		await page.route('**/auth/v1/signup', async (route) => {
 			await route.fulfill({
@@ -128,5 +134,84 @@ test.describe('User Registration', () => {
 
 		// Should show error message
 		await expect(page.locator('.error')).toBeVisible()
+	})
+
+	test('should show newsletter modal when checkbox unchecked and handle "Don\'t subscribe"', async ({
+		page,
+	}) => {
+		await page.goto('/signup')
+
+		const testUser = generateTestUser()
+
+		await page.locator('input').first().fill(testUser.email)
+		await page.locator('input[type="password"]').fill(testUser.password)
+
+		// Do NOT check the newsletter checkbox - modal should appear
+		const newsletterCheckbox = page.locator('input[type="checkbox"]')
+		await expect(newsletterCheckbox).not.toBeChecked()
+
+		// Mock the registration to succeed
+		await page.route('**/auth/v1/signup', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ user: { email: testUser.email } }),
+			})
+		})
+
+		await page.getByRole('button', { name: 'Create account' }).click()
+
+		// Newsletter modal should appear
+		await expect(page.getByText('Newsletter subscription')).toBeVisible()
+		await expect(page.getByText('Subscribe and proceed')).toBeVisible()
+		await expect(page.getByText("Don't subscribe")).toBeVisible()
+
+		// Click "Don't subscribe" button
+		await page.getByRole('button', { name: "Don't subscribe" }).click()
+
+		// Should proceed to success page
+		await expect(page.getByText('Check your email')).toBeVisible()
+	})
+
+	test('should show newsletter modal and handle "Subscribe and proceed"', async ({ page }) => {
+		await page.goto('/signup')
+
+		const testUser = generateTestUser()
+
+		await page.locator('input').first().fill(testUser.email)
+		await page.locator('input[type="password"]').fill(testUser.password)
+
+		// Do NOT check the newsletter checkbox - modal should appear
+		const newsletterCheckbox = page.locator('input[type="checkbox"]')
+		await expect(newsletterCheckbox).not.toBeChecked()
+
+		// Mock the registration to succeed
+		await page.route('**/auth/v1/signup', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ user: { email: testUser.email } }),
+			})
+		})
+
+		// Mock newsletter subscription endpoint
+		await page.route('**/api/newsletter/subscribe', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ success: true }),
+			})
+		})
+
+		await page.getByRole('button', { name: 'Create account' }).click()
+
+		// Newsletter modal should appear
+		await expect(page.getByText('Newsletter subscription')).toBeVisible()
+
+		// Click "Subscribe and proceed" button
+		await page.getByRole('button', { name: 'Subscribe and proceed' }).click()
+
+		// Should proceed to success page
+		await expect(page.getByText('Check your email')).toBeVisible()
 	})
 })

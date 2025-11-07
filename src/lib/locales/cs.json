@@ -363,7 +363,13 @@
 			"terms": "Podmínkami služby",
 			"privacy": "Zásadami ochrany soukromí",
 			"betaAccessDescription": "Získejte bezplatný přístup, ovlivněte produkt svou zpětnou vazbou a zajistěte si exkluzivní cenu při veřejném spuštění—očekáváno na začátku roku 2026.",
-			"betaDisclaimer": "Aktivně vyvíjíme Kalkul se zpětnou vazbou poradců. Některé funkce zvýrazněné na našem webu jsou stále ve vývoji a budou postupně uvolňovány, jak budou zdokonalovány."
+			"betaDisclaimer": "Kalkul aktivně vyvíjíme ve spolupráci s poradci. Některé funkce uvedené na našem webu jsou zatím ve vývoji a budeme je postupně zpřístupňovat.",
+			"newsletterModal": {
+				"title": "Odběr novinek",
+				"description": "Doporučujeme přihlásit se k odběru novinek, abyste neunikly nové funkce, které budeme během bezplatné beta verze postupně přidávat. Nebudeme vás zahlcovat — počítejte zhruba s jedním e-mailem měsíčně.",
+				"subscribe": "Přihlásit se k odběru a pokračovat",
+				"dontSubscribe": "Nepřihlašovat se"
+			}
 		},
 		"portfolio": {
 			"noInvestmentYet": "Zatím žádné investice",
