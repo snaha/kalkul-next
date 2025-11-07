@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.16.0](https://github.com/snaha/kalkul/compare/v0.15.0...v0.16.0) (2025-11-07)
+
+
+### Features
+
+* create and delete retirement type goals ([#1072](https://github.com/snaha/kalkul/issues/1072)) ([0906de8](https://github.com/snaha/kalkul/commit/0906de8722f97a90dca34a8fe7caba4471beaad1))
+* mcp server  ([#1064](https://github.com/snaha/kalkul/issues/1064)) ([93877ea](https://github.com/snaha/kalkul/commit/93877eaf75105f7c9c2f02fba05f6e226dee2a3f))
+
+
+### Bug Fixes
+
+* beta badge ([#1063](https://github.com/snaha/kalkul/issues/1063)) ([91caba2](https://github.com/snaha/kalkul/commit/91caba25a5f1db5107a8bfdc0d4e6c16cb2db1f3))
+* chart hover during loading ([#1057](https://github.com/snaha/kalkul/issues/1057)) ([b0b9ec0](https://github.com/snaha/kalkul/commit/b0b9ec0be8a568f8700a931114557e125af186c4)), closes [#1002](https://github.com/snaha/kalkul/issues/1002)
+* Claude OAuth discovery ([#1074](https://github.com/snaha/kalkul/issues/1074)) ([e8f63ee](https://github.com/snaha/kalkul/commit/e8f63ee8fb939bc80da84ec0bcd228c75d20cdbc))
+* demo investment names to be non-specific ([#1036](https://github.com/snaha/kalkul/issues/1036)) ([a8ccb7e](https://github.com/snaha/kalkul/commit/a8ccb7e93fc8a2a669c300057776bf8608128673))
+* display withdrawals as negative ([#1060](https://github.com/snaha/kalkul/issues/1060)) ([a0df61e](https://github.com/snaha/kalkul/commit/a0df61e2812a7d3bd0ec2a4cb7184cc72e00ca1c)), closes [#972](https://github.com/snaha/kalkul/issues/972)
+* distorted hero image on safari ([#1068](https://github.com/snaha/kalkul/issues/1068)) ([7224414](https://github.com/snaha/kalkul/commit/7224414b83e3e221f6c34e0c6e0bd70d74d3a414))
+* end date before start date ([#1058](https://github.com/snaha/kalkul/issues/1058)) ([5eb79e0](https://github.com/snaha/kalkul/commit/5eb79e094a574ef9244447cf737f2ce48d24b8ac))
+* horizon error when setting age ([#1080](https://github.com/snaha/kalkul/issues/1080)) ([5af12d9](https://github.com/snaha/kalkul/commit/5af12d9ba773177fcd30606b9e29ef3c5a08d117))
+* icons ([#1061](https://github.com/snaha/kalkul/issues/1061)) ([6877101](https://github.com/snaha/kalkul/commit/6877101874381c76f950175695a5fb6c4445bac5)), closes [#607](https://github.com/snaha/kalkul/issues/607)
+* improve mcp description ([#1078](https://github.com/snaha/kalkul/issues/1078)) ([a49b4de](https://github.com/snaha/kalkul/commit/a49b4de48b837337a916a89b180625c742d7f70c))
+* improve mcp descriptions & search ([#1077](https://github.com/snaha/kalkul/issues/1077)) ([9acef3a](https://github.com/snaha/kalkul/commit/9acef3a346060abd09d1296cafbf3d44288891b6))
+* mcp 2.0 support with jsonrpc ([#1075](https://github.com/snaha/kalkul/issues/1075)) ([e1ea3b3](https://github.com/snaha/kalkul/commit/e1ea3b3f05b578e5b86442845bf9ef3e64d9c1c5))
+* token copy button ([#1076](https://github.com/snaha/kalkul/issues/1076)) ([bc4370b](https://github.com/snaha/kalkul/commit/bc4370b174c85941171ca569fefb9a1766d77308))
+* undo apy to decimal ([#1073](https://github.com/snaha/kalkul/issues/1073)) ([d59e7bd](https://github.com/snaha/kalkul/commit/d59e7bd93cd205226415220ee0fdceca5be65393))
+* withdrawals after zero value with inflation ([#1059](https://github.com/snaha/kalkul/issues/1059)) ([bfc9294](https://github.com/snaha/kalkul/commit/bfc929448b225d92e5312bf235fadd490d04d6d7)), closes [#920](https://github.com/snaha/kalkul/issues/920) [#1001](https://github.com/snaha/kalkul/issues/1001)
+
 ## [0.15.0](https://github.com/snaha/kalkul/compare/v0.14.0...v0.15.0) (2025-10-16)
 
 
