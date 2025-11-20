@@ -27,7 +27,10 @@ export interface GraphPortfolioValue {
 export function deriveGraphValueData(params: GraphPortfolioValueParams): GraphPortfolioValue {
 	const { investmentsViewStore, investments, portfolio, data, total, lowColor, baseColor } = params
 
-	const investmentGraphData = data.map((r, i) => ({
+	// Filter out orphaned graph data where the corresponding investment no longer exists
+	const validData = data.filter((_, i) => investments[i] !== undefined)
+
+	const investmentGraphData = validData.map((r, i) => ({
 		data: r.graphInvestmentValues,
 		label: r.label,
 		fill: 'origin',
@@ -37,7 +40,7 @@ export function deriveGraphValueData(params: GraphPortfolioValueParams): GraphPo
 	}))
 
 	const investmentGraphDataWithInflation = [
-		...data.map((r, i) => ({
+		...validData.map((r, i) => ({
 			data: r.graphInflationInvestmentValues,
 			label: r.label,
 			fill: 'origin',
@@ -56,7 +59,7 @@ export function deriveGraphValueData(params: GraphPortfolioValueParams): GraphPo
 		},
 	]
 
-	const filtered = data.filter((_, i) => !investmentsViewStore.isHidden(investments[i].id))
+	const filtered = validData.filter((_, i) => !investmentsViewStore.isHidden(investments[i].id))
 	const totalValue = total.graphLabels.map((_, i) =>
 		filtered.reduce((sum, f) => sum + f.graphInvestmentValues[i], 0),
 	)
@@ -69,7 +72,7 @@ export function deriveGraphValueData(params: GraphPortfolioValueParams): GraphPo
 		investmentGraphDataWithInflation,
 		totalValue,
 		totalWithInflation,
-		data,
+		data: validData,
 		total,
 		portfolio,
 		investmentsViewStore,
@@ -111,7 +114,10 @@ export function deriveGraphPortfolioTransactions({
 	lowColor,
 	baseColor,
 }: GraphPortfolioTransactionsParams): GraphPortfolioTransactions {
-	const deposits = data.map((r, i) => ({
+	// Filter out orphaned graph data where the corresponding investment no longer exists
+	const validData = data.filter((_, i) => investments[i] !== undefined)
+
+	const deposits = validData.map((r, i) => ({
 		data: r.graphDeposits,
 		label: r.label,
 		fill: 'origin',
@@ -119,7 +125,7 @@ export function deriveGraphPortfolioTransactions({
 		hidden: investmentsViewStore.isHidden(investments[i].id),
 	}))
 	const depositsWithInflation = [
-		...data.map((r, i) => ({
+		...validData.map((r, i) => ({
 			data: r.graphInflationDeposits,
 			label: r.label,
 			fill: 'origin',
@@ -135,7 +141,7 @@ export function deriveGraphPortfolioTransactions({
 		},
 	]
 
-	const withdrawals = data.map((r, i) => ({
+	const withdrawals = validData.map((r, i) => ({
 		data: r.graphWithdrawals,
 		label: r.label,
 		fill: 'origin',
@@ -144,7 +150,7 @@ export function deriveGraphPortfolioTransactions({
 	}))
 
 	const withdrawalsWithInflation = [
-		...data.map((r, i) => ({
+		...validData.map((r, i) => ({
 			data: r.graphInflationWithdrawals,
 			label: r.label,
 			fill: 'origin',
@@ -160,7 +166,7 @@ export function deriveGraphPortfolioTransactions({
 		},
 	]
 
-	const fees = data.map((r, i) => ({
+	const fees = validData.map((r, i) => ({
 		data: r.graphFeeValues,
 		label: r.label,
 		fill: 'origin',
@@ -168,7 +174,7 @@ export function deriveGraphPortfolioTransactions({
 		hidden: investmentsViewStore.isHidden(investments[i].id),
 	}))
 	const feesWithInflation = [
-		...data.map((r, i) => ({
+		...validData.map((r, i) => ({
 			data: r.graphInflationFeeValues,
 			label: r.label,
 			fill: 'origin',
@@ -185,7 +191,7 @@ export function deriveGraphPortfolioTransactions({
 	]
 
 	function sumSeries(getter: (r: GraphData, i: number) => number[]): number[] {
-		const filtered = data.filter((_, i) => !investmentsViewStore.isHidden(investments[i].id))
+		const filtered = validData.filter((_, i) => !investmentsViewStore.isHidden(investments[i].id))
 		const length = total.graphLabels.length
 		const result = new Array(length).fill(0)
 		for (let i = 0; i < length; i++) {

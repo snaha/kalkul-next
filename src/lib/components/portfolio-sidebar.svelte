@@ -1,0 +1,309 @@
+<script lang="ts">
+	import type {
+		Client,
+		Goal,
+		Investment,
+		InvestmentWithColorIndex,
+		Portfolio,
+		Transaction,
+	} from '$lib/types'
+	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
+	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
+	import { _ } from 'svelte-i18n'
+	import { goto } from '$app/navigation'
+	import routes from '$lib/routes'
+	import Vertical from '$lib/components/ui/vertical.svelte'
+	import Horizontal from '$lib/components/ui/horizontal.svelte'
+	import Button from '$lib/components/ui/button.svelte'
+	import TabBar from '$lib/components/ui/tab-bar/tab-bar.svelte'
+	import TabContent from '$lib/components/ui/tab-bar/tab-content.svelte'
+	import GoalsSidebar from '$lib/components/goals-sidebar.svelte'
+	import InvestmentsSidebar from '$lib/components/investments-sidebar.svelte'
+	import EditTransaction from '$lib/components/edit-transaction.svelte'
+	import { layoutStore } from '$lib/stores/layout.svelte'
+	import { DownToBottom, UpToTop } from 'carbon-icons-svelte'
+
+	interface Props {
+		client: Client
+		portfolio: Portfolio
+		goals: Goal[]
+		regularInvestments: Investment[]
+		investments: Investment[]
+		isGraphFullscreened: boolean
+		isSidebarFlexible: boolean
+		isSidebarOpen: boolean
+		investmentsViewStore: InvestmentsViewStore
+		graphData: PortfolioSimulation | undefined
+		adjustWithInflation: boolean
+		goalsFeatureEnabled: boolean
+		selectedTab: 'goals' | 'investments'
+		transactionCount: number
+		clientId: number
+		portfolioId: number
+		parentContainer?: HTMLElement
+	}
+
+	let {
+		client,
+		portfolio,
+		goals,
+		regularInvestments,
+		investments,
+		isGraphFullscreened,
+		isSidebarFlexible,
+		isSidebarOpen = $bindable(),
+		investmentsViewStore,
+		graphData,
+		adjustWithInflation,
+		goalsFeatureEnabled,
+		selectedTab = $bindable(),
+		transactionCount,
+		clientId,
+		portfolioId,
+		parentContainer,
+	}: Props = $props()
+
+	// Transaction editing state - managed internally
+	let editedTransaction: Transaction | undefined = $state()
+	let selectedInvestment: InvestmentWithColorIndex | undefined = $state()
+	let open = $state(false)
+	let prevSelectedTab = $state(selectedTab)
+
+	function openTransaction(investment: InvestmentWithColorIndex, transaction?: Transaction) {
+		selectedInvestment = investment
+		if (transaction) editedTransaction = transaction
+	}
+
+	function closeDialog() {
+		editedTransaction = undefined
+		selectedInvestment = undefined
+	}
+
+	function openSidebar() {
+		if (parentContainer) {
+			// Read CSS variables dynamically to avoid hardcoded constants
+			const styles = getComputedStyle(document.documentElement)
+			const headerHeight = parseInt(styles.getPropertyValue('--header-height'))
+			const tabBarHeight = parseInt(styles.getPropertyValue('--portfolio-sidebar-tab-bar-height'))
+
+			// Formula: viewport height - header height - tab bar height
+			const savedScrollPosition = window.innerHeight - headerHeight - tabBarHeight
+
+			parentContainer.scroll({ top: savedScrollPosition, behavior: 'smooth' })
+			open = true
+		}
+	}
+
+	function closeSidebar() {
+		if (parentContainer) {
+			parentContainer.scroll({ top: 0, behavior: 'smooth' })
+			open = false
+		}
+	}
+</script>
+
+{#if client && portfolio}
+	{#if goalsFeatureEnabled}
+		<!-- Tabs with Goals/Investments -->
+		<Vertical --vertical-gap="0" class="sidebar-tabs-container fixed-height">
+			{#if selectedInvestment}
+				<div class="scrollable dialog">
+					<EditTransaction
+						investment={selectedInvestment}
+						{portfolio}
+						{client}
+						transaction={editedTransaction}
+						showInflation={adjustWithInflation}
+						close={closeDialog}
+					/>
+				</div>
+			{:else}
+				<Horizontal
+					--horizontal-align-items="center"
+					--horizontal-gap="0"
+					style="padding: var(--half-padding)"
+				>
+					<TabBar
+						dimension="compact"
+						bind:selectedTabId={selectedTab}
+						ulClass="sidebar-tab-ul"
+						liClass="sidebar-tab-li"
+						buttonClass="sidebar-tab-button"
+						onSelectTab={() => {
+							if (prevSelectedTab === selectedTab) {
+								if (!open) {
+									openSidebar()
+								} else {
+									closeSidebar()
+								}
+							}
+							prevSelectedTab = selectedTab
+						}}
+					>
+						<TabContent value={$_('page.goals.title')} id="goals"></TabContent>
+						<TabContent value={$_('common.investments')} id="investments"></TabContent>
+					</TabBar>
+					{#if layoutStore.mobile}
+						<Button
+							variant="ghost"
+							dimension="compact"
+							onclick={() => {
+								if (!open) {
+									openSidebar()
+								} else {
+									closeSidebar()
+								}
+							}}
+						>
+							{#if open}
+								<DownToBottom size={20} />
+							{:else}
+								<UpToTop size={20} />
+							{/if}
+						</Button>
+					{/if}
+				</Horizontal>
+				<div class="vertical scrollable">
+					{#if selectedTab === 'goals'}
+						<GoalsSidebar
+							{isGraphFullscreened}
+							{isSidebarFlexible}
+							bind:isSidebarOpen
+							{portfolio}
+							{goals}
+							{adjustWithInflation}
+							viewOnly={false}
+							{graphData}
+							{openTransaction}
+							addGoal={() => {
+								goto(routes.RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId))
+							}}
+							showExplainInvestmentsLabel={regularInvestments.length === 0}
+							--sidebar-min-height="var(--portfolio-sidebar-min-height)"
+						/>
+					{:else if selectedTab === 'investments'}
+						<InvestmentsSidebar
+							{isGraphFullscreened}
+							{isSidebarFlexible}
+							bind:isSidebarOpen
+							{portfolio}
+							investments={regularInvestments}
+							{investmentsViewStore}
+							{transactionCount}
+							{adjustWithInflation}
+							viewOnly={false}
+							{graphData}
+							{openTransaction}
+							--sidebar-min-height="var(--portfolio-sidebar-min-height)"
+						/>
+					{/if}
+				</div>
+				<Horizontal --horizontal-justify-content="stretch" style="padding: var(--half-padding)">
+					{#if selectedTab === 'goals' && goals.length > 0}
+						<Button
+							flexGrow
+							variant="ghost"
+							dimension="compact"
+							onclick={() => {
+								goto(routes.RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId))
+							}}>{$_('page.portfolio.addGoal')}</Button
+						>
+					{:else if selectedTab === 'investments' && regularInvestments.length > 0}
+						<Button
+							flexGrow
+							variant="ghost"
+							dimension="compact"
+							onclick={() => {
+								goto(routes.NEW_INVESTMENT(clientId, portfolioId))
+							}}>{$_('page.portfolio.addInvestment')}</Button
+						>
+					{/if}
+				</Horizontal>
+			{/if}
+		</Vertical>
+	{:else if selectedInvestment !== undefined}
+		<!-- Full-height EditTransaction view -->
+		<Vertical --vertical-gap="0" class="dialog full-height">
+			<EditTransaction
+				investment={selectedInvestment}
+				{portfolio}
+				{client}
+				transaction={editedTransaction}
+				showInflation={adjustWithInflation}
+				close={closeDialog}
+			/>
+		</Vertical>
+	{:else}
+		<!-- No goals feature - just investments -->
+		<div class="vertical scrollable sidebar-container">
+			<InvestmentsSidebar
+				{isGraphFullscreened}
+				{isSidebarFlexible}
+				bind:isSidebarOpen
+				{portfolio}
+				{investments}
+				{investmentsViewStore}
+				{transactionCount}
+				{adjustWithInflation}
+				viewOnly={false}
+				{graphData}
+				{openTransaction}
+				--sidebar-min-height="var(--portfolio-sidebar-min-height)"
+			/>
+		</div>
+	{/if}
+{/if}
+
+<style>
+	:root {
+		--portfolio-sidebar-tab-bar-height: 68px;
+		--portfolio-sidebar-button-height: 58px;
+		--portfolio-sidebar-min-height: calc(
+			100dvh - var(--header-height) - var(--portfolio-sidebar-tab-bar-height) -
+				var(--portfolio-sidebar-button-height)
+		);
+	}
+	.vertical {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+	}
+	.scrollable {
+		overflow-y: auto;
+		max-height: 100%;
+		background-color: var(--colors-low);
+	}
+	.sidebar-container {
+		padding-top: var(--half-padding);
+		padding-bottom: var(--half-padding);
+	}
+	:global(.dialog) {
+		padding: var(--half-padding);
+		border-radius: var(--border-radius);
+		background-color: var(--colors-low);
+		border: 1px solid var(--colors-low);
+	}
+	:global(.full-height) {
+		height: 100%;
+		overflow-y: auto;
+	}
+	:global(.sidebar-tabs-container) {
+		background-color: var(--colors-low);
+	}
+	:global(.sidebar-tab-ul) {
+		justify-content: space-between;
+		background-color: var(--colors-base);
+		border: 1px solid var(--colors-low);
+		gap: var(--quarter-padding);
+		border-radius: var(--quarter-padding);
+		padding: var(--quarter-padding) !important;
+	}
+	:global(.sidebar-tab-li) {
+		display: flex;
+		flex: 1;
+	}
+	:global(.sidebar-tab-button) {
+		flex-grow: 1 !important;
+	}
+</style>

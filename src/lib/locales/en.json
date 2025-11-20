@@ -334,10 +334,6 @@
 			"whatYouNeed": "What you'll need",
 			"whatYouHave": "What you'll have"
 		},
-		"goals": {
-			"title": "Goals",
-			"linkedInvestments": "Linked investments"
-		},
 		"balanceInvestments": {
 			"title": "Balance investments",
 			"weightedAverageReturn": "weighted average return",
@@ -506,8 +502,8 @@
 			"editInvestmentDetails": "Edit investment details",
 			"duplicateInvestment": "Duplicate investment",
 			"deleteInvestment": "Delete investment",
-			"noTransactionsYet": "No transactions yet",
-			"noTransactionsYetText": "Use the button above to add one"
+			"noTransactions": "No transactions",
+			"noTransactionsText": "Add deposits or withdrawals to this goal"
 		},
 		"goalCard": {
 			"removeFocus": "Remove focus",
@@ -517,7 +513,8 @@
 			"duplicateGoal": "Duplicate goal",
 			"deleteGoal": "Delete goal",
 			"deleteGoalWarning": "This goal will be deleted permanently. There's no undo.",
-			"deleteGoalWarningTitle": "Delete goal?"
+			"deleteGoalWarningTitle": "Delete goal?",
+			"explainInvestmentsText": "You've set the big picture with this goal. Next, switch to the Investments tab to add the specific products and transactions that will make it happen."
 		},
 		"login": {
 			"forgotPassword": "Forgot password?",
@@ -577,6 +574,12 @@
 		},
 		"youtubeIntroVideo": {
 			"title": "Intro video"
+		},
+		"sidebar": {
+			"noGoalsYetTitle": "No goals yet",
+			"noGoalsYetDescription": "Define high-level financial objectives and target amounts. Goals help you stay focused on the big picture.",
+			"noInvestmentsYetTitle": "No investments yet",
+			"noInvestmentsYetDescription": "Add the specific investment products and transactions that make up your client's portfolio. Pro tip: link transactions to goals to easily compare against the big picture target."
 		}
 	},
 	"helpBox": {
@@ -586,13 +589,6 @@
 		"addPortfolioTitle": "Add portfolio",
 		"addPortfolioText": "Press the \"Add portfolio\" button to add a first portfolio for this client",
 		"portfolioExplanation": "A portfolio will contain specific investments. Use portfolios to organise investments for your client. You can create as many portfolios as you want for each client. All the portfolios for this client will be listed on the client's page.",
-		"addInvestmentTitle": "Add investment",
-		"addInvestmentText": "Press the \"Add investment\" button to add a first investment in this portfolio",
-		"investmentExplanation": "You can create as many investments as you want in a client portfolio. Once you have at least one investment set up, this page will display detailed information about the whole portfolio.",
-		"addTransactionTitle": "Add a transaction",
-		"addTransactionText": "In the left sidebar, press the \"Add transaction\" button within the desired investment card.",
-		"addTransactionMobileText": "Press 'Add transaction' on any investment card.",
-		"transactionExplanation": "Transactions define the amount of money that is deposited or withdrawn for this specific investment over time.",
 		"watchIntroVideo": "Watch intro video",
 		"viewSamplePortfolio": "View sample portfolio"
 	},
@@ -625,7 +621,7 @@
 		"done": "Done",
 		"saveChanges": "Save changes",
 		"addTransaction": "Add transaction",
-		"showInvestments": "Show investments",
+		"showInvestments": "Show goals / investments",
 		"deleteClient": "Delete client",
 		"login": "Login",
 		"years": "years",
@@ -711,7 +707,6 @@
 		"cancelBeforeTrialEnd": "Cancel before {firstPaymentFormattedDate} and you won't be charged. We will remind you 7 days before your trial period ends.",
 		"subscriptionAutoRenew": "Your subscription will automatically renew annually on a recurring basis.",
 		"manageSubscriptionDetails": "You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.",
-		"noData": "No data",
 		"noTransactionYet": "No transaction yet",
 		"noClientYet": "No client yet",
 		"resetPasswordLink": "Reset password link",

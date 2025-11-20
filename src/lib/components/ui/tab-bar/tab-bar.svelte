@@ -6,13 +6,14 @@
 	type Dimension = 'default' | 'large' | 'compact' | 'small'
 	type Props = {
 		dimension?: Dimension
-		children: Snippet
+		children?: Snippet
 		ulClass?: string
 		liClass?: string
 		buttonClass?: string
 		controls?: Snippet
 		selectedTabIndex?: number
 		selectedTabId?: string
+		onSelectTab?: () => void
 	}
 
 	let {
@@ -24,6 +25,7 @@
 		controls,
 		selectedTabIndex = $bindable(0),
 		selectedTabId = $bindable(),
+		onSelectTab,
 	}: Props = $props()
 
 	const store = withTabStore()
@@ -33,6 +35,7 @@
 		store.selected = i
 		selectedTabIndex = i
 		selectedTabId = store.ids[i]
+		onSelectTab?.()
 	}
 
 	$effect(() => {
@@ -96,11 +99,11 @@
 		{/if}
 	</ul>
 
-	<div class="tab-content">
-		{#if children}
+	{#if children}
+		<div class="tab-content">
 			{@render children()}
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -108,7 +111,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		gap: var(--half-padding);
+		gap: var(--quarter-padding);
 		margin-top: 0px;
 		margin-bottom: 0px;
 		padding-left: unset;

@@ -340,7 +340,12 @@ export default class Supabase implements Adapter {
 	}
 
 	async deleteInvestment(investment: Partial<Investment> & Pick<Investment, 'id'>) {
-		return this.deleteData('investment', investment, investmentStore)
+		// Delete the investment first
+		await this.deleteData('investment', investment, investmentStore)
+
+		// Clean up orphaned transactions from the store
+		// (they're cascade-deleted in the database, but we need to sync the local store)
+		transactionStore.data = transactionStore.data.filter((t) => t.investment_id !== investment.id)
 	}
 
 	async getInvestments(portfolioId: number) {

@@ -5,15 +5,17 @@
 	type Props = {
 		children: Snippet
 		class?: string
+		element?: HTMLElement
 	}
 	let {
 		children,
 		class: className = '',
+		element = $bindable(),
 		...restProps
 	}: Props & HTMLAttributes<HTMLDivElement> = $props()
 </script>
 
-<div class="vertical {className}" {...restProps}>
+<div class="vertical {className}" {...restProps} bind:this={element}>
 	{@render children()}
 </div>
 

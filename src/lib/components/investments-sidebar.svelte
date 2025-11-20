@@ -1,55 +1,45 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button.svelte'
-	import type {
-		Client,
-		Investment,
-		InvestmentWithColorIndex,
-		Portfolio,
-		Transaction,
-	} from '$lib/types'
-	import { _ } from 'svelte-i18n'
-	import EditTransaction from './edit-transaction.svelte'
+	import type { Investment, InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
 	import Sidebar from './sidebar.svelte'
 	import InvestmentCard from './investment-card.svelte'
 	import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
 	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
+	import FlexItem from './ui/flex-item.svelte'
+	import Vertical from './ui/vertical.svelte'
+	import Horizontal from './ui/horizontal.svelte'
+	import Typography from './ui/typography.svelte'
+	import Button from './ui/button.svelte'
+	import { _ } from 'svelte-i18n'
+	import { base } from '$app/paths'
+	import routes from '$lib/routes'
+	import { goto } from '$app/navigation'
 
 	type Props = {
 		isGraphFullscreened: boolean
 		isSidebarOpen: boolean
 		isSidebarFlexible: boolean
-		selectedInvestment?: InvestmentWithColorIndex
-		client: Client
 		portfolio: Portfolio
 		investments: Investment[]
 		investmentsViewStore: InvestmentsViewStore
 		transactionCount: number
-		editedTransaction?: Transaction
 		adjustWithInflation: boolean
 		viewOnly: boolean
 		graphData?: PortfolioSimulation
-		closeDialog?: () => void
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
-		addInvestment?: () => void
 	}
 
 	let {
 		isGraphFullscreened,
 		isSidebarOpen = $bindable(),
 		isSidebarFlexible,
-		selectedInvestment,
-		client,
 		portfolio,
 		investments,
 		investmentsViewStore,
 		transactionCount,
-		editedTransaction,
 		adjustWithInflation,
 		viewOnly,
 		graphData,
-		closeDialog,
 		openTransaction,
-		addInvestment,
 	}: Props = $props()
 </script>
 
@@ -60,19 +50,39 @@
 	{isSidebarOpen}
 	{isSidebarFlexible}
 >
-	{#if selectedInvestment !== undefined && closeDialog}
-		<section class="vertical dialog">
-			<EditTransaction
-				investment={selectedInvestment}
-				{portfolio}
-				{client}
-				transaction={editedTransaction}
-				showInflation={adjustWithInflation}
-				close={closeDialog}
-			/>
-		</section>
-	{/if}
-	<section class="investments" class:hidden={selectedInvestment !== undefined}>
+	<section class="investments">
+		{#if investments.length === 0}
+			<FlexItem />
+			<Vertical
+				--vertical-gap="var(--padding)"
+				--vertical-align-items="center"
+				--vertical-justify-content="center"
+			>
+				<Vertical --vertical-gap="var(--half-padding)">
+					<img
+						src={`${base}/images/no-investment.svg`}
+						alt={$_('component.sidebar.noInvestmentsYetTitle')}
+					/>
+					<Typography variant="h5">{$_('component.sidebar.noInvestmentsYetTitle')}</Typography>
+					{#if !viewOnly}
+						<Typography variant="small" center
+							>{$_('component.sidebar.noInvestmentsYetDescription')}</Typography
+						>
+					{/if}
+				</Vertical>
+				{#if !viewOnly}
+					<Horizontal --horizontal-justify-content="center"
+						><Button
+							variant="strong"
+							dimension="compact"
+							onclick={() => goto(routes.NEW_INVESTMENT(portfolio.client, portfolio.id))}
+							>{$_('page.portfolio.addInvestment')}</Button
+						></Horizontal
+					>
+				{/if}
+			</Vertical>
+			<FlexItem />
+		{/if}
 		{#each investments as investment, i}
 			<InvestmentCard
 				{investment}
@@ -95,36 +105,21 @@
 					(!graphData.currentCalculatingIndex || i >= graphData.currentCalculatingIndex)}
 			/>
 		{/each}
-		{#if addInvestment}
-			<Button dimension="compact" variant="ghost" onclick={addInvestment}>
-				{$_('page.portfolio.addInvestment')}</Button
-			>
-		{/if}
+		<FlexItem />
 	</section>
 </Sidebar>
 
 <style>
-	.dialog {
-		padding: var(--half-padding);
-		border-radius: var(--border-radius);
-		background-color: var(--colors-low);
-		border: 1px solid var(--colors-low);
-	}
-	.vertical {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		gap: 0;
-	}
 	.investments {
 		display: flex;
 		flex-direction: column;
+		justify-content: stretch;
 		gap: var(--half-padding);
 		background-color: var(--colors-low);
-		padding: var(--half-padding);
+		padding-left: var(--half-padding);
+		padding-right: var(--half-padding);
 		border-radius: var(--half-padding);
-		&.hidden {
-			display: none;
-		}
+		flex: 1;
+		min-height: var(--sidebar-min-height);
 	}
 </style>

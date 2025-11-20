@@ -93,13 +93,21 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="card"
+	role="button"
+	tabindex="0"
+	aria-expanded={openTransaction}
 	onclick={(e: Event) => {
 		e.stopPropagation()
 		openTransaction = !openTransaction
+	}}
+	onkeydown={(e) => {
+		if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+			e.preventDefault()
+			e.stopPropagation()
+			openTransaction = !openTransaction
+		}
 	}}
 	class:openTransaction
 >

@@ -114,7 +114,6 @@
 					isGraphFullscreened={false}
 					isSidebarFlexible={true}
 					{investmentsViewStore}
-					client={portfolioView.client}
 					portfolio={portfolioView.portfolio}
 					investments={portfolioView.investments}
 					transactionCount={portfolioView.transactions.length}
@@ -164,7 +163,6 @@
 						{isGraphFullscreened}
 						isSidebarFlexible={false}
 						{investmentsViewStore}
-						client={portfolioView.client}
 						portfolio={portfolioView.portfolio}
 						investments={portfolioView.investments}
 						transactionCount={portfolioView.transactions.length}

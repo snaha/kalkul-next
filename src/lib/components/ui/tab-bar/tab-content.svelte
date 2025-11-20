@@ -4,7 +4,7 @@
 
 	type Props = {
 		value: string | Snippet
-		children: Snippet
+		children?: Snippet
 		id?: string | undefined
 		disabled?: boolean
 	}

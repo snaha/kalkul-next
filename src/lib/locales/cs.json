@@ -334,10 +334,6 @@
 			"whatYouNeed": "Co budete potřebovat",
 			"whatYouHave": "Co budete mít"
 		},
-		"goals": {
-			"title": "Cíle",
-			"linkedInvestments": "Propojené investice"
-		},
 		"balanceInvestments": {
 			"title": "Vyvážení investic",
 			"weightedAverageReturn": "vážený průměrný výnos",
@@ -506,8 +502,8 @@
 			"editInvestmentDetails": "Upravit detaily investice",
 			"duplicateInvestment": "Duplikovat investici",
 			"deleteInvestment": "Smazat investici",
-			"noTransactionsYet": "Zatím žádné transakce",
-			"noTransactionsYetText": "Použijte tlačítko výše pro přidání"
+			"noTransactions": "Žádné transakce",
+			"noTransactionsText": "Přidejte vklady nebo výběry k tomuto cíli"
 		},
 		"goalCard": {
 			"removeFocus": "Odebrat zvýraznění",
@@ -517,7 +513,8 @@
 			"duplicateGoal": "Duplikovat cíl",
 			"deleteGoal": "Smazat cíl",
 			"deleteGoalWarning": "Tento cíl bude trvale smazán. Nelze vrátit zpět.",
-			"deleteGoalWarningTitle": "Smazat cíl?"
+			"deleteGoalWarningTitle": "Smazat cíl?",
+			"explainInvestmentsText": "S cílem jste si nastavili rámec plánu. Nyní přejděte na kartu Investice a přidejte konkrétní produkty a transakce, které vám pomohou ho uskutečnit."
 		},
 		"login": {
 			"forgotPassword": "Zapomněli jste heslo?",
@@ -577,6 +574,12 @@
 		},
 		"youtubeIntroVideo": {
 			"title": "Úvodní video"
+		},
+		"sidebar": {
+			"noGoalsYetTitle": "Zatím žádné cíle",
+			"noGoalsYetDescription": "Definujte hlavní finanční cíle a cílové částky. Cíle vám pomáhají soustředit se na celkový plán.",
+			"noInvestmentsYetTitle": "Zatím žádné investice",
+			"noInvestmentsYetDescription": "Přidejte konkrétní investiční produkty a transakce, které tvoří portfolio vašeho klienta. Tip: propojte transakce s cíli a snadno porovnávejte postup vůči celkovému plánu."
 		}
 	},
 	"helpBox": {
@@ -586,13 +589,6 @@
 		"addPortfolioTitle": "Přidat portfolio",
 		"addPortfolioText": "Stiskněte tlačítko \"Přidat portfolio\" pro přidání prvního portfolia pro tohoto klienta",
 		"portfolioExplanation": "Portfolio bude obsahovat konkrétní investice. Používejte portfolia k organizaci investic pro vašeho klienta. Pro každého klienta můžete vytvořit tolik portfolií, kolik chcete. Všechna portfolia pro tohoto klienta budou uvedena na stránce klienta.",
-		"addInvestmentTitle": "Přidat investici",
-		"addInvestmentText": "Stiskněte tlačítko \"Přidat investici\" pro přidání první investice do tohoto portfolia",
-		"investmentExplanation": "V klientském portfoliu můžete vytvořit tolik investic, kolik chcete. Jakmile budete mít nastavenou alespoň jednu investici, zobrazí se na této stránce podrobné informace o celém portfoliu.",
-		"addTransactionTitle": "Přidat transakci",
-		"addTransactionText": "V levé postranní liště stiskněte tlačítko \"Přidat transakci\" v požadované kartě investice.",
-		"addTransactionMobileText": "Stiskněte 'Přidat transakci' na jakékoliv kartě investice.",
-		"transactionExplanation": "Transakce definují množství peněz, které jsou pro tuto konkrétní investici v průběhu času vloženy nebo vybrány.",
 		"watchIntroVideo": "Sledovat úvodní video",
 		"viewSamplePortfolio": "Zobrazit ukázkové portfolio"
 	},
@@ -625,7 +621,7 @@
 		"done": "Hotovo",
 		"saveChanges": "Uložit změny",
 		"addTransaction": "Přidat transakci",
-		"showInvestments": "Zobrazit investice",
+		"showInvestments": "Zobrazit cíle / investice",
 		"deleteClient": "Smazat klienta",
 		"login": "Přihlásit se",
 		"years": "let",
@@ -711,7 +707,6 @@
 		"cancelBeforeTrialEnd": "Zrušte před {firstPaymentFormattedDate} a nebude vám nic účtováno. E-mailem vám připomeneme 7 dní před koncem zkušební doby.",
 		"subscriptionAutoRenew": "Vaše předplatné se automaticky obnovuje každý rok na opakující se základě.",
 		"manageSubscriptionDetails": "Detaily svého předplatného můžete zobrazit a spravovat na stránce {accountPaymentsLink}, která je kdykoli dostupná v nastavení vašeho účtu.",
-		"noData": "Žádná data",
 		"noTransactionYet": "Zatím žádné transakce",
 		"noClientYet": "Zatím žádní klienti",
 		"resetPasswordLink": "Odkaz k obnovení hesla",

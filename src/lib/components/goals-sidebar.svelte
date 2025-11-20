@@ -1,45 +1,42 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button.svelte'
-	import type { Client, Goal, InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+	import type { Goal, InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
 	import { _ } from 'svelte-i18n'
-	import EditTransaction from './edit-transaction.svelte'
 	import Sidebar from './sidebar.svelte'
 	import GoalCard from './goal-card.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
 	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
+	import FlexItem from './ui/flex-item.svelte'
+	import Typography from './ui/typography.svelte'
+	import { base } from '$app/paths'
+	import Horizontal from './ui/horizontal.svelte'
 
 	type Props = {
 		isGraphFullscreened: boolean
 		isSidebarOpen: boolean
 		isSidebarFlexible: boolean
-		selectedInvestment?: InvestmentWithColorIndex
-		client: Client
 		portfolio: Portfolio
 		goals: Goal[]
-		editedTransaction?: Transaction
 		adjustWithInflation: boolean
 		viewOnly: boolean
 		graphData?: PortfolioSimulation
-		closeDialog?: () => void
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
-		addGoal?: () => void
+		addGoal: () => void
+		showExplainInvestmentsLabel: boolean
 	}
 
 	let {
 		isGraphFullscreened,
 		isSidebarOpen = $bindable(),
 		isSidebarFlexible,
-		selectedInvestment,
-		client,
 		portfolio,
 		goals,
-		editedTransaction,
 		adjustWithInflation,
 		viewOnly,
 		graphData,
-		closeDialog,
 		openTransaction,
 		addGoal,
+		showExplainInvestmentsLabel,
 	}: Props = $props()
 </script>
 
@@ -50,64 +47,70 @@
 	{isSidebarOpen}
 	{isSidebarFlexible}
 >
-	{#if selectedInvestment !== undefined && closeDialog}
-		<Vertical --vertical-gap="0" class="dialog">
-			<EditTransaction
-				investment={selectedInvestment}
+	<Vertical
+		--vertical-gap="var(--half-padding)"
+		--vertical-justify-content="start"
+		class="investments"
+	>
+		{#if goals.length === 0}
+			<FlexItem />
+			<Vertical
+				--vertical-gap="var(--padding)"
+				--vertical-align-items="center"
+				--vertical-justify-content="center"
+			>
+				<Vertical --vertical-gap="var(--half-padding)">
+					<img
+						src={`${base}/images/no-transaction.svg`}
+						alt={$_('component.sidebar.noGoalsYetTitle')}
+					/>
+					<Typography variant="h5">{$_('component.sidebar.noGoalsYetTitle')}</Typography>
+					{#if !viewOnly}
+						<Typography variant="small" center
+							>{$_('component.sidebar.noGoalsYetDescription')}</Typography
+						>
+					{/if}
+				</Vertical>
+				{#if !viewOnly}
+					<Horizontal --horizontal-justify-content="center"
+						><Button variant="strong" dimension="compact" onclick={addGoal}
+							>{$_('page.portfolio.addGoal')}</Button
+						></Horizontal
+					>
+				{/if}
+			</Vertical>
+			<FlexItem />
+		{/if}
+		{#each goals as goal, i}
+			<GoalCard
+				investment={goal}
 				{portfolio}
-				{client}
-				transaction={editedTransaction}
+				{viewOnly}
+				index={i}
+				hidden={false}
+				focused={false}
 				showInflation={adjustWithInflation}
-				close={closeDialog}
+				{openTransaction}
+				addInvestment={addGoal}
+				toggleHide={() => {}}
+				toggleFocus={() => {}}
+				open={true}
+				exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
+				isCalculating={graphData?.isCalculating &&
+					(!graphData.currentCalculatingIndex || i >= graphData.currentCalculatingIndex)}
+				{goal}
+				{showExplainInvestmentsLabel}
 			/>
-		</Vertical>
-	{/if}
-	<div class="investments-wrapper" class:hidden={selectedInvestment !== undefined}>
-		<Vertical --vertical-gap="var(--half-padding)" class="investments">
-			{#each goals as goal, i}
-				<GoalCard
-					investment={goal}
-					{portfolio}
-					{viewOnly}
-					index={i}
-					hidden={false}
-					focused={false}
-					showInflation={adjustWithInflation}
-					{openTransaction}
-					addInvestment={addGoal}
-					toggleHide={() => {}}
-					toggleFocus={() => {}}
-					open={true}
-					exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
-					isCalculating={graphData?.isCalculating &&
-						(!graphData.currentCalculatingIndex || i >= graphData.currentCalculatingIndex)}
-					{goal}
-				/>
-			{/each}
-			{#if addGoal}
-				<Button dimension="compact" variant="ghost" onclick={addGoal}>
-					{$_('page.portfolio.addGoal')}</Button
-				>
-			{/if}
-		</Vertical>
-	</div>
+		{/each}
+	</Vertical>
 </Sidebar>
 
 <style>
-	:global(.dialog) {
-		padding: var(--half-padding);
-		border-radius: var(--border-radius);
-		background-color: var(--colors-low);
-		border: 1px solid var(--colors-low);
-	}
 	:global(.investments) {
 		background-color: var(--colors-low);
-		padding: var(--half-padding);
 		border-radius: var(--half-padding);
-	}
-	.investments-wrapper {
-		&.hidden {
-			display: none;
-		}
+		min-height: var(--sidebar-min-height);
+		padding-left: var(--half-padding);
+		padding-right: var(--half-padding);
 	}
 </style>

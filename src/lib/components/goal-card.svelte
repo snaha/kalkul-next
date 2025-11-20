@@ -2,7 +2,7 @@
 	import type { InvestmentWithColorIndex, Portfolio, Transaction, Goal } from '$lib/types'
 	import {
 		Add,
-		Calculator,
+		ArrowRight,
 		CenterSquare,
 		ChevronRight,
 		Copy,
@@ -31,6 +31,9 @@
 	import DeleteModal from '$lib/components/delete-modal.svelte'
 	import adapter from '$lib/adapters'
 	import { SERIES_COLORS } from '$lib/colors'
+	import InvestmentColorBox from './investment-color-box.svelte'
+	import { type ExhaustionWarning } from '$lib/@snaha/kalkul-maths'
+	import { goto } from '$app/navigation'
 
 	type Props = {
 		investment: InvestmentWithColorIndex
@@ -45,10 +48,11 @@
 		toggleHide: () => void
 		toggleFocus: () => void
 		open?: boolean
-		exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
+		exhaustionWarning?: ExhaustionWarning
 		isCalculating?: boolean
 		transactions?: Transaction[]
-		goal?: Goal
+		goal: Goal
+		showExplainInvestmentsLabel: boolean
 	}
 
 	let {
@@ -68,6 +72,7 @@
 		isCalculating = false,
 		transactions: providedTransactions,
 		goal,
+		showExplainInvestmentsLabel,
 	}: Props = $props()
 
 	let transactionsOpen = $state(true)
@@ -92,7 +97,9 @@
 		open = !open
 	}
 
-	function notImplemented() {
+	function notImplemented(e: Event) {
+		e.preventDefault()
+		e.stopPropagation()
 		alert($_('demo.notImplemented'))
 	}
 
@@ -106,17 +113,38 @@
 	})
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={cardOpenInvestment} class:hidden class:open>
+<div
+	class="card"
+	role="button"
+	tabindex="0"
+	aria-expanded={open}
+	onclick={cardOpenInvestment}
+	onkeydown={(e) => {
+		if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+			e.preventDefault()
+			toggleInvestment()
+		}
+	}}
+	class:hidden
+	class:open
+>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
 		<div class="chevron">
 			<ChevronRight
-				size={24}
+				size={20}
 				class="open-investment-icon"
 				color={hidden ? 'transparent' : undefined}
 			/>
 		</div>
+		<InvestmentColorBox colorIndex={investment.colorIndex ?? 0}>
+			{#if isCalculating}
+				<Vertical
+					--vertical-justify-content="center"
+					--vertical-align-items="center"
+					style="min-height: 24px;"><Loader dimension="small" color="high" /></Vertical
+				>
+			{/if}
+		</InvestmentColorBox>
 		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
 		<FlexItem />
 		{#if exhaustionWarning && !open}
@@ -124,8 +152,8 @@
 				<WarningAltFilled size={16} />
 			</Badge>
 		{/if}
-		{#if isCalculating}
-			<Loader dimension="small" />
+		{#if open}
+			<Badge>{investment.apy}% APY</Badge>
 		{/if}
 		{#if focused}
 			<Button
@@ -151,7 +179,7 @@
 			<div class="dropdown">
 				<Dropdown left buttonDimension="compact">
 					{#snippet button()}
-						<OverflowMenuVertical size={24} />
+						<OverflowMenuVertical size={20} />
 					{/snippet}
 					<List>
 						<ListItem onclick={notImplemented}
@@ -183,60 +211,56 @@
 	</Horizontal>
 
 	<div class="trasaction-container" class:modalShow={!open || hidden}>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			class="transactions-card"
-			class:transactions-open={transactionsOpen}
-			onclick={(e) => {
-				e.preventDefault()
-				e.stopPropagation()
-				transactionsOpen = !transactionsOpen
-			}}
-		>
-			<Horizontal --horizontal-gap="var(--quarter-padding)">
-				<div class="chevron">
-					<ChevronRight size={24} class="transactions-chevron" />
-				</div>
-				<Typography>{$_('common.transactions')}</Typography>
-				<FlexItem />
+		{#if transactions.length === 0}
+			<Vertical --vertical-gap="var(--padding)">
+				<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center">
+					<img src={`${base}/images/no-draft.svg`} alt={$_('common.noTransactionYet')} />
+					<Typography variant="h5">{$_('component.investmentCard.noTransactions')}</Typography>
+					{#if !viewOnly}
+						<Typography variant="small"
+							>{$_('component.investmentCard.noTransactionsText')}</Typography
+						>
+					{/if}
+				</Vertical>
 				{#if !viewOnly}
-					<Button
-						variant="ghost"
-						dimension="compact"
-						onclick={(e: Event) => {
-							e.preventDefault()
-							e.stopPropagation()
-							notImplemented()
-						}}
+					<Horizontal --horizontal-justify-content="center"
+						><Button variant="strong" dimension="compact" onclick={notImplemented}
+							>{$_('common.addTransaction')}</Button
+						></Horizontal
 					>
-						<Add size={20} />
-					</Button>
 				{/if}
-				<Button
-					variant="ghost"
-					dimension="compact"
-					onclick={(e: Event) => {
+			</Vertical>
+		{:else}
+			<div
+				class="transactions-card"
+				role="button"
+				tabindex="0"
+				aria-expanded={transactionsOpen || transactions.length === 0}
+				class:transactions-open={transactionsOpen || transactions.length === 0}
+				onclick={(e) => {
+					e.preventDefault()
+					e.stopPropagation()
+					if (transactions.length > 0) {
+						transactionsOpen = !transactionsOpen
+					}
+				}}
+				onkeydown={(e) => {
+					if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
 						e.preventDefault()
 						e.stopPropagation()
-						notImplemented()
-					}}
-				>
-					<Calculator size={20} />
-				</Button>
-			</Horizontal>
-			<div class="transactions-content" class:transactions-hidden={!transactionsOpen}>
-				{#if transactions.length === 0}
-					<section class="centered">
-						<img src={`${base}/images/no-transaction.svg`} alt={$_('common.noTransactionYet')} />
-						<Typography variant="h5">{$_('component.investmentCard.noTransactionsYet')}</Typography>
-						{#if !viewOnly}
-							<Typography variant="small"
-								>{$_('component.investmentCard.noTransactionsYetText')}</Typography
-							>
-						{/if}
-					</section>
-				{:else}
+						if (transactions.length > 0) {
+							transactionsOpen = !transactionsOpen
+						}
+					}
+				}}
+			>
+				{#if transactions.length > 0}
+					<Horizontal --horizontal-gap="var(--quarter-padding)">
+						<Typography>{$_('common.transactions')}</Typography>
+						<FlexItem />
+					</Horizontal>
+				{/if}
+				<div class="transactions-content" class:transactions-hidden={!transactionsOpen}>
 					<Vertical --vertical-gap="0">
 						{#each transactions as transaction}
 							<Divider --margin="0" />
@@ -255,25 +279,38 @@
 							/>
 						{/each}
 					</Vertical>
-				{/if}
+				</div>
+				<Horizontal --horizontal-justify-content="stretch"
+					><Button variant="ghost" dimension="compact" flexGrow onclick={notImplemented}
+						>{$_('common.addTransaction')}</Button
+					></Horizontal
+				>
 			</div>
-		</div>
+		{/if}
 		<!-- Linked Investments Card - will be implemented in Task 5 -->
 		{#if goal && linkedInvestments.length > 0}
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
 				class="transactions-card"
+				role="button"
+				tabindex="0"
+				aria-expanded={linkedInvestmentsOpen}
 				class:transactions-open={linkedInvestmentsOpen}
 				onclick={(e) => {
 					e.preventDefault()
 					e.stopPropagation()
 					linkedInvestmentsOpen = !linkedInvestmentsOpen
 				}}
+				onkeydown={(e) => {
+					if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+						e.preventDefault()
+						e.stopPropagation()
+						linkedInvestmentsOpen = !linkedInvestmentsOpen
+					}
+				}}
 			>
 				<Horizontal --horizontal-gap="var(--quarter-padding)">
 					<div class="chevron">
-						<ChevronRight size={24} class="transactions-chevron" />
+						<ChevronRight size={16} class="transactions-chevron" />
 					</div>
 					<Typography>{$_('page.goals.linkedInvestments')}</Typography>
 					<FlexItem />
@@ -290,15 +327,7 @@
 							<Add size={20} />
 						</Button>
 					{/if}
-					<Button
-						variant="ghost"
-						dimension="compact"
-						onclick={(e: Event) => {
-							e.preventDefault()
-							e.stopPropagation()
-							notImplemented()
-						}}
-					>
+					<Button variant="ghost" dimension="compact" onclick={notImplemented}>
 						<SettingsAdjust size={20} />
 					</Button>
 				</Horizontal>
@@ -318,44 +347,42 @@
 				</div>
 			</div>
 		{/if}
-		{#if !viewOnly && addInvestment && linkedInvestments.length === 0}
-			<Vertical --vertical-gap="var(--quarter-padding)">
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<div
-					onclick={(e: Event) => {
-						e.preventDefault()
-						e.stopPropagation()
-					}}
-				>
-					<Button
-						dimension="compact"
-						variant="ghost"
-						onclick={(e: Event) => {
-							e.preventDefault()
-							e.stopPropagation()
-							addInvestment()
-						}}
-						disabled
-					>
-						{$_('page.portfolio.addInvestment')}
-					</Button>
-				</div>
-				<Typography
-					variant="small"
-					center
-					--typography-color="var(--colors-ultra-high)"
-					style="opacity: 0.5;"
-				>
-					{$_('page.portfolio.addInvestmentsExplanation')}
-				</Typography>
+		{#if !viewOnly}
+			<Vertical --vertical-gap="var(--half-padding)">
+				{#if (transactions?.length ?? 0) > 0}
+					<Horizontal>
+						<Button
+							dimension="compact"
+							variant="ghost"
+							onclick={(e: Event) => {
+								e.preventDefault()
+								e.stopPropagation()
+								goto('#investments', { replaceState: true })
+							}}
+							flexGrow
+						>
+							Investments<ArrowRight size={20} />
+						</Button>
+					</Horizontal>
+					{#if showExplainInvestmentsLabel}
+						<Typography variant="small" center style="opacity: 0.5;">
+							{$_('component.goalCard.explainInvestmentsText')}
+						</Typography>
+					{/if}
+				{/if}
 			</Vertical>
 		{/if}
 	</div>
 </div>
 
 <DeleteModal
-	confirm={() => selectedGoalIdForDeletion && deleteGoal(selectedGoalIdForDeletion)}
+	confirm={async () => {
+		if (selectedGoalIdForDeletion) {
+			await deleteGoal(selectedGoalIdForDeletion)
+			selectedGoalIdForDeletion = undefined
+			showDeleteGoalModal = false
+		}
+	}}
 	oncancel={() => {
 		showDeleteGoalModal = false
 		selectedGoalIdForDeletion = undefined
@@ -428,12 +455,6 @@
 			transition: transform 0.2s ease-out;
 		}
 	}
-	.centered {
-		text-align: center;
-		img {
-			padding-bottom: var(--half-padding);
-		}
-	}
 	.trasaction-container {
 		display: flex;
 		flex-direction: column;
@@ -446,10 +467,10 @@
 		border: 1px solid var(--colors-low);
 		border-radius: var(--double-border-radius);
 		background-color: var(--colors-base);
-		padding: var(--half-padding);
+		padding: var(--padding);
 		display: flex;
 		flex-direction: column;
-		gap: var(--half-padding);
+		gap: var(--padding);
 		cursor: pointer;
 		transition: border 0.2s;
 		transition-timing-function: ease-in;

@@ -240,11 +240,7 @@
 	>
 {/snippet}
 
-{#if investments.length === 0}
-	<section class="graph">
-		<Typography variant="h1">{$_('common.noData')}</Typography>
-	</section>
-{:else if data.length === 0}
+{#if simulationData.isCalculating}
 	<section class="graph">
 		<LoadingOverlay visible={true} />
 	</section>
@@ -478,8 +474,11 @@
 	.graph {
 		display: flex;
 		flex-direction: column;
-		min-height: var(--min-chart-height);
-		max-height: max(var(--min-chart-height), calc(100dvh - var(--header-height)));
+		/* min-height: var(--min-chart-height); */
+		/* max-height: max(var(--min-chart-height), calc(100dvh - var(--header-height))); */
+		min-height: calc(
+			100dvh - var(--header-height) - var(--portfolio-sidebar-tab-bar-height) - 74px
+		);
 		overflow-y: auto;
 		width: 100%;
 		max-width: calc(100% - calc(var(--sidebar-width)));
@@ -517,9 +516,6 @@
 		&.empty {
 			opacity: 0.5;
 		}
-	}
-	.graph.mobile {
-		min-height: 0;
 	}
 	.fullscreen-graph {
 		max-width: 100%;

@@ -92,13 +92,25 @@
 	})
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="card" onclick={cardOpenInvestment} class:hidden class:open>
+<div
+	class="card"
+	role="button"
+	tabindex="0"
+	aria-expanded={open}
+	onclick={cardOpenInvestment}
+	onkeydown={(e) => {
+		if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+			e.preventDefault()
+			toggleInvestment()
+		}
+	}}
+	class:hidden
+	class:open
+>
 	<Horizontal --horizontal-gap="var(--quarter-padding)">
 		<div class="chevron">
 			<ChevronRight
-				size={24}
+				size={20}
 				class="open-investment-icon"
 				color={hidden ? 'transparent' : undefined}
 			/>
@@ -114,6 +126,9 @@
 		</InvestmentColorBox>
 		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
 		<FlexItem />
+		{#if open}
+			<Badge>{investment.apy}% APY</Badge>
+		{/if}
 		{#if exhaustionWarning && !open}
 			<Badge variant="error">
 				<WarningAltFilled size={16} />
@@ -143,7 +158,7 @@
 			<div class="dropdown">
 				<Dropdown left buttonDimension="compact">
 					{#snippet button()}
-						<OverflowMenuVertical size={24} />
+						<OverflowMenuVertical size={20} />
 					{/snippet}
 					<List>
 						<ListItem onclick={toggleFocus}
@@ -176,33 +191,29 @@
 			</div>
 		{/if}
 	</Horizontal>
-	<div class="trasaction-container" class:modalShow={!open || hidden}>
-		<Horizontal>
-			{#if openTransaction && !viewOnly}
-				<Button
-					dimension="compact"
-					variant="solid"
-					onclick={(e: Event) => {
-						e.preventDefault()
-						openTransaction(investment)
-					}}>{$_('common.addTransaction')}</Button
-				>
-			{:else}
-				<Typography variant="h5">{$_('common.transactions')}</Typography>
-			{/if}
-			<FlexItem />
-			<Badge>{investment.apy}% APY</Badge>
-		</Horizontal>
+	<div class="transaction-container" class:modalShow={!open || hidden}>
 		{#if transactions.length === 0}
-			<section class="centered">
-				<img src={`${base}/images/no-transaction.svg`} alt={$_('common.noTransactionYet')} />
-				<Typography variant="h5">{$_('component.investmentCard.noTransactionsYet')}</Typography>
-				{#if !viewOnly}
-					<Typography variant="small"
-						>{$_('component.investmentCard.noTransactionsYetText')}</Typography
-					>
-				{/if}
-			</section>
+			<Vertical --vertical-gap="var(--padding)">
+				<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center">
+					<img src={`${base}/images/no-draft.svg`} alt={$_('common.noTransactionYet')} />
+					<Typography variant="h5">{$_('component.investmentCard.noTransactions')}</Typography>
+					{#if !viewOnly}
+						<Typography variant="small"
+							>{$_('component.investmentCard.noTransactionsText')}</Typography
+						>
+					{/if}
+				</Vertical>
+				<Horizontal --horizontal-justify-content="center" style="padding: var(--half-padding)"
+					><Button
+						variant="strong"
+						dimension="compact"
+						onclick={(e: Event) => {
+							e.preventDefault()
+							openTransaction?.(investment)
+						}}>{$_('common.addTransaction')}</Button
+					></Horizontal
+				>
+			</Vertical>
 		{:else}
 			<Vertical --vertical-gap="0">
 				{#each transactions as transaction}
@@ -222,13 +233,31 @@
 					/>
 				{/each}
 			</Vertical>
+			{#if openTransaction && !viewOnly}
+				<Horizontal --horizontal-justify-content="stretch"
+					><Button
+						variant="ghost"
+						dimension="compact"
+						flexGrow
+						onclick={(e: Event) => {
+							e.preventDefault()
+							openTransaction(investment)
+						}}>{$_('common.addTransaction')}</Button
+					></Horizontal
+				>
+			{/if}
 		{/if}
 	</div>
 </div>
 
 <DeleteModal
-	confirm={() =>
-		selectedTransactionIdForDeletion && deleteInvestment(selectedTransactionIdForDeletion)}
+	confirm={async () => {
+		if (selectedTransactionIdForDeletion) {
+			await deleteInvestment(selectedTransactionIdForDeletion)
+			selectedTransactionIdForDeletion = undefined
+			showDeleteInvestmentModal = false
+		}
+	}}
 	oncancel={() => {
 		showDeleteInvestmentModal = false
 		selectedTransactionIdForDeletion = undefined
@@ -243,10 +272,10 @@
 		border: 1px solid var(--colors-low);
 		border-radius: var(--border-radius);
 		background-color: var(--colors-base);
-		padding: var(--padding);
+		padding: var(--half-padding);
 		display: flex;
 		flex-direction: column;
-		gap: var(--padding);
+		gap: var(--half-padding);
 		cursor: pointer;
 		transition: border 0.2s;
 		transition-timing-function: ease-in;
@@ -301,16 +330,10 @@
 			transition: transform 0.2s ease-out;
 		}
 	}
-	.centered {
-		text-align: center;
-		img {
-			padding-bottom: var(--padding);
-		}
-	}
-	.trasaction-container {
+	.transaction-container {
 		display: flex;
 		flex-direction: column;
-		gap: var(--padding);
+		gap: var(--half-padding);
 		&.modalShow {
 			display: none;
 		}
