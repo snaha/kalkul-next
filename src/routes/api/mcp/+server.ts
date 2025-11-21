@@ -62,19 +62,19 @@ interface MCPResponse {
 
 // Zod schemas for type-safe argument parsing
 const idSchema = z.object({
-	id: z.number(),
+	id: z.string(),
 })
 
 const clientIdSchema = z.object({
-	client_id: z.number(),
+	client_id: z.string(),
 })
 
 const portfolioIdSchema = z.object({
-	portfolio_id: z.number(),
+	portfolio_id: z.string(),
 })
 
 const investmentIdSchema = z.object({
-	investment_id: z.number(),
+	investment_id: z.string(),
 })
 
 const identifierSchema = z.object({
@@ -91,7 +91,7 @@ const addClientArgsSchema = z.object({
 
 const updateClientArgsSchema = z
 	.object({
-		id: z.number(),
+		id: z.string(),
 		name: z.string(),
 		birth_date: z.string(),
 		email: z.string().email().optional(),
@@ -99,7 +99,7 @@ const updateClientArgsSchema = z
 	.passthrough()
 
 const addPortfolioArgsSchema = z.object({
-	client_id: z.number(),
+	client_id: z.string(),
 	name: z.string(),
 	start_date: z.string(),
 	end_date: z.string(),
@@ -108,8 +108,8 @@ const addPortfolioArgsSchema = z.object({
 })
 
 const updatePortfolioArgsSchema = z.object({
-	id: z.number(),
-	client_id: z.number().optional(),
+	id: z.string(),
+	client_id: z.string().optional(),
 	name: z.string().optional(),
 	start_date: z.string().optional(),
 	end_date: z.string().optional(),
@@ -118,7 +118,7 @@ const updatePortfolioArgsSchema = z.object({
 })
 
 const addInvestmentArgsSchema = z.object({
-	portfolio_id: z.number(),
+	portfolio_id: z.string(),
 	name: z.string(),
 	apy: z.number().optional(),
 	entry_fee: z.number().optional(),
@@ -132,12 +132,12 @@ const addInvestmentArgsSchema = z.object({
 
 const updateInvestmentArgsSchema = z
 	.object({
-		id: z.number(),
+		id: z.string(),
 	})
 	.passthrough()
 
 const addTransactionArgsSchema = z.object({
-	investment_id: z.number(),
+	investment_id: z.string(),
 	type: z.enum(['deposit', 'withdrawal']),
 	amount: z.number(),
 	date: z.string(),
@@ -150,8 +150,8 @@ const addTransactionArgsSchema = z.object({
 
 const updateTransactionArgsSchema = z
 	.object({
-		id: z.number(),
-		investment_id: z.number().optional(),
+		id: z.string(),
+		investment_id: z.string().optional(),
 		type: z.enum(['deposit', 'withdrawal']).optional(),
 		amount: z.number().optional(),
 		date: z.string(),
@@ -175,7 +175,7 @@ const reportErrorArgsSchema = z.object({
 })
 
 const duplicatePortfolioArgsSchema = z.object({
-	portfolio_id: z.number(),
+	portfolio_id: z.string(),
 	new_name: z.string(),
 })
 
@@ -736,7 +736,7 @@ async function handleToolCall(
 				const query = parsed.query?.toLowerCase() || ''
 				const entityType = parsed.entity_type || 'all'
 				const limit = parsed.limit || 10
-				const results: Array<{ id: number; type: string; name: string; description: string }> = []
+				const results: Array<{ id: string; type: string; name: string; description: string }> = []
 
 				// Validate: if list_all is true, entity_type must be specified
 				if (listAll && entityType === 'all') {
@@ -847,7 +847,7 @@ async function handleToolCall(
 				const parsed = z
 					.object({
 						entity_type: z.enum(['client', 'portfolio', 'investment', 'transaction']),
-						id: z.number(),
+						id: z.string(),
 					})
 					.parse(args)
 
@@ -1312,7 +1312,7 @@ async function handleToolCall(
 			}
 
 			case 'calculate_investment_projection': {
-				const parsed = z.object({ investment_id: z.number() }).parse(args)
+				const parsed = z.object({ investment_id: z.string() }).parse(args)
 
 				// Get the investment using adapter
 				const investment = await authenticatedAdapter.getInvestment(parsed.investment_id)
@@ -1376,7 +1376,7 @@ async function handleToolCall(
 			case 'evaluate_withdrawal_scenario': {
 				const parsed = z
 					.object({
-						investment_id: z.number(),
+						investment_id: z.string(),
 						new_withdrawal_amount: z.number(),
 						start_date: z.string(),
 						end_date: z.string().optional(),
@@ -1419,7 +1419,7 @@ async function handleToolCall(
 
 				// Add new withdrawal transaction
 				modifiedTransactions.push({
-					id: -1, // Temporary ID for calculation
+					id: 'temp-withdrawal',
 					investment_id: parsed.investment_id,
 					type: 'withdrawal',
 					amount: parsed.new_withdrawal_amount,
@@ -1428,6 +1428,7 @@ async function handleToolCall(
 					repeat: 1,
 					repeat_unit: 'month',
 					label: 'Modified Withdrawal Scenario',
+					inflation_adjusted: false,
 					created_at: '',
 					last_edited_at: '',
 				} as Transaction)
@@ -1453,7 +1454,7 @@ async function handleToolCall(
 			case 'compare_investment_scenarios': {
 				const parsed = z
 					.object({
-						investment_id: z.number(),
+						investment_id: z.string(),
 						modifications: z
 							.object({
 								apy: z.number().optional(),

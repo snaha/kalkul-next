@@ -17,9 +17,9 @@
 	import LocalizedDateInput from '$lib/components/localized-date-input.svelte'
 	import { addYears } from 'date-fns'
 
-	const clientId = $derived(parseInt(page.params.id, 10))
+	const clientId = $derived(page.params.id)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
-	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
+	const portfolioId = $derived(page.params.portfolio_id)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
 	let isLoading = $derived(clientStore.loading || portfolioStore.loading)

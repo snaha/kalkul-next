@@ -36,32 +36,32 @@ export interface Adapter {
 	updateLanguage: (newLanguage: string) => Promise<void>
 	updateUserMetadata: (data: Partial<TypedUserMetadata>) => Promise<void>
 
-	addClient: (client: ClientNoId) => Promise<number>
+	addClient: (client: ClientNoId) => Promise<string>
 	updateClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>
 	deleteClient: (client: Partial<Client> & Pick<Client, 'id'>) => Promise<void>
 	getClients: () => Promise<Client[]>
 
-	addPortfolio: (portfolio: Omit<Portfolio, MetaFields>) => Promise<number>
+	addPortfolio: (portfolio: Omit<Portfolio, MetaFields>) => Promise<string>
 	updatePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
 	deletePortfolio: (portfolio: Partial<Portfolio> & Pick<Portfolio, 'id'>) => Promise<void>
-	getPortfolios: (clientId: number) => Promise<Portfolio[]>
+	getPortfolios: (clientId: string) => Promise<Portfolio[]>
 
-	addInvestment: (investment: Omit<Investment, MetaFields>) => Promise<number>
+	addInvestment: (investment: Omit<Investment, MetaFields>) => Promise<string>
 	updateInvestment: (investment: Partial<Investment> & Pick<Investment, 'id'>) => Promise<void>
 	deleteInvestment: (investment: Partial<Investment> & Pick<Investment, 'id'>) => Promise<void>
-	getInvestments: (portfolioId: number) => Promise<Investment[]>
-	getInvestment: (investmentId: number) => Promise<Investment | undefined>
+	getInvestments: (portfolioId: string) => Promise<Investment[]>
+	getInvestment: (investmentId: string) => Promise<Investment | undefined>
 
 	// Goal methods (goals are investments with goal_data)
-	addGoal: (goal: Omit<Investment, MetaFields>) => Promise<number>
+	addGoal: (goal: Omit<Investment, MetaFields>) => Promise<string>
 	updateGoal: (goal: Partial<Investment> & Pick<Investment, 'id'>) => Promise<void>
 
-	addTransaction: (transaction: Omit<Transaction, MetaFields>) => Promise<number>
+	addTransaction: (transaction: Omit<Transaction, MetaFields>) => Promise<string>
 	updateTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
 	deleteTransaction: (transaction: Partial<Transaction> & Pick<Transaction, 'id'>) => Promise<void>
-	getTransactions: (investmentId: number) => Promise<Transaction[]>
-	getTransaction: (transactionId: number) => Promise<Transaction | undefined>
-	getPortfolio: (portfolioId: number) => Promise<Portfolio | undefined>
+	getTransactions: (investmentId: string) => Promise<Transaction[]>
+	getTransaction: (transactionId: string) => Promise<Transaction | undefined>
+	getPortfolio: (portfolioId: string) => Promise<Portfolio | undefined>
 
 	portfolioView: (id: string) => Promise<PortfolioView | undefined>
 

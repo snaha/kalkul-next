@@ -24,7 +24,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		expect(transactions).toHaveLength(3)
 		expect(transactions[0].type).toBe('deposit')
@@ -63,7 +63,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		expect(transactions).toHaveLength(2)
 		expect(transactions[0].type).toBe('deposit')
@@ -86,7 +86,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		expect(transactions[0].repeat_unit).toBe('year')
 		expect(transactions[1].repeat_unit).toBe('year')
@@ -107,7 +107,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const investmentId = 999
+		const investmentId = 'test-investment-999'
 		const transactions = retirementGoalToTransactions(goalData, investmentId, mockLabels)
 
 		transactions.forEach((transaction) => {
@@ -133,7 +133,7 @@ describe('retirementGoalToTransactions', () => {
 				inflation: 2.5,
 			}
 
-			const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+			const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 			// The deposit amount should be calculated
 			expect(transactions[0].amount).toBeGreaterThan(0)
@@ -156,7 +156,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		// Should only have initial savings and withdrawal, no recurring deposit
 		expect(transactions).toHaveLength(2)
@@ -181,7 +181,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		// Should only have initial savings and recurring deposit, no withdrawal
 		expect(transactions).toHaveLength(2)
@@ -206,7 +206,7 @@ describe('retirementGoalToTransactions', () => {
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 123, mockLabels)
+		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		// Should only have initial savings
 		expect(transactions).toHaveLength(1)

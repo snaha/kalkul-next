@@ -322,7 +322,7 @@ export default class Supabase implements Adapter {
 		return this.deleteData('portfolio', portfolio, portfolioStore)
 	}
 
-	async getPortfolios(clientId: number) {
+	async getPortfolios(clientId: string) {
 		const res = await this.supabase.from('portfolio').select('*').eq('client', clientId)
 		if (res.error) {
 			throw new Error(`Error fetching portfolios: ${res.error.message}`)
@@ -348,7 +348,7 @@ export default class Supabase implements Adapter {
 		transactionStore.data = transactionStore.data.filter((t) => t.investment_id !== investment.id)
 	}
 
-	async getInvestments(portfolioId: number) {
+	async getInvestments(portfolioId: string) {
 		const res = await this.supabase.from('investment').select('*').eq('portfolio_id', portfolioId)
 		if (res.error) {
 			throw new Error(`Error fetching investments: ${res.error.message}`)
@@ -357,7 +357,7 @@ export default class Supabase implements Adapter {
 		}
 	}
 
-	async getInvestment(investmentId: number) {
+	async getInvestment(investmentId: string) {
 		const res = await this.supabase.from('investment').select('*').eq('id', investmentId).single()
 		if (res.error) {
 			if (res.error.code === POSTGRES_NO_ROWS_ERROR_CODE) {
@@ -414,7 +414,7 @@ export default class Supabase implements Adapter {
 		return this.addData('transaction', transaction, transactionStore)
 	}
 
-	private async updateData<T extends { id: number }>(
+	private async updateData<T extends { id: string }>(
 		tableName: string,
 		value: Partial<T> & Pick<T, 'id'>,
 		store: Store<T>,
@@ -436,7 +436,7 @@ export default class Supabase implements Adapter {
 		this.updateData('transaction', transaction, transactionStore)
 	}
 
-	private async deleteData<T extends { id: number }>(tableName: string, value: T, store: Store<T>) {
+	private async deleteData<T extends { id: string }>(tableName: string, value: T, store: Store<T>) {
 		const origData = store.data
 		store.data = store.data.filter((item) => item.id !== value.id)
 
@@ -453,7 +453,7 @@ export default class Supabase implements Adapter {
 		return this.deleteData('transaction', transaction, transactionStore)
 	}
 
-	async getTransactions(investmentId: number) {
+	async getTransactions(investmentId: string) {
 		const res = await this.supabase
 			.from('transaction')
 			.select('*')
@@ -465,7 +465,7 @@ export default class Supabase implements Adapter {
 		}
 	}
 
-	async getTransaction(transactionId: number) {
+	async getTransaction(transactionId: string) {
 		const res = await this.supabase.from('transaction').select('*').eq('id', transactionId).single()
 		if (res.error) {
 			if (res.error.code === POSTGRES_NO_ROWS_ERROR_CODE) {
@@ -477,7 +477,7 @@ export default class Supabase implements Adapter {
 		}
 	}
 
-	async getPortfolio(portfolioId: number) {
+	async getPortfolio(portfolioId: string) {
 		const res = await this.supabase.from('portfolio').select('*').eq('id', portfolioId).single()
 		if (res.error) {
 			if (res.error.code === POSTGRES_NO_ROWS_ERROR_CODE) {

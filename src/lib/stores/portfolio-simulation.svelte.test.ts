@@ -5,8 +5,8 @@ import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 
 describe('withPortfolioSimulationStore', () => {
 	const mockPortfolio: Portfolio = {
-		id: 1,
-		client: 1,
+		id: 'test-portfolio-1',
+		client: 'test-client-1',
 		name: 'Test Portfolio',
 		currency: 'USD',
 		start_date: '2024-01-01',
@@ -18,8 +18,8 @@ describe('withPortfolioSimulationStore', () => {
 	}
 
 	const mockInvestment1: Investment = {
-		id: 1,
-		portfolio_id: 1,
+		id: 'test-investment-1',
+		portfolio_id: 'test-portfolio-1',
 		name: 'Investment 1',
 		apy: 5,
 		entry_fee: 0,
@@ -37,8 +37,8 @@ describe('withPortfolioSimulationStore', () => {
 	}
 
 	const mockInvestment2: Investment = {
-		id: 2,
-		portfolio_id: 1,
+		id: 'test-investment-2',
+		portfolio_id: 'test-portfolio-1',
 		name: 'Investment 2',
 		apy: 7,
 		entry_fee: 0,
@@ -56,8 +56,8 @@ describe('withPortfolioSimulationStore', () => {
 	}
 
 	const mockTransaction1: Transaction = {
-		id: 1,
-		investment_id: 1,
+		id: 'test-transaction-1',
+		investment_id: 'test-investment-1',
 		date: '2024-01-01',
 		amount: 1000,
 		type: 'deposit',
@@ -71,8 +71,8 @@ describe('withPortfolioSimulationStore', () => {
 	}
 
 	const mockTransaction2: Transaction = {
-		id: 2,
-		investment_id: 2,
+		id: 'test-transaction-2',
+		investment_id: 'test-investment-2',
 		date: '2024-01-01',
 		amount: 2000,
 		type: 'deposit',
@@ -158,8 +158,8 @@ describe('withPortfolioSimulationStore', () => {
 			const store = withPortfolioSimulationStore()
 
 			const unrelatedTransaction: Transaction = {
-				id: 3,
-				investment_id: 999, // Not in our investments
+				id: 'test-transaction-3',
+				investment_id: 'test-investment-999', // Not in our investments
 				date: '2024-01-01',
 				amount: 5000,
 				type: 'deposit',

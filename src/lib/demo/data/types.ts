@@ -9,7 +9,7 @@ export type DemoStateData = {
 	goals: Goal[]
 	investments: InvestmentWithColorIndex[]
 	transactions: Transaction[]
-	transactionGoalMap: Map<number, string>
+	transactionGoalMap: Map<string, string>
 	graphData: PortfolioSimulation
 	goalsGraphData?: PortfolioSimulation
 	goalInvestments: InvestmentWithColorIndex[]

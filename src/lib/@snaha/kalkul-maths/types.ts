@@ -1,6 +1,6 @@
 export type TransactionMapEntry = {
 	amount: number
-	transactionIds: number[]
+	transactionIds: string[]
 }
 
 export type TransactionMap = Map<string, TransactionMapEntry>
@@ -8,13 +8,13 @@ export type TransactionMap = Map<string, TransactionMapEntry>
 export type ExhaustionWarning = {
 	date: Date
 	missingAmount: number
-	transactionIds: number[]
+	transactionIds: string[]
 }
 
 export type TransactionType = 'deposit' | 'withdrawal'
 
 export type Transaction = {
-	id?: number
+	id?: string
 	date: string
 	repeat?: number | null
 	repeat_unit?: Period | null

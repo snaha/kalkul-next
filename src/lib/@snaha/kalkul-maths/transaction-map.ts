@@ -23,7 +23,7 @@ export function addSingleEvent(
 	portfolioStartDate: string,
 	inflationRate = 0,
 	inflationAdjusted?: boolean,
-	transactionId?: number,
+	transactionId?: string,
 ): void {
 	const dateString = date
 	const existingEntry = map.get(dateString) ?? { amount: 0, transactionIds: [] }

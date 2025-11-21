@@ -78,7 +78,7 @@
 	let transactionsOpen = $state(true)
 	let linkedInvestmentsOpen = $state(true)
 	let showDeleteGoalModal = $state(false)
-	let selectedGoalIdForDeletion = $state<number | undefined>(undefined)
+	let selectedGoalIdForDeletion = $state<string | undefined>(undefined)
 
 	const transactions = $derived(providedTransactions ?? transactionStore.filter(investment.id))
 	// Linked investments will be implemented in Task 5
@@ -103,7 +103,7 @@
 		alert($_('demo.notImplemented'))
 	}
 
-	async function deleteGoal(goalId: number) {
+	async function deleteGoal(goalId: string) {
 		await adapter.deleteInvestment({ id: goalId })
 	}
 

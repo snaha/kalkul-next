@@ -74,7 +74,7 @@
 		goal,
 	}: Props = $props()
 
-	let selectedTransactionIdForDeletion: number | undefined = $state(undefined)
+	let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
 	let showDeleteInvestmentModal = $state(false)
 	let transactionsOpen = $state(true)
 	let linkedInvestmentsOpen = $state(true)
@@ -97,7 +97,7 @@
 		open = !open
 	}
 
-	async function deleteInvestment(investmentId: number) {
+	async function deleteInvestment(investmentId: string) {
 		await adapters.deleteInvestment({ id: investmentId })
 	}
 

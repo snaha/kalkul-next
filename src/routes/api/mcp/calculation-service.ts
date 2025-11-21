@@ -168,7 +168,7 @@ export function getCurrentPortfolioValueService(
 	transactions: Transaction[],
 ): number {
 	const transactionStore = {
-		filter: (investmentId: number) => transactions.filter((t) => t.investment_id === investmentId),
+		filter: (investmentId: string) => transactions.filter((t) => t.investment_id === investmentId),
 	}
 
 	return getCurrentPortfolioValue(transactionStore, investments)

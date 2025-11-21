@@ -9,9 +9,9 @@
 	import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
 	import type { RetirementCalculationInput } from '$lib/@snaha/kalkul-calculators/retirement/retirement'
 
-	const clientId = $derived(parseInt(page.params.id, 10))
+	const clientId = $derived(page.params.id)
 	const client = $derived(clientStore.data.find((c) => c.id === clientId))
-	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
+	const portfolioId = $derived(page.params.portfolio_id)
 	const portfolio = $derived(portfolioStore.data.find((p) => p.id === portfolioId))
 
 	function close() {

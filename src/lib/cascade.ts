@@ -4,8 +4,8 @@ import { portfolioStore } from './stores/portfolio.svelte'
 import { transactionStore } from './stores/transaction.svelte'
 import type { InvestmentWithColorIndex, Transaction } from './types'
 
-export async function cascadeDuplicatePortfolio(clientId: number, portfolioId: number) {
-	let duplicatedPortfolioId: number | undefined = undefined
+export async function cascadeDuplicatePortfolio(clientId: string, portfolioId: string) {
+	let duplicatedPortfolioId: string | undefined = undefined
 	try {
 		const portfolios = portfolioStore.filter(clientId)
 		const originalPortfolio = portfolios.find((portfolio) => portfolio.id === portfolioId)
@@ -40,9 +40,9 @@ export async function cascadeDuplicatePortfolio(clientId: number, portfolioId: n
 
 export async function cascadeDuplicateInvestment(
 	investment: InvestmentWithColorIndex,
-	duplicatedPortfolioId: number,
+	duplicatedPortfolioId: string,
 ) {
-	let duplicatedInvestmentId: number | undefined = undefined
+	let duplicatedInvestmentId: string | undefined = undefined
 	try {
 		const duplicatedInvestment = {
 			...investment,
@@ -71,7 +71,7 @@ export async function cascadeDuplicateInvestment(
 
 async function cascadeDuplicateTransaction(
 	transaction: Transaction,
-	duplicatedInvestmentId: number,
+	duplicatedInvestmentId: string,
 ) {
 	try {
 		const duplicatedTransaction = {

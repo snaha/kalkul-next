@@ -4,7 +4,7 @@ interface PortfolioStore extends Store<Portfolio> {
 	data: Portfolio[]
 	loading: boolean
 	reset: () => void
-	filter: (clientId: number) => Portfolio[]
+	filter: (clientId: string) => Portfolio[]
 }
 
 function withPortfolioStore(): PortfolioStore {
@@ -29,7 +29,7 @@ function withPortfolioStore(): PortfolioStore {
 			data = []
 			loading = true
 		},
-		filter(clientId: number) {
+		filter(clientId: string) {
 			return data.filter((portfolio) => portfolio.client === clientId)
 		},
 	}

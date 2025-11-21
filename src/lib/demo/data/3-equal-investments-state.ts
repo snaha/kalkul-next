@@ -10,10 +10,10 @@ export function getState3Data(): DemoStateData {
 				type: 'retirement',
 				currency: 'CZK',
 				linkedInvestments: [
-					{ investmentId: -1, percentage: 25 },
-					{ investmentId: -2, percentage: 25 },
-					{ investmentId: -3, percentage: 25 },
-					{ investmentId: -4, percentage: 25 },
+					{ investmentId: 'demo-investment-1', percentage: 25 },
+					{ investmentId: 'demo-investment-2', percentage: 25 },
+					{ investmentId: 'demo-investment-3', percentage: 25 },
+					{ investmentId: 'demo-investment-4', percentage: 25 },
 				],
 				customDepositAmount: 4505.25,
 				calculationInput: {
@@ -31,8 +31,8 @@ export function getState3Data(): DemoStateData {
 		],
 		investments: [
 			{
-				id: -1,
-				portfolio_id: -1,
+				id: 'demo-investment-1',
+				portfolio_id: 'demo-portfolio-1',
 				name: 'Evropské akcie',
 				apy: 7.2,
 				type: 'mutual_fund',
@@ -49,8 +49,8 @@ export function getState3Data(): DemoStateData {
 				last_edited_at: '2024-01-01T00:00:00.000Z',
 			},
 			{
-				id: -2,
-				portfolio_id: -1,
+				id: 'demo-investment-2',
+				portfolio_id: 'demo-portfolio-1',
 				name: 'Americké akcie',
 				apy: 8.68,
 				type: 'mutual_fund',
@@ -67,8 +67,8 @@ export function getState3Data(): DemoStateData {
 				last_edited_at: '2024-01-01T00:00:00.000Z',
 			},
 			{
-				id: -3,
-				portfolio_id: -1,
+				id: 'demo-investment-3',
+				portfolio_id: 'demo-portfolio-1',
 				name: 'České dluhopisy',
 				apy: 3.55,
 				type: 'bond',
@@ -85,8 +85,8 @@ export function getState3Data(): DemoStateData {
 				last_edited_at: '2024-01-01T00:00:00.000Z',
 			},
 			{
-				id: -4,
-				portfolio_id: -1,
+				id: 'demo-investment-4',
+				portfolio_id: 'demo-portfolio-1',
 				name: 'Zlato',
 				apy: 5.35,
 				type: 'commodity',
@@ -105,8 +105,8 @@ export function getState3Data(): DemoStateData {
 		],
 		transactions: [
 			{
-				id: -1,
-				investment_id: -1,
+				id: 'demo-transaction-1',
+				investment_id: 'demo-investment-1',
 				amount: 70362.5,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -119,8 +119,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -2,
-				investment_id: -1,
+				id: 'demo-transaction-2',
+				investment_id: 'demo-investment-1',
 				amount: 1126.3125,
 				date: '2025-02-01',
 				type: 'deposit',
@@ -133,8 +133,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -3,
-				investment_id: -1,
+				id: 'demo-transaction-3',
+				investment_id: 'demo-investment-1',
 				amount: 2187.5,
 				date: '2045-03-01',
 				type: 'withdrawal',
@@ -147,8 +147,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -4,
-				investment_id: -2,
+				id: 'demo-transaction-4',
+				investment_id: 'demo-investment-2',
 				amount: 70362.5,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -161,8 +161,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -5,
-				investment_id: -2,
+				id: 'demo-transaction-5',
+				investment_id: 'demo-investment-2',
 				amount: 1126.3125,
 				date: '2025-02-01',
 				type: 'deposit',
@@ -175,8 +175,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -6,
-				investment_id: -2,
+				id: 'demo-transaction-6',
+				investment_id: 'demo-investment-2',
 				amount: 2187.5,
 				date: '2045-03-01',
 				type: 'withdrawal',
@@ -189,8 +189,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -7,
-				investment_id: -3,
+				id: 'demo-transaction-7',
+				investment_id: 'demo-investment-3',
 				amount: 70362.5,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -203,8 +203,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -8,
-				investment_id: -3,
+				id: 'demo-transaction-8',
+				investment_id: 'demo-investment-3',
 				amount: 1126.3125,
 				date: '2025-02-01',
 				type: 'deposit',
@@ -217,8 +217,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -9,
-				investment_id: -3,
+				id: 'demo-transaction-9',
+				investment_id: 'demo-investment-3',
 				amount: 2187.5,
 				date: '2045-03-01',
 				type: 'withdrawal',
@@ -231,8 +231,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -10,
-				investment_id: -4,
+				id: 'demo-transaction-10',
+				investment_id: 'demo-investment-4',
 				amount: 70362.5,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -245,8 +245,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -11,
-				investment_id: -4,
+				id: 'demo-transaction-11',
+				investment_id: 'demo-investment-4',
 				amount: 1126.3125,
 				date: '2025-02-01',
 				type: 'deposit',
@@ -259,8 +259,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -12,
-				investment_id: -4,
+				id: 'demo-transaction-12',
+				investment_id: 'demo-investment-4',
 				amount: 2187.5,
 				date: '2045-03-01',
 				type: 'withdrawal',
@@ -274,18 +274,18 @@ export function getState3Data(): DemoStateData {
 			},
 		],
 		transactionGoalMap: new Map([
-			[-1, get(_)('demo.investments.retirement')],
-			[-2, get(_)('demo.investments.retirement')],
-			[-3, get(_)('demo.investments.retirement')],
-			[-4, get(_)('demo.investments.retirement')],
-			[-5, get(_)('demo.investments.retirement')],
-			[-6, get(_)('demo.investments.retirement')],
-			[-7, get(_)('demo.investments.retirement')],
-			[-8, get(_)('demo.investments.retirement')],
-			[-9, get(_)('demo.investments.retirement')],
-			[-10, get(_)('demo.investments.retirement')],
-			[-11, get(_)('demo.investments.retirement')],
-			[-12, get(_)('demo.investments.retirement')],
+			['demo-transaction-1', get(_)('demo.investments.retirement')],
+			['demo-transaction-2', get(_)('demo.investments.retirement')],
+			['demo-transaction-3', get(_)('demo.investments.retirement')],
+			['demo-transaction-4', get(_)('demo.investments.retirement')],
+			['demo-transaction-5', get(_)('demo.investments.retirement')],
+			['demo-transaction-6', get(_)('demo.investments.retirement')],
+			['demo-transaction-7', get(_)('demo.investments.retirement')],
+			['demo-transaction-8', get(_)('demo.investments.retirement')],
+			['demo-transaction-9', get(_)('demo.investments.retirement')],
+			['demo-transaction-10', get(_)('demo.investments.retirement')],
+			['demo-transaction-11', get(_)('demo.investments.retirement')],
+			['demo-transaction-12', get(_)('demo.investments.retirement')],
 		]),
 		// Import the actual graph data from the existing JSON file
 		graphData: {
@@ -917,8 +917,8 @@ export function getState3Data(): DemoStateData {
 		// Goal displayed as investment on goals tab
 		goalInvestments: [
 			{
-				id: -1,
-				portfolio_id: -1,
+				id: 'demo-goal-investment-1',
+				portfolio_id: 'demo-portfolio-1',
 				name: get(_)('demo.investments.retirement'),
 				apy: 5.5,
 				type: 'goal',
@@ -939,8 +939,8 @@ export function getState3Data(): DemoStateData {
 		// Goal transactions for goals tab
 		goalTransactions: [
 			{
-				id: -1,
-				investment_id: -1,
+				id: 'demo-goal-transaction-1',
+				investment_id: 'demo-goal-investment-1',
 				amount: 281450,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -953,8 +953,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -2,
-				investment_id: -1,
+				id: 'demo-goal-transaction-2',
+				investment_id: 'demo-goal-investment-1',
 				amount: 4505.25,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -967,8 +967,8 @@ export function getState3Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -3,
-				investment_id: -1,
+				id: 'demo-goal-transaction-3',
+				investment_id: 'demo-goal-investment-1',
 				amount: 8750,
 				date: '2045-03-01',
 				type: 'withdrawal',

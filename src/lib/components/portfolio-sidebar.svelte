@@ -38,8 +38,8 @@
 		goalsFeatureEnabled: boolean
 		selectedTab: 'goals' | 'investments'
 		transactionCount: number
-		clientId: number
-		portfolioId: number
+		clientId: string
+		portfolioId: string
 		parentContainer?: HTMLElement
 	}
 

@@ -7,7 +7,7 @@
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { _ } from 'svelte-i18n'
 
-	const portfolioId = parseInt(page.params.portfolio_id, 10)
+	const portfolioId = page.params.portfolio_id
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
 	function close() {

@@ -33,7 +33,7 @@ type TransactionLabels = {
  */
 export function retirementGoalToTransactions(
 	goalData: RetirementGoalData,
-	investmentId: number,
+	investmentId: string,
 	labels: TransactionLabels,
 ): Omit<Transaction, 'id'>[] {
 	const transactions: Omit<Transaction, 'id'>[] = []

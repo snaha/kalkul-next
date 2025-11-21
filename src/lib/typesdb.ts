@@ -73,7 +73,7 @@ export type Database = {
           birth_date: string
           created_at: string
           email: string
-          id: number
+          id: string
           name: string
         }
         Insert: {
@@ -81,7 +81,7 @@ export type Database = {
           birth_date: string
           created_at?: string
           email: string
-          id?: number
+          id?: string
           name: string
         }
         Update: {
@@ -89,7 +89,7 @@ export type Database = {
           birth_date?: string
           created_at?: string
           email?: string
-          id?: number
+          id?: string
           name?: string
         }
         Relationships: []
@@ -97,23 +97,23 @@ export type Database = {
       goal_investment_link: {
         Row: {
           created_at: string
-          goal_id: number
-          id: number
-          investment_id: number
+          goal_id: string
+          id: string
+          investment_id: string
           percentage: number | null
         }
         Insert: {
           created_at?: string
-          goal_id: number
-          id?: number
-          investment_id: number
+          goal_id: string
+          id?: string
+          investment_id: string
           percentage?: number | null
         }
         Update: {
           created_at?: string
-          goal_id?: number
-          id?: number
-          investment_id?: number
+          goal_id?: string
+          id?: string
+          investment_id?: string
           percentage?: number | null
         }
         Relationships: [
@@ -143,12 +143,12 @@ export type Database = {
           exit_fee: number | null
           exit_fee_type: string | null
           goal_data: Json | null
-          id: number
+          id: string
           last_edited_at: string | null
           management_fee: number | null
           management_fee_type: string | null
           name: string
-          portfolio_id: number
+          portfolio_id: string
           success_fee: number | null
           ter: number | null
           type: string | null
@@ -162,12 +162,12 @@ export type Database = {
           exit_fee?: number | null
           exit_fee_type?: string | null
           goal_data?: Json | null
-          id?: number
+          id?: string
           last_edited_at?: string | null
           management_fee?: number | null
           management_fee_type?: string | null
           name: string
-          portfolio_id: number
+          portfolio_id: string
           success_fee?: number | null
           ter?: number | null
           type?: string | null
@@ -181,12 +181,12 @@ export type Database = {
           exit_fee?: number | null
           exit_fee_type?: string | null
           goal_data?: Json | null
-          id?: number
+          id?: string
           last_edited_at?: string | null
           management_fee?: number | null
           management_fee_type?: string | null
           name?: string
-          portfolio_id?: number
+          portfolio_id?: string
           success_fee?: number | null
           ter?: number | null
           type?: string | null
@@ -251,11 +251,11 @@ export type Database = {
       }
       portfolio: {
         Row: {
-          client: number
+          client: string
           created_at: string
           currency: string
           end_date: string
-          id: number
+          id: string
           inflation_rate: number
           last_edited_at: string
           link: string | null
@@ -263,11 +263,11 @@ export type Database = {
           start_date: string
         }
         Insert: {
-          client: number
+          client: string
           created_at?: string
           currency: string
           end_date: string
-          id?: number
+          id?: string
           inflation_rate: number
           last_edited_at?: string
           link?: string | null
@@ -275,11 +275,11 @@ export type Database = {
           start_date: string
         }
         Update: {
-          client?: number
+          client?: string
           created_at?: string
           currency?: string
           end_date?: string
-          id?: number
+          id?: string
           inflation_rate?: number
           last_edited_at?: string
           link?: string | null
@@ -341,9 +341,9 @@ export type Database = {
           created_at: string
           date: string
           end_date: string | null
-          id: number
+          id: string
           inflation_adjusted: boolean
-          investment_id: number
+          investment_id: string
           label: string | null
           last_edited_at: string | null
           repeat: number | null
@@ -355,9 +355,9 @@ export type Database = {
           created_at?: string
           date: string
           end_date?: string | null
-          id?: number
+          id?: string
           inflation_adjusted?: boolean
-          investment_id: number
+          investment_id: string
           label?: string | null
           last_edited_at?: string | null
           repeat?: number | null
@@ -369,9 +369,9 @@ export type Database = {
           created_at?: string
           date?: string
           end_date?: string | null
-          id?: number
+          id?: string
           inflation_adjusted?: boolean
-          investment_id?: number
+          investment_id?: string
           label?: string | null
           last_edited_at?: string | null
           repeat?: number | null
@@ -415,14 +415,14 @@ export type Database = {
     }
     CompositeTypes: {
       client_view_type: {
-        id: number | null
+        id: string | null
         name: string | null
         birth_date: string | null
         advisor: string | null
         created_at: string | null
       }
       investment_view_type: {
-        id: number | null
+        id: string | null
         apy: number | null
         entry_fee: number | null
         exit_fee: number | null
@@ -436,7 +436,7 @@ export type Database = {
         last_edited_at: string | null
       }
       portfolio_view_type: {
-        id: number | null
+        id: string | null
         name: string | null
         start_date: string | null
         end_date: string | null
@@ -447,7 +447,7 @@ export type Database = {
         last_edited_at: string | null
       }
       transaction_view_type: {
-        id: number | null
+        id: string | null
         type: string | null
         amount: number | null
         label: string | null
@@ -457,7 +457,7 @@ export type Database = {
         end_date: string | null
         created_at: string | null
         last_edited_at: string | null
-        investment_id: number | null
+        investment_id: string | null
       }
     }
   }

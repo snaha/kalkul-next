@@ -16,8 +16,8 @@
 	const goal = $derived(demoStore.goals[goalIndex])
 	const portfolio = $derived(demoStore.portfolio)
 
-	let investmentWeights = $state<{ investmentId: number; percentage: number }[]>([])
-	let lockedInvestments = $state<Set<number>>(new Set())
+	let investmentWeights = $state<{ investmentId: string; percentage: number }[]>([])
+	let lockedInvestments = $state<Set<string>>(new Set())
 
 	$effect(() => {
 		if (goal && investmentWeights.length === 0) {
@@ -62,7 +62,7 @@
 		investmentWeights = [...investmentWeights]
 	}
 
-	function updateWeight(investmentId: number, newPercentage: number, lockInvestment = true) {
+	function updateWeight(investmentId: string, newPercentage: number, lockInvestment = true) {
 		const index = investmentWeights.findIndex((w) => w.investmentId === investmentId)
 		if (index === -1) return
 
@@ -81,21 +81,21 @@
 		distributeToUnlocked()
 	}
 
-	function incrementWeight(investmentId: number) {
+	function incrementWeight(investmentId: string) {
 		const weight = investmentWeights.find((w) => w.investmentId === investmentId)
 		if (weight) {
 			updateWeight(investmentId, weight.percentage + 1)
 		}
 	}
 
-	function decrementWeight(investmentId: number) {
+	function decrementWeight(investmentId: string) {
 		const weight = investmentWeights.find((w) => w.investmentId === investmentId)
 		if (weight) {
 			updateWeight(investmentId, weight.percentage - 1)
 		}
 	}
 
-	function toggleLock(investmentId: number) {
+	function toggleLock(investmentId: string) {
 		if (lockedInvestments.has(investmentId)) {
 			lockedInvestments.delete(investmentId)
 			lockedInvestments = new Set(lockedInvestments)
@@ -311,7 +311,7 @@
 
 			<!-- Donut chart -->
 			<div class="chart-container">
-				{#snippet chartSegment(weight: { investmentId: number; percentage: number }, index: number)}
+				{#snippet chartSegment(weight: { investmentId: string; percentage: number }, index: number)}
 					{@const colorIndex = demoStore.investments.findIndex(
 						(inv) => inv.id === weight.investmentId,
 					)}

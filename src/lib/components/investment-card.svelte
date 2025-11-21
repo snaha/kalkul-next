@@ -64,7 +64,7 @@
 		isCalculating = false,
 	}: Props = $props()
 
-	let selectedTransactionIdForDeletion: number | undefined = $state(undefined)
+	let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
 	let showDeleteInvestmentModal = $state(false)
 	const transactions = $derived(transactionStore.filter(investment.id))
 
@@ -83,7 +83,7 @@
 		goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
 	}
 
-	async function deleteInvestment(investmentId: number) {
+	async function deleteInvestment(investmentId: string) {
 		await adapters.deleteInvestment({ id: investmentId })
 	}
 

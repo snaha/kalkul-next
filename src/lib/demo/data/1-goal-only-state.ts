@@ -248,8 +248,8 @@ export function getState1Data(): DemoStateData {
 		// Goal displayed as investment on goals tab
 		goalInvestments: [
 			{
-				id: -1,
-				portfolio_id: -1,
+				id: 'demo-goal-investment-1',
+				portfolio_id: 'demo-portfolio-1',
 				name: get(_)('demo.investments.retirement'),
 				apy: 5.5,
 				type: 'goal',
@@ -270,8 +270,8 @@ export function getState1Data(): DemoStateData {
 		// Goal transactions for goals tab
 		goalTransactions: [
 			{
-				id: -1,
-				investment_id: -1,
+				id: 'demo-goal-transaction-1',
+				investment_id: 'demo-goal-investment-1',
 				amount: 281450,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -284,8 +284,8 @@ export function getState1Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -2,
-				investment_id: -1,
+				id: 'demo-goal-transaction-2',
+				investment_id: 'demo-goal-investment-1',
 				amount: 4505.25,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -298,8 +298,8 @@ export function getState1Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -3,
-				investment_id: -1,
+				id: 'demo-goal-transaction-3',
+				investment_id: 'demo-goal-investment-1',
 				amount: 8750,
 				date: '2045-03-01',
 				type: 'withdrawal',

@@ -224,7 +224,7 @@ export function getInvestmentValues(
 
 	let exhaustionDate: Date | undefined
 	let totalMissingAmount = DECIMAL_0
-	let exhaustedTransactionIds: number[] | undefined
+	let exhaustedTransactionIds: string[] | undefined
 
 	let currentValue = DECIMAL_0
 	let currentFeeBreakdown: FeeBreakdown<Decimal> = resetFeeBreakdown(DECIMAL_0)
@@ -467,7 +467,7 @@ export function getCurrentInvestmentValue(
  * @returns The total current value of the portfolio
  */
 export function getCurrentPortfolioValue(
-	transactionStore: { filter: (investmentId: number) => Transaction[] },
+	transactionStore: { filter: (investmentId: string) => Transaction[] },
 	investments: Investment[],
 	asOfDate: Date = new Date(),
 	inflationRate = 0,

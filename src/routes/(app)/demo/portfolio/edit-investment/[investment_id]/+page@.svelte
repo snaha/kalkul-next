@@ -6,7 +6,7 @@
 	import { demoStore } from '$lib/demo/stores/demo.svelte'
 	import { _ } from 'svelte-i18n'
 
-	const investmentId = $derived(parseInt(page.params.investment_id, 10))
+	const investmentId = $derived(page.params.investment_id)
 	const portfolio = $derived(demoStore.portfolio)
 	const investment = $derived(demoStore.investments.find((i) => i.id === investmentId))
 

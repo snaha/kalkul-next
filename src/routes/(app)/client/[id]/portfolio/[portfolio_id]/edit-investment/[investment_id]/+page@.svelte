@@ -8,8 +8,8 @@
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { _ } from 'svelte-i18n'
 
-	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
-	const investmentId = $derived(parseInt(page.params.investment_id, 10))
+	const portfolioId = $derived(page.params.portfolio_id)
+	const investmentId = $derived(page.params.investment_id)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	const investment = $derived(
 		investmentStore.data.find((investment) => investment.id === investmentId),

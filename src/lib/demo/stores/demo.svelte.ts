@@ -28,7 +28,7 @@ export const RETIREMENT_DEFAULTS = {
 }
 
 export type LinkedInvestment = {
-	investmentId: number
+	investmentId: string
 	percentage: number
 }
 
@@ -59,8 +59,8 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 		// Add initial deposit if any
 		if (g.calculationInput.currentSavings > 0) {
 			transactions.push({
-				id: -1, // Demo ID
-				investment_id: -1, // Demo investment ID
+				id: 'demo-transaction-1',
+				investment_id: 'demo-investment-1',
 				amount: g.calculationInput.currentSavings,
 				date: formatDate(g.calculationInput.depositStart),
 				type: 'deposit',
@@ -76,8 +76,8 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 		// Add regular deposits until retirement/education
 		const amount = g.customDepositAmount ?? calculateRequiredDeposit(g.calculationInput)
 		transactions.push({
-			id: -2, // Demo ID
-			investment_id: -1, // Demo investment ID
+			id: 'demo-transaction-2',
+			investment_id: 'demo-investment-1',
 			amount,
 			date: formatDate(g.calculationInput.depositStart),
 			type: 'deposit',
@@ -96,8 +96,8 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 				? get(_)('demo.transactions.educationWithdrawal')
 				: get(_)('demo.transactions.retirementWithdrawal')
 		transactions.push({
-			id: -3, // Demo ID
-			investment_id: -1, // Demo investment ID
+			id: 'demo-transaction-3',
+			investment_id: 'demo-investment-1',
 			amount: g.calculationInput.desiredBudget,
 			date: formatDate(g.calculationInput.retirementStart),
 			type: 'withdrawal',
@@ -130,8 +130,8 @@ export function goalToInvestment(goal: Goal): InvestmentWithColorIndex {
 				? get(_)('demo.investments.education')
 				: 'Goal'
 	return {
-		id: -1, // Demo ID
-		portfolio_id: -1, // Demo portfolio ID
+		id: 'demo-investment-1',
+		portfolio_id: 'demo-portfolio-1',
 		name,
 		apy: goal.calculationInput.apy,
 		type: 'goal',
@@ -159,7 +159,7 @@ type DemoStateData = {
 	goals: Goal[]
 	investments: InvestmentWithColorIndex[]
 	transactions: Transaction[]
-	transactionGoalMap: Map<number, string>
+	transactionGoalMap: Map<string, string>
 	graphData: PortfolioSimulation
 	goalsGraphData?: PortfolioSimulation
 	goalInvestments: InvestmentWithColorIndex[]
@@ -173,7 +173,7 @@ class DemoStore {
 	portfolio = $state<Portfolio | undefined>(undefined)
 	investments = $state<Investment[]>([])
 	transactions = $state<Transaction[]>([])
-	transactionGoalMap = $state<Map<number, string>>(new Map())
+	transactionGoalMap = $state<Map<string, string>>(new Map())
 
 	// Derived data for portfolio visualization
 	graphData = $state<PortfolioSimulation | undefined>(undefined)
@@ -210,7 +210,7 @@ class DemoStore {
 		this.setState(2)
 	}
 
-	linkInvestmentToGoal(goalIndex: number, investmentId: number) {
+	linkInvestmentToGoal(goalIndex: number, investmentId: string) {
 		const goal = this.goals[goalIndex]
 		if (!goal) return
 
@@ -229,7 +229,7 @@ class DemoStore {
 		this.regenerateAllTransactions()
 	}
 
-	unlinkInvestmentFromGoal(goalIndex: number, investmentId: number) {
+	unlinkInvestmentFromGoal(goalIndex: number, investmentId: string) {
 		const goal = this.goals[goalIndex]
 		if (!goal) return
 
@@ -264,7 +264,7 @@ class DemoStore {
 		}
 	}
 
-	deleteInvestment(id: number) {
+	deleteInvestment(id: string) {
 		const index = this.investments.findIndex((i) => i.id === id)
 		if (index !== -1) {
 			this.investments.splice(index, 1)
@@ -276,7 +276,7 @@ class DemoStore {
 		}
 	}
 
-	private generateDerivedTransactions(goalIndex: number, investmentId: number): Transaction[] {
+	private generateDerivedTransactions(goalIndex: number, investmentId: string): Transaction[] {
 		const goal = this.goals[goalIndex]
 		if (!goal) return []
 
@@ -308,7 +308,7 @@ class DemoStore {
 		this.transactions = []
 		this.transactionGoalMap = new Map()
 
-		let nextTransactionId = -1
+		let nextTransactionId = 1
 
 		// Generate transactions for each goal's linked investments
 		this.goals.forEach((goal, goalIndex) => {
@@ -322,12 +322,13 @@ class DemoStore {
 
 				// Assign unique IDs to each transaction and track goal association
 				derivedTransactions.forEach((transaction) => {
+					const transactionId = `demo-transaction-${nextTransactionId}`
 					this.transactions.push({
 						...transaction,
-						id: nextTransactionId,
+						id: transactionId,
 					})
-					this.transactionGoalMap.set(nextTransactionId, goalName)
-					nextTransactionId--
+					this.transactionGoalMap.set(transactionId, goalName)
+					nextTransactionId++
 				})
 			})
 		})
@@ -397,7 +398,7 @@ class DemoStore {
 		this.goalTransactions = data.goalTransactions
 	}
 
-	initializeDemoPortfolio(clientId: number, currency = 'CZK') {
+	initializeDemoPortfolio(clientId: string, currency = 'CZK') {
 		const today = new Date()
 
 		// Load state 1 (goal only) - this sets goals, investments, transactions, graphData, etc.
@@ -416,7 +417,7 @@ class DemoStore {
 		)
 
 		this.portfolio = {
-			id: -1,
+			id: 'demo-portfolio-1',
 			client: clientId,
 			name: get(_)('demo.portfolio.demoPortfolio'),
 			currency,

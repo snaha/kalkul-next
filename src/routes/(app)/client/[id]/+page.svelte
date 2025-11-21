@@ -47,13 +47,13 @@
 	import { layoutStore } from '$lib/stores/layout.svelte'
 	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
-	const clientId = parseInt(page.params.id, 10)
+	const clientId = page.params.id
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolios = $derived(
 		portfolioStore.data.filter((portfolio) => portfolio.client === clientId),
 	)
 	let showConfirmModal = $state(false)
-	let portfolioToBeDeleted: number | undefined = $state()
+	let portfolioToBeDeleted: string | undefined = $state()
 	let showConfirmDeleteClientModal = $state(false)
 
 	$effect(() => {
@@ -66,7 +66,7 @@
 		goto(routes.CLIENT_NEW_PORTFOLIO(clientId))
 	}
 
-	function confirmDeletePortfolio(portfolioId: number) {
+	function confirmDeletePortfolio(portfolioId: string) {
 		portfolioToBeDeleted = portfolioId
 		showConfirmModal = true
 	}
@@ -86,7 +86,7 @@
 		goto(routes.HOME)
 	}
 
-	function portfolioValue(portfolioId: number): number {
+	function portfolioValue(portfolioId: string): number {
 		const investments = investmentStore.filter(portfolioId)
 		return getCurrentPortfolioValue(transactionStore, investments)
 	}
@@ -132,7 +132,7 @@
 	</Dropdown>
 {/snippet}
 
-{#snippet portfolioDropdown(portfolioId: number)}
+{#snippet portfolioDropdown(portfolioId: string)}
 	<Dropdown left buttonDimension="compact">
 		{#snippet button()}
 			<OverflowMenuVertical size={24} />
@@ -157,7 +157,7 @@
 	</Dropdown>
 {/snippet}
 
-{#snippet viewButton(link: string | null, portfolioId: number)}
+{#snippet viewButton(link: string | null, portfolioId: string)}
 	{#if link}
 		<Button
 			variant="ghost"

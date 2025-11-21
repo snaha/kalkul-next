@@ -3,17 +3,17 @@ import { SvelteMap } from 'svelte/reactivity'
 
 export interface InvestmentsViewStore {
 	allInvestments: InvestmentWithColorIndex[]
-	toggleHide: (id: number) => void
-	toggleFocus: (id: number) => void
-	isHidden: (id: number) => boolean
-	isFocused: (id: number) => boolean
+	toggleHide: (id: string) => void
+	toggleFocus: (id: string) => void
+	isHidden: (id: string) => boolean
+	isFocused: (id: string) => boolean
 }
 
 export function withInvestmentsViewStore(
 	investments: InvestmentWithColorIndex[],
 ): InvestmentsViewStore {
 	let allInvestments = $state<InvestmentWithColorIndex[]>(investments)
-	const hiddenInvestments = $state<SvelteMap<number, boolean>>(new SvelteMap())
+	const hiddenInvestments = $state<SvelteMap<string, boolean>>(new SvelteMap())
 	const visibleInvestments = $derived(
 		allInvestments.filter((inv) => !hiddenInvestments.has(inv.id)),
 	)
@@ -21,7 +21,7 @@ export function withInvestmentsViewStore(
 		visibleInvestments.length === 1 ? visibleInvestments[0] : undefined,
 	)
 
-	function toggleHide(id: number) {
+	function toggleHide(id: string) {
 		if (hiddenInvestments.has(id)) {
 			hiddenInvestments.delete(id)
 		} else {
@@ -29,7 +29,7 @@ export function withInvestmentsViewStore(
 		}
 	}
 
-	function toggleFocus(id: number) {
+	function toggleFocus(id: string) {
 		if (hiddenInvestments.size === allInvestments.length - 1 && !hiddenInvestments.has(id)) {
 			hiddenInvestments.clear()
 		} else {
@@ -43,11 +43,11 @@ export function withInvestmentsViewStore(
 		}
 	}
 
-	function isHidden(id: number) {
+	function isHidden(id: string) {
 		return hiddenInvestments.has(id)
 	}
 
-	function isFocused(id: number) {
+	function isFocused(id: string) {
 		return focusedInvestment ? focusedInvestment.id === id : false
 	}
 

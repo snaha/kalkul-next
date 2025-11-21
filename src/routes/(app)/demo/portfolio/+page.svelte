@@ -27,7 +27,7 @@
 
 	// Demo mode - use mock client matching Client type
 	const client = {
-		id: -1,
+		id: 'demo-client-1',
 		name: DEMO_CLIENT_NAME,
 		birth_date: DEMO_CLIENT_BIRTH_DATE,
 		advisor: '',
@@ -40,7 +40,7 @@
 		if (!demoStore.portfolio) {
 			// Only initialize if we don't have any goals/state loaded
 			if (demoStore.goals.length === 0) {
-				demoStore.initializeDemoPortfolio(-1, 'EUR')
+				demoStore.initializeDemoPortfolio('demo-portfolio-1', 'EUR')
 			} else {
 				// Goals exist but no portfolio - create portfolio without resetting state
 				const goal = demoStore.goals[0]
@@ -56,8 +56,8 @@
 						),
 					)
 					demoStore.portfolio = {
-						id: -1,
-						client: -1,
+						id: 'demo-portfolio-1',
+						client: 'demo-client-1',
 						name: get(_)('demo.portfolio.demoPortfolio'),
 						currency: goal.currency,
 						start_date: startDate,
@@ -134,11 +134,11 @@
 		dialog?.close()
 	}
 
-	function handleEditInvestment(investmentId: number) {
+	function handleEditInvestment(investmentId: string) {
 		goto(routes.DEMO_EDIT_INVESTMENT(investmentId))
 	}
 
-	async function handleDeleteInvestment(investmentId: number) {
+	async function handleDeleteInvestment(investmentId: string) {
 		demoStore.deleteInvestment(investmentId)
 	}
 

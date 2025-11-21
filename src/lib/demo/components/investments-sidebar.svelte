@@ -31,9 +31,9 @@
 		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
 		addInvestment?: () => void
 		transactions?: Transaction[]
-		onEditInvestment?: (investmentId: number) => void
-		onDeleteInvestment?: (investmentId: number) => Promise<void>
-		transactionGoalMap?: Map<number, string>
+		onEditInvestment?: (investmentId: string) => void
+		onDeleteInvestment?: (investmentId: string) => Promise<void>
+		transactionGoalMap?: Map<string, string>
 	}
 
 	let {

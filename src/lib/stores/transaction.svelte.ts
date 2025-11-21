@@ -4,7 +4,7 @@ export interface TransactionStore extends Store<Transaction> {
 	data: Transaction[]
 	loading: boolean
 	reset: () => void
-	filter: (investmentId: number) => Transaction[]
+	filter: (investmentId: string) => Transaction[]
 }
 
 function withTransactionStore(): TransactionStore {
@@ -26,7 +26,7 @@ function withTransactionStore(): TransactionStore {
 			data = []
 			loading = true
 		},
-		filter(investmentId: number) {
+		filter(investmentId: string) {
 			return data.filter((transaction) => transaction.investment_id === investmentId)
 		},
 	}

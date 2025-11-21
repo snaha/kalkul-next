@@ -40,7 +40,7 @@
 
 	let showConfirmModal = $state(false)
 	let showWelcome = $state(authStore.user?.user_metadata.first_visit ? true : false)
-	let clientToBeDeleted: number | undefined = $state()
+	let clientToBeDeleted: string | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(
 		searchByName(searchQuery).toSorted(
@@ -57,7 +57,7 @@
 		goto(routes.NEW_CLIENT)
 	}
 
-	function confirmDeleteClient(clientId: number) {
+	function confirmDeleteClient(clientId: string) {
 		showConfirmModal = true
 		clientToBeDeleted = clientId
 	}
@@ -80,7 +80,7 @@
 	}
 </script>
 
-{#snippet clientDropdown(clientId: number)}
+{#snippet clientDropdown(clientId: string)}
 	<Dropdown left buttonDimension="compact">
 		{#snippet button()}
 			<OverflowMenuVertical size={24} />

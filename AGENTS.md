@@ -2,6 +2,25 @@
 
 This file provides guidance to LLM AI agents like Claude Code, Gemini and OpenAI Codex when working with code in this repository.
 
+## ⚠️ CRITICAL PRODUCTION DATABASE SAFETY RULES
+
+**AI assistants MUST NEVER:**
+
+- Push migrations to production (`supabase db push --linked`)
+- Modify remote/production database in any way
+- Run commands with `--linked` flag that modify data (only read operations like `supabase db dump --linked` are allowed)
+- Execute `psql` commands against production database URLs
+- Apply schema changes to production
+
+**AI assistants CAN:**
+
+- Create and review migration files locally
+- Test migrations with local database
+- Backup production database (read-only: `supabase db dump --linked`)
+- Restore backups to local database only
+
+**Humans must manually apply all production migrations.** See the "Database Integration" section below for detailed guidelines.
+
 ## Quick Reference
 
 See `README.md` for development commands, project structure, and conventions.
@@ -35,6 +54,106 @@ See `README.md` for development commands, project structure, and conventions.
    - `seed.sql` is only for seeding test/development data, not schema changes
    - Never touch remote DB directly - always use migrations
    - **IMPORTANT**: Database operations should go through the adapter layer (`src/lib/adapters/`). Avoid direct Supabase calls outside the adapter.
+
+   **Database Migrations & Backups**:
+
+   - **ALWAYS backup production database before applying migrations**
+   - See `README.md` section "Production Database Backup & Restore" for detailed commands
+   - See `docs/uuid-migration-testing.md` for step-by-step migration testing guide
+
+   **Quick Reference - Database Operations:**
+
+   Available databases:
+
+   - `prod` / `production` - Production database (mdyjiyyoidizsjdfyxdm)
+   - `ci` / `test` - CI test database (rftqneipeoscundnthou)
+   - `local` / `dev` - Local development database
+
+   ```bash
+   # Backup database (data-only, no schema) - AI can run this
+   pnpm db backup prod    # Backup production
+   pnpm db backup ci      # Backup CI test
+   pnpm db backup local   # Backup local
+
+   # Restore database - AI can run this for local only
+   pnpm db restore local backups/mdyjiyyoidizsjdfyxdm_data_20251118.sql
+
+   # Apply migrations (preserves data)
+   pnpm db migrate local  # Apply migrations to local (AI can run this)
+   pnpm db migrate prod   # Push migrations to production (HUMAN ONLY)
+   pnpm db migrate ci     # Push migrations to CI test (HUMAN ONLY)
+
+   # Reset database (⚠️ DESTROYS ALL DATA)
+   pnpm db reset local    # Full reset local DB (AI can run this)
+   pnpm db reset prod     # Full reset production (HUMAN ONLY - VERY DANGEROUS)
+   pnpm db reset ci       # Full reset CI test (HUMAN ONLY)
+   ```
+
+   **Note**: AI assistants CAN help with backups and local operations, but MUST NEVER push changes to production or restore to remote databases.
+
+   **Quick Reference - Test Migrations with Production Data:**
+
+   ```bash
+   # 1. Reset local DB to main branch
+   git checkout main
+   pnpm db reset local
+
+   # 2. Restore production data to local
+   pnpm db restore local backups/mdyjiyyoidizsjdfyxdm_data_20251118_143000.sql
+
+   # 3. Switch to migration branch and apply migrations
+   git checkout <migration-branch>
+   pnpm db migrate local
+
+   # 4. Verify integrity
+   pnpm supabase db lint
+   pnpm check
+   ```
+
+   **Critical Migration Testing Rules:**
+
+   - **ALWAYS apply migrations locally FIRST** using `pnpm db migrate local` before pushing to remote
+   - `supabase db push --linked` syncs your LOCAL migration files to the remote database
+   - If you push without testing locally first, you risk applying broken migrations to production
+   - Use `pnpm db restore local` to restore production data (automatically clears all data including auth)
+   - **MUST** restore production data BEFORE applying migrations (not after)
+   - Always verify data counts match before and after migration
+   - Always check foreign key relationships are intact after migration
+   - Always run `pnpm supabase db lint` to verify schema integrity
+   - **NEVER** push untested migrations to production or CI environments
+
+   **Applying Migrations to Production:**
+
+   **⚠️ CRITICAL: AI ASSISTANTS MUST NEVER APPLY MIGRATIONS TO PRODUCTION OR TOUCH REMOTE DATABASE**
+
+   - AI assistants should ONLY help with testing migrations locally
+   - AI assistants should ONLY help with creating and reviewing migration files
+   - AI assistants should ONLY help with backing up databases
+   - AI assistants should ONLY help with restoring to local database
+   - **NEVER run**: `pnpm db:migrate prod` or `pnpm db:migrate ci` (pushes migrations to production/CI)
+   - **NEVER run**: `pnpm db:reset prod` or `pnpm db:reset ci` (destroys production/CI data)
+   - **NEVER run**: `pnpm db:restore prod` or `pnpm db:restore ci` (modifies remote data)
+   - **NEVER run**: `supabase db push --linked` (pushes to production)
+   - **NEVER run**: any command with `--linked` flag that modifies data
+   - **NEVER run**: `psql` commands against production database URLs
+
+   Humans must manually apply migrations to production:
+
+   ```bash
+   # HUMAN ONLY - AI must not execute these commands
+   pnpm db:migrate prod
+   # Or: supabase db push --linked
+   ```
+
+   **Never**:
+
+   - **AI assistants must NEVER apply migrations to production database**
+   - **AI assistants must NEVER push schema changes to remote database**
+   - **AI assistants must NEVER run commands that modify production data**
+   - Never apply untested migrations to production
+   - Never skip backing up production before migrations
+   - Never restore production data after applying migrations (must be before)
+   - Never commit backup files with sensitive data to git
 
 4. **Internationalization (i18n)**
 

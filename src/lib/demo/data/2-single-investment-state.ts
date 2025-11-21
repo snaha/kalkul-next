@@ -9,7 +9,7 @@ export function getState2Data(): DemoStateData {
 			{
 				type: 'retirement',
 				currency: 'CZK',
-				linkedInvestments: [{ investmentId: -1, percentage: 100 }],
+				linkedInvestments: [{ investmentId: 'demo-investment-1', percentage: 100 }],
 				customDepositAmount: 4505.25,
 				calculationInput: {
 					apy: 5.5,
@@ -26,8 +26,8 @@ export function getState2Data(): DemoStateData {
 		],
 		investments: [
 			{
-				id: -1,
-				portfolio_id: -1,
+				id: 'demo-investment-1',
+				portfolio_id: 'demo-portfolio-1',
 				name: 'Evropské akcie',
 				apy: 7.2,
 				type: 'mutual_fund',
@@ -46,8 +46,8 @@ export function getState2Data(): DemoStateData {
 		],
 		transactions: [
 			{
-				id: -1,
-				investment_id: -1,
+				id: 'demo-investment-1',
+				investment_id: 'demo-investment-1',
 				amount: 281450,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -60,8 +60,8 @@ export function getState2Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -2,
-				investment_id: -1,
+				id: 'demo-transaction-2',
+				investment_id: 'demo-investment-1',
 				amount: 4505.25,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -74,8 +74,8 @@ export function getState2Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -3,
-				investment_id: -1,
+				id: 'demo-transaction-3',
+				investment_id: 'demo-investment-1',
 				amount: 8750,
 				date: '2045-03-01',
 				type: 'withdrawal',
@@ -89,9 +89,9 @@ export function getState2Data(): DemoStateData {
 			},
 		],
 		transactionGoalMap: new Map([
-			[-1, get(_)('demo.investments.retirement')],
-			[-2, get(_)('demo.investments.retirement')],
-			[-3, get(_)('demo.investments.retirement')],
+			['demo-transaction-1', get(_)('demo.investments.retirement')],
+			['demo-transaction-2', get(_)('demo.investments.retirement')],
+			['demo-transaction-3', get(_)('demo.investments.retirement')],
 		]),
 		// Import the actual graph data from the existing JSON file
 		graphData: {
@@ -351,8 +351,8 @@ export function getState2Data(): DemoStateData {
 		// Goal displayed as investment on goals tab
 		goalInvestments: [
 			{
-				id: -1,
-				portfolio_id: -1,
+				id: 'demo-investment-1',
+				portfolio_id: 'demo-portfolio-1',
 				name: get(_)('demo.investments.retirement'),
 				apy: 5.5,
 				type: 'goal',
@@ -373,8 +373,8 @@ export function getState2Data(): DemoStateData {
 		// Goal transactions for goals tab
 		goalTransactions: [
 			{
-				id: -1,
-				investment_id: -1,
+				id: 'demo-investment-1',
+				investment_id: 'demo-investment-1',
 				amount: 281450,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -387,8 +387,8 @@ export function getState2Data(): DemoStateData {
 				repeat_unit: null,
 			},
 			{
-				id: -2,
-				investment_id: -1,
+				id: 'demo-transaction-2',
+				investment_id: 'demo-investment-1',
 				amount: 4505.25,
 				date: '2025-01-01',
 				type: 'deposit',
@@ -401,8 +401,8 @@ export function getState2Data(): DemoStateData {
 				repeat_unit: 'month',
 			},
 			{
-				id: -3,
-				investment_id: -1,
+				id: 'demo-transaction-3',
+				investment_id: 'demo-investment-1',
 				amount: 8750,
 				date: '2045-03-01',
 				type: 'withdrawal',

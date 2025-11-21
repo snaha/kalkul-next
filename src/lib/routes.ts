@@ -18,28 +18,28 @@ export default {
 	WITHDRAWAL: (index?: number) =>
 		`${routePrefix}/withdrawal${index === undefined ? '' : `/${index}`}`,
 	NEW_CLIENT: `${routePrefix}/client/new`,
-	CLIENT: (id: number) => `${routePrefix}/client/${id}`,
-	CLIENT_NEW_PORTFOLIO: (clientId: number) => `${routePrefix}/client/${clientId}/portfolio/new`,
-	CLIENT_PORTFOLIO: (clientId: number, portfolioId: number) =>
+	CLIENT: (id: string) => `${routePrefix}/client/${id}`,
+	CLIENT_NEW_PORTFOLIO: (clientId: string) => `${routePrefix}/client/${clientId}/portfolio/new`,
+	CLIENT_PORTFOLIO: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}`,
-	CLIENT_EDIT_PORTFOLIO: (clientId: number, portfolioId: number) =>
+	CLIENT_EDIT_PORTFOLIO: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/edit`,
-	EDIT_CLIENT: (id: number) => `${routePrefix}/client/${id}/edit`,
-	INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
+	EDIT_CLIENT: (id: string) => `${routePrefix}/client/${id}/edit`,
+	INVESTMENT: (clientId: string, portfolioId: string, investmentId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/investment/${investmentId}`,
-	NEW_INVESTMENT: (clientId: number, portfolioId: number) =>
+	NEW_INVESTMENT: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/new-investment`,
-	EDIT_INVESTMENT: (clientId: number, portfolioId: number, investmentId: number) =>
+	EDIT_INVESTMENT: (clientId: string, portfolioId: string, investmentId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/edit-investment/${investmentId}`,
 	// Goal routes
-	RETIREMENT_GOAL_CALCULATOR: (clientId: number, portfolioId: number) =>
+	RETIREMENT_GOAL_CALCULATOR: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/retirement/calculator`,
-	RETIREMENT_GOAL_PREVIEW: (clientId: number, portfolioId: number) =>
+	RETIREMENT_GOAL_PREVIEW: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/retirement/preview`,
-	SHARE: (portfolioId: number) => `${routePrefix}/share/${portfolioId}`,
-	PDF_EXPORT_PARAMS: (clientId: number, portfolioId: number) =>
+	SHARE: (portfolioId: string) => `${routePrefix}/share/${portfolioId}`,
+	PDF_EXPORT_PARAMS: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/pdf-export-params`,
-	PDF_EXPORT: (clientId: number, portfolioId: number) =>
+	PDF_EXPORT: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/pdf-export`,
 	VIEW: (id: string) => `${routePrefix}/view/${id}`,
 	PAYMENTS: `${routePrefix}/payments`,
@@ -56,7 +56,7 @@ export default {
 	RETIREMENT_PREVIEW: () => `${routePrefix}/demo/portfolio/retirement/preview`,
 	DEMO: () => `${routePrefix}/demo/portfolio`,
 	DEMO_NEW_INVESTMENT: () => `${routePrefix}/demo/portfolio/new-investment`,
-	DEMO_EDIT_INVESTMENT: (investmentId: number) =>
+	DEMO_EDIT_INVESTMENT: (investmentId: string) =>
 		`${routePrefix}/demo/portfolio/edit-investment/${investmentId}`,
 	DEMO_BALANCE_INVESTMENTS: (goalIndex: number) =>
 		`${routePrefix}/demo/portfolio/balance-investments/${goalIndex}`,

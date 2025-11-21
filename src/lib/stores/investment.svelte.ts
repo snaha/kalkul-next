@@ -4,9 +4,9 @@ interface InvestmentStore extends Store<Investment> {
 	data: Investment[]
 	loading: boolean
 	reset: () => void
-	filter: (portfolioId: number) => Investment[]
-	filterGoals: (portfolioId: number) => Goal[]
-	filterRegularInvestments: (portfolioId: number) => Investment[]
+	filter: (portfolioId: string) => Investment[]
+	filterGoals: (portfolioId: string) => Goal[]
+	filterRegularInvestments: (portfolioId: string) => Investment[]
 }
 
 function withInvestmentStore(): InvestmentStore {
@@ -31,10 +31,10 @@ function withInvestmentStore(): InvestmentStore {
 			data = []
 			loading = true
 		},
-		filter(portfolioId: number) {
+		filter(portfolioId: string) {
 			return data.filter((investment) => investment.portfolio_id === portfolioId)
 		},
-		filterGoals(portfolioId: number) {
+		filterGoals(portfolioId: string) {
 			return data.filter(
 				(investment) =>
 					investment.portfolio_id === portfolioId &&
@@ -42,7 +42,7 @@ function withInvestmentStore(): InvestmentStore {
 					investment.goal_data !== null,
 			) as Goal[]
 		},
-		filterRegularInvestments(portfolioId: number) {
+		filterRegularInvestments(portfolioId: string) {
 			return data.filter(
 				(investment) =>
 					investment.portfolio_id === portfolioId &&

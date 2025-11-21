@@ -4,7 +4,7 @@
 	import { page } from '$app/state'
 	import { clientStore } from '$lib/stores/clients.svelte'
 
-	const clientId = parseInt(page.params.id, 10)
+	const clientId = page.params.id
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 
 	function close() {

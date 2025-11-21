@@ -19,7 +19,7 @@
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
 
-	const portfolioId = parseInt(page.params.portfolio_id, 10)
+	const portfolioId = page.params.portfolio_id
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 	let linkSharing = $state(false)
 	let linkValue = $derived(

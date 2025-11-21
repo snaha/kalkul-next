@@ -7,9 +7,9 @@
 	import { clientStore } from '$lib/stores/clients.svelte'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 
-	const clientId = parseInt(page.params.id, 10)
+	const clientId = page.params.id
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
-	const portfolioId = parseInt(page.params.portfolio_id, 10)
+	const portfolioId = page.params.portfolio_id
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
 	function close() {

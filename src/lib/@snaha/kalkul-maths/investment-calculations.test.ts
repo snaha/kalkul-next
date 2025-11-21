@@ -24,14 +24,14 @@ const DEFAULT_INVESTMENT: Investment = {
 	entry_fee_type: 'upfront' as const,
 	exit_fee: 0,
 	exit_fee_type: 'upfront' as const,
-	id: 0,
+	id: 'test-investment-0',
 	advanced_fees: false,
 	created_at: '2024-01-01',
 	last_edited_at: '2024-01-01',
 	management_fee: 0,
 	management_fee_type: 'upfront' as const,
 	name: '',
-	portfolio_id: 0,
+	portfolio_id: 'test-portfolio-0',
 	success_fee: 0,
 	ter: null,
 	type: '',
@@ -696,8 +696,8 @@ describe('#getCurrentInvestmentValue', () => {
 
 describe('#getCurrentPortfolioValue', () => {
 	// Mock transaction store
-	const createMockTransactionStore = (transactionMap: Map<number, Transaction[]>) => ({
-		filter: (investmentId: number) => transactionMap.get(investmentId) || [],
+	const createMockTransactionStore = (transactionMap: Map<string, Transaction[]>) => ({
+		filter: (investmentId: string) => transactionMap.get(investmentId) || [],
 	})
 
 	it('should return 0 for empty portfolio', () => {
@@ -729,8 +729,10 @@ describe('#getCurrentPortfolioValue', () => {
 				repeat_unit: null,
 			},
 		]
-		const transactionStore = createMockTransactionStore(new Map([[1, transactions]]))
-		const investments = [{ ...DEFAULT_INVESTMENT, id: 1, apy: 10 }]
+		const transactionStore = createMockTransactionStore(
+			new Map([['test-investment-1', transactions]]),
+		)
+		const investments = [{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 10 }]
 
 		// Calculate value after 6 months
 		const asOfDate = new Date('2025-07-01')
@@ -762,13 +764,13 @@ describe('#getCurrentPortfolioValue', () => {
 		]
 		const transactionStore = createMockTransactionStore(
 			new Map([
-				[1, transactions1],
-				[2, transactions2],
+				['test-investment-1', transactions1],
+				['test-investment-2', transactions2],
 			]),
 		)
 		const investments = [
-			{ ...DEFAULT_INVESTMENT, id: 1, apy: 8 },
-			{ ...DEFAULT_INVESTMENT, id: 2, apy: 12 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 8 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-2', apy: 12 },
 		]
 
 		const asOfDate = new Date('2026-01-01') // 1 year later
@@ -809,13 +811,13 @@ describe('#getCurrentPortfolioValue', () => {
 		]
 		const transactionStore = createMockTransactionStore(
 			new Map([
-				[1, transactions1],
-				[2, transactions2],
+				['test-investment-1', transactions1],
+				['test-investment-2', transactions2],
 			]),
 		)
 		const investments = [
-			{ ...DEFAULT_INVESTMENT, id: 1, apy: 0 }, // No growth
-			{ ...DEFAULT_INVESTMENT, id: 2, apy: 10 }, // 10% growth
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 0 }, // No growth
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-2', apy: 10 }, // 10% growth
 		]
 
 		const asOfDate = new Date('2025-12-31')
@@ -838,13 +840,13 @@ describe('#getCurrentPortfolioValue', () => {
 		]
 		const transactionStore = createMockTransactionStore(
 			new Map([
-				[1, transactions1],
+				['test-investment-1', transactions1],
 				// Investment 2 has no transactions
 			]),
 		)
 		const investments = [
-			{ ...DEFAULT_INVESTMENT, id: 1, apy: 10 },
-			{ ...DEFAULT_INVESTMENT, id: 2, apy: 15 }, // This should be ignored
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 10 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-2', apy: 15 }, // This should be ignored
 		]
 
 		const asOfDate = new Date('2026-01-01')
@@ -865,8 +867,10 @@ describe('#getCurrentPortfolioValue', () => {
 				repeat_unit: null,
 			},
 		]
-		const transactionStore = createMockTransactionStore(new Map([[1, transactions]]))
-		const investments = [{ ...DEFAULT_INVESTMENT, id: 1, apy: 0 }]
+		const transactionStore = createMockTransactionStore(
+			new Map([['test-investment-1', transactions]]),
+		)
+		const investments = [{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 0 }]
 
 		// Should not throw and should return a reasonable value
 		const value = getCurrentPortfolioValue(transactionStore, investments)
@@ -877,8 +881,8 @@ describe('#getCurrentPortfolioValue', () => {
 })
 
 describe('#auto-inflation integration tests', () => {
-	const createMockTransactionStore = (transactionMap: Map<number, Transaction[]>) => ({
-		filter: (investmentId: number) => transactionMap.get(investmentId) || [],
+	const createMockTransactionStore = (transactionMap: Map<string, Transaction[]>) => ({
+		filter: (investmentId: string) => transactionMap.get(investmentId) || [],
 	})
 
 	it('should calculate investment value with auto-inflated deposits', () => {
@@ -967,14 +971,14 @@ describe('#auto-inflation integration tests', () => {
 
 		const transactionStore = createMockTransactionStore(
 			new Map([
-				[1, transactions1],
-				[2, transactions2],
+				['test-investment-1', transactions1],
+				['test-investment-2', transactions2],
 			]),
 		)
 
 		const investments = [
-			{ ...DEFAULT_INVESTMENT, id: 1, apy: 5 },
-			{ ...DEFAULT_INVESTMENT, id: 2, apy: 5 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 5 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-2', apy: 5 },
 		]
 
 		// Calculate value 1 year after portfolio start
@@ -994,8 +998,8 @@ describe('#auto-inflation integration tests', () => {
 })
 
 describe('#comprehensive inflation-adjusted transaction tests', () => {
-	const createMockTransactionStore = (transactionMap: Map<number, Transaction[]>) => ({
-		filter: (investmentId: number) => transactionMap.get(investmentId) || [],
+	const createMockTransactionStore = (transactionMap: Map<string, Transaction[]>) => ({
+		filter: (investmentId: string) => transactionMap.get(investmentId) || [],
 	})
 
 	it('should handle simple inflation-adjusted monthly withdrawals with 2% inflation', () => {
@@ -1183,14 +1187,14 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 
 		const transactionStore = createMockTransactionStore(
 			new Map([
-				[1, transactions1],
-				[2, transactions2],
+				['test-investment-1', transactions1],
+				['test-investment-2', transactions2],
 			]),
 		)
 
 		const investments = [
-			{ ...DEFAULT_INVESTMENT, id: 1, apy: 10 },
-			{ ...DEFAULT_INVESTMENT, id: 2, apy: 10 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-1', apy: 10 },
+			{ ...DEFAULT_INVESTMENT, id: 'test-investment-2', apy: 10 },
 		]
 
 		// Calculate value after 2 years
@@ -1270,7 +1274,7 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
 describe('#investment exhaustion tests', () => {
 	const EXHAUSTION_INVESTMENT: Investment = {
 		...DEFAULT_INVESTMENT,
-		id: 1,
+		id: 'test-investment-1',
 		name: 'Test Investment',
 		apy: 0.05, // 5% annual return
 	}

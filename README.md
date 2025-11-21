@@ -66,6 +66,144 @@ pnpm supabase migration list            # List all migrations
 pnpm supabase migration up              # Apply pending migrations
 ```
 
+### Database Operations
+
+**Available databases:**
+
+- `prod` / `production` - Production database (mdyjiyyoidizsjdfyxdm)
+- `ci` / `test` - CI test database (rftqneipeoscundnthou)
+- `local` / `dev` - Local development database
+
+#### Backup Database
+
+```bash
+# Backup any database (data only, no schema)
+pnpm db backup prod    # Backup production
+pnpm db backup ci      # Backup CI test
+pnpm db backup local   # Backup local development
+
+# Creates: backups/{db-alias}_data_{timestamp}.sql
+# Examples:
+#   backups/prod_data_20251119_120000.sql
+#   backups/ci_data_20251119_120000.sql
+#   backups/local_data_20251119_120000.sql
+```
+
+**⚠️ IMPORTANT:** Production backups contain sensitive data - store securely!
+
+#### Restore Database
+
+**⚠️ WARNING: This will completely overwrite the target database!**
+
+```bash
+# Restore to local database (no password required)
+pnpm db restore local backups/prod_data_20251119_120000.sql
+
+# Restore to remote database (requires database password)
+pnpm db restore ci backups/prod_data_20251119_120000.sql
+pnpm db restore prod backups/prod_data_20251119_120000.sql
+```
+
+#### Apply Migrations
+
+```bash
+# Apply pending migrations (preserves existing data)
+pnpm db migrate local  # Apply migrations to local
+pnpm db migrate ci     # Push migrations from local to CI test
+pnpm db migrate prod   # Push migrations from local to production
+```
+
+**⚠️ Before migrating remote:**
+
+- Always backup first: `pnpm db backup prod`
+- Apply migrations locally
+- Test migrations locally with production data first
+
+#### Reset Database
+
+```bash
+# Drop and recreate database (⚠️ DESTROYS ALL DATA)
+pnpm db reset local    # Reset local database
+pnpm db reset ci       # Reset CI test database
+pnpm db reset prod     # Reset production database
+```
+
+**⚠️ WARNING:** This destroys ALL data! Only use for:
+
+- Setting up fresh environments
+- Disaster recovery (with `pnpm db restore` afterward)
+- Never use on production unless you know what you're doing
+
+#### Database Migration Workflow (Production)
+
+1. **Backup production database**
+
+   ```bash
+   pnpm db backup prod
+   ```
+
+2. **Test migrations locally with production data**
+
+   ```bash
+   # Reset local DB to main branch
+   git checkout main
+   pnpm db reset local
+
+   # Restore production data to local
+   pnpm db restore local backups/prod_data_20251119_120000.sql
+
+   # Apply migrations from migration branch
+   git checkout <migration-branch>
+   pnpm db migrate local
+   ```
+
+3. **Apply migrations to production**
+
+   ```bash
+   pnpm db migrate prod
+   ```
+
+4. **If rollback needed**
+
+   ```bash
+   pnpm db restore prod backups/prod_data_20251119_120000.sql
+   ```
+
+### Troubleshooting Database Operations
+
+#### "Initialising login role..." hangs / Network Ban
+
+**Symptom:** Database commands (backup, migrate, link) hang at "Initialising login role..." and eventually timeout.
+
+**Cause:** Supabase automatically bans IPs that make too many failed connection attempts or rapid requests. The retry mechanism in our backup script can trigger this protection.
+
+**Solution:**
+
+1. **Unban your IP:**
+
+   - Go to Supabase Dashboard → Project Settings → Database → Network Bans
+   - Find your IP address in the banned list
+   - Click "Unban" to remove the ban
+
+2. **Wait a few minutes** before retrying the operation
+
+**Prevention:**
+
+To avoid triggering network bans:
+
+- **Use verbose mode sparingly:** `--verbose` flag shows all debug output but generates more network traffic
+- **Don't run commands too frequently:** Wait at least 30 seconds between backup/migrate operations
+- **Avoid rapid retries:** If a command fails, wait 1-2 minutes before retrying
+- **Use local database for development:** Test migrations locally before touching remote databases
+- **Batch operations carefully:** If running multiple backups, space them out by 1-2 minutes
+
+**If unbanning doesn't work:**
+
+- Check your internet connection
+- Verify Supabase credentials: `supabase login`
+- Try from a different network (mobile hotspot, VPN)
+- Wait 15-30 minutes for automatic unban
+
 ### Type Generation
 
 Generate TypeScript types after schema changes:

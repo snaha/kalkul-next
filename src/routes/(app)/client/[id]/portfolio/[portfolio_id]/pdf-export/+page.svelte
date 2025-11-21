@@ -13,9 +13,9 @@
 	import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 	import { getCSSVariableValue } from '$lib/css-vars'
 
-	const clientId = $derived(parseInt(page.params.id, 10))
+	const clientId = $derived(page.params.id)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
-	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
+	const portfolioId = $derived(page.params.portfolio_id)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
 	// Read PDF export parameters from URL

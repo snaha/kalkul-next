@@ -47,9 +47,9 @@
 		exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
 		isCalculating?: boolean
 		transactions?: Transaction[]
-		onEditInvestment?: (investmentId: number) => void
-		onDeleteInvestment?: (investmentId: number) => Promise<void>
-		transactionGoalMap?: Map<number, string>
+		onEditInvestment?: (investmentId: string) => void
+		onDeleteInvestment?: (investmentId: string) => Promise<void>
+		transactionGoalMap?: Map<string, string>
 	}
 
 	let {
@@ -72,7 +72,7 @@
 		transactionGoalMap,
 	}: Props = $props()
 
-	let selectedTransactionIdForDeletion: number | undefined = $state(undefined)
+	let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
 	let showDeleteInvestmentModal = $state(false)
 	const transactions = $derived(
 		transactionsProp !== undefined
@@ -99,7 +99,7 @@
 		}
 	}
 
-	async function deleteInvestment(investmentId: number) {
+	async function deleteInvestment(investmentId: string) {
 		if (onDeleteInvestment) {
 			await onDeleteInvestment(investmentId)
 		} else {

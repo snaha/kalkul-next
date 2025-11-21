@@ -4,7 +4,7 @@
 
 	// Demo mode - use mock client matching Client type
 	const client = {
-		id: -1,
+		id: 'demo-client-retirement',
 		name: 'Demo' + ' ' + 'Manifest', // Internal: not user-facing
 		birth_date: '1980-02-02',
 		advisor: '',

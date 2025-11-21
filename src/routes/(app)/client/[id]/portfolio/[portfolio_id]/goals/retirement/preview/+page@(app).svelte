@@ -16,8 +16,8 @@
 	import type { RetirementGoalData } from '$lib/types'
 	import { retirementGoalToTransactions } from '$lib/@snaha/kalkul-calculators/retirement/goal-transactions'
 
-	const clientId = $derived(parseInt(page.params.id, 10))
-	const portfolioId = $derived(parseInt(page.params.portfolio_id, 10))
+	const clientId = $derived(page.params.id)
+	const portfolioId = $derived(page.params.portfolio_id)
 
 	// Get calculation data from store
 	const calculatorData = $derived(goalCalculatorStore.retirementInput)
