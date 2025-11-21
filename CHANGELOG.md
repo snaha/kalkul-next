@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.17.0](https://github.com/snaha/kalkul/compare/v0.16.0...v0.17.0) (2025-11-21)
+
+
+### Features
+
+* feature flag as db metadata ([#1085](https://github.com/snaha/kalkul/issues/1085)) ([ab0fb9b](https://github.com/snaha/kalkul/commit/ab0fb9b994d71b4f74ca0cc352f569b9591fd82b))
+* signup subscribe modal ([#1084](https://github.com/snaha/kalkul/issues/1084)) ([e608afc](https://github.com/snaha/kalkul/commit/e608afcba1a2be5084ab0d48442e8a7bdd62b7c6))
+* use uuids instead of sequential integers ([#1087](https://github.com/snaha/kalkul/issues/1087)) ([0895ff7](https://github.com/snaha/kalkul/commit/0895ff787739ab666656640cf267253df7b5d252))
+
+
+### Bug Fixes
+
+* formatted number input key up/down ([#1120](https://github.com/snaha/kalkul/issues/1120)) ([f237ed0](https://github.com/snaha/kalkul/commit/f237ed0737a870705290c68d21e2489475732147))
+* mobile goals layout ([#1111](https://github.com/snaha/kalkul/issues/1111)) ([777ac5a](https://github.com/snaha/kalkul/commit/777ac5a65350eb6c7d80e0ff6422d16fbfdea7da))
+
 ## [0.16.0](https://github.com/snaha/kalkul/compare/v0.15.0...v0.16.0) (2025-11-07)
 
 
