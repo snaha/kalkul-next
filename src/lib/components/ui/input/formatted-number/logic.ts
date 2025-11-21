@@ -343,3 +343,30 @@ export function applyConstraints(value: number, min?: number, max?: number): num
 	// Value is within constraints
 	return value
 }
+
+// Increment or decrement a value by a step, respecting min/max constraints
+export function incrementValue(
+	currentValue: number | undefined,
+	step: number,
+	direction: 'up' | 'down',
+	min?: number,
+	max?: number,
+): number | undefined {
+	// Treat undefined as 0
+	const value = currentValue ?? 0
+
+	// Calculate new value
+	const newValue = direction === 'up' ? value + step : value - step
+
+	// Check if the new value would exceed boundaries
+	if (min !== undefined && newValue < min) {
+		// At lower boundary, return current value unchanged
+		return currentValue
+	}
+	if (max !== undefined && newValue > max) {
+		// At upper boundary, return current value unchanged
+		return currentValue
+	}
+
+	return newValue
+}

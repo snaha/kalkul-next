@@ -8,8 +8,9 @@ import {
 	applyConstraints,
 	isValidChar,
 	validateDigitLimits,
+	incrementValue,
 } from './logic'
-import { parseLocalizedNumber } from '$lib/utils'
+import { parseLocalizedNumber, formatNumber } from '$lib/utils'
 import type { InputStore, FormatOptions } from './store.svelte'
 
 export interface EventHandlerConfig {
@@ -20,6 +21,7 @@ export interface EventHandlerConfig {
 		min?: number
 		max?: number
 	}
+	step: number
 }
 
 export interface EventHandlerState {
@@ -234,6 +236,40 @@ export function createKeyDownHandler(
 		const hasSelection = selStart !== selEnd
 		const cursorPos = selStart
 
+		// Handle arrow up/down for increment/decrement
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			event.preventDefault()
+
+			const direction = event.key === 'ArrowUp' ? 'up' : 'down'
+			const newValue = incrementValue(
+				config.store.value,
+				config.step,
+				direction,
+				config.constraints?.min,
+				config.constraints?.max,
+			)
+
+			// Update the value if it changed
+			if (newValue !== config.store.value) {
+				// Format the new value with proper locale formatting
+				const formattedValue =
+					newValue !== undefined
+						? formatNumber(newValue, config.locale, {
+								maximumFractionDigits: config.formatOptions.maximumFractionDigits,
+							})
+						: ''
+
+				// Determine cursor position based on arrow key
+				// Up arrow: move to end, Down arrow: keep current position
+				const newCursorPos = event.key === 'ArrowUp' ? formattedValue.length : selStart
+
+				// Update display value, store value, and cursor position
+				updateValues(formattedValue, newCursorPos, inputElement, config)
+			}
+
+			return
+		}
+
 		// Handle backspace key
 		if (event.key === 'Backspace') {
 			if (hasSelection) {
@@ -270,8 +306,6 @@ export function createKeyDownHandler(
 			'End',
 			'ArrowLeft',
 			'ArrowRight',
-			'ArrowUp',
-			'ArrowDown',
 		]
 		if (allowedKeys.includes(event.key)) return
 

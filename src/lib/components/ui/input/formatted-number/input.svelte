@@ -25,6 +25,7 @@
 		value = $bindable(),
 		min,
 		max,
+		step = 1,
 		maximumFractionDigits = DEFAULT_MAXIMUM_FRACTION_DIGITS,
 		locale,
 		placeholder = '0',
@@ -57,6 +58,7 @@
 		locale: locale,
 		formatOptions: { maximumFractionDigits },
 		constraints: { min, max },
+		step,
 	})
 
 	// Create event handlers

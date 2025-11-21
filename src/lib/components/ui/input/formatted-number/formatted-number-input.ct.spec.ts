@@ -742,5 +742,182 @@ LOCALES.forEach((locale) => {
 				await expect(input).toHaveValue(formatExpected('999T999T999T999T999', locale))
 			})
 		})
+
+		test.describe('arrow key increment/decrement', () => {
+			test('should increment value on ArrowUp with step=1', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 10,
+						step: 1,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+
+				await expect(input).toHaveValue('11')
+			})
+
+			test('should decrement value on ArrowDown with step=1', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 10,
+						step: 1,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowDown')
+
+				await expect(input).toHaveValue('9')
+			})
+
+			test('should use custom step value', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 100,
+						step: 10,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+				await expect(input).toHaveValue('110')
+
+				await input.press('ArrowDown')
+				await expect(input).toHaveValue('100')
+			})
+
+			test('should work with decimal step', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 1.5,
+						step: 0.1,
+						locale: locale.code,
+						maximumFractionDigits: 2,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+
+				await expect(input).toHaveValue(formatExpected('1D6', locale))
+			})
+
+			test('should respect max constraint', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 10,
+						step: 1,
+						max: 10,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+
+				// Value should remain at max
+				await expect(input).toHaveValue('10')
+			})
+
+			test('should respect min constraint', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 0,
+						step: 1,
+						min: 0,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowDown')
+
+				// Value should remain at min
+				await expect(input).toHaveValue('0')
+			})
+
+			test('should treat empty value as 0 and increment', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: undefined,
+						step: 1,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+
+				await expect(input).toHaveValue('1')
+			})
+
+			test('should format large numbers after increment', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 1234,
+						step: 1,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+
+				await expect(input).toHaveValue(formatExpected('1T235', locale))
+			})
+
+			test('should allow multiple increments', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: 5,
+						step: 2,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+				await expect(input).toHaveValue('7')
+
+				await input.press('ArrowUp')
+				await expect(input).toHaveValue('9')
+
+				await input.press('ArrowDown')
+				await expect(input).toHaveValue('7')
+			})
+
+			test('should work with negative values', async ({ mount }) => {
+				const component = await mount(FormattedNumberInput, {
+					props: {
+						value: -5,
+						step: 1,
+						min: -100,
+						locale: locale.code,
+					},
+				})
+				const input = component.locator('input')
+
+				await input.focus()
+				await input.press('ArrowUp')
+				await expect(input).toHaveValue('-4')
+
+				await input.press('ArrowDown')
+				await expect(input).toHaveValue('-5')
+			})
+		})
 	})
 })

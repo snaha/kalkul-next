@@ -68,6 +68,7 @@ describe('Event Handlers', () => {
 			locale: 'en-US',
 			formatOptions: { maximumFractionDigits: 2 },
 			constraints: { min: undefined, max: undefined },
+			step: 1,
 		}
 		eventState = createEventHandlerState()
 		mockInputElement = createMockInputElement()
@@ -487,6 +488,148 @@ describe('Event Handlers', () => {
 			} as unknown as Event
 
 			handleInput(mockEvent)
+		})
+	})
+
+	describe('arrow key increment/decrement', () => {
+		it('should increment value on ArrowUp', () => {
+			config.step = 1
+			store.setValue(10)
+			store.setTestDisplayValue('10')
+			mockInputElement.value = '10'
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowUp',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(preventDefault).toHaveBeenCalled()
+			expect(store.value).toBe(11)
+		})
+
+		it('should decrement value on ArrowDown', () => {
+			config.step = 1
+			store.setValue(10)
+			store.setTestDisplayValue('10')
+			mockInputElement.value = '10'
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowDown',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(preventDefault).toHaveBeenCalled()
+			expect(store.value).toBe(9)
+		})
+
+		it('should use custom step value', () => {
+			config.step = 5
+			store.setValue(10)
+			store.setTestDisplayValue('10')
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowUp',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(store.value).toBe(15)
+		})
+
+		it('should work with decimal step', () => {
+			config.step = 0.1
+			store.setValue(1.5)
+			store.setTestDisplayValue('1.5')
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowUp',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(store.value).toBeCloseTo(1.6)
+		})
+
+		it('should respect max constraint', () => {
+			config.step = 1
+			config.constraints = { max: 10 }
+			store.setValue(10)
+			store.setTestDisplayValue('10')
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowUp',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(preventDefault).toHaveBeenCalled()
+			expect(store.value).toBe(10) // Should not increment beyond max
+		})
+
+		it('should respect min constraint', () => {
+			config.step = 1
+			config.constraints = { min: 0 }
+			store.setValue(0)
+			store.setTestDisplayValue('0')
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowDown',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(preventDefault).toHaveBeenCalled()
+			expect(store.value).toBe(0) // Should not decrement below min
+		})
+
+		it('should treat undefined value as 0', () => {
+			config.step = 1
+			store.setValue(undefined)
+			store.setTestDisplayValue('')
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowUp',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			expect(store.value).toBe(1)
+		})
+
+		it('should move cursor to end after increment', async () => {
+			config.step = 1
+			store.setValue(10)
+			store.setTestDisplayValue('10')
+			mockInputElement.value = '11'
+
+			const handleKeyDown = createKeyDownHandler(config, getInputElement)
+			const preventDefault = vi.fn()
+
+			handleKeyDown({
+				key: 'ArrowUp',
+				preventDefault,
+			} as unknown as KeyboardEvent)
+
+			// Wait for setTimeout to execute
+			await new Promise((resolve) => setTimeout(resolve, 10))
+
+			expect(mockInputElement.setSelectionRange).toHaveBeenCalledWith(2, 2)
 		})
 	})
 

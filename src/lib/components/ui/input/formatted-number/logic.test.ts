@@ -11,6 +11,7 @@ import {
 	filterPastedText,
 	shouldPreventChar,
 	applyConstraints,
+	incrementValue,
 } from './logic'
 
 describe('DEFAULT_MAXIMUM_FRACTION_DIGITS', () => {
@@ -366,5 +367,69 @@ describe('applyConstraints', () => {
 		expect(applyConstraints(0, 1, undefined)).toBeUndefined()
 		expect(applyConstraints(0, 0, undefined)).toBe(0)
 		expect(applyConstraints(0, -5, undefined)).toBe(0)
+	})
+})
+
+describe('incrementValue', () => {
+	it('should increment value by step when direction is up', () => {
+		expect(incrementValue(10, 1, 'up')).toBe(11)
+		expect(incrementValue(10, 5, 'up')).toBe(15)
+		expect(incrementValue(10, 0.1, 'up')).toBeCloseTo(10.1)
+	})
+
+	it('should decrement value by step when direction is down', () => {
+		expect(incrementValue(10, 1, 'down')).toBe(9)
+		expect(incrementValue(10, 5, 'down')).toBe(5)
+		expect(incrementValue(10, 0.1, 'down')).toBeCloseTo(9.9)
+	})
+
+	it('should treat undefined as 0', () => {
+		expect(incrementValue(undefined, 1, 'up')).toBe(1)
+		expect(incrementValue(undefined, 1, 'down')).toBe(-1)
+		expect(incrementValue(undefined, 5, 'up')).toBe(5)
+	})
+
+	it('should respect max constraint and not increment beyond it', () => {
+		expect(incrementValue(10, 1, 'up', undefined, 10)).toBe(10)
+		expect(incrementValue(9, 1, 'up', undefined, 10)).toBe(10)
+		expect(incrementValue(9, 5, 'up', undefined, 10)).toBe(9) // Would exceed, so return unchanged
+	})
+
+	it('should respect min constraint and not decrement below it', () => {
+		expect(incrementValue(10, 1, 'down', 10)).toBe(10)
+		expect(incrementValue(11, 1, 'down', 10)).toBe(10)
+		expect(incrementValue(15, 10, 'down', 10)).toBe(15) // Would go below, so return unchanged
+	})
+
+	it('should work with decimal steps', () => {
+		expect(incrementValue(1.5, 0.1, 'up')).toBeCloseTo(1.6)
+		expect(incrementValue(1.5, 0.1, 'down')).toBeCloseTo(1.4)
+		expect(incrementValue(0, 0.01, 'up')).toBeCloseTo(0.01)
+	})
+
+	it('should handle negative values', () => {
+		expect(incrementValue(-5, 1, 'up')).toBe(-4)
+		expect(incrementValue(-5, 1, 'down')).toBe(-6)
+		expect(incrementValue(-1, 2, 'up')).toBe(1)
+	})
+
+	it('should allow incrementing from undefined when within constraints', () => {
+		expect(incrementValue(undefined, 1, 'up', 0, 10)).toBe(1)
+		expect(incrementValue(undefined, 1, 'down', -10, 10)).toBe(-1)
+	})
+
+	it('should not allow incrementing from undefined if result exceeds max', () => {
+		expect(incrementValue(undefined, 5, 'up', undefined, 3)).toBe(undefined)
+	})
+
+	it('should not allow decrementing from undefined if result exceeds min', () => {
+		expect(incrementValue(undefined, 5, 'down', -3, undefined)).toBe(undefined)
+	})
+
+	it('should handle both min and max constraints', () => {
+		expect(incrementValue(5, 1, 'up', 0, 10)).toBe(6)
+		expect(incrementValue(5, 1, 'down', 0, 10)).toBe(4)
+		expect(incrementValue(10, 1, 'up', 0, 10)).toBe(10) // At max
+		expect(incrementValue(0, 1, 'down', 0, 10)).toBe(0) // At min
 	})
 })
