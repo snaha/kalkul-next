@@ -11,6 +11,11 @@ if (!process.env.RESEND_AUDIENCE_ID) {
 	process.exit(1)
 }
 
+if (!process.env.PUBLIC_ORIGIN) {
+	console.error('Error: PUBLIC_ORIGIN environment variable is required')
+	process.exit(1)
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const template = process.argv[2]
@@ -21,9 +26,8 @@ if (!template || !subject) {
 	process.exit(1)
 }
 
-const response = await fetch(
-	`https://kalkul.app/api/email/preview?template=${template}&language=cs`,
-)
+const origin = process.env.PUBLIC_ORIGIN
+const response = await fetch(`${origin}/api/email/preview?template=${template}&language=cs`)
 if (!response.ok) {
 	console.error({ response })
 	process.exit(1)

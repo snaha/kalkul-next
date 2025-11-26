@@ -303,7 +303,9 @@ test('should format numbers correctly', async ({ mount }) => {
 
 ## Sending the newsletter
 
-There is a script for sending newsletters. It expects `RESEND_API_KEY` and `RESEND_AUDIENCE_ID` environment variables to be set correctly before invoking the command.
+There is a script for sending newsletters. It expects `RESEND_API_KEY`, `RESEND_AUDIENCE_ID` and `PUBLIC_ORIGIN` environment variables to be set correctly before invoking the command.
+
+For now `PUBLIC_ORIGIN` needs to be set to the local environment (e.g. `http://localhost:5173`) because of an issue (https://github.com/snaha/kalkul/issues/926).
 
 Usage:
 
