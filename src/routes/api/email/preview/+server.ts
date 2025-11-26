@@ -4,6 +4,7 @@ import WelcomeEmail from '$lib/email/templates/welcome-email.svelte'
 import { init, register } from 'svelte-i18n'
 import Newsletter_2025September from '$lib/email/templates/newsletter-2025-september.svelte'
 import FollowupEmail_2025September from '$lib/email/templates/followup-2025-october.svelte'
+import Newsletter_2025November from '$lib/email/templates/newsletter-2025-november.svelte'
 import { UNSUBSCRIBE_LINK_PLACEHOLDER } from '$lib/email/utils/constants'
 
 async function renderTemplate(name: string, templateProps: TemplateProps) {
@@ -14,6 +15,8 @@ async function renderTemplate(name: string, templateProps: TemplateProps) {
 			return await renderEmailTemplate(Newsletter_2025September, templateProps)
 		case 'followup-2025-october':
 			return await renderEmailTemplate(FollowupEmail_2025September, templateProps)
+		case 'newsletter-2025-november':
+			return await renderEmailTemplate(Newsletter_2025November, templateProps)
 		default:
 			return
 	}
