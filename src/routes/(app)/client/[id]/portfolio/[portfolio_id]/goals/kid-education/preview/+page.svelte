@@ -2,7 +2,6 @@
 	import { _ } from 'svelte-i18n'
 	import { goto } from '$app/navigation'
 	import PeriodicWithdrawalPreview from '$lib/components/goals-periodic-withdrawal-preview.svelte'
-	import Fullscreen from '$lib/components/fullscreen.svelte'
 	import Typography from '$lib/components/ui/typography.svelte'
 	import {
 		calculateRequiredDeposit,
@@ -14,8 +13,9 @@
 	import { page } from '$app/state'
 	import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
 	import adapter from '$lib/adapters'
-	import type { RetirementGoalData } from '$lib/types'
+	import type { EducationGoalData } from '$lib/types'
 	import { goalToTransactions } from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/goal-transactions'
+	import ContentLayout from '$lib/components/content-layout.svelte'
 	import { onMount } from 'svelte'
 
 	const clientId = $derived(page.params.id)
@@ -99,7 +99,7 @@
 	}
 
 	function goBack() {
-		goto(routes.RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId))
+		history.back()
 	}
 
 	async function saveGoal(finalDepositAmount: number) {
@@ -109,25 +109,22 @@
 		const validFinalDepositAmount =
 			typeof finalDepositAmount === 'number' && !isNaN(finalDepositAmount) ? finalDepositAmount : 0
 
-		// Create goal_data matching RetirementGoalData type
-		const goalData: RetirementGoalData = {
-			type: 'retirement',
-			depositStart: calculatorData.goalData.depositStart,
-			depositPeriod: calculatorData.goalData.depositPeriod,
-			currentSavings: calculatorData.goalData.currentSavings,
+		const goalData: EducationGoalData = {
+			...calculatorData.goalData,
+			type: 'education',
+			name:
+				calculatorData.goalData.type === 'education'
+					? calculatorData.goalData.name
+					: $_('page.education.defaultName'),
+			childName:
+				calculatorData.goalData.type === 'education' ? calculatorData.goalData.childName : '',
 			customDepositAmount: validFinalDepositAmount,
-			withdrawalStart: calculatorData.goalData.withdrawalStart,
-			withdrawalDuration: calculatorData.goalData.withdrawalDuration,
-			desiredBudget: calculatorData.goalData.desiredBudget,
-			budgetPeriod: calculatorData.goalData.budgetPeriod,
-			apy: calculatorData.goalData.apy,
-			inflation: calculatorData.goalData.inflation,
 		}
 
 		// Create goal in database as an investment with goal_data
 		const goalId = await adapter.addGoal({
 			portfolio_id: portfolioId,
-			name: $_('demo.investments.retirement'), // Default name - can be edited later
+			name: goalData.name, // Default name - can be edited later
 			type: 'goal',
 			apy: calculatorData.goalData.apy,
 			goal_data: goalData,
@@ -147,7 +144,7 @@
 		const transactions = goalToTransactions(goalData, goalId, {
 			initialSavings: $_('demo.transactions.initialSavings'),
 			regularDeposit: $_('demo.transactions.regularDeposit'),
-			withdrawal: $_('demo.transactions.retirementWithdrawal'),
+			withdrawal: $_('demo.transactions.educationWithdrawal'),
 		})
 		for (const transaction of transactions) {
 			await adapter.addTransaction(transaction)
@@ -161,7 +158,7 @@
 	}
 </script>
 
-<Fullscreen>
+<ContentLayout>
 	{#if calculatorData}
 		<PeriodicWithdrawalPreview
 			calculatedDeposit={requiredDeposit}
@@ -176,11 +173,11 @@
 			{goBack}
 			{saveGoal}
 			labels={{
-				pageTitle: $_('page.retirement.preview.title'),
-				budgetLabel: $_('page.retirement.preview.budgetLabel'),
+				pageTitle: $_('page.education.preview.title'),
+				budgetLabel: $_('page.education.preview.budgetLabel'),
 			}}
 		/>
 	{:else}
 		<Typography variant="h2">404 - {$_('common.notFound')}</Typography>
 	{/if}
-</Fullscreen>
+</ContentLayout>

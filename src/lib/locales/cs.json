@@ -310,8 +310,8 @@
 			"title": "Důchod",
 			"clientAgeToday": "Současný věk klienta",
 			"retirementAge": "Důchodový věk",
-			"retirementStart": "Začátek důchodu",
-			"retirementLength": "Délka důchodu",
+			"withdrawalStart": "Začátek důchodu",
+			"withdrawalDuration": "Délka důchodu",
 			"inflation": "Inflace",
 			"desiredRetirementBudget": "Požadovaný důchodový rozpočet",
 			"inTodaysMoney": "V dnešních penězích",
@@ -325,14 +325,31 @@
 			"perYear": "za rok",
 			"monthly": "Měsíčně",
 			"yearly": "Ročně",
-			"preview": "Náhled",
-			"setDepositAmount": "Nastavit částku vkladu",
-			"depositInRealValue": "Částka vkladu v reálné hodnotě (dnešní peníze) — bude automaticky upravena podle inflace.",
-			"createPlan": "Vytvořit plán",
-			"modifyParameters": "Upravit parametry",
-			"depositToMatch": "Vložte {amount} {currency} {frequency} pro dosažení důchodových cílů.",
-			"whatYouNeed": "Co budete potřebovat",
-			"whatYouHave": "Co budete mít"
+			"preview": {
+				"title": "Náhled důchodu",
+				"budgetLabel": "Důchodový rozpočet"
+			}
+		},
+		"education": {
+			"defaultName": "Vzdělání",
+			"preview": {
+				"title": "Náhled vzdělání",
+				"budgetLabel": "Rozpočet na vzdělání"
+			},
+			"form": {
+				"title": "Vzdělání dítěte",
+				"kidName": "Jméno dítěte",
+				"kidNamePlaceholder": "Dítě",
+				"goalName": "Název cíle",
+				"goalNamePlaceholder": "Dítě - vzdělání",
+				"educationStart": "Začátek vzdělání",
+				"educationLength": "Délka vzdělání",
+				"annualEducationCost": "Roční náklady na vzdělání",
+				"inTodaysMoney": "V dnešních penězích",
+				"currentSavings": "Současné úspory",
+				"currentSavingsHelper": "Určeno pro vzdělání vašeho dítěte",
+				"depositFrequency": "Frekvence vkladů"
+			}
 		},
 		"balanceInvestments": {
 			"title": "Vyvážení investic",
@@ -383,7 +400,34 @@
 		},
 		"goals": {
 			"title": "Cíle",
-			"linkedInvestments": "Propojené investice"
+			"linkedInvestments": "Propojené investice",
+			"new": {
+				"title": "Přidat cíl",
+				"subtitle": "Vyberte kalkulačku a začněte."
+			},
+			"calculators": {
+				"comingSoon": "Již brzy",
+				"retirement": {
+					"title": "Důchod",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro dosažení finanční nezávislosti."
+				},
+				"kidEducation": {
+					"title": "Vzdělání dítěte",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro pokrytí nákladů na vzdělání dítěte."
+				},
+				"itemPurchase": {
+					"title": "Koupě zboží",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro konkrétní nákup v požadovaném termínu."
+				},
+				"optimisedWithdrawals": {
+					"title": "Optimalizované výběry",
+					"description": "Vypočítejte optimální strategii výběrů pro pohodlný život z aktuálních úspor portfolia."
+				},
+				"houseBuying": {
+					"title": "Koupě domu",
+					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro zálohu na dům a jeho koupi."
+				}
+			}
 		},
 		"share": {
 			"linkSharingToggle": "Sdílet portfolio pomocí odkazu (pouze pro čtení)",
@@ -411,6 +455,9 @@
 		}
 	},
 	"component": {
+		"goals-periodic-withdrawal-preview": {
+			"depositToMatch": "Vložte {amount} {currency} {frequency} pro dosažení cílů."
+		},
 		"deleteModal": {
 			"confirmDelete": "Potvrdit smazání",
 			"cancelDelete": "Nesmazat"
@@ -598,6 +645,17 @@
 			"month": "m",
 			"week": "t",
 			"day": "d"
+		},
+		"periodicWithdrawal": {
+			"whatYouNeed": "Co budete potřebovat",
+			"whatYouHave": "Co budete mít",
+			"perMonth": "za měsíc",
+			"perYear": "za rok",
+			"depositToMatch": "Vložte {amount} {currency} {frequency} pro dosažení cílů.",
+			"setDepositAmount": "Nastavit částku vkladu",
+			"depositInRealValue": "Částka vkladu v reálné hodnotě (dnešní peníze) — bude automaticky upravena podle inflace.",
+			"createPlan": "Vytvořit plán",
+			"modifyParameters": "Upravit parametry"
 		},
 		"paymentAndBilling": "Platby a fakturace",
 		"notFound": "Nenalezeno",

@@ -45,14 +45,14 @@
 				// Goals exist but no portfolio - create portfolio without resetting state
 				const goal = demoStore.goals[0]
 				if (goal && goal.type === 'retirement') {
-					const { depositStart, retirementStart, retirementLength, inflation } =
+					const { depositStart, withdrawalStart, withdrawalDuration, inflation } =
 						goal.calculationInput
 					const startDate = formatDate(depositStart)
 					const endDate = formatDate(
 						new Date(
-							retirementStart.getFullYear() + retirementLength,
-							retirementStart.getMonth(),
-							retirementStart.getDate(),
+							withdrawalStart.getFullYear() + withdrawalDuration,
+							withdrawalStart.getMonth(),
+							withdrawalStart.getDate(),
 						),
 					)
 					demoStore.portfolio = {

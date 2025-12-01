@@ -10,7 +10,7 @@
 	import { locale } from 'svelte-i18n'
 
 	function openRetirementCalculator() {
-		goto(routes.RETIREMENT_CALCULATOR())
+		goto(routes.RETIREMENT_CALCULATOR)
 	}
 
 	function startWithBlank() {

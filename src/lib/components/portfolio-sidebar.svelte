@@ -176,7 +176,7 @@
 							{graphData}
 							{openTransaction}
 							addGoal={() => {
-								goto(routes.RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId))
+								goto(routes.NEW_GOAL(clientId, portfolioId))
 							}}
 							showExplainInvestmentsLabel={regularInvestments.length === 0}
 							--sidebar-min-height="var(--portfolio-sidebar-min-height)"
@@ -205,7 +205,7 @@
 							variant="ghost"
 							dimension="compact"
 							onclick={() => {
-								goto(routes.RETIREMENT_GOAL_CALCULATOR(clientId, portfolioId))
+								goto(routes.NEW_GOAL(clientId, portfolioId))
 							}}>{$_('page.portfolio.addGoal')}</Button
 						>
 					{:else if selectedTab === 'investments' && regularInvestments.length > 0}

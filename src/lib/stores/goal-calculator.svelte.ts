@@ -1,18 +1,18 @@
-import type { RetirementCalculationInput } from '$lib/@snaha/kalkul-calculators/retirement/retirement'
+import type { GoalData } from '$lib/types'
 
 // Temporary state for goal calculator workflow
 class GoalCalculatorStore {
-	retirementInput = $state<{
-		calculationInput: RetirementCalculationInput
+	goalInput = $state<{
+		goalData: GoalData
 		currency: string
 	}>()
 
-	setRetirementInput(input: RetirementCalculationInput, currency: string) {
-		this.retirementInput = { calculationInput: input, currency }
+	setGoalInput(goalData: GoalData, currency: string) {
+		this.goalInput = { goalData, currency }
 	}
 
-	clearRetirementInput() {
-		this.retirementInput = undefined
+	clearGoalInput() {
+		this.goalInput = undefined
 	}
 }
 

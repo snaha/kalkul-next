@@ -15,15 +15,15 @@
 	import DateAge from '$lib/components/date-age.svelte'
 	import DatePicker from '$lib/components/ui/input/date/picker.svelte'
 	import { addYears } from 'date-fns'
-	import type { RetirementCalculationInput } from '$lib/@snaha/kalkul-calculators/retirement/retirement'
+	import type { PeriodicWithdrawalCalculationInput } from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/periodic-withdrawal'
 
 	type Props = {
 		client: Client
 		portfolio: Portfolio
 		close: () => void
-		onCalculate: (input: RetirementCalculationInput, currency: string) => void
+		onCalculate: (input: PeriodicWithdrawalCalculationInput, currency: string) => void
 		initialData?: {
-			calculationInput: RetirementCalculationInput
+			calculationInput: PeriodicWithdrawalCalculationInput
 			currency: string
 		}
 	}
@@ -47,12 +47,12 @@
 	const currentAge = today.getFullYear() - birthDate.getFullYear()
 
 	let clientAge = $state(currentAge)
-	let retirementStart = $state(
-		initialData?.calculationInput.retirementStart ??
+	let withdrawalStart = $state(
+		initialData?.calculationInput.withdrawalStart ??
 			addYears(birthDate, RETIREMENT_DEFAULTS.RETIREMENT_AGE),
 	)
-	let retirementLength = $state(
-		initialData?.calculationInput.retirementLength ?? RETIREMENT_DEFAULTS.RETIREMENT_LENGTH,
+	let withdrawalDuration = $state(
+		initialData?.calculationInput.withdrawalDuration ?? RETIREMENT_DEFAULTS.RETIREMENT_LENGTH,
 	)
 	let currency = $state(initialData?.currency ?? portfolio.currency)
 	let inflation = $state(initialData?.calculationInput.inflation ?? RETIREMENT_DEFAULTS.INFLATION)
@@ -77,9 +77,9 @@
 	}
 
 	function calculateDeposit() {
-		const input: RetirementCalculationInput = {
-			retirementStart,
-			retirementLength,
+		const input: PeriodicWithdrawalCalculationInput = {
+			withdrawalStart,
+			withdrawalDuration,
 			desiredBudget,
 			budgetPeriod: budgetPeriod as 'month' | 'year',
 			currentSavings,
@@ -114,8 +114,8 @@
 
 	<DateAge
 		dimension="compact"
-		dateInputLabel={$_('page.retirement.retirementStart')}
-		bind:date={retirementStart}
+		dateInputLabel={$_('page.retirement.withdrawalStart')}
+		bind:date={withdrawalStart}
 		ageLabel={$_('page.retirement.retirementAge')}
 		agePlaceholder={$_('page.retirement.retirementAge')}
 		birthDate={new Date(client.birth_date)}
@@ -125,10 +125,10 @@
 		type="number"
 		variant="solid"
 		dimension="compact"
-		placeholder={$_('page.retirement.retirementLength')}
-		label={$_('page.retirement.retirementLength')}
+		placeholder={$_('page.retirement.withdrawalDuration')}
+		label={$_('page.retirement.withdrawalDuration')}
 		unit={$_('common.years')}
-		bind:value={retirementLength}
+		bind:value={withdrawalDuration}
 	></Input>
 
 	<Divider />
@@ -267,10 +267,5 @@
 	:global(.horizontal .grower .relative),
 	:global(.horizontal .grower input) {
 		min-width: 0;
-	}
-	:global(.horizontal .date-picker) {
-		flex: 1;
-		min-width: 0;
-		max-width: 100%;
 	}
 </style>

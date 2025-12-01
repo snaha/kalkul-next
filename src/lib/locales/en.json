@@ -310,8 +310,8 @@
 			"title": "Retirement",
 			"clientAgeToday": "Client's age today",
 			"retirementAge": "Retirement age",
-			"retirementStart": "Retirement start",
-			"retirementLength": "Retirement length",
+			"withdrawalStart": "Retirement start",
+			"withdrawalDuration": "Retirement length",
 			"inflation": "Inflation",
 			"desiredRetirementBudget": "Desired retirement budget",
 			"inTodaysMoney": "In today's money",
@@ -325,14 +325,31 @@
 			"perYear": "per year",
 			"monthly": "Monthly",
 			"yearly": "Yearly",
-			"preview": "Preview",
-			"setDepositAmount": "Set deposit amount",
-			"depositInRealValue": "Deposit amount in real value (today's money) — it will be automatically adjusted to match inflation.",
-			"createPlan": "Create plan",
-			"modifyParameters": "Modify parameters",
-			"depositToMatch": "Deposit {amount} {currency} {frequency} to match the retirement goals.",
-			"whatYouNeed": "What you'll need",
-			"whatYouHave": "What you'll have"
+			"preview": {
+				"title": "Retirement Preview",
+				"budgetLabel": "Retirement budget"
+			}
+		},
+		"education": {
+			"defaultName": "Education",
+			"preview": {
+				"title": "Education Preview",
+				"budgetLabel": "Education budget"
+			},
+			"form": {
+				"title": "Kid education",
+				"kidName": "Kid name",
+				"kidNamePlaceholder": "Kid",
+				"goalName": "Goal name",
+				"goalNamePlaceholder": "Kid - education",
+				"educationStart": "Education start",
+				"educationLength": "Education length",
+				"annualEducationCost": "Annual education cost",
+				"inTodaysMoney": "In today's money",
+				"currentSavings": "Current savings",
+				"currentSavingsHelper": "Earmarked for your kid's education",
+				"depositFrequency": "Deposit frequency"
+			}
 		},
 		"balanceInvestments": {
 			"title": "Balance investments",
@@ -383,7 +400,34 @@
 		},
 		"goals": {
 			"title": "Goals",
-			"linkedInvestments": "Linked Investments"
+			"linkedInvestments": "Linked Investments",
+			"new": {
+				"title": "Add goal",
+				"subtitle": "Choose a calculator to get started."
+			},
+			"calculators": {
+				"comingSoon": "Coming soon",
+				"retirement": {
+					"title": "Retirement",
+					"description": "Calculate the amount of money needed to save and invest to achieve financial independence."
+				},
+				"kidEducation": {
+					"title": "Kid education",
+					"description": "Calculate the amount of money needed to save and invest to cover for a kid's education expenses."
+				},
+				"itemPurchase": {
+					"title": "Item purchase",
+					"description": "Calculate the amount of money needed to save and invest to make a specific purchase at the desired time."
+				},
+				"optimisedWithdrawals": {
+					"title": "Optimised withdrawals",
+					"description": "Calculate the optimal withdrawal strategy to live comfortably from current portfolio savings."
+				},
+				"houseBuying": {
+					"title": "House buying",
+					"description": "Calculate the amount of money needed to save and invest for a home down payment and purchase."
+				}
+			}
 		},
 		"share": {
 			"linkSharingToggle": "Share portfolio with a link (view-only)",
@@ -411,6 +455,9 @@
 		}
 	},
 	"component": {
+		"goals-periodic-withdrawal-preview": {
+			"depositToMatch": "Deposit {amount} {currency} {frequency} to match the goals."
+		},
 		"deleteModal": {
 			"confirmDelete": "Confirm delete",
 			"cancelDelete": "Don't delete"
@@ -598,6 +645,17 @@
 			"month": "m",
 			"week": "w",
 			"day": "d"
+		},
+		"periodicWithdrawal": {
+			"whatYouNeed": "What you'll need",
+			"whatYouHave": "What you'll have",
+			"perMonth": "per month",
+			"perYear": "per year",
+			"depositToMatch": "Deposit {amount} {currency} {frequency} to match the goals.",
+			"setDepositAmount": "Set deposit amount",
+			"depositInRealValue": "Deposit amount in real value (today's money) — it will be automatically adjusted to match inflation.",
+			"createPlan": "Create plan",
+			"modifyParameters": "Modify parameters"
 		},
 		"paymentAndBilling": "Payment & billing",
 		"notFound": "Not found",

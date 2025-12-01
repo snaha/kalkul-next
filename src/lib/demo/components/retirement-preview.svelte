@@ -36,7 +36,9 @@
 	}: Props = $props()
 
 	const frequencyLabel = $derived(
-		frequency === 'month' ? $_('page.retirement.perMonth') : $_('page.retirement.perYear'),
+		frequency === 'month'
+			? $_('common.periodicWithdrawal.perMonth')
+			: $_('common.periodicWithdrawal.perYear'),
 	)
 
 	const frequencyShort = $derived(frequency === 'month' ? 'm' : 'y')
@@ -66,7 +68,7 @@
 			labels={chartLabels}
 			datasets={[
 				{
-					label: $_('page.retirement.whatYouNeed'),
+					label: $_('common.periodicWithdrawal.whatYouNeed'),
 					data: whatYouNeedData,
 					borderColor: colorUltraHigh,
 					backgroundColor: 'transparent',
@@ -78,7 +80,7 @@
 					pointHoverRadius: 0,
 				},
 				{
-					label: $_('page.retirement.whatYouHave'),
+					label: $_('common.periodicWithdrawal.whatYouHave'),
 					data: whatYouHaveData,
 					borderColor: colorHigh,
 					backgroundColor: `${colorHigh}40`,
@@ -116,7 +118,7 @@
 
 	<div class="result-banner">
 		<Typography variant="default" element="p" style="color: white; text-align: center;">
-			{$_('page.retirement.depositToMatch', {
+			{$_('common.periodicWithdrawal.depositToMatch', {
 				values: {
 					amount: calculatedDeposit,
 					currency: currency,
@@ -132,8 +134,8 @@
 		bind:value={depositAmount}
 		unit={`${currency} / ${frequencyShort}`}
 		locale={$locale}
-		label={$_('page.retirement.setDepositAmount')}
-		helperText={$_('page.retirement.depositInRealValue')}
+		label={$_('common.periodicWithdrawal.setDepositAmount')}
+		helperText={$_('common.periodicWithdrawal.depositInRealValue')}
 	/>
 
 	<div class="spacer"></div>
@@ -141,14 +143,14 @@
 	<div class="button-container">
 		<div class="left-buttons">
 			<Button variant="strong" dimension="compact" onclick={handleCreatePlan}>
-				{$_('page.retirement.createPlan')}
+				{$_('common.periodicWithdrawal.createPlan')}
 			</Button>
 			<Button variant="ghost" dimension="compact" onclick={close}>
 				{$_('common.cancel')}
 			</Button>
 		</div>
 		<Button variant="ghost" dimension="compact" onclick={goBack}>
-			{$_('page.retirement.modifyParameters')}
+			{$_('common.periodicWithdrawal.modifyParameters')}
 		</Button>
 	</div>
 </Vertical>

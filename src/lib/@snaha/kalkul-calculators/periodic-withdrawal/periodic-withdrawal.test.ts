@@ -3,16 +3,16 @@ import {
 	calculateRequiredDeposit,
 	calculateWhatYouHave,
 	generateYears,
-	type RetirementCalculationInput,
-} from './retirement'
+	type PeriodicWithdrawalCalculationInput,
+} from './periodic-withdrawal'
 
 describe('generateYears', () => {
 	it('should generate correct year range', () => {
 		const depositStart = new Date('2025-01-01')
-		const retirementStart = new Date('2060-01-01')
-		const retirementLength = 20
+		const withdrawalStart = new Date('2060-01-01')
+		const withdrawalDuration = 20
 
-		const years = generateYears(depositStart, retirementStart, retirementLength)
+		const years = generateYears(depositStart, withdrawalStart, withdrawalDuration)
 
 		expect(years[0]).toBe(2025)
 		expect(years[years.length - 1]).toBe(2080)
@@ -21,9 +21,9 @@ describe('generateYears', () => {
 })
 
 describe('calculateRequiredDeposit', () => {
-	const baseInput: RetirementCalculationInput = {
-		retirementStart: new Date('2060-01-01'),
-		retirementLength: 20,
+	const baseInput: PeriodicWithdrawalCalculationInput = {
+		withdrawalStart: new Date('2060-01-01'),
+		withdrawalDuration: 20,
 		desiredBudget: 2000,
 		budgetPeriod: 'month',
 		currentSavings: 0,
@@ -129,9 +129,9 @@ describe('calculateRequiredDeposit', () => {
 })
 
 describe('calculateWhatYouHave', () => {
-	const baseInput: RetirementCalculationInput = {
-		retirementStart: new Date('2060-01-01'),
-		retirementLength: 20,
+	const baseInput: PeriodicWithdrawalCalculationInput = {
+		withdrawalStart: new Date('2060-01-01'),
+		withdrawalDuration: 20,
 		desiredBudget: 2000,
 		budgetPeriod: 'month',
 		currentSavings: 10000,
@@ -235,9 +235,9 @@ describe('calculateWhatYouHave', () => {
 
 describe('integration tests', () => {
 	it('should produce consistent results across functions', () => {
-		const input: RetirementCalculationInput = {
-			retirementStart: new Date('2060-01-01'),
-			retirementLength: 20,
+		const input: PeriodicWithdrawalCalculationInput = {
+			withdrawalStart: new Date('2060-01-01'),
+			withdrawalDuration: 20,
 			desiredBudget: 2000,
 			budgetPeriod: 'month',
 			currentSavings: 0,
@@ -247,7 +247,7 @@ describe('integration tests', () => {
 			depositPeriod: 'month',
 		}
 
-		const years = generateYears(input.depositStart, input.retirementStart, input.retirementLength)
+		const years = generateYears(input.depositStart, input.withdrawalStart, input.withdrawalDuration)
 		const requiredDeposit = calculateRequiredDeposit(input)
 		const whatYouNeed = calculateWhatYouHave(input, requiredDeposit)
 		const whatYouHave = calculateWhatYouHave(input, 200)
@@ -262,9 +262,9 @@ describe('integration tests', () => {
 	})
 
 	it('should generate correct chart labels showing start, retirement, and end years', () => {
-		const input: RetirementCalculationInput = {
-			retirementStart: new Date('2030-01-01'),
-			retirementLength: 25,
+		const input: PeriodicWithdrawalCalculationInput = {
+			withdrawalStart: new Date('2030-01-01'),
+			withdrawalDuration: 25,
 			desiredBudget: 3000,
 			budgetPeriod: 'month',
 			currentSavings: 50000,
@@ -274,10 +274,10 @@ describe('integration tests', () => {
 			depositPeriod: 'month',
 		}
 
-		const years = generateYears(input.depositStart, input.retirementStart, input.retirementLength)
+		const years = generateYears(input.depositStart, input.withdrawalStart, input.withdrawalDuration)
 		const startYear = years[0]
 		const endYear = years[years.length - 1]
-		const retirementStartYear = input.retirementStart.getFullYear()
+		const retirementStartYear = input.withdrawalStart.getFullYear()
 
 		// Generate chart labels (mimicking the store logic)
 		const chartLabels = years.map((year) => {
@@ -311,9 +311,9 @@ describe('integration tests', () => {
 		const retirementAge = 50
 		const retirementYear = birthYear + retirementAge // 2030
 
-		const input: RetirementCalculationInput = {
-			retirementStart: new Date(`${retirementYear}-01-01`), // Retire at age 50 in 2030
-			retirementLength: 25,
+		const input: PeriodicWithdrawalCalculationInput = {
+			withdrawalStart: new Date(`${retirementYear}-01-01`), // Retire at age 50 in 2030
+			withdrawalDuration: 25,
 			desiredBudget: 3000,
 			budgetPeriod: 'month',
 			currentSavings: 50000,
@@ -324,7 +324,7 @@ describe('integration tests', () => {
 		}
 
 		const whatYouHave = calculateWhatYouHave(input, 1000)
-		const years = generateYears(input.depositStart, input.retirementStart, input.retirementLength)
+		const years = generateYears(input.depositStart, input.withdrawalStart, input.withdrawalDuration)
 
 		const retirementYearIndex = years.indexOf(retirementYear)
 

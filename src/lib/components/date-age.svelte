@@ -15,6 +15,7 @@
 		date: Date
 		birthDate: Date
 		onchange?: () => void
+		ageDisabled?: boolean
 	}
 
 	let {
@@ -25,6 +26,7 @@
 		date = $bindable(),
 		birthDate,
 		onchange,
+		ageDisabled = false,
 	}: Props = $props()
 
 	let age = $state(formatAge(birthDate, date))
@@ -62,8 +64,13 @@
 	}
 
 	$effect(() => {
-		if (date) {
-			age = formatAge(new Date(birthDate), new Date(date))
+		if (date || birthDate) {
+			const ageValue = formatAge(new Date(birthDate), new Date(date))
+			let ageNumber = parseInt(ageValue, 10)
+			if (ageNumber < 0) {
+				age = Math.abs(ageNumber).toString()
+				return
+			}
 		}
 	})
 </script>
@@ -91,6 +98,7 @@
 		min={0}
 		onblur={checkAgeInput}
 		{onchange}
+		disabled={ageDisabled}
 	></Input>
 </section>
 

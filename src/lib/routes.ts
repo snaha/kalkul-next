@@ -32,10 +32,16 @@ export default {
 	EDIT_INVESTMENT: (clientId: string, portfolioId: string, investmentId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/edit-investment/${investmentId}`,
 	// Goal routes
+	NEW_GOAL: (clientId: string, portfolioId: string) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/new`,
 	RETIREMENT_GOAL_CALCULATOR: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/retirement/calculator`,
 	RETIREMENT_GOAL_PREVIEW: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/retirement/preview`,
+	KID_EDUCATION_GOAL_CALCULATOR: (clientId: string, portfolioId: string) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/kid-education/calculator`,
+	KID_EDUCATION_GOAL_PREVIEW: (clientId: string, portfolioId: string) =>
+		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/goals/kid-education/preview`,
 	SHARE: (portfolioId: string) => `${routePrefix}/share/${portfolioId}`,
 	PDF_EXPORT_PARAMS: (clientId: string, portfolioId: string) =>
 		`${routePrefix}/client/${clientId}/portfolio/${portfolioId}/pdf-export-params`,
@@ -52,7 +58,7 @@ export default {
 	GET_STARTED: `${routePrefix}/get-started`,
 	// Demo routes - client-independent portfolio simulation
 	DEMO_TEMPLATES: `${routePrefix}/demo`,
-	RETIREMENT_CALCULATOR: () => `${routePrefix}/demo/portfolio/retirement`,
+	RETIREMENT_CALCULATOR: `${routePrefix}/demo/portfolio/retirement`,
 	RETIREMENT_PREVIEW: () => `${routePrefix}/demo/portfolio/retirement/preview`,
 	DEMO: () => `${routePrefix}/demo/portfolio`,
 	DEMO_NEW_INVESTMENT: () => `${routePrefix}/demo/portfolio/new-investment`,

@@ -72,7 +72,7 @@
 	.vertical {
 		display: flex;
 		flex-direction: column;
-		gap: var(--half-padding);
+		gap: var(--quarter-padding);
 		flex: 1;
 	}
 	.placeholder {

@@ -69,35 +69,29 @@ export interface ApiToken {
 	token_hash: string // New field
 }
 
-// Goal types
-export type RetirementGoalData = {
-	type: 'retirement'
+// Base type for periodic withdrawal goals (stored in database)
+export type PeriodicWithdrawalGoalData = {
 	depositStart: string // ISO date
 	depositPeriod: 'month' | 'year'
 	currentSavings: number
 	customDepositAmount?: number
-	retirementStart: string // ISO date
-	retirementLength: number // years
+	withdrawalStart: string // ISO date - when withdrawals begin
+	withdrawalDuration: number // years - how long withdrawals last
 	desiredBudget: number
 	budgetPeriod: 'month' | 'year'
 	apy: number // percentage
 	inflation: number // percentage
 }
 
-export type EducationGoalData = {
+// Goal types
+export type RetirementGoalData = PeriodicWithdrawalGoalData & {
+	type: 'retirement'
+}
+
+export type EducationGoalData = PeriodicWithdrawalGoalData & {
 	type: 'education'
-	childName?: string
-	childBirthDate?: string // ISO date
-	depositStart: string // ISO date
-	depositPeriod: 'month' | 'year'
-	currentSavings: number
-	customDepositAmount?: number
-	educationStart: string // ISO date
-	educationDuration: number // years
-	desiredBudget: number
-	budgetPeriod: 'month' | 'year'
-	apy: number // percentage
-	inflation: number // percentage
+	childName: string
+	name: string
 }
 
 export type GoalData = RetirementGoalData | EducationGoalData

@@ -1,8 +1,8 @@
 import { formatDate } from '$lib/@snaha/kalkul-maths'
 import {
 	calculateRequiredDeposit,
-	type RetirementCalculationInput,
-} from '$lib/@snaha/kalkul-calculators/retirement/retirement'
+	type PeriodicWithdrawalCalculationInput,
+} from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/periodic-withdrawal'
 import type { Portfolio, Investment, Transaction, InvestmentWithColorIndex } from '$lib/types'
 import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
 import { _ } from 'svelte-i18n'
@@ -34,7 +34,7 @@ export type LinkedInvestment = {
 
 export type RetirementGoal = {
 	type: 'retirement'
-	calculationInput: RetirementCalculationInput
+	calculationInput: PeriodicWithdrawalCalculationInput
 	currency: string
 	customDepositAmount?: number
 	linkedInvestments: LinkedInvestment[]
@@ -42,7 +42,7 @@ export type RetirementGoal = {
 
 export type EducationGoal = {
 	type: 'education'
-	calculationInput: RetirementCalculationInput
+	calculationInput: PeriodicWithdrawalCalculationInput
 	currency: string
 	customDepositAmount?: number
 	linkedInvestments: LinkedInvestment[]
@@ -83,7 +83,7 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 			type: 'deposit',
 			created_at: new Date().toISOString(),
 			last_edited_at: new Date().toISOString(),
-			end_date: formatDate(g.calculationInput.retirementStart),
+			end_date: formatDate(g.calculationInput.withdrawalStart),
 			inflation_adjusted: true,
 			label: get(_)('demo.transactions.regularDeposit'),
 			repeat: 1,
@@ -99,15 +99,15 @@ export function goalToTransactions(goal: Goal): Transaction[] {
 			id: 'demo-transaction-3',
 			investment_id: 'demo-investment-1',
 			amount: g.calculationInput.desiredBudget,
-			date: formatDate(g.calculationInput.retirementStart),
+			date: formatDate(g.calculationInput.withdrawalStart),
 			type: 'withdrawal',
 			created_at: new Date().toISOString(),
 			last_edited_at: new Date().toISOString(),
 			end_date: formatDate(
 				new Date(
-					g.calculationInput.retirementStart.getFullYear() + g.calculationInput.retirementLength,
-					g.calculationInput.retirementStart.getMonth(),
-					g.calculationInput.retirementStart.getDate(),
+					g.calculationInput.withdrawalStart.getFullYear() + g.calculationInput.withdrawalDuration,
+					g.calculationInput.withdrawalStart.getMonth(),
+					g.calculationInput.withdrawalStart.getDate(),
 				),
 			),
 			inflation_adjusted: true,
@@ -406,13 +406,13 @@ class DemoStore {
 
 		// Create demo portfolio based on first goal
 		const goal = this.goals[0] as RetirementGoal
-		const { depositStart, retirementStart, retirementLength, inflation } = goal.calculationInput
+		const { depositStart, withdrawalStart, withdrawalDuration, inflation } = goal.calculationInput
 		const startDate = formatDate(depositStart)
 		const endDate = formatDate(
 			new Date(
-				retirementStart.getFullYear() + retirementLength,
-				retirementStart.getMonth(),
-				retirementStart.getDate(),
+				withdrawalStart.getFullYear() + withdrawalDuration,
+				withdrawalStart.getMonth(),
+				withdrawalStart.getDate(),
 			),
 		)
 

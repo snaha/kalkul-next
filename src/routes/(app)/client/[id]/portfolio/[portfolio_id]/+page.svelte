@@ -192,6 +192,8 @@
 {:else if !portfolio || !client}
 	<ContentLayout centerVertical>
 		404 - {$_('common.notFound')}
+		{portfolio ? 'portfolio' : 'no portfolio'}
+		{client ? 'client' : 'no client'}
 	</ContentLayout>
 {:else if !hasAnyInvestments}
 	{@render emptyPage()}

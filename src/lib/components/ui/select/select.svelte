@@ -247,7 +247,7 @@
 		display: flex;
 		flex-grow: 1;
 		justify-content: center;
-		gap: 0.5rem;
+		gap: var(--quarter-padding);
 		color: var(--colors-ultra-high);
 		font-family: var(--font-family-sans-serif);
 		.select-container {

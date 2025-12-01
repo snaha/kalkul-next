@@ -16,9 +16,9 @@
 		value?: number
 		min?: number
 		max?: number
-		step?: number
 		maximumFractionDigits?: number
 		locale: string | null | undefined
+		step?: number
 	}
 
 	let {

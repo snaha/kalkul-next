@@ -490,7 +490,7 @@ export function isGoalsEnabledForEmail(email: string): boolean {
   - Button now functional (was disabled in Task 1)
 - ✅ Updated portfolio page to wire up `addGoal` callback with navigation
 - ✅ Implemented automatic transaction generation:
-  - Created `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.ts` with `retirementGoalToTransactions()`
+  - Created `src/lib/@snaha/kalkul-calculators/retirement/goal-transactions.ts` with `goalToTransactions()`
   - Generates 3 types of transactions from goal data:
     1. **Initial Savings** - One-time deposit of current savings (if > 0, inflation-adjusted)
     2. **Regular Deposits** - Recurring deposits until retirement (if > 0, inflation-adjusted)

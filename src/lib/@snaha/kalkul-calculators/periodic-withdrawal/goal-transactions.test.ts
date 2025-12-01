@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { retirementGoalToTransactions } from './goal-transactions'
+import { goalToTransactions } from './goal-transactions'
 import type { RetirementGoalData } from '$lib/types'
 
-describe('retirementGoalToTransactions', () => {
+describe('goalToTransactions', () => {
 	const mockLabels = {
 		initialSavings: 'Initial Savings',
 		regularDeposit: 'Regular Deposit',
-		retirementWithdrawal: 'Retirement Withdrawal',
+		withdrawal: 'Withdrawal',
 	}
 
 	it('should generate all three transaction types when currentSavings > 0', () => {
@@ -16,15 +16,15 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'month',
 			currentSavings: 10000,
 			customDepositAmount: 500,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 2000,
 			budgetPeriod: 'month',
 			apy: 5.5,
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+		const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		expect(transactions).toHaveLength(3)
 		expect(transactions[0].type).toBe('deposit')
@@ -42,7 +42,7 @@ describe('retirementGoalToTransactions', () => {
 
 		expect(transactions[2].type).toBe('withdrawal')
 		expect(transactions[2].amount).toBe(2000)
-		expect(transactions[2].label).toBe('Retirement Withdrawal')
+		expect(transactions[2].label).toBe('Withdrawal')
 		expect(transactions[2].inflation_adjusted).toBe(true)
 		expect(transactions[2].repeat).toBe(1)
 		expect(transactions[2].repeat_unit).toBe('month')
@@ -55,15 +55,15 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'month',
 			currentSavings: 0,
 			customDepositAmount: 500,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 2000,
 			budgetPeriod: 'month',
 			apy: 5.5,
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+		const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		expect(transactions).toHaveLength(2)
 		expect(transactions[0].type).toBe('deposit')
@@ -78,15 +78,15 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'year',
 			currentSavings: 0,
 			customDepositAmount: 6000,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 24000,
 			budgetPeriod: 'year',
 			apy: 5.5,
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+		const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		expect(transactions[0].repeat_unit).toBe('year')
 		expect(transactions[1].repeat_unit).toBe('year')
@@ -99,8 +99,8 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'month',
 			currentSavings: 10000,
 			customDepositAmount: 500,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 2000,
 			budgetPeriod: 'month',
 			apy: 5.5,
@@ -108,7 +108,7 @@ describe('retirementGoalToTransactions', () => {
 		}
 
 		const investmentId = 'test-investment-999'
-		const transactions = retirementGoalToTransactions(goalData, investmentId, mockLabels)
+		const transactions = goalToTransactions(goalData, investmentId, mockLabels)
 
 		transactions.forEach((transaction) => {
 			expect(transaction.investment_id).toBe(investmentId)
@@ -125,15 +125,15 @@ describe('retirementGoalToTransactions', () => {
 				depositPeriod: 'month',
 				currentSavings: 0,
 				customDepositAmount: undefined,
-				retirementStart: '2060-01-01T00:00:00.000Z',
-				retirementLength: 20,
+				withdrawalStart: '2060-01-01T00:00:00.000Z',
+				withdrawalDuration: 20,
 				desiredBudget: 2000,
 				budgetPeriod: 'month',
 				apy: 5.5,
 				inflation: 2.5,
 			}
 
-			const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+			const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 			// The deposit amount should be calculated
 			expect(transactions[0].amount).toBeGreaterThan(0)
@@ -148,15 +148,15 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'month',
 			currentSavings: 10000,
 			customDepositAmount: 0,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 2000,
 			budgetPeriod: 'month',
 			apy: 5.5,
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+		const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		// Should only have initial savings and withdrawal, no recurring deposit
 		expect(transactions).toHaveLength(2)
@@ -173,15 +173,15 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'month',
 			currentSavings: 10000,
 			customDepositAmount: 500,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 0,
 			budgetPeriod: 'month',
 			apy: 5.5,
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+		const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		// Should only have initial savings and recurring deposit, no withdrawal
 		expect(transactions).toHaveLength(2)
@@ -198,15 +198,15 @@ describe('retirementGoalToTransactions', () => {
 			depositPeriod: 'month',
 			currentSavings: 10000,
 			customDepositAmount: 0,
-			retirementStart: '2060-01-01T00:00:00.000Z',
-			retirementLength: 20,
+			withdrawalStart: '2060-01-01T00:00:00.000Z',
+			withdrawalDuration: 20,
 			desiredBudget: 0,
 			budgetPeriod: 'month',
 			apy: 5.5,
 			inflation: 2.5,
 		}
 
-		const transactions = retirementGoalToTransactions(goalData, 'test-investment-123', mockLabels)
+		const transactions = goalToTransactions(goalData, 'test-investment-123', mockLabels)
 
 		// Should only have initial savings
 		expect(transactions).toHaveLength(1)

@@ -1,15 +1,15 @@
 <script lang="ts">
-	import RetirementCalculator from '$lib/components/goals-retirement-calculator.svelte'
-	import Fullscreen from '$lib/components/fullscreen.svelte'
-	import { page } from '$app/state'
-	import { clientStore } from '$lib/stores/clients.svelte'
-	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { goto } from '$app/navigation'
-	import routes from '$lib/routes'
-	import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
+	import { page } from '$app/state'
 	import type { PeriodicWithdrawalCalculationInput } from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/periodic-withdrawal'
 	import { goalDataToCalculationInput } from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/periodic-withdrawal'
-	import type { RetirementGoalData } from '$lib/types'
+	import ContentLayout from '$lib/components/content-layout.svelte'
+	import KidEducation from '$lib/components/goals-kid-education.svelte'
+	import routes from '$lib/routes'
+	import { clientStore } from '$lib/stores/clients.svelte'
+	import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
+	import { portfolioStore } from '$lib/stores/portfolio.svelte'
+	import type { EducationGoalData } from '$lib/types'
 
 	const clientId = $derived(page.params.id)
 	const client = $derived(clientStore.data.find((c) => c.id === clientId))
@@ -18,7 +18,7 @@
 
 	// Convert goalData to calculationInput for the calculator component
 	const initialData = $derived(
-		goalCalculatorStore.goalInput && goalCalculatorStore.goalInput.goalData.type === 'retirement'
+		goalCalculatorStore.goalInput && goalCalculatorStore.goalInput.goalData.type === 'education'
 			? {
 					calculationInput: goalDataToCalculationInput(goalCalculatorStore.goalInput.goalData),
 					currency: goalCalculatorStore.goalInput.currency,
@@ -30,10 +30,17 @@
 		history.back()
 	}
 
-	function handleCalculate(input: PeriodicWithdrawalCalculationInput, currency: string) {
+	function handleCalculate(
+		input: PeriodicWithdrawalCalculationInput,
+		currency: string,
+		name: string,
+		childName: string,
+	) {
 		// Convert calculation input to goal data for storage
-		const goalData: RetirementGoalData = {
-			type: 'retirement',
+		const goalData: EducationGoalData = {
+			type: 'education',
+			name,
+			childName,
 			depositStart: input.depositStart.toISOString(),
 			depositPeriod: input.depositPeriod,
 			currentSavings: input.currentSavings,
@@ -47,18 +54,12 @@
 		// Save to temporary store
 		goalCalculatorStore.setGoalInput(goalData, currency)
 		// Navigate to preview
-		goto(routes.RETIREMENT_GOAL_PREVIEW(clientId, portfolioId))
+		goto(routes.KID_EDUCATION_GOAL_PREVIEW(clientId, portfolioId))
 	}
 </script>
 
 {#if client && portfolio}
-	<Fullscreen>
-		<RetirementCalculator
-			{client}
-			{portfolio}
-			{close}
-			onCalculate={handleCalculate}
-			{initialData}
-		/>
-	</Fullscreen>
+	<ContentLayout>
+		<KidEducation {client} {portfolio} {close} onCalculate={handleCalculate} {initialData} />
+	</ContentLayout>
 {/if}

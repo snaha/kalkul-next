@@ -9,7 +9,7 @@
 		calculateRequiredDeposit,
 		calculateWhatYouHave,
 		generateYears,
-	} from '$lib/@snaha/kalkul-calculators/retirement/retirement'
+	} from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/periodic-withdrawal'
 	import routes from '$lib/routes'
 	import { DEMO_CLIENT_NAME, DEMO_CLIENT_BIRTH_DATE, DEMO_CLIENT_EMAIL } from '$lib/demo/utils'
 
@@ -29,7 +29,7 @@
 	// Ensure calculation data exists, otherwise redirect back
 	$effect(() => {
 		if (!goal) {
-			goto(routes.RETIREMENT_CALCULATOR())
+			goto(routes.RETIREMENT_CALCULATOR)
 		}
 	})
 
@@ -60,8 +60,8 @@
 		goal
 			? generateYears(
 					goal.calculationInput.depositStart,
-					goal.calculationInput.retirementStart,
-					goal.calculationInput.retirementLength,
+					goal.calculationInput.withdrawalStart,
+					goal.calculationInput.withdrawalDuration,
 				)
 			: [],
 	)
@@ -71,9 +71,9 @@
 		if (!years.length || !goal) return []
 		const startYear = years[0]
 		const endYear = years[years.length - 1]
-		const retirementStartYear = goal.calculationInput.retirementStart.getFullYear()
+		const withdrawalStartYear = goal.calculationInput.withdrawalStart.getFullYear()
 		return years.map((year) => {
-			if (year === startYear || year === endYear || year === retirementStartYear) {
+			if (year === startYear || year === endYear || year === withdrawalStartYear) {
 				return year.toString()
 			}
 			return ''
