@@ -168,9 +168,6 @@ export default class Supabase implements Adapter {
 			console.error('Failed to register', error)
 			throw error
 		}
-		if (newsletterConsent) {
-			await this.subscribeToNewsletter(email)
-		}
 		this.start()
 	}
 

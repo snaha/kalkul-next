@@ -128,6 +128,7 @@
 			} else {
 				error = (e as Error).message
 			}
+			console.error(error)
 		}
 
 		// Subscribe to newsletter if consent is given

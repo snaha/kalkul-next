@@ -1,9 +1,8 @@
-import { CORS_ALLOWED_ORIGIN, RESEND_API_KEY, RESEND_AUDIENCE_ID } from '$env/static/private'
+import { CORS_ALLOWED_ORIGIN, RESEND_AUDIENCE_ID } from '$env/static/private'
 import { json, type RequestHandler } from '@sveltejs/kit'
-import { Resend } from 'resend'
 import { z } from 'zod'
+import { updateContact } from '../resend'
 
-const resend = new Resend(RESEND_API_KEY)
 const AUDIENCE_ID = RESEND_AUDIENCE_ID
 const ALLOWED_ORIGIN = CORS_ALLOWED_ORIGIN
 
@@ -20,7 +19,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!res.success) {
 			return json({ error: 'Invalid email' }, { status: 400 })
 		}
-		const data = await resend.contacts.update({
+
+		const data = await updateContact({
 			email: res.data,
 			audienceId: AUDIENCE_ID,
 			unsubscribed: true,

@@ -1,10 +1,9 @@
-import { CORS_ALLOWED_ORIGIN, RESEND_API_KEY, RESEND_AUDIENCE_ID } from '$env/static/private'
+import { CORS_ALLOWED_ORIGIN, RESEND_AUDIENCE_ID } from '$env/static/private'
 import { jsonError } from '$lib/error'
 import { json, type RequestHandler } from '@sveltejs/kit'
-import { Resend } from 'resend'
 import { z } from 'zod'
+import { createContact, getContact, updateContact } from '../resend'
 
-const resend = new Resend(RESEND_API_KEY)
 const AUDIENCE_ID = RESEND_AUDIENCE_ID
 const ALLOWED_ORIGIN = CORS_ALLOWED_ORIGIN
 
@@ -24,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const email = res.data
 
-		const getContactResponse = await resend.contacts.get({
+		const getContactResponse = await getContact({
 			email,
 			audienceId: AUDIENCE_ID,
 		})
@@ -35,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 
 			// Contact was not found, create one
-			const createContactResponse = await resend.contacts.create({
+			const createContactResponse = await createContact({
 				email,
 				audienceId: AUDIENCE_ID,
 				unsubscribed: false,
@@ -60,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				return json({ success: true })
 			}
 
-			const updateContactResponse = await resend.contacts.update({
+			const updateContactResponse = await updateContact({
 				email,
 				audienceId: AUDIENCE_ID,
 				unsubscribed: false,
