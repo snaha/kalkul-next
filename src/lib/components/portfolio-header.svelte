@@ -10,10 +10,8 @@
 		TrashCan,
 		ArrowLeft,
 		DocumentExport,
-		Link,
 		Edit,
 		Add,
-		Download,
 	} from 'carbon-icons-svelte'
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
@@ -24,8 +22,6 @@
 	import adapters from '$lib/adapters'
 	import PortfolioHeaderView from './portfolio-header-view.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
-	import { exportToJson } from '$lib/export-json'
-	import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
 
 	type Props = {
 		client: Client
@@ -35,7 +31,6 @@
 		adjustWithInflation: boolean
 		isMenuOpen: boolean
 		isShareMenuOpen: boolean
-		simulationData?: PortfolioSimulation
 	}
 
 	let {
@@ -46,7 +41,6 @@
 		adjustWithInflation = $bindable(),
 		isMenuOpen = $bindable(false),
 		isShareMenuOpen = $bindable(false),
-		simulationData,
 	}: Props = $props()
 
 	let showConfirmModal = $state(false)
@@ -55,18 +49,8 @@
 		goto(routes.NEW_INVESTMENT(client.id, portfolio.id))
 	}
 
-	function share() {
-		goto(routes.SHARE(portfolio.id))
-	}
-
 	function exportPdf() {
 		goto(routes.PDF_EXPORT_PARAMS(client.id, portfolio.id))
-	}
-
-	function exportGraphData() {
-		if (!simulationData) return
-		const filename = `${portfolio.name.replace(/\s+/g, '-').toLowerCase()}-graph-data`
-		exportToJson(simulationData, filename)
 	}
 
 	function confirmDeletePortfolio() {
@@ -103,24 +87,9 @@
 			<Button dimension="compact" variant="strong" onclick={addInvestment}
 				>{$_('component.portfolioHeader.addInvestment')}</Button
 			>
-			<Dropdown left buttonDimension="compact" buttonVariant="ghost" bind:open={isShareMenuOpen}>
-				{#snippet button()}
-					{$_('common.share')}
-				{/snippet}
-				<List>
-					<ListItem onclick={share}
-						><Link size={24} />{$_('component.portfolioHeader.linkSharing')}</ListItem
-					>
-					<ListItem onclick={exportPdf}
-						><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</ListItem
-					>
-					{#if import.meta.env.VITE_ENABLE_GRAPH_DATA_EXPORT === 'true' && simulationData}
-						<ListItem onclick={exportGraphData}
-							><Download size={24} />{$_('component.portfolioHeader.exportGraphData')}</ListItem
-						>
-					{/if}
-				</List>
-			</Dropdown>
+			<Button dimension="compact" variant="ghost" onclick={exportPdf}
+				><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</Button
+			>
 		{/if}
 		<Dropdown left buttonDimension="compact" bind:open={isMenuOpen}>
 			{#snippet button()}
@@ -131,17 +100,9 @@
 					<ListItem onclick={addInvestment}
 						><Add size={24} />{$_('component.portfolioHeader.addInvestment')}</ListItem
 					>
-					<ListItem onclick={share}
-						><Link size={24} />{$_('component.portfolioHeader.linkSharing')}</ListItem
-					>
 					<ListItem onclick={exportPdf}
 						><DocumentExport size={24} />{$_('component.portfolioHeader.pdfExport')}</ListItem
 					>
-					{#if import.meta.env.VITE_ENABLE_GRAPH_DATA_EXPORT === 'true' && simulationData}
-						<ListItem onclick={exportGraphData}
-							><Download size={24} />{$_('component.portfolioHeader.exportGraphData')}</ListItem
-						>
-					{/if}
 				{/if}
 				<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(client.id, portfolio.id))}
 					><Edit size={24} />{$_('component.portfolioHeader.editPortfolio')}</ListItem

@@ -5,7 +5,6 @@
 	import { _ } from 'svelte-i18n'
 	import Button from './ui/button.svelte'
 	import Loader from './ui/loader.svelte'
-	import { authorizedFetch } from '$lib/auth'
 	import { figiResponseSchema, type FigiSchema } from '$lib/schemas'
 	import Horizontal from './ui/horizontal.svelte'
 	import { EXCHANGE_CODE_TO_CURRENCY, EXCHANGES } from '$lib/exchanges'
@@ -60,7 +59,7 @@
 
 	async function reportISINError(identifier: string, error: object) {
 		try {
-			await authorizedFetch(`/api/market/error/${identifier}`, {
+			await fetch(`/api/market/error/${identifier}`, {
 				method: 'POST',
 				body: JSON.stringify(error),
 			})
@@ -75,7 +74,7 @@
 			isFetchingISINData = true
 			disableImportButton = true
 
-			const response = await authorizedFetch(`/api/market/id/${identifier}`)
+			const response = await fetch(`/api/market/id/${identifier}`)
 			const jsonValue = await response.json()
 
 			const returnValue = figiResponseSchema.safeParse(jsonValue)
@@ -159,7 +158,7 @@
 		if (symbols === '') {
 			return
 		}
-		const apyResponse = await authorizedFetch(`/api/market/apy/${symbols}`)
+		const apyResponse = await fetch(`/api/market/apy/${symbols}`)
 		const jsonResponse = await apyResponse.json()
 
 		apyPerSymbol = jsonResponse
@@ -170,7 +169,7 @@
 		if (symbols === '') {
 			return
 		}
-		const apyResponse = await authorizedFetch(`/api/market/apy/index/${symbols}`)
+		const apyResponse = await fetch(`/api/market/apy/index/${symbols}`)
 		const jsonResponse = await apyResponse.json()
 
 		apyPerSymbol = jsonResponse

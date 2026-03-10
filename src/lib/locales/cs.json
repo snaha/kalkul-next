@@ -1,234 +1,5 @@
 {
 	"page": {
-		"forgotPassword": {
-			"forgotPassword": "Zapomněli jste heslo?",
-			"forgotPasswordText": "Zadejte e-mail spojený s vaším účtem a obdržíte odkaz pro obnovení hesla.",
-			"resetPasswordLocal": "Pokud existuje účet spojený s {email}, obdržíte e-mail na adresu {link} s instrukcemi k obnovení hesla.",
-			"resetPasswordRemote": "Pokud existuje účet {email}, obdržíte e-mail s instrukcemi k obnovení hesla.",
-			"resetLink": "Poslat odkaz k obnovení",
-			"email": "E-mail",
-			"goBack": "Zpět na ",
-			"login": "Přihlášení",
-			"emailSent": "E-mail byl odeslán!",
-			"checkSpam": "Nevidíte e-mail? Zkontrolujte prosím složku se spamem."
-		},
-		"landing": {
-			"title": "Možnost nezávislého finančního plánování",
-			"subtitle": "Vytvářejte rychleji portfolia, která jsou zcela nezávislá na použité platformě — zrealizujte vše na jednom místě, od stanovení počátečních cílů klientů, až po tvorbu detailní struktury investic. Aplikace Kalkul šetří váš čas, sjednotí váš pracovní postup a umožní vám stvořit poutavé plány, které vám pomohou budovat důvěru klientů.",
-			"getStarted": "Začít",
-			"requestDemo": "Požádat o ukázku",
-			"heroScreenshotAlt": "Screenshot aplikace Kalkul",
-			"stopJuggling": "Přestaňte žonglovat s platformami—začněte se soustředit na klienty",
-			"unifiedPortfoliosTitle": "Sjednocená portfolia, neomezená svoboda",
-			"unifiedPortfoliosDescription": "Konsolidujte investice všech poskytovatelů do jednoho pracovního postupu. Přidávejte podílové fondy, ETF, akcie nebo alternativní investice, a to bez přepínání mezi platformami. Šetřete čas, lépe obsluhujte klienty a udržujte úplnou nezávislost svých doporučeních.",
-			"flexiblePlanningTitle": "Flexibilní plánování, od cílů k investicím",
-			"flexiblePlanningDescription": "Vypočítejte cíle pomocí integrovaných nástrojů, poté definujte podpůrné investice a přiřaďte jim vlastní váhu. Když se cíle změní, Kalkul automaticky upraví každou transakci napříč všemi investicemi. To, co dříve trvalo hodiny, je nyní dostupné okamžitě.",
-			"insightfulPresentationsTitle": "Poutavé prezentace, snadné sdílení",
-			"insightfulPresentationsDescription": "Proměňte složitá portfolia v jasné, interaktivní vizualizace, kterým budou vaši klienti skutečně rozumět. Transparentně zobrazujte dopad poplatků a inflačních očekávání. Sdílejte interaktivní odkazy nebo exportujte PDF připravené na míru. Budujte důvěru klientů prostřednictvím srozumitelnosti a profesionality.",
-			"builtWithAdvisors": "Navrženo pro tvorbu reálných pracovních postupů, s pomocí zpětné vazby finančních poradců",
-			"bigPicturePlanningLabel": "PLÁNOVÁNÍ V ŠIRŠÍM KONTEXTU",
-			"bigPicturePlanningTitle": "Vytvořte si nejdříve celkový obraz",
-			"bigPicturePlanningDescription": "Než se dotknete reálných investic, vypočítejte si požadavky na důchod, větší nákupy nebo strategii výběrů. Modelujte scénáře, upravujte s klienty předpoklady, dokud nebude strategie správná — to vše před přechodem k samotné implementaci. Věnujte méně času přestavbě portfolií a více času strategickým rozhovorům, na kterých opravdu záleží.",
-			"calculateGoalsQuickly": "Rychle vypočítejte cíle pomocí integrovaných nástrojů",
-			"adjustAssumptions": "Upravte předpoklady v reálném čase s klienty",
-			"strategyFirst": "Přístup zaměřený na strategii šetří hodiny přepracování",
-			"granularInvestmentLabel": "GRANULÁRNÍ STRUKTURA INVESTIC",
-			"granularInvestmentTitle": "Vytvářejte přesná portfolia s více produkty",
-			"granularInvestmentDescription": "Implementujte s precizností—nastavte konkrétní investice s přesnými výnosy a poplatky pro každý cíl. Importujte fondy pomocí ISIN, akcie pomocí tickeru, od jakéhokoli poskytovatele. Podpořte každý cíl více nástroji. Vy ovládáte strategii, Kalkul zvládá složitost.",
-			"importDataByIsin": "Importujte data pomocí ISIN nebo tickeru",
-			"setPreciseReturns": "Nastavte přesné výnosy a struktury poplatků",
-			"supportGoals": "Podpořte cíle více investicemi",
-			"dynamicRebalancingLabel": "DYNAMICKÉ VYVÁŽENÍ",
-			"dynamicRebalancingTitle": "Cíle se mění? Vaše portfolio se přizpůsobí automaticky",
-			"dynamicRebalancingDescription": "Život málokdy jde přesně podle plánu. Upravte částky cílů kdykoli—cíle důchodu, časové osy, strategie výběrů. Všechny transakce se okamžitě přepočítají napříč každou investicí na základě nastavených vah. Strategie zůstává flexibilní a vyhnete se hodinám ručních aktualizací.",
-			"modifyGoalsFreely": "Volně upravujte cíle kdykoli",
-			"weightEachInvestment": "Vážte každou investici individuálně",
-			"automaticRecalculation": "Automatický přepočet transakcí",
-			"powerfulVisualizationsLabel": "VÝKONNÉ VIZUALIZACE",
-			"powerfulVisualizationsTitle": "Proměňte data v poznatky",
-			"powerfulVisualizationsDescription": "Udělejte složitá portfolia okamžitě jasná. Izolujte investice nebo cíle, přepínejte mezi hodnotou portfolia a toky transakcí, zobrazujte dopad poplatků nebo projekce upravené o inflaci. Interaktivní grafy se přizpůsobují vaší konverzaci v reálném čase. Celoobrazovkový režim a podpora mobilních zařízení poskytují profesionální prezentace kdekoli.",
-			"interactiveCharts": "Interaktivní grafy, které zaměřují pozornost klienta",
-			"fullscreenMode": "Celoobrazovkový režim pro působivé prezentace",
-			"presentAnywhere": "Prezentujte kdekoli s plnou mobilní podporou",
-			"flexibleSharingLabel": "FLEXIBILNÍ SDÍLENÍ",
-			"flexibleSharingTitle": "Vaši klienti vás budou milovat",
-			"flexibleSharingDescription": "Někteří klienti se vracejí k projekcím o půlnoci. Jiní chtějí vytištěné zprávy. Sdílejte interaktivní odkazy—klienti zkoumají sami, aktualizace se synchronizují automaticky. Nebo exportujte přizpůsobené PDF s vybranými grafy. Spokojenost klientů prostřednictvím flexibility, ať už digitální nebo tradiční.",
-			"meetEveryPreference": "Vyjděte vstříc každé preferenci klienta pomocí PDF nebo odkazového sdílení",
-			"maintainControl": "Udržujte kontrolu pomocí odkazů pouze pro zobrazení",
-			"automaticUpdates": "Automatické aktualizace eliminují správu verzí a opětovné odesílání",
-			"whyAdvisorsTrust": "Proč poradci důvěřují Kalkulu",
-			"advisorDrivenLabel": "VÝVOJ ŘÍZENÝ PORADCI",
-			"advisorDrivenTitle": "Společně vytvořeno s poradci",
-			"advisorDrivenDescription": "Kalkul je vytvořen s finančními poradci, nejen pro ně—máme jednoho v našem zakládajícím týmu. Každá funkce pochází ze skutečné zpětné vazby poradců prostřednictvím naší Discord komunity a osobních rozhovorů na konferencích. Váš vstup formuje, co budeme stavět dále.",
-			"noHiddenAgendaLabel": "ŽÁDNÁ SKRYTÁ AGENDA",
-			"noHiddenAgendaTitle": "Jsme malý nezávislý tým",
-			"noHiddenAgendaDescription": "Žádné vlastnictví banky. Žádná mateřská společnost investiční platformy. Žádné pobídky tlačící konkrétní produkty. Jsme nezávislý tým, který věří, že lepší finanční poradenství vyžaduje úplnou svobodu. Nezávislost není jen naše filozofie—je to způsob, jak fungujeme.",
-			"localExpertiseLabel": "MÍSTNÍ ODBORNOST",
-			"localExpertiseTitle": "České kořeny, odbornost v EU",
-			"localExpertiseDescription": "Se sídlem v České republice s hlubokými znalostmi trhu střední Evropy. Rozumíme regulačnímu prostředí, investiční krajině a specifickým výzvám poradců zde. Kalkul není přizpůsobený americký nástroj—je vytvořen pro trh EU.",
-			"joinFreeBeta": "Připojte se k naší bezplatné Beta verzi!",
-			"joinFreeBetaSubtitle": "Získejte včasný přístup, pomozte formovat funkce a zajistěte si exkluzivní ceny při veřejném spuštění."
-		},
-		"getStarted": {
-			"title": "Začínáme s Kalkulem",
-			"subtitle": "Tento průvodce pokrývá všechny základy, abyste mohli začít rychle a s jistotou.",
-			"openApp": "Otevřít aplikaci Kalkul",
-			"joinDiscord": "Připojit se na Discord",
-			"keepPageOpen": "Odkazy na aplikaci Kalkul a Discord se otevřou v novém okně. Doporučujeme ponechat tuto stránku otevřenou, abyste se k ní mohli vrátit pro další pokyny.",
-			"whatIsKalkul": {
-				"title": "Co je Kalkul?",
-				"content": "Kalkul je aplikace pro finanční plánování navržená speciálně pro nezávislé finanční poradce. Umožňuje vytvářet, spravovat a sdílet komplexní portfolia s klienty. Na rozdíl od platforem vázaných na instituce vám nezávislost Kalkulu umožňuje přidávat investice z jakéhokoli zdroje, což vám dává svobodu vytvářet skutečně sjednocená, na platformě nezávislá portfolia přizpůsobená potřebám každého klienta."
-			},
-			"isFree": {
-				"title": "Je Kalkul zdarma?",
-				"content": "Kalkul je v současné době v bezplatné Beta verzi, zatímco dokončujeme finální úpravy platformy. Jako early user získáte bezplatný přístup a vaše zpětná vazba bude přímo ovlivňovat náš produkt – pomůžete nám opravovat chyby, stanovovat priority funkcí a budovat přesně to, co nezávislí finanční poradci potřebují.",
-				"laterNote": "→ Začátkem roku 2026 představíme placené plány na podporu pokračujícího vývoje Kalkulu jako skutečně nezávislého softwaru. Jako poděkování za vaší cennou zpětnou vazbu všichni Beta uživatelé obdrží exkluzivní slevu při veřejném spuštění."
-			},
-			"whyDiscord": {
-				"title": "Proč se připojit na Discord?",
-				"content": "Discord je komunikační platforma, která umožňuje lidem v naší rostoucí komunitě komunikovat prostřednictvím textu, hlasu a videa. Je to nejlepší místo pro dotazy, sdílení poznatků s ostatními poradci a poskytování zpětné vazby, která formuje vývoj Kalkulu. Navíc náš tým je aktivní denně a pomáhá řešit jakékoliv problémy, na které narazíte.",
-				"newToDiscord": "→ Nový na Discordu? Žádný problém – vytvoření bezplatného účtu zabere jen pár sekund.",
-				"joinButton": "Připojit se ke Kalkulu na Discordu"
-			},
-			"createClient": {
-				"title": "Vytvořte svého prvního klienta",
-				"intro": "Pro začátek budete potřebovat vytvořit profil klienta. Je to rychlé a jednoduché – stačí uvést:",
-				"requirements": {
-					"name": "Jméno vašeho klienta",
-					"birthdate": "Datum narození vašeho klienta (používá se pro výpočty věku)",
-					"email": "E-mailovou adresu vašeho klienta (volitelné, pro sdílení portfolia)",
-					"picture": "Profilový obrázek (volitelné)"
-				},
-				"afterCreation": "Jakmile bude hotovo, profil klienta se zobrazí na hlavní stránce, když jste přihlášeni. Můžete vytvořit tolik klientů, kolik potřebujete."
-			},
-			"createPortfolio": {
-				"title": "Vytvořte své první portfolio",
-				"intro": "Nyní, když jste vytvořili profil klienta, je čas vytvořit portfolio. Portfolio si představte jako kolekci investic s klíčovými parametry jako měna a časový horizont.",
-				"tip": "→ Používejte portfolia k organizování investic pro každého ze svých klientů. Například můžete vytvořit samostatná portfolia organizovaná podle investičních cílů, časových horizontů nebo měn.",
-				"requirements": "Pro vytvoření nového portfolia budete potřebovat:",
-				"steps": {
-					"name": "Zadat název portfolia",
-					"currency": "Vybrat výchozí měnu (s odpovídající mírou inflace)",
-					"horizon": "Definovat investiční horizont pomocí konkrétních dat, nastaveného časového období (například 20 nebo 30 let) nebo na základě věku vašeho klienta"
-				},
-				"multiplePortfolios": "Můžete vytvořit tolik portfolií, kolik chcete pro každého klienta. Všechna portfolia pro konkrétního klienta budou uvedena na stránce klienta."
-			},
-			"addInvestment": {
-				"title": "Přidejte svou první investici",
-				"intro": "Nyní, když jste vytvořili portfolio pro svého klienta, je čas přidat svou první investici. Investice může být jakýkoliv cenný papír nebo finanční instrument.",
-				"requirements": "Pro přidání nové investice budete potřebovat nastavit:",
-				"steps": {
-					"name": "Název investice - používá se k identifikaci investice v grafech a přehledech",
-					"type": "Typ (volitelné) - například 'Kmenové akcie', 'ETF', 'Dluhopisy', 'Podílový fond', atd.",
-					"apy": "APY (Roční procentuální výnos) - očekávaná roční míra návratnosti této investice",
-					"fees": "Struktura poplatků investice - jakékoliv související náklady nebo správní poplatky"
-				},
-				"importTip": "→ Pro rychlejší nastavení můžete použít funkci \"Import dat\" k automatickému vyplnění určitých detailů investice pomocí ISIN čísla nebo ticker symbolu.",
-				"afterCreation": "Jakmile zadáte tyto údaje, investice bude přidána do portfolia vašeho klienta."
-			},
-			"addTransactions": {
-				"title": "Přidejte transakce v každé investici",
-				"intro": "Jakmile nastavíte investici, posledním krokem je přidat transakce (vklady nebo výběry) pro tuto investici.",
-				"requirements": "Pro přidání nové transakce budete potřebovat:",
-				"steps": {
-					"type": "Vybrat typ transakce - vklad nebo výběr",
-					"frequency": "Vybrat frekvenci - jednorázově (výchozí) nebo opakovaně pomocí přepínače \"Opakující se\"",
-					"amount": "Zadat částku transakce",
-					"label": "Přidat volitelné označení - používá se k identifikaci transakce v grafech a přehledech",
-					"date": "Nastavit datum transakce - buď pomocí kalendáře nebo na základě věku vašeho klienta"
-				},
-				"afterCreation": "Jakmile zadáte tyto údaje, transakce se zobrazí v odpovídající kartě investice na postranním panelu stránky portfolia."
-			},
-			"reviewPresent": {
-				"title": "Prohlédněte a prezentujte portfolio",
-				"intro": "Jakmile vytvoříte kompletní portfolio s investicemi a transakcemi, Kalkul nabízí několik možností vizualizace pro prezentaci přesvědčivých poznatků vašim klientům, ať už osobně nebo během online schůzek.",
-				"focusSection": {
-					"title": "Zaměřte se na důležité",
-					"focusChart": "Pod tlačítkem menu vyberte \"Zaměřit v grafu\" pro libovolnou investici, aby se skryly všechny ostatní a vyzdvihla se konkrétní investice ve vizualizaci.",
-					"hideInvestments": "Alternativně můžete skrýt konkrétní investici z grafu, když není relevantní pro vaši prezentaci.",
-					"hideTransactions": "Můžete také skrýt jednotlivé transakce a sledovat, jak se graf aktualizuje v reálném čase, což usnadňuje ukázat klientům, jak konkrétní příspěvky nebo výběry ovlivňují celkový výkon portfolia."
-				},
-				"inflationSection": {
-					"title": "Úprava pro inflaci",
-					"description": "Použijte přepínač \"Zobrazit inflaci\" k automatické úpravě všech hodnot investic a transakcí pro inflaci (na základě nastavení portfolia), zobrazující skutečnou kupní sílu v čase.",
-					"note": "→ Poznámka: Když je povoleno, všechny grafy zobrazují hodnoty upravené o inflaci s jemnou šedou čarou označující původní, neupravené částky."
-				},
-				"fullscreenSection": {
-					"title": "Přejít na celou obrazovku",
-					"description": "Každý graf má režim celé obrazovky, který vám umožňuje použít veškerý dostupný prostor obrazovky k vizualizaci detailů konkrétního grafu. Můžete dokonce zobrazit nebo skrýt postranní panel v režimu celé obrazovky.",
-					"tip": "→ Tato funkce je obzvláště užitečná pro prezentace na menších obrazovkách, projektorech nebo při online schůzkách."
-				}
-			},
-			"sharePortfolio": {
-				"title": "Sdílejte portfolio",
-				"intro": "Kalkul poskytuje dvě výkonné možnosti sdílení pro portfolia vašich klientů: online odkazy nebo vlastní PDF exporty.",
-				"linkSharing": {
-					"title": "Sdílení odkazem",
-					"description": "Povolte sdílení odkazem pro vygenerování odkazu na portfolio pouze pro čtení pro vašeho klienta (není nutná registrace). Jakékoliv aktualizace portfolia, které provedete, se automaticky aktualizují v reálném čase pod stejným odkazem.",
-					"note": "→ Lidé s odkazem mohou prohlížet a interagovat s portfoliem (zobrazovat/skrývat data, najíždět pro detaily, používat režim celé obrazovky atd.), ale nemohou provádět žádné změny."
-				},
-				"pdfExport": {
-					"title": "PDF export",
-					"description": "Pro offline prezentace exportujte přizpůsobený PDF soubor. Kalkul vytváří profesionálně formátované horizontální rozvržení A4 optimalizované pro tisk i digitální prohlížení.",
-					"note": "→ Můžete zahrnout grafy rozpisu portfolia ke konkrétním klíčovým datům podle vašeho výběru."
-				}
-			},
-			"conclusion": {
-				"thanks": "To je vše – děkujeme, že jste sledovali návod! Doufáme, že Kalkul učiní vaše finanční plánování efektivnějším a účinnějším.",
-				"feedback": {
-					"title": "Dejte nám vědět, co si myslíte!",
-					"description": "Jako jeden z našich prvních uživatelů vaše zpětná vazba přímo formuje náš produkt – pomáháte nám opravovat chyby, stanovovat priority funkcí a budovat přesně to, co nezávislí poradci potřebují. Našli jste problém nebo něco, co by se dalo zlepšit? Líbí se vám něco konkrétního? Máte nápad na funkci nebo požadavek? Řekněte nám to!",
-					"button": "Dejte nám zpětnou vazbu na Discordu"
-				}
-			},
-			"altTexts": {
-				"illustration": "Ilustrace spuštění podnikání a nového produktu",
-				"createClient": "Screenshot formuláře pro vytvoření klienta",
-				"clientList": "Screenshot stránky se seznamem klientů",
-				"createPortfolio": "Screenshot formuláře pro vytvoření portfolia",
-				"portfolioList": "Screenshot stránky se seznamem portfolií",
-				"createInvestment": "Screenshot formuláře pro vytvoření investice",
-				"portfolio": "Screenshot stránky portfolia",
-				"createTransaction": "Screenshot formuláře pro vytvoření transakce",
-				"transactionCard": "Screenshot karty transakce v portfoliu",
-				"investmentMenu": "Screenshot možností menu investice",
-				"hiddenInvestments": "Screenshot portfolia se skrytými investicemi",
-				"portfolioInflation": "Screenshot portfolia se zapnutou úpravou inflace",
-				"portfolioFullscreen": "Screenshot portfolia v režimu celé obrazovky",
-				"shareOptions": "Screenshot možností sdílení portfolia",
-				"shareWithLink": "Screenshot dialogu pro sdílení portfolia odkazem",
-				"pdfExport": "Screenshot možností PDF exportu"
-			}
-		},
-		"account": {
-			"settings": "Nastavení",
-			"account": "Účet",
-			"manageSubscription": "Spravovat předplatné",
-			"subscriptionDisclaimer": "Vaše předplatné se automaticky obnovuje každý rok.",
-			"yearlyPlan": "Roční plán",
-			"firstPaymentOn": "První platba dne {date}",
-			"nextPaymentOn": "Další platba dne {date}",
-			"deleteAccountButton": "Smazat účet",
-			"deleteAccountModalTitle": "Smazat váš účet?",
-			"deleteAccountModalText": "Pro trvalé smazání vašeho účtu a všech dat napište e-mail na {email}.",
-			"errorFailedToUpdateLanguage": "Chyba: nepodařilo se aktualizovat jazykové nastavení",
-			"activeSubscription": "Vaše předplatné je aktivní",
-			"activeSubscriptionNote": "Chcete-li zobrazit detaily plateb a fakturace nebo spravovat své předplatné, použijte tlačítko níže.",
-			"noActiveSubscription": "Žádné aktivní předplatné",
-			"needSubscription": "Pro použití Kalkulu je třeba mít aktivní předplatné",
-			"freeTrial": "Zkušební verze zdarma",
-			"expiringIn": "{count, plural, one {zbývá # den} few {zbývají # dny} other {zbývá # dní}}",
-			"expiringToday": "Vyprší dnes",
-			"subscribeNow": "Předplatit nyní",
-			"freeBeta": "Beta zdarma",
-			"cancelBeforeDate": "Zrušte před {date} a nebude vám nic účtováno.",
-			"cancelReminder": "E-mailem vám připomeneme 7 dní před koncem zkušební doby. Pro správu fakturace a předplatného použijte tlačítko níže.",
-			"changeEmailAddress": "Změnit e-mailovou adresu",
-			"changePassword": "Změnit heslo",
-			"language": "Jazyk",
-			"subscribeToNewsletter": "Odebírat newsletter",
-			"newsletterDescription": "Zaškrtněte, pokud chcete dostávat produktové novinky a aktuality od Kalkulu e-mailem"
-		},
 		"home": {
 			"allClients": "Všichni klienti",
 			"clearSearch": "Vymazat hledání",
@@ -239,33 +10,7 @@
 			"clientDeleteWarning": "Tento klient a všechna jeho portfolia budou nenávratně smazána. Operaci nelze vrátit zpět.",
 			"clientEdit": "Upravit klienta",
 			"createYourFirstClient": "Vytvořte první klientský profil a začněte",
-			"portfoliosView": "Zobrazit portfolia",
-			"helpText": "Potřebujete více pomoci nebo máte zpětnou vazbu? Připojte se k naší {discordCommunityLink} nebo nás kontaktujte na {supportEmail}.",
-			"discordCommunity": "komunitě Discord"
-		},
-		"apiTokens": {
-			"title": "API Tokeny",
-			"description": "API tokeny umožňují autentizaci s Kalkul MCP serverem pro integraci s Claude, ChatGPT a dalšími AI asistenty. Uchovávejte své tokeny v bezpečí a nikdy je nesdílejte veřejně.",
-			"createButton": "Vytvořit Token",
-			"createTitle": "Vytvořit Nový Token",
-			"createDescription": "Dejte svému tokenu popisný název, který vám pomůže zapamatovat si, k čemu se používá.",
-			"namePlaceholder": "např. Claude Desktop, Integrace ChatGPT",
-			"create": "Vytvořit",
-			"noTokens": "Zatím nemáte žádné API tokeny. Vytvořte jeden pro začátek s MCP integrací.",
-			"tokenCreatedTitle": "Token Úspěšně Vytvořen",
-			"tokenCreatedWarning": "Nezapomeňte si nyní zkopírovat token. Už ho nebude možné znovu zobrazit!",
-			"copy": "Kopírovat",
-			"copied": "Zkopírováno!",
-			"done": "Hotovo",
-			"prefix": "Předpona Tokenu",
-			"created": "Vytvořeno",
-			"lastUsed": "Naposledy Použito",
-			"neverUsed": "Nikdy",
-			"deleteConfirm": "Opravdu chcete smazat tento token? Tuto akci nelze vrátit zpět.",
-			"nameRequired": "Název tokenu je povinný",
-			"loadError": "Nepodařilo se načíst tokeny",
-			"createError": "Nepodařilo se vytvořit token",
-			"deleteError": "Nepodařilo se smazat token"
+			"portfoliosView": "Zobrazit portfolia"
 		},
 		"client": {
 			"addClient": "Přidat klienta",
@@ -278,31 +23,6 @@
 			"clientDeleteExplanation": "Tento klient a všechna jeho portfolia budou nenávratně smazána. Operaci nelze vrátit zpět.",
 			"noPortfoliosYet": "Zatím žádné portfolio",
 			"createYourFirstPortfolio": "Vytvořte své první portfolio",
-			"addFirstInvestmentGoal": "Přidejte první investiční cíl pro vašeho klienta",
-			"chooseCalculatorBelow": "Vyberte kalkulačku níže pro začátek. Později můžete přidat další nebo upravit detaily.",
-			"startWithBlank": "Začít s prázdným",
-			"templates": {
-				"retirement": {
-					"title": "Důchod",
-					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro dosažení finanční nezávislosti."
-				},
-				"houseBuying": {
-					"title": "Koupě domu",
-					"description": "Vypočítejte částku potřebnou k úsporám a investicím na akontaci a nákup domu."
-				},
-				"kidsEducation": {
-					"title": "Vzdělání dětí",
-					"description": "Vypočítejte částku potřebnou k úsporám a investicím na pokrytí nákladů na vzdělání dětí."
-				},
-				"largePurchase": {
-					"title": "Velký nákup",
-					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro konkrétní nákup v požadovaném čase."
-				},
-				"optimisedWithdrawals": {
-					"title": "Optimalizované výběry",
-					"description": "Vypočítejte optimální strategii výběrů pro pohodlný život z aktuálních úspor portfolia."
-				}
-			},
 			"deletePortfolio": "Smazat portfolio?",
 			"deletePortfolioWarning": "Toto portfolio a všechny obsažené investice budou nenávratně smazány. Operaci nelze vrátit zpět."
 		},
@@ -351,48 +71,13 @@
 				"depositFrequency": "Frekvence vkladů"
 			}
 		},
-		"balanceInvestments": {
-			"title": "Vyvážení investic",
-			"weightedAverageReturn": "vážený průměrný výnos",
-			"initialGoalTarget": "Počáteční cílový výnos",
-			"autoBalance": "Automatické vyvážení",
-			"rebalancePortfolio": "Vyvážit portfolio"
-		},
-		"resetPassword": {
-			"resetPassword": "Obnovit heslo",
-			"password": "Heslo",
-			"resetPasswordButton": "Obnovit heslo"
-		},
-		"signUp": {
-			"signUp": "Zaregistrovat se",
-			"subscribeToNewsletter": "Chci dostávat e-mailem novinky a informace o produktu",
-			"createAccount": "Vytvořit účet",
-			"alreadyHaveAccount": "Už máte účet?",
-			"verificationLinkLocal": "E-mail s ověřovacím odkazem byl odeslán na adresu {email}.",
-			"verificationLinkRemote": "E-mail s ověřovacím odkazem byl odeslán na {email}.",
-			"checkEmail": "Zkontrolujte e-mail a dokončete registraci!",
-			"checkSpam": "Nevidíte e-mail? Zkontrolujte složku spamu.",
-			"agreeToTerms": "Pokračováním souhlasíte s {terms} a {privacy} Kalkul",
-			"terms": "Podmínkami služby",
-			"privacy": "Zásadami ochrany soukromí",
-			"betaAccessDescription": "Získejte bezplatný přístup, ovlivněte produkt svou zpětnou vazbou a zajistěte si exkluzivní cenu při veřejném spuštění—očekáváno na začátku roku 2026.",
-			"betaDisclaimer": "Kalkul aktivně vyvíjíme ve spolupráci s poradci. Některé funkce uvedené na našem webu jsou zatím ve vývoji a budeme je postupně zpřístupňovat.",
-			"newsletterModal": {
-				"title": "Odběr novinek",
-				"description": "Doporučujeme přihlásit se k odběru novinek, abyste neunikly nové funkce, které budeme během bezplatné beta verze postupně přidávat. Nebudeme vás zahlcovat — počítejte zhruba s jedním e-mailem měsíčně.",
-				"subscribe": "Přihlásit se k odběru a pokračovat",
-				"dontSubscribe": "Nepřihlašovat se"
-			}
-		},
 		"portfolio": {
 			"noInvestmentYet": "Zatím žádné investice",
 			"createYourFirstInvestment": "Vytvořte první investici v tomto portfoliu",
 			"addInvestment": "Přidat investici",
 			"addGoal": "Přidat cíl",
-			"addInvestmentsExplanation": "Chcete být konkrétnější? Váš plán nyní používá jednu míru návratnosti pro vše. Rozšiřte svůj cíl přidáním skutečných investičních produktů - každý s vlastními výnosy a poplatky.",
 			"addPortfolio": "Přidat portfolio",
 			"openPortfolio": "Otevřít portfolio",
-			"sharePortfolio": "Sdílet portfolio",
 			"editPortfolioDetails": "Upravit detaily portfolia",
 			"duplicatePortfolio": "Duplikovat portfolio",
 			"deletePortfolio": "Smazat portfolio",
@@ -428,30 +113,6 @@
 					"description": "Vypočítejte částku potřebnou k úsporám a investicím pro zálohu na dům a jeho koupi."
 				}
 			}
-		},
-		"share": {
-			"linkSharingToggle": "Sdílet portfolio pomocí odkazu (pouze pro čtení)",
-			"linkSharing": "Sdílení odkazu",
-			"linkCopied": "Odkaz zkopírován",
-			"linkSharingExplanation1": "Kdokoli s odkazem může zobrazit portfolio – ale pouze vy ho můžete upravovat.",
-			"linkSharingExplanation2": "Změny, které provedete, budou viditelné pod stejným odkazem.",
-			"dontShare": "Ponechat sdílení odkazu vypnuté"
-		},
-		"changeEmail": {
-			"changeEmailAddress": "Změnit e-mailovou adresu",
-			"newEmailAddress": "Nová e-mailová adresa",
-			"changeEmail": "Změnit e-mail",
-			"header": "Zkontrolujte nový e-mail a potvrďte změnu!",
-			"bodyRemote": "E-mail s ověřovacím odkazem byl odeslán na adresu {newEmail}.",
-			"bodyLocal": "E-mail s ověřovacím odkazem byl odeslán na {link}.",
-			"footer": "Vaše e-mailová adresa se nezmění, dokud nebude nová ověřena.",
-			"checkSpam": "Nevidíte e-mail? Zkontrolujte složku spamu."
-		},
-		"changePassword": {
-			"newPassword": "Nové heslo",
-			"successChangePassword": "Vaše heslo bylo úspěšně změněno!",
-			"backToSettings": "Zpět do nastavení účtu",
-			"changePassword": "Změnit heslo"
 		}
 	},
 	"component": {
@@ -529,18 +190,11 @@
 		},
 		"help": {
 			"title": "Nápověda",
-			"text": "Pokud potřebujete pomoct, máte dotazy, návrhy nebo zpětnou vazbu, připojte se na náš Discord server pro nejrychlejší podporu, nebo nám napište e-mail na {email}.",
-			"joinTheConversation": "Připojte se na Discord",
-			"newToKalkulTip": "→ Nový v Kalkulu? Doporučujeme zkontrolovat náš rychlý průvodce. Najdete v něm vše potřebné pro začátek.",
-			"checkQuickStartGuide": "Rychlý průvodce"
-		},
-		"footer": {
-			"termsOfService": "Podmínky služby",
-			"privacyPolicy": "Zásady ochrany soukromí"
+			"text": "Kalkul je aplikace pro správu finančního portfolia. Všechna data jsou uložena lokálně ve vašem prohlížeči."
 		},
 		"header": {
-			"accountSettings": "Nastavení účtu",
-			"helpButton": "Nápověda"
+			"helpButton": "Nápověda",
+			"settings": "Nastavení"
 		},
 		"investmentCard": {
 			"removeFocus": "Odebrat zvýraznění",
@@ -563,18 +217,6 @@
 			"deleteGoalWarningTitle": "Smazat cíl?",
 			"explainInvestmentsText": "S cílem jste si nastavili rámec plánu. Nyní přejděte na kartu Investice a přidejte konkrétní produkty a transakce, které vám pomohou ho uskutečnit."
 		},
-		"login": {
-			"forgotPassword": "Zapomněli jste heslo?",
-			"noAccount": "Ještě nemáte účet?",
-			"signUp": "Zaregistrovat se"
-		},
-		"linkSharingConfirmation": {
-			"title": "Vypnout sdílení odkazu?",
-			"text": "Současný odkaz přestane fungovat, lidé mohou ztratit přístup.",
-			"smallText": "Pokud později znovu aktivujete sdílení odkazu, bude vygenerován nový odkaz.",
-			"confirmButton": "Vypnout sdílení odkazu",
-			"cancelButton": "Ponechat sdílení aktivní"
-		},
 		"portfolioHeader": {
 			"addInvestment": "Přidat investici",
 			"editPortfolio": "Upravit detaily portfolia",
@@ -582,9 +224,7 @@
 			"deletePortfolio": "Smazat portfolio",
 			"deletePortfolioWarning": "Toto portfolio a všechny investice v něm budou nenávratně smazány. Operaci nelze vrátit zpět.",
 			"deletePortfolioWarningTitle": "Smazat portfolio?",
-			"linkSharing": "Sdílení odkazem",
-			"pdfExport": "Export do PDF",
-			"exportGraphData": "Exportovat data grafu"
+			"pdfExport": "Export do PDF"
 		},
 		"PDFExport": {
 			"value": "Hodnota",
@@ -616,28 +256,12 @@
 			"totalWithdrawn": "Celkem vybráno: {amount}",
 			"inflationAdjustmentTooltip": "Upravte částku transakce tak, aby se zachovala kupní síla v čase."
 		},
-		"welcome": {
-			"startUsingKalkul": "Začít používat Kalkul"
-		},
-		"youtubeIntroVideo": {
-			"title": "Úvodní video"
-		},
 		"sidebar": {
 			"noGoalsYetTitle": "Zatím žádné cíle",
 			"noGoalsYetDescription": "Definujte hlavní finanční cíle a cílové částky. Cíle vám pomáhají soustředit se na celkový plán.",
 			"noInvestmentsYetTitle": "Zatím žádné investice",
 			"noInvestmentsYetDescription": "Přidejte konkrétní investiční produkty a transakce, které tvoří portfolio vašeho klienta. Tip: propojte transakce s cíli a snadno porovnávejte postup vůči celkovému plánu."
 		}
-	},
-	"helpBox": {
-		"addClientTitle": "Přidat klienta",
-		"addClientText": "Stiskněte tlačítko \"Přidat klienta\" pro vytvoření prvního klienta",
-		"clientListExplanation": "Tato stránka zobrazí všechny vaše klienty. Můžete se na ni kdykoliv vrátit kliknutím na logo Kalkul v levém horním rohu obrazovky. Jakmile nastavíte prvního klienta, budete moci vytvořit investiční portfolio pro tohoto klienta.",
-		"addPortfolioTitle": "Přidat portfolio",
-		"addPortfolioText": "Stiskněte tlačítko \"Přidat portfolio\" pro přidání prvního portfolia pro tohoto klienta",
-		"portfolioExplanation": "Portfolio bude obsahovat konkrétní investice. Používejte portfolia k organizaci investic pro vašeho klienta. Pro každého klienta můžete vytvořit tolik portfolií, kolik chcete. Všechna portfolia pro tohoto klienta budou uvedena na stránce klienta.",
-		"watchIntroVideo": "Sledovat úvodní video",
-		"viewSamplePortfolio": "Zobrazit ukázkové portfolio"
 	},
 	"common": {
 		"abbreviations": {
@@ -651,17 +275,14 @@
 			"whatYouHave": "Co budete mít",
 			"perMonth": "za měsíc",
 			"perYear": "za rok",
-			"depositToMatch": "Vložte {amount} {currency} {frequency} pro dosažení cílů.",
 			"setDepositAmount": "Nastavit částku vkladu",
 			"depositInRealValue": "Částka vkladu v reálné hodnotě (dnešní peníze) — bude automaticky upravena podle inflace.",
 			"createPlan": "Vytvořit plán",
 			"modifyParameters": "Upravit parametry"
 		},
-		"paymentAndBilling": "Platby a fakturace",
 		"notFound": "Nenalezeno",
 		"nominal": "Nominální",
 		"total": "Celkem",
-		"share": "Sdílet",
 		"loading": "Načítání...",
 		"calculatingChartData": "Vypočítávám data grafu",
 		"name": "Jméno",
@@ -679,9 +300,7 @@
 		"done": "Hotovo",
 		"saveChanges": "Uložit změny",
 		"addTransaction": "Přidat transakci",
-		"showInvestments": "Zobrazit cíle / investice",
 		"deleteClient": "Smazat klienta",
-		"login": "Přihlásit se",
 		"years": "let",
 		"details": "Podrobnosti",
 		"apy": "Roční výnosnost (p.a.)",
@@ -719,40 +338,12 @@
 		"breakdown": "Rozpis",
 		"viewBreakdown": "Zobrazit rozpis",
 		"showToday": "Zobrazit dnešek",
-		"logout": "Odhlásit se",
 		"investment": "Investice",
 		"importData": "Importovat data",
 		"portfolio": "Portfolio",
 		"inflationAdjusted": "Upraveno o inflaci",
-		"viewSamplePortfolio": "Zobrazit ukázkové portfolio",
-		"errorWhileFetchingPrice": "Chyba při načítání ceny",
-		"thereWasAnErrorWhileLoadingThePage": "Při načítání stránky došlo k chybě",
-		"pleaseTryReloadingThePage": "Zkuste prosím stránku znovu načíst",
-		"welcomeToKalkul": "Vítejte v Kalkulu!",
-		"noActiveSubscription": "Žádné aktivní předplatné",
-		"activateYourTrialRemainingDaysFreeTrialTemplate": "Aktivujte si {trialRemainingDays}-denní zkušební verzi zdarma",
-		"pleaseSubscribeToUseKalkul": "Pro používání Kalkulu si prosím předplaťte!",
-		"earlyBirdDiscount": "Sleva pro první uživatele",
-		"billedEveryYear": "účtováno každý rok",
-		"amountChargedNow": "Částka k úhradě nyní",
-		"firstPaymentOnTemplate": "První platba dne {date}",
-		"amountDue": "Částka k úhradě",
-		"yearlyPlan": "Roční plán",
-		"getStartedNow": "Začít nyní",
-		"proceedToPayment": "Přejít k platbě",
-		"yourSubscriptionIsActive": "Vaše předplatné je aktivní",
-		"portfolioLink": "Odkaz na portfolio",
-		"thereWasAnError": "Došlo k chybě",
-		"manageSubscription": "Spravovat předplatné",
-		"yesFreeTrialNowActive": "Ano! Vaše zkušební verze je nyní aktivní!",
-		"freeTrial": "Zkušební verze",
-		"daysRemaining": "zbývá dní",
-		"paymentSuccessful": "Platba byla úspěšná",
-		"thankYouForUsingKalkul": "Děkujeme za používání Kalkulu!",
-		"startUsingKalkul": "Začít používat Kalkul",
 		"portfolioName": "Název portfolia",
 		"currentValue": "Dnešní hodnota",
-		"password": "Heslo",
 		"withdrawn": "Vybráno",
 		"deposited": "Vloženo",
 		"investmentValue": "Hodnota investic",
@@ -762,113 +353,46 @@
 		"totalWithdrawn": "Kumulativní výběry do {date}",
 		"totalFees": "Kumulativní poplatky do {date}",
 		"totalInterestEarned": "Kumulativní výnos do {date}",
-		"cancelBeforeTrialEnd": "Zrušte před {firstPaymentFormattedDate} a nebude vám nic účtováno. E-mailem vám připomeneme 7 dní před koncem zkušební doby.",
-		"subscriptionAutoRenew": "Vaše předplatné se automaticky obnovuje každý rok na opakující se základě.",
-		"manageSubscriptionDetails": "Detaily svého předplatného můžete zobrazit a spravovat na stránce {accountPaymentsLink}, která je kdykoli dostupná v nastavení vašeho účtu.",
 		"noTransactionYet": "Zatím žádné transakce",
 		"noClientYet": "Zatím žádní klienti",
-		"resetPasswordLink": "Odkaz k obnovení hesla",
-		"verificationLinkSent": "Ověřovací odkaz odeslán",
 		"noPortfolioYet": "Zatím žádné portfolio",
 		"noInvestmentsYet": "Zatím žádné investice",
-		"changeEmail": "Změnit e-mail",
-		"changePassword": "Změnit heslo",
-		"byProceedingYouAgree": "Pokračováním souhlasíte s",
-		"termsOfUse": "Podmínkami použití",
-		"privacyPolicy": "Zásadami ochrany soukromí.",
-		"reload": "Znovu načíst",
 		"search": "Hledat",
-		"signup": "Zaregistrovat se",
-		"welcomeToKalkulBeta": "Vítejte v Kalkul Beta",
 		"period": "Období",
 		"avatar": "Avatar",
-		"logo": "Logo",
-		"preview": "Náhled",
-		"error": "Chyba",
-		"success": "Úspěch",
 		"realValue": "Reálná hodnota",
 		"nominalValue": "Nominální hodnota",
 		"totalReal": "Celkem (reálná)",
-		"totalNominal": "Celkem (nominální)",
-		"comingSoon": "Připravujeme"
+		"totalNominal": "Celkem (nominální)"
 	},
 	"error": {
 		"emailError": "Toto nevypadá jako platný e-mail",
-		"passwordLengthError": "Heslo musí mít alespoň 12 znaků",
 		"birthDateError": "Datum narození nemůže být v budoucnosti.",
 		"birthDateUndefined": "Zadejte platné datum narození",
 		"invalidYear": "Neplatný rok",
 		"invalidMonth": "Neplatný měsíc",
 		"invalidDay": "Neplatný den",
-		"invalidDate": "Neplatné datum",
-		"emailAlreadyAssociated": "Tento e-mail je již přiřazen k účtu",
-		"pleaseEnterValidEmail": "Prosím zadejte platnou e-mailovou adresu",
-		"passwordMinimumLength": "Minimálně 12 znaků",
-		"userAlreadyRegistered": "Uživatel je již registrován",
-		"currentEmailNotFound": "Aktuální e-mail nebyl nalezen"
+		"invalidDate": "Neplatné datum"
 	},
-	"email": {
-		"common": {
-			"companyName": "Kalkul.app s.r.o.",
-			"companyAddress": "Stará silnice 2314/3, Předměstí, 746 01 Opava, Česká republika",
-			"madeWithLove": "Vyrobeno s 💚 v 🇨🇿 České republice",
-			"unsubscribe": "Odhlásit odběr",
-			"contactSupport": "Také nás můžete kdykoli kontaktovat na {supportEmail}",
-			"footerText": "Tento e-mail jste obdrželi, protože jste se zaregistrovali do Kalkul. Pokud máte jakékoli obavy, kontaktujte nás na {supportEmail}",
-			"viewInBrowser": "Zobrazit v prohlížeči"
-		},
-		"templates": {
-			"welcome": {
-				"subject": "Vítejte v Kalkul!",
-				"previewText": "Děkujeme, že jste se stali prvními uživateli Kalkul! 🚀",
-				"title": "Děkujeme, že jste se stali prvními uživateli Kalkul! 🚀",
-				"introText": "Připojujete se k exkluzivní skupině pokrokových profesionálů, kteří nám pomáhají budovat budoucnost nezávislého finančního plánování.",
-				"expertiseHeading": "Vaše odbornost je důležitá",
-				"expertiseText": "Jako jeden z našich prvních uživatelů přímo ovlivňujete vývoj našeho produktu – pomáháte nám opravovat chyby, stanovovat priority funkcí a vytvářet přesně to, co nezávislí poradci potřebují. Našli jste problém nebo něco, co by mohlo být lepší? Líbí se vám něco konkrétního? Máte nápad na funkci nebo požadavek? Řekněte nám to!",
-				"rewardsHeading": "Exkluzivní výhody pro beta uživatele",
-				"rewardsText": "Jako beta uživatel získáváte brzký a bezplatný přístup k našemu nástroju pro finanční plánování. Ano, stále některé věci dolaďujeme, ale právě proto je vaše přítomnost zde tak cenná. Jako poděkování za to, že jste prvním uživatelem a pomáháte nám vylepšit Kalkul, obdržíte exkluzivní slevu při veřejném spuštění.",
-				"getStartedHeading": "Začněte!",
-				"step1": "Přihlaste se ke svému účtu na {loginUrl}",
-				"step2": "Vytvořte své první klientské portfolio a prozkoumejte naše funkce",
-				"step3": "Připojte se k naší {discordLink} komunitě a podělte se o své první dojmy a zpětnou vazbu",
-				"discordButton": "Připojit se na Discord",
-				"thankYou": "Děkujeme, že věříte v to, co budujeme."
-			},
-			"newsletter2025September": {
-				"subject": "Kalkul Beta je nyní otevřená 🚀",
-				"previewText": "Nezávislé nástroje pro lepší finanční plánování",
-				"title": "Nezávislé nástroje pro lepší finanční plánování",
-				"introText": "Představujeme Kalkul — aplikaci pro finanční plánování nezávislou na platformě, určenou pro poradce, kteří si cení svobody.",
-				"betaSignupHeading": "Beta verze je nyní otevřená pro všechny",
-				"betaSignupText": "Jste připraveni zbavit se omezení platforem? Registrace do beta verze jsou nyní otevřené pro pokrokově smýšlející poradce, kteří odmítají dělat kompromisy při volbě investic.",
-				"signupButton": "Přihlaste se ještě dnes",
-				"requestDemoButton": "Požádat o demo",
-				"bodyText1": "Pokud jste finanční poradce a pracujete s investicemi z více zdrojů, tenhle kompromis znáte až příliš dobře: více svobody často znamená více nástrojů, více administrativy a méně času na to, co je opravdu důležité — vaše klienty. Tu samou frustraci slyšíme od poradců napříč trhem a myslíme si, že existuje lepší cesta.",
-				"quoteText": "Nejlepší plánování vzniká tehdy, když máte svobodu volit jakoukoli investici z jakéhokoliv zdroje bez omezení platformou.",
-				"bodyText2": "Právě proto budujeme řešení nezávislé na platformě, které vám vrací kontrolu zpět do vašich rukou. Na rozdíl od platforem vázaných na instituce vám Kalkul umožní přidávat investice z libovolného zdroje a dává vám svobodu vytvářet skutečně sjednocená, na platformě nezávislá portfolia šitá na míru potřebám každého klienta.",
-				"closingText": "Děkujeme,",
-				"teamText": "tým Kalkul.",
-				"kalkulDemoRequest": "Žádost o demo Kalkul",
-				"kalkulDemoRequestBody": "Dobrý den, zajímá mě Kalkul a rád bych si požádal o demo."
-			}
-		}
+	"settings": {
+		"title": "Nastavení",
+		"language": "Jazyk",
+		"backup": "Záloha a obnovení",
+		"backupDescription": "Exportujte všechna data jako JSON soubor nebo importujte zálohu z dříve exportovaného souboru.",
+		"exportBackup": "Exportovat zálohu",
+		"importBackup": "Importovat zálohu",
+		"importError": "Neplatný formát zálohy",
+		"importSuccess": "Záloha byla úspěšně importována"
 	},
 	"demo": {
 		"transactions": {
 			"initialSavings": "Počáteční úspory",
 			"regularDeposit": "Pravidelný vklad",
 			"retirementWithdrawal": "Renta",
-			"initialInvestment": "Počáteční investice",
-			"monthlyContribution": "Měsíční příspěvek",
-			"monthlyRetirementWithdrawal": "Měsíční renta",
 			"educationWithdrawal": "Výběr na vzdělání"
 		},
 		"investments": {
-			"retirement": "Důchod",
-			"education": "Vzdělání"
-		},
-		"portfolio": {
-			"demoPortfolio": "Demo portfolio"
+			"retirement": "Důchod"
 		},
 		"notImplemented": "Tato funkce ještě není implementována"
 	}

@@ -22,21 +22,15 @@
 	import ContentLayout from '$lib/components/content-layout.svelte'
 	import PortfolioSidebar from '$lib/components/portfolio-sidebar.svelte'
 	import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
-	import { isGoalsEnabledForUser } from '$lib/feature-flags'
-	import { authStore } from '$lib/stores/auth.svelte'
 
 	const clientId = $derived(page.params.id)
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
 	const portfolioId = $derived(page.params.portfolio_id)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
-	// Check if goals feature is enabled for the logged-in user (advisor)
-	const goalsFeatureEnabled = $derived(isGoalsEnabledForUser(authStore.user))
+	const goalsFeatureEnabled = true
 
-	// Tab selection state - defaults based on feature flag, but can be changed by user
-	let selectedTab = $state<'goals' | 'investments'>(
-		isGoalsEnabledForUser(authStore.user) ? 'goals' : 'investments',
-	)
+	let selectedTab = $state<'goals' | 'investments'>('goals')
 
 	// Filter goals and regular investments using store methods
 	const goals = $derived(investmentStore.filterGoals(portfolioId))
@@ -221,7 +215,6 @@
 					bind:adjustWithInflation
 					bind:isMenuOpen
 					bind:isShareMenuOpen
-					simulationData={graphData}
 				/>
 			</div>
 
@@ -286,7 +279,6 @@
 							bind:adjustWithInflation
 							bind:isMenuOpen
 							bind:isShareMenuOpen
-							simulationData={graphData}
 						/>
 					</ContentLayout>
 
