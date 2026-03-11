@@ -28,8 +28,6 @@
 	const portfolioId = $derived(page.params.portfolio_id)
 	const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
 
-	const goalsFeatureEnabled = true
-
 	let selectedTab = $state<'goals' | 'investments'>('goals')
 
 	// Filter goals and regular investments using store methods
@@ -53,20 +51,20 @@
 		),
 	)
 
-	// Calculate goals data when goals change (only if feature enabled)
+	// Calculate goals data when goals change
 	$effect(() => {
 		// Explicitly reference dependencies to ensure Svelte tracks them
 		const currentGoals = goals
 		const currentTransactions = goalTransactions
 
-		if (portfolio && !isLoading && goalsFeatureEnabled) {
+		if (portfolio && !isLoading) {
 			setTimeout(() => {
 				goalsSimulation.calculateIteratively(portfolio, currentGoals, currentTransactions)
 			}, 0)
 		}
 	})
 
-	// Calculate investments data when investments change (always, but filters out goals if feature enabled)
+	// Calculate investments data when investments change
 	$effect(() => {
 		// Explicitly reference dependencies to ensure Svelte tracks them
 		const currentInvestments = regularInvestments
@@ -83,27 +81,16 @@
 		}
 	})
 
-	// Switch between goal and investment data based on selected tab (or just investments if feature disabled)
-	const investments = $derived(
-		goalsFeatureEnabled && selectedTab === 'goals' ? goals : regularInvestments,
-	)
+	// Switch between goal and investment data based on selected tab
+	const investments = $derived(selectedTab === 'goals' ? goals : regularInvestments)
 
 	const graphData = $derived(
-		goalsFeatureEnabled && selectedTab === 'goals'
-			? goalsSimulation.simulationData
-			: investmentsSimulation.simulationData,
+		selectedTab === 'goals' ? goalsSimulation.simulationData : investmentsSimulation.simulationData,
 	)
 
-	const transactions = $derived(
-		goalsFeatureEnabled && selectedTab === 'goals' ? goalTransactions : investmentTransactions,
-	)
+	const transactions = $derived(selectedTab === 'goals' ? goalTransactions : investmentTransactions)
 
-	// Check if portfolio is empty - when goals enabled, check both goals and investments; otherwise just investments
-	const hasAnyInvestments = $derived(
-		goalsFeatureEnabled
-			? goals.length > 0 || regularInvestments.length > 0
-			: regularInvestments.length > 0,
-	)
+	const hasAnyInvestments = $derived(goals.length > 0 || regularInvestments.length > 0)
 
 	const investmentsViewStore = $derived(
 		withInvestmentsViewStore(investmentStore.filter(portfolioId)),
@@ -225,14 +212,12 @@
 						{portfolio}
 						{goals}
 						{regularInvestments}
-						{investments}
 						{isGraphFullscreened}
 						{isSidebarFlexible}
 						bind:isSidebarOpen
 						{investmentsViewStore}
 						{graphData}
 						{adjustWithInflation}
-						{goalsFeatureEnabled}
 						bind:selectedTab
 						transactionCount={transactions.length}
 						{clientId}
@@ -303,14 +288,12 @@
 						{portfolio}
 						{goals}
 						{regularInvestments}
-						{investments}
 						{isGraphFullscreened}
 						{isSidebarFlexible}
 						bind:isSidebarOpen
 						{investmentsViewStore}
 						{graphData}
 						{adjustWithInflation}
-						{goalsFeatureEnabled}
 						bind:selectedTab
 						transactionCount={transactions.length}
 						{clientId}

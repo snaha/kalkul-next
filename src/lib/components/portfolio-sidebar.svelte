@@ -28,14 +28,12 @@
 		portfolio: Portfolio
 		goals: Goal[]
 		regularInvestments: Investment[]
-		investments: Investment[]
 		isGraphFullscreened: boolean
 		isSidebarFlexible: boolean
 		isSidebarOpen: boolean
 		investmentsViewStore: InvestmentsViewStore
 		graphData: PortfolioSimulation | undefined
 		adjustWithInflation: boolean
-		goalsFeatureEnabled: boolean
 		selectedTab: 'goals' | 'investments'
 		transactionCount: number
 		clientId: string
@@ -48,14 +46,12 @@
 		portfolio,
 		goals,
 		regularInvestments,
-		investments,
 		isGraphFullscreened,
 		isSidebarFlexible,
 		isSidebarOpen = $bindable(),
 		investmentsViewStore,
 		graphData,
 		adjustWithInflation,
-		goalsFeatureEnabled,
 		selectedTab = $bindable(),
 		transactionCount,
 		clientId,
@@ -103,155 +99,122 @@
 </script>
 
 {#if client && portfolio}
-	{#if goalsFeatureEnabled}
-		<!-- Tabs with Goals/Investments -->
-		<Vertical --vertical-gap="0" class="sidebar-tabs-container fixed-height">
-			{#if selectedInvestment}
-				<div class="scrollable dialog">
-					<EditTransaction
-						investment={selectedInvestment}
-						{portfolio}
-						{client}
-						transaction={editedTransaction}
-						showInflation={adjustWithInflation}
-						close={closeDialog}
-					/>
-				</div>
-			{:else}
-				<Horizontal
-					--horizontal-align-items="center"
-					--horizontal-gap="0"
-					style="padding: var(--half-padding)"
-				>
-					<TabBar
-						dimension="compact"
-						bind:selectedTabId={selectedTab}
-						ulClass="sidebar-tab-ul"
-						liClass="sidebar-tab-li"
-						buttonClass="sidebar-tab-button"
-						onSelectTab={() => {
-							if (prevSelectedTab === selectedTab) {
-								if (!open) {
-									openSidebar()
-								} else {
-									closeSidebar()
-								}
+	<Vertical --vertical-gap="0" class="sidebar-tabs-container fixed-height">
+		{#if selectedInvestment}
+			<div class="scrollable dialog">
+				<EditTransaction
+					investment={selectedInvestment}
+					{portfolio}
+					{client}
+					transaction={editedTransaction}
+					showInflation={adjustWithInflation}
+					close={closeDialog}
+				/>
+			</div>
+		{:else}
+			<Horizontal
+				--horizontal-align-items="center"
+				--horizontal-gap="0"
+				style="padding: var(--half-padding)"
+			>
+				<TabBar
+					dimension="compact"
+					bind:selectedTabId={selectedTab}
+					ulClass="sidebar-tab-ul"
+					liClass="sidebar-tab-li"
+					buttonClass="sidebar-tab-button"
+					onSelectTab={() => {
+						if (prevSelectedTab === selectedTab) {
+							if (!open) {
+								openSidebar()
+							} else {
+								closeSidebar()
 							}
-							prevSelectedTab = selectedTab
+						}
+						prevSelectedTab = selectedTab
+					}}
+				>
+					<TabContent value={$_('page.goals.title')} id="goals"></TabContent>
+					<TabContent value={$_('common.investments')} id="investments"></TabContent>
+				</TabBar>
+				{#if layoutStore.mobile}
+					<Button
+						variant="ghost"
+						dimension="compact"
+						onclick={() => {
+							if (!open) {
+								openSidebar()
+							} else {
+								closeSidebar()
+							}
 						}}
 					>
-						<TabContent value={$_('page.goals.title')} id="goals"></TabContent>
-						<TabContent value={$_('common.investments')} id="investments"></TabContent>
-					</TabBar>
-					{#if layoutStore.mobile}
-						<Button
-							variant="ghost"
-							dimension="compact"
-							onclick={() => {
-								if (!open) {
-									openSidebar()
-								} else {
-									closeSidebar()
-								}
-							}}
-						>
-							{#if open}
-								<DownToBottom size={20} />
-							{:else}
-								<UpToTop size={20} />
-							{/if}
-						</Button>
-					{/if}
-				</Horizontal>
-				<div class="vertical scrollable">
-					{#if selectedTab === 'goals'}
-						<GoalsSidebar
-							{isGraphFullscreened}
-							{isSidebarFlexible}
-							bind:isSidebarOpen
-							{portfolio}
-							{goals}
-							{adjustWithInflation}
-							viewOnly={false}
-							{graphData}
-							{openTransaction}
-							addGoal={() => {
-								goto(routes.NEW_GOAL(clientId, portfolioId))
-							}}
-							showExplainInvestmentsLabel={regularInvestments.length === 0}
-							--sidebar-min-height="var(--portfolio-sidebar-min-height)"
-						/>
-					{:else if selectedTab === 'investments'}
-						<InvestmentsSidebar
-							{isGraphFullscreened}
-							{isSidebarFlexible}
-							bind:isSidebarOpen
-							{portfolio}
-							investments={regularInvestments}
-							{investmentsViewStore}
-							{transactionCount}
-							{adjustWithInflation}
-							viewOnly={false}
-							{graphData}
-							{openTransaction}
-							--sidebar-min-height="var(--portfolio-sidebar-min-height)"
-						/>
-					{/if}
-				</div>
-				<Horizontal --horizontal-justify-content="stretch" style="padding: var(--half-padding)">
-					{#if selectedTab === 'goals' && goals.length > 0}
-						<Button
-							flexGrow
-							variant="ghost"
-							dimension="compact"
-							onclick={() => {
-								goto(routes.NEW_GOAL(clientId, portfolioId))
-							}}>{$_('page.portfolio.addGoal')}</Button
-						>
-					{:else if selectedTab === 'investments' && regularInvestments.length > 0}
-						<Button
-							flexGrow
-							variant="ghost"
-							dimension="compact"
-							onclick={() => {
-								goto(routes.NEW_INVESTMENT(clientId, portfolioId))
-							}}>{$_('page.portfolio.addInvestment')}</Button
-						>
-					{/if}
-				</Horizontal>
-			{/if}
-		</Vertical>
-	{:else if selectedInvestment !== undefined}
-		<!-- Full-height EditTransaction view -->
-		<Vertical --vertical-gap="0" class="dialog full-height">
-			<EditTransaction
-				investment={selectedInvestment}
-				{portfolio}
-				{client}
-				transaction={editedTransaction}
-				showInflation={adjustWithInflation}
-				close={closeDialog}
-			/>
-		</Vertical>
-	{:else}
-		<!-- No goals feature - just investments -->
-		<div class="vertical scrollable sidebar-container">
-			<InvestmentsSidebar
-				{isGraphFullscreened}
-				{isSidebarFlexible}
-				bind:isSidebarOpen
-				{portfolio}
-				{investments}
-				{investmentsViewStore}
-				{transactionCount}
-				{adjustWithInflation}
-				viewOnly={false}
-				{graphData}
-				{openTransaction}
-				--sidebar-min-height="var(--portfolio-sidebar-min-height)"
-			/>
-		</div>
-	{/if}
+						{#if open}
+							<DownToBottom size={20} />
+						{:else}
+							<UpToTop size={20} />
+						{/if}
+					</Button>
+				{/if}
+			</Horizontal>
+			<div class="vertical scrollable">
+				{#if selectedTab === 'goals'}
+					<GoalsSidebar
+						{isGraphFullscreened}
+						{isSidebarFlexible}
+						bind:isSidebarOpen
+						{portfolio}
+						{goals}
+						{adjustWithInflation}
+						viewOnly={false}
+						{graphData}
+						{openTransaction}
+						addGoal={() => {
+							goto(routes.NEW_GOAL(clientId, portfolioId))
+						}}
+						showExplainInvestmentsLabel={regularInvestments.length === 0}
+						--sidebar-min-height="var(--portfolio-sidebar-min-height)"
+					/>
+				{:else if selectedTab === 'investments'}
+					<InvestmentsSidebar
+						{isGraphFullscreened}
+						{isSidebarFlexible}
+						bind:isSidebarOpen
+						{portfolio}
+						investments={regularInvestments}
+						{investmentsViewStore}
+						{transactionCount}
+						{adjustWithInflation}
+						viewOnly={false}
+						{graphData}
+						{openTransaction}
+						--sidebar-min-height="var(--portfolio-sidebar-min-height)"
+					/>
+				{/if}
+			</div>
+			<Horizontal --horizontal-justify-content="stretch" style="padding: var(--half-padding)">
+				{#if selectedTab === 'goals' && goals.length > 0}
+					<Button
+						flexGrow
+						variant="ghost"
+						dimension="compact"
+						onclick={() => {
+							goto(routes.NEW_GOAL(clientId, portfolioId))
+						}}>{$_('page.portfolio.addGoal')}</Button
+					>
+				{:else if selectedTab === 'investments' && regularInvestments.length > 0}
+					<Button
+						flexGrow
+						variant="ghost"
+						dimension="compact"
+						onclick={() => {
+							goto(routes.NEW_INVESTMENT(clientId, portfolioId))
+						}}>{$_('page.portfolio.addInvestment')}</Button
+					>
+				{/if}
+			</Horizontal>
+		{/if}
+	</Vertical>
 {/if}
 
 <style>
@@ -274,19 +237,11 @@
 		max-height: 100%;
 		background-color: var(--colors-low);
 	}
-	.sidebar-container {
-		padding-top: var(--half-padding);
-		padding-bottom: var(--half-padding);
-	}
 	:global(.dialog) {
 		padding: var(--half-padding);
 		border-radius: var(--border-radius);
 		background-color: var(--colors-low);
 		border: 1px solid var(--colors-low);
-	}
-	:global(.full-height) {
-		height: 100%;
-		overflow-y: auto;
 	}
 	:global(.sidebar-tabs-container) {
 		background-color: var(--colors-low);
