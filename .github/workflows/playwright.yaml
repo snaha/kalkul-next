@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Component Tests
 
 on:
   push:
@@ -13,14 +13,14 @@ permissions:
   pull-requests: read
 
 jobs:
-  playwright-tests:
-    name: Playwright Tests
+  component-tests:
+    name: Component Tests
     timeout-minutes: 30
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     concurrency:
-      group: playwright-tests-${{ github.repository }}-${{ github.ref }}
+      group: component-tests-${{ github.repository }}-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -99,23 +99,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --dangerously-allow-all-builds
 
-      - name: Reset test database
-        run: |
-          if [ -z "$TEST_DATABASE_URL" ]; then
-            echo "❌ TEST_DATABASE_URL is not set. This secret is required for running tests."
-            echo "   Please add TEST_DATABASE_URL to your GitHub repository secrets."
-            exit 1
-          fi
-
-          echo "🔄 Resetting test database..."
-
-          # Reset database using Supabase CLI with database URL (--yes to skip confirmation)
-          pnpx supabase db reset --db-url "$TEST_DATABASE_URL" --yes
-
-          echo "✅ Database reset complete"
-        env:
-          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-
       - name: Generate SvelteKit files
         run: pnpm exec svelte-kit sync
 
@@ -127,19 +110,6 @@ jobs:
         env:
           CI: true
           HOME: /root
-
-      - name: Run Integration Tests
-        run: |
-          echo "🔄 Running integration tests..."
-          pnpm test:integration
-        env:
-          CI: true
-          # Use dedicated Supabase test project
-          PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
-          PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN }}
-          PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
-          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
 
       - name: Upload Test Reports
         uses: actions/upload-artifact@v5

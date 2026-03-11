@@ -10,20 +10,6 @@ on:
 
 concurrency: preview-${{ github.ref }}
 
-env:
-  PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
-  PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-  VITE_ADAPTER: static
-  STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
-  PUBLIC_ORIGIN: ${{ vars.PUBLIC_ORIGIN_DEV }}
-  PUBLIC_DISABLE_PAYWALL: ${{ vars.PUBLIC_DISABLE_PAYWALL }}
-  VITE_API_URL: ${{ vars.PREVIEW_VITE_API_URL }}
-  PUBLIC_DISCORD_LINK: ${{ vars.PUBLIC_DISCORD_LINK }}
-  PUBLIC_INSTAGRAM_LINK: ${{ vars.PUBLIC_INSTAGRAM_LINK }}
-  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-  RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
-  SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-
 permissions:
   contents: write
   pull-requests: write
