@@ -42,7 +42,7 @@ jobs:
 
       - name: Build
         if: github.event.action != 'closed'
-        run: VITE_BASE_URL="/pr-${{ github.event.number }}" pnpm build
+        run: VITE_ROUTER=hash VITE_BASE_URL="/pr-${{ github.event.number }}" pnpm build
 
       - name: Deploy PR preview
         uses: rossjrw/pr-preview-action@v1
