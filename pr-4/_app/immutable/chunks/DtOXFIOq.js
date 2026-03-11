@@ -1,1 +1,0 @@
-import{_ as e}from"./C1FmrZbK.js";import{r as o,i as r}from"./BRSDf1nR.js";const a="cs",_="locale";o("en",()=>e(()=>import("./e0omhP-U.js"),[],import.meta.url));o("cs",()=>e(()=>import("./CT7_APyK.js"),[],import.meta.url));r({fallbackLocale:a,initialLocale:window.navigator.language??a});export{_ as L,a as d};
