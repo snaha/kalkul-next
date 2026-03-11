@@ -49,4 +49,4 @@ jobs:
         with:
           source-dir: ./build
           umbrella-dir: /
-          pages-base-url: preview.kalkul.app
+          pages-base-url: next.kalkul.app
