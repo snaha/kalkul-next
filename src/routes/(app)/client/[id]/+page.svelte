@@ -9,9 +9,7 @@
 		Folder,
 		FolderAdd,
 		FolderDetails,
-		Launch,
 		OverflowMenuVertical,
-		Share,
 		TrashCan,
 	} from 'carbon-icons-svelte'
 	import { _, locale } from 'svelte-i18n'
@@ -19,7 +17,7 @@
 	import { formatDate } from '$lib/@snaha/kalkul-maths/date'
 	import Loader from '$lib/components/ui/loader.svelte'
 	import { goto } from '$app/navigation'
-	import routes, { getStartedSections } from '$lib/routes'
+	import routes from '$lib/routes'
 	import { page } from '$app/state'
 	import { portfolioStore } from '$lib/stores/portfolio.svelte'
 	import { clientStore } from '$lib/stores/clients.svelte'
@@ -33,7 +31,6 @@
 	import adapters from '$lib/adapters'
 	import { base } from '$app/paths'
 	import { getCurrentPortfolioValue } from '$lib/@snaha/kalkul-maths'
-	import HelpBox from '$lib/components/help-box.svelte'
 	import {
 		differenceInDays,
 		differenceInMonths,
@@ -45,7 +42,6 @@
 	import DesktopOnly from '$lib/components/desktop-only.svelte'
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import { layoutStore } from '$lib/stores/layout.svelte'
-	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	const clientId = page.params.id
 	const client = $derived(clientStore.data.find((client) => client.id === clientId))
@@ -141,9 +137,6 @@
 			<ListItem onclick={() => goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))}
 				><Folder size={24} />{$_('page.portfolio.openPortfolio')}</ListItem
 			>
-			<ListItem onclick={() => goto(routes.SHARE(portfolioId))}
-				><Share size={24} />{$_('page.portfolio.sharePortfolio')}</ListItem
-			>
 			<ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(clientId, portfolioId))}
 				><FolderDetails size={24} />{$_('page.portfolio.editPortfolioDetails')}</ListItem
 			>
@@ -155,27 +148,6 @@
 			>
 		</List>
 	</Dropdown>
-{/snippet}
-
-{#snippet viewButton(link: string | null, portfolioId: string)}
-	{#if link}
-		<Button
-			variant="ghost"
-			dimension="compact"
-			href={routes.VIEW(link)}
-			onclick={(e: Event) => e.stopPropagation()}
-			target="_blank"><Launch size={24} /></Button
-		>
-	{:else}
-		<Button
-			variant="ghost"
-			dimension="compact"
-			onclick={(e: Event) => {
-				e.preventDefault()
-				goto(routes.SHARE(portfolioId))
-			}}><Share size={24} /></Button
-		>
-	{/if}
 {/snippet}
 
 {#if !client}
@@ -249,8 +221,6 @@
 										maximumFractionDigits: 0,
 									})}</span
 								>
-								<span class="right-aligned">{@render viewButton(portfolio.link, portfolio.id)}</span
-								>
 								<span class="right-aligned">{@render portfolioDropdown(portfolio.id)}</span>
 							</li>
 						{/each}
@@ -281,23 +251,6 @@
 			{/if}
 		{/if}
 	</ContentLayout>
-{/if}
-
-{#if portfolios.length === 0}
-	<HelpBox
-		open={layoutStore.mobile ? false : true}
-		title={$_('helpBox.addPortfolioTitle')}
-		boxText={$_('helpBox.addPortfolioText')}
-		text={$_('helpBox.portfolioExplanation')}
-	>
-		<Button
-			variant="strong"
-			dimension="compact"
-			onclick={() => umami?.track(UMAMI_EVENTS.HELP_BOX_GET_STARTED)}
-			href={`${routes.GET_STARTED}#${getStartedSections.CREATE_PORTFOLIO}`}
-			target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
-		>
-	</HelpBox>
 {/if}
 
 <DeleteModal
@@ -346,7 +299,7 @@
 	}
 	.portfolios {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 42px 42px;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 42px;
 		align-items: center;
 		gap: var(--half-padding);
 		border-bottom: 1px solid var(--colors-low);

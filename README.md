@@ -235,9 +235,8 @@ supabase gen types --lang=typescript --project-id=<project-id> > src/lib/typesdb
 
 ## Deployments
 
-- [`kalkul.app`](https://kalkul.app) - Production (Node.js)
-- [`dev.kalkul.app`](https://dev.kalkul.app) - Development (Static SPA)
-- `dev.kalkul.app/preview/pr-{num}` - PR previews (Static SPA with hash routing)
+- [`next.kalkul.app`](https://next.kalkul.app) - Production (Static SPA on GitHub Pages)
+- `next.kalkul.app/pr-{num}` - PR previews (Static SPA)
 
 ## Environment Variables
 

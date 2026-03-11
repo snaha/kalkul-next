@@ -1,1 +1,0 @@
-UPDATE investment SET apy = apy * 100;

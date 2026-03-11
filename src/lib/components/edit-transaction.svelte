@@ -27,7 +27,6 @@
 	} from '$lib/@snaha/kalkul-maths/date'
 	import DateAge from './date-age.svelte'
 	import Toggle from './ui/toggle.svelte'
-	import { authStore } from '$lib/stores/auth.svelte'
 	import { subDays } from 'date-fns'
 	import FlexItem from './ui/flex-item.svelte'
 	import Vertical from './ui/vertical.svelte'
@@ -115,7 +114,7 @@
 	})
 
 	async function createTransaction() {
-		if (!authStore.user || amount === undefined || amount <= 0) {
+		if (amount === undefined || amount <= 0) {
 			return
 		}
 

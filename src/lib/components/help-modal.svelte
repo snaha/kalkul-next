@@ -1,13 +1,9 @@
 <script lang="ts">
-	import { ChatBot, Close, Rocket } from 'carbon-icons-svelte'
+	import { ChatBot, Close } from 'carbon-icons-svelte'
 	import Button from './ui/button.svelte'
 	import Modal, { type ModalProps } from './ui/modal.svelte'
 	import Typography from './ui/typography.svelte'
 	import { _ } from 'svelte-i18n'
-	import { PUBLIC_DISCORD_LINK } from '$env/static/public'
-	import Discord from './icons/discord.svelte'
-	import ResponsiveLayout from './ui/responsive-layout.svelte'
-	import routes from '$lib/routes'
 
 	let { oncancel, open = $bindable(false), ...restProps }: ModalProps = $props()
 
@@ -27,42 +23,12 @@
 			<Button variant="ghost" dimension="compact" onclick={close}><Close size={24} /></Button>
 		</header>
 		<Typography>
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html $_('component.help.text', {
-				values: {
-					email: `<a href="mailto:support@kalkul.app" class="email-link">support@kalkul.app</a>`,
-				},
-			})}
+			{$_('component.help.text')}
 		</Typography>
-
-		<Typography italic>
-			{$_('component.help.newToKalkulTip')}
-		</Typography>
-
-		<ResponsiveLayout --responsive-justify-content="stretch" --responsive-align-items="stretch">
-			<Button variant="strong" dimension="compact" href={routes.GET_STARTED} target="_blank"
-				><Rocket size={24} />
-				{$_('component.help.checkQuickStartGuide')}</Button
-			>
-
-			<Button
-				variant="secondary"
-				dimension="compact"
-				href={PUBLIC_DISCORD_LINK}
-				target="_blank"
-				flexGrow
-				><Discord size={24} />
-				{$_('component.help.joinTheConversation')}</Button
-			>
-		</ResponsiveLayout>
 	</section>
 </Modal>
 
 <style lang="postcss">
-	:global(.fit-content) {
-		width: fit-content;
-		margin: 0 auto;
-	}
 	.dialog {
 		display: flex;
 		flex-direction: column;
@@ -87,9 +53,5 @@
 	}
 	.grower {
 		flex-grow: 1;
-	}
-
-	:global(.email-link:hover) {
-		text-decoration: none !important;
 	}
 </style>

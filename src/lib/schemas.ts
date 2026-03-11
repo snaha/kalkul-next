@@ -1,13 +1,7 @@
 import { z } from 'zod'
 
-export const PASSWORD_MIN_LENGTH = 12
-
 export const emailFormSchema = z.object({
 	email: z.string().email({ message: 'error.emailError' }),
-})
-
-export const loginFormSchema = emailFormSchema.extend({
-	password: z.string().min(1),
 })
 
 export const figiSchema = z.object({
@@ -37,65 +31,3 @@ export const figiResponseSchema = z.array(
 		}),
 	]),
 )
-
-export const marketstackErrorResponseSchema = z.object({
-	error: z.object({
-		code: z.string(),
-		message: z.string(),
-	}),
-})
-
-export const marketstackEodResponseSchema = z.union([
-	marketstackErrorResponseSchema,
-	z.object({
-		pagination: z.object({
-			limit: z.number(),
-			offset: z.number(),
-			count: z.number(),
-			total: z.number(),
-		}),
-		data: z.array(
-			z.object({
-				open: z.number(),
-				high: z.number(),
-				low: z.number(),
-				close: z.number(),
-				volume: z.nullable(z.number()),
-				adj_high: z.number(),
-				adj_low: z.number(),
-				adj_open: z.number(),
-				adj_close: z.number(),
-				adj_volume: z.nullable(z.number()),
-				split_factor: z.number(),
-				dividend: z.number(),
-				name: z.nullable(z.string()),
-				exchange_code: z.nullable(z.string()),
-				asset_type: z.nullable(z.string()),
-				price_currency: z.nullable(z.string()),
-				symbol: z.string(),
-				exchange: z.string(),
-				date: z.string(),
-			}),
-		),
-	}),
-])
-
-export const marketstackIndexInfoSchema = z.object({
-	benchmark: z.string(),
-	region: z.string(),
-	country: z.string(),
-	price: z.string(),
-	price_change_day: z.string(),
-	percentage_day: z.string(),
-	percentage_week: z.string(),
-	percentage_month: z.string(),
-	percentage_year: z.string(),
-	date: z.string(),
-})
-
-export type MarketstackIndexInfoSchema = z.infer<typeof marketstackIndexInfoSchema>
-
-export const marketstackIndexInfoResponseSchema = z.union([
-	marketstackErrorResponseSchema,
-	z.array(marketstackIndexInfoSchema),
-])

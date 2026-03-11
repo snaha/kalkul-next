@@ -1,234 +1,5 @@
 {
 	"page": {
-		"forgotPassword": {
-			"forgotPassword": "Forgot password?",
-			"forgotPasswordText": "Enter the email associated with your account and you will receive a link to reset your password.",
-			"resetPasswordLocal": "If there's an account associated {email}, you will receive an email to your {link} with instructions to reset your password.",
-			"resetPasswordRemote": "If there's an account {email} you will receive an email with instructions to reset your password.",
-			"resetLink": "Send me a reset link",
-			"email": "Email",
-			"goBack": "Go back to ",
-			"login": "Login",
-			"emailSent": "Email sent!",
-			"checkSpam": "Don't see the email? Please check your spam folder."
-		},
-		"landing": {
-			"title": "Empowering independent financial planning",
-			"subtitle": "Build platform-agnostic portfolios faster—from initial client goals to detailed investment structure, all in one place. The Kalkul app gives you back hours by unifying your workflow and helps you create engaging plans that build client trust.",
-			"getStarted": "Get started",
-			"requestDemo": "Request a demo",
-			"heroScreenshotAlt": "Screenshot of Kalkul",
-			"stopJuggling": "Stop juggling platforms—start focusing on clients",
-			"unifiedPortfoliosTitle": "Unified portfolios, unlimited freedom",
-			"unifiedPortfoliosDescription": "Consolidate investments from every provider in one workflow. Add mutual funds, ETFs, stocks, or alternatives without switching platforms. Save time, serve clients better, and maintain complete independence in your recommendations.",
-			"flexiblePlanningTitle": "Flexible planning, from goals to investments",
-			"flexiblePlanningDescription": "Calculate goals with built-in tools, then define supporting investments with custom weights. When goals evolve, Kalkul automatically adjusts every transaction across all investments. What used to take hours now happens instantly.",
-			"insightfulPresentationsTitle": "Insightful presentations, effortless sharing",
-			"insightfulPresentationsDescription": "Turn complex portfolios into clear, interactive visualizations clients actually understand. Show fee impact and inflation projections transparently. Share interactive links or export customized PDFs. Build trust through clarity and professionalism.",
-			"builtWithAdvisors": "Built with advisor feedback for real-world workflows",
-			"bigPicturePlanningLabel": "BIG PICTURE PLANNING",
-			"bigPicturePlanningTitle": "Get the big picture first",
-			"bigPicturePlanningDescription": "Calculate retirement needs, major purchases, or withdrawal strategies before touching any investments. Model scenarios, adjust assumptions with clients until the strategy is right—before moving to implementation. Less time rebuilding portfolios, more time on strategic conversations that matter.",
-			"calculateGoalsQuickly": "Calculate goals quickly with integrated tools",
-			"adjustAssumptions": "Adjust assumptions in real-time with clients",
-			"strategyFirst": "Strategy-first approach saves hours of rework",
-			"granularInvestmentLabel": "GRANULAR INVESTMENT STRUCTURE",
-			"granularInvestmentTitle": "Build precise, multi-product portfolios",
-			"granularInvestmentDescription": "Implement with precision—set specific investments with accurate returns and fees for each goal. Import funds by ISIN, stocks by ticker, from any provider. Support each goal with multiple instruments. You control the strategy, Kalkul handles the complexity.",
-			"importDataByIsin": "Import data by ISIN or ticker",
-			"setPreciseReturns": "Set precise returns and fee structures",
-			"supportGoals": "Support goals with multiple investments",
-			"dynamicRebalancingLabel": "DYNAMIC REBALANCING",
-			"dynamicRebalancingTitle": "Goals change? Your portfolio adapts automatically",
-			"dynamicRebalancingDescription": "Life rarely goes exactly to plan. Adjust goal amounts anytime—retirement targets, timelines, withdrawal strategy. All transactions recalculate instantly across every investment based on set weights. Strategy stays flexible and you avoid hours of manual updates.",
-			"modifyGoalsFreely": "Modify goals freely anytime",
-			"weightEachInvestment": "Weight each investment individually",
-			"automaticRecalculation": "Automatic transactions recalculation",
-			"powerfulVisualizationsLabel": "POWERFUL VISUALIZATIONS",
-			"powerfulVisualizationsTitle": "Turn data into insight",
-			"powerfulVisualizationsDescription": "Make complex portfolios instantly clear. Isolate investments or goals, switch between portfolio value and transaction flows, display fee impact or inflation-adjusted projections. Interactive charts adapt to your conversation in real-time. Fullscreen mode and mobile support deliver professional presentations anywhere.",
-			"interactiveCharts": "Interactive charts that focus client attention",
-			"fullscreenMode": "Fullscreen mode for impactful presentations",
-			"presentAnywhere": "Present anywhere with full mobile support",
-			"flexibleSharingLabel": "FLEXIBLE SHARING",
-			"flexibleSharingTitle": "Your clients will love you",
-			"flexibleSharingDescription": "Some clients revisit projections at midnight. Others want printed reports. Share interactive links—clients explore on their own, updates sync automatically. Or export customized PDFs with selected charts. Client satisfaction through flexibility, whether digital or traditional.",
-			"meetEveryPreference": "Meet every client's preference with PDF or link sharing",
-			"maintainControl": "Maintain control with view-only links",
-			"automaticUpdates": "Automatic updates eliminate version control and re-sending",
-			"whyAdvisorsTrust": "Why advisors trust Kalkul",
-			"advisorDrivenLabel": "ADVISOR-DRIVEN DEVELOPMENT",
-			"advisorDrivenTitle": "Co-created with advisors",
-			"advisorDrivenDescription": "Kalkul is built with financial advisors, not just for them—we have one on our founding team. Every feature comes from real advisor feedback through our Discord community and face-to-face conversations at conferences. Your input shapes what we build next.",
-			"noHiddenAgendaLabel": "NO HIDDEN AGENDA",
-			"noHiddenAgendaTitle": "We're a small independent team",
-			"noHiddenAgendaDescription": "No bank ownership. No investment platform parent company. No incentives pushing particular products. We're an independent team that believes better financial advice requires complete freedom. Independence isn't just our philosophy—it's how we operate.",
-			"localExpertiseLabel": "LOCAL EXPERTISE",
-			"localExpertiseTitle": "Czech roots, EU expertise",
-			"localExpertiseDescription": "Headquartered in Czech Republic with deep Central European market knowledge. We understand the regulatory environment, investment landscape, and specific advisor challenges here. Kalkul isn't adapted from a US tool—it is built for the EU market.",
-			"joinFreeBeta": "Join our free Beta!",
-			"joinFreeBetaSubtitle": "Get early access, help shape features, and secure exclusive pricing at public launch."
-		},
-		"getStarted": {
-			"title": "Getting started with Kalkul",
-			"subtitle": "This guide covers all the essentials to get you started quickly and confidently.",
-			"openApp": "Open Kalkul app",
-			"joinDiscord": "Join Discord",
-			"keepPageOpen": "The Kalkul app and Discord links will open in a new tab, we recommend keeping this page open so you can come back here for guidance.",
-			"whatIsKalkul": {
-				"title": "What is Kalkul?",
-				"content": "Kalkul is a financial planning application designed specifically for independent financial advisors. It empowers you to create, manage, and share comprehensive portfolios with your clients. Unlike institution-tied platforms, Kalkul's independence allows you to add investments from any source, giving you the freedom to build truly unified, platform-independent portfolios tailored to each client's needs."
-			},
-			"isFree": {
-				"title": "Is Kalkul free to use?",
-				"content": "Kalkul is currently in free Beta while we put the finishing touches on the platform. As an early user, you'll get free access and your feedback will directly shape our product—helping us fix bugs, prioritize features, and build exactly what independent financial advisors need.",
-				"laterNote": "→ In early 2026, we'll introduce paid plans to support Kalkul's continued development as truly independent software. As a thank you for your valuable input, all Beta users will receive an exclusive discount when we launch publicly."
-			},
-			"whyDiscord": {
-				"title": "Why should I join Discord?",
-				"content": "Discord is a communication platform that allows people in our growing community to interact through text, voice, and video. It's the best place to ask questions, share insights with fellow advisors, and provide feedback that shapes Kalkul's development. Plus, our team is active daily to help solve any issues you encounter.",
-				"newToDiscord": "→ New to Discord? No problem—creating a free account takes just seconds.",
-				"joinButton": "Join Kalkul on Discord"
-			},
-			"createClient": {
-				"title": "Create your first client",
-				"intro": "To get started, you'll need to create a client profile. It's quick and easy—just provide:",
-				"requirements": {
-					"name": "Your client's name",
-					"birthdate": "Your client's birthdate (used for age calculations)",
-					"email": "Your client's email address (optional, for portfolio sharing)",
-					"picture": "A profile picture (optional)"
-				},
-				"afterCreation": "Once this is done, the client profile will appear on the homepage when you're logged in. You can create as many clients as you need."
-			},
-			"createPortfolio": {
-				"title": "Create your first portfolio",
-				"intro": "Now that you've created a client profile, it's time to create a portfolio. Think of a portfolio as a collection of investments with key parameters like currency and time horizon.",
-				"tip": "→ Use portfolios to organize investments for each of your clients. For example, you can create separate portfolios organized by investment goals, time horizons, or currencies.",
-				"requirements": "To create a new portfolio, you'll need to:",
-				"steps": {
-					"name": "Provide a portfolio name",
-					"currency": "Choose the default currency (with corresponding inflation rate)",
-					"horizon": "Define the investment horizon using either specific dates, a set time period (like 20 or 30 years) or based on your client's age"
-				},
-				"multiplePortfolios": "You can create as many portfolios as you want for each client. All the portfolios for a specific client will be listed on the client's page."
-			},
-			"addInvestment": {
-				"title": "Add your first investment",
-				"intro": "Now that you've created a portfolio for your client, it's time to add your first investment. An investment can be any security or financial instrument.",
-				"requirements": "To add a new investment, you'll need to set:",
-				"steps": {
-					"name": "Investment name - used to identify the investment in charts and reports",
-					"type": "Type (optional) - such as 'Common Stock', 'ETF', 'Bonds', 'Mutual Fund', etc.",
-					"apy": "APY (Annual Percentage Yield) - the expected annual return rate for this investment",
-					"fees": "Investment fees structure - any associated costs or management fees"
-				},
-				"importTip": "→ For faster setup, you can use the \"Import data\" function to automatically populate certain investment details using an ISIN number or ticker symbol.",
-				"afterCreation": "Once you've entered these details, the investment will be added to your client's portfolio."
-			},
-			"addTransactions": {
-				"title": "Add transactions in each investment",
-				"intro": "Once you've set up an investment, the final step is to add transactions (deposits or withdrawals) for that investment.",
-				"requirements": "To add a new transaction, you'll need to:",
-				"steps": {
-					"type": "Select the transaction type - deposit or withdrawal",
-					"frequency": "Choose frequency - one-time (default) or recurring using the \"Recurring\" switch",
-					"amount": "Enter the transaction amount",
-					"label": "Add an optional label - used to identify the transaction in charts and reports",
-					"date": "Set the transaction date - either using the calendar or based on your client's age"
-				},
-				"afterCreation": "Once you've entered these details, the transaction will appear in the corresponding investment card on the portfolio page sidebar."
-			},
-			"reviewPresent": {
-				"title": "Review and present a portfolio",
-				"intro": "Once you've built a complete portfolio with investments and transactions, Kalkul offers multiple visualization options to present compelling insights to your clients, whether in person or during online meetings.",
-				"focusSection": {
-					"title": "Focus on what matters",
-					"focusChart": "Under the menu button, select \"Focus in chart\" for any investment to hide all others and spotlight that specific investment in the visualization.",
-					"hideInvestments": "Alternatively, you can hide a specific investment from the chart when it's not relevant to your presentation.",
-					"hideTransactions": "You can also hide individual transactions and watch the chart update in real-time, making it easy to show clients how specific contributions or withdrawals impact their overall portfolio performance."
-				},
-				"inflationSection": {
-					"title": "Adjust for inflation",
-					"description": "Use the \"Show inflation\" switch to automatically adjust all investment and transaction values for inflation (based on the portfolio settings), showing real purchasing power over time.",
-					"note": "→ Note: When enabled, all charts show inflation-adjusted values with a subtle grey line indicating the original, non-adjusted amounts."
-				},
-				"fullscreenSection": {
-					"title": "Go fullscreen",
-					"description": "Each chart has a fullscreen mode, allowing you to use all available screen space to visualize the details of a specific chart. You can even show or hide the sidebar while in fullscreen mode.",
-					"tip": "→ This feature is particularly useful for presentations on smaller screens, projectors, or in online meetings."
-				}
-			},
-			"sharePortfolio": {
-				"title": "Share a portfolio",
-				"intro": "Kalkul provides two powerful sharing options for your client portfolios: online links or custom PDF exports.",
-				"linkSharing": {
-					"title": "Link sharing",
-					"description": "Enable link sharing to generate a view-only portfolio link for your client (no sign up required). Any portfolio updates you make will automatically update in real-time under the same link.",
-					"note": "→ People with the link can view and interact with the portfolio (show/hide data, hover for details, use fullscreen mode, etc.) but cannot make any changes."
-				},
-				"pdfExport": {
-					"title": "PDF export",
-					"description": "For offline presentations, export a customized PDF file. Kalkul creates a professionally formatted horizontal A4 layout optimized for both printing and digital viewing.",
-					"note": "→ You can include portfolio breakdown charts at specific key dates of your choice."
-				}
-			},
-			"conclusion": {
-				"thanks": "That's it—thanks for following along! We hope Kalkul makes your financial planning more efficient and effective.",
-				"feedback": {
-					"title": "Let us know your thoughts!",
-					"description": "As one of our first users, your feedback directly shapes our product—helping us fix bugs, prioritize features, and build exactly what independent advisors need. Found an issue or something that could be better? Love something in particular? Have a feature idea or request? Tell us!",
-					"button": "Give us feedback on Discord"
-				}
-			},
-			"altTexts": {
-				"illustration": "Illustration of business startup and new product launch",
-				"createClient": "Screenshot of create client form",
-				"clientList": "Screenshot of client list page",
-				"createPortfolio": "Screenshot of create portfolio form",
-				"portfolioList": "Screenshot of portfolio list page",
-				"createInvestment": "Screenshot of create investment form",
-				"portfolio": "Screenshot of portfolio page",
-				"createTransaction": "Screenshot of create transaction form",
-				"transactionCard": "Screenshot of transaction card in portfolio",
-				"investmentMenu": "Screenshot of investment menu options",
-				"hiddenInvestments": "Screenshot of portfolio with hidden investments",
-				"portfolioInflation": "Screenshot of portfolio with inflation adjustment enabled",
-				"portfolioFullscreen": "Screenshot of portfolio in fullscreen mode",
-				"shareOptions": "Screenshot of portfolio share options",
-				"shareWithLink": "Screenshot of share portfolio with link dialog",
-				"pdfExport": "Screenshot of PDF export options"
-			}
-		},
-		"account": {
-			"settings": "Settings",
-			"account": "Account",
-			"manageSubscription": "Manage subscription",
-			"subscriptionDisclaimer": "Your subscription will automatically renew annually on a recurring basis.",
-			"yearlyPlan": "Yearly plan",
-			"firstPaymentOn": "First payment on {date}",
-			"nextPaymentOn": "Next payment on {date}",
-			"deleteAccountButton": "Delete account",
-			"deleteAccountModalTitle": "Delete your account?",
-			"deleteAccountModalText": "Please send an email to {email} in order to permanently delete your account and all its data.",
-			"errorFailedToUpdateLanguage": "Error: could not update language preference",
-			"activeSubscription": "Your subscription is active",
-			"activeSubscriptionNote": "To review your payment & billing details or manage anything about your subscription, please use the button below.",
-			"noActiveSubscription": "No active subscription",
-			"needSubscription": "You need a subscription to use Kalkul",
-			"freeTrial": "Free trial",
-			"expiringIn": "{count, plural, one {# day remaining} other {# days remaining}}",
-			"expiringToday": "Expiring today",
-			"subscribeNow": "Subscribe now",
-			"freeBeta": "Free beta",
-			"cancelBeforeDate": "Cancel before {date} and you won’t be charged.",
-			"cancelReminder": "We will remind you via email 7 days before your trial period ends. To review your payment & billing details or manage anything about your subscription, please use the button below.",
-			"changeEmailAddress": "Change email address",
-			"changePassword": "Change password",
-			"language": "Language",
-			"subscribeToNewsletter": "Subscribe to newsletter",
-			"newsletterDescription": "Check if you'd like to receive product updates and news from Kalkul via email"
-		},
 		"home": {
 			"allClients": "All clients",
 			"clearSearch": "Clear search",
@@ -239,33 +10,7 @@
 			"clientDeleteWarning": "This client and all the portfolios it contains will be deleted permanently. There's no undo.",
 			"clientEdit": "Edit client",
 			"createYourFirstClient": "Create your first client profile to get started",
-			"portfoliosView": "View portfolios",
-			"helpText": "Need more help or have feedback? Join our {discordCommunityLink} or contact us at {supportEmail}.",
-			"discordCommunity": "Discord community"
-		},
-		"apiTokens": {
-			"title": "API Tokens",
-			"description": "API tokens allow you to authenticate with the Kalkul MCP server for integration with Claude, ChatGPT, and other AI assistants. Keep your tokens secure and never share them publicly.",
-			"createButton": "Create Token",
-			"createTitle": "Create New Token",
-			"createDescription": "Give your token a descriptive name to help you remember what it's used for.",
-			"namePlaceholder": "e.g., Claude Desktop, ChatGPT Integration",
-			"create": "Create",
-			"noTokens": "You don't have any API tokens yet. Create one to get started with MCP integration.",
-			"tokenCreatedTitle": "Token Created Successfully",
-			"tokenCreatedWarning": "Make sure to copy your token now. You won't be able to see it again!",
-			"copy": "Copy",
-			"copied": "Copied!",
-			"done": "Done",
-			"prefix": "Token Prefix",
-			"created": "Created",
-			"lastUsed": "Last Used",
-			"neverUsed": "Never",
-			"deleteConfirm": "Are you sure you want to delete this token? This action cannot be undone.",
-			"nameRequired": "Token name is required",
-			"loadError": "Failed to load tokens",
-			"createError": "Failed to create token",
-			"deleteError": "Failed to delete token"
+			"portfoliosView": "View portfolios"
 		},
 		"client": {
 			"addClient": "Add client",
@@ -278,31 +23,6 @@
 			"clientDeleteExplanation": "This client and all the portfolios it contains will be deleted permanently. There's no undo.",
 			"noPortfoliosYet": "No portfolio yet",
 			"createYourFirstPortfolio": "Create your first portfolio",
-			"addFirstInvestmentGoal": "Add a first investment goal for your client",
-			"chooseCalculatorBelow": "Choose a calculator below to get started. You can add more or update details later.",
-			"startWithBlank": "Start with blank",
-			"templates": {
-				"retirement": {
-					"title": "Retirement",
-					"description": "Calculate the amount of money needed to save and invest to achieve financial independence."
-				},
-				"houseBuying": {
-					"title": "House buying",
-					"description": "Calculate the amount of money needed to save and invest for a home down payment and purchase."
-				},
-				"kidsEducation": {
-					"title": "Kids education",
-					"description": "Calculate the amount of money needed to save and invest to cover children's education expenses."
-				},
-				"largePurchase": {
-					"title": "Large purchase",
-					"description": "Calculate the amount of money needed to save and invest to make a specific purchase at the desired time."
-				},
-				"optimisedWithdrawals": {
-					"title": "Optimised withdrawals",
-					"description": "Calculate the optimal withdrawal strategy to live comfortably from current portfolio savings."
-				}
-			},
 			"deletePortfolio": "Delete portfolio?",
 			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo."
 		},
@@ -351,48 +71,13 @@
 				"depositFrequency": "Deposit frequency"
 			}
 		},
-		"balanceInvestments": {
-			"title": "Balance investments",
-			"weightedAverageReturn": "weighted average return",
-			"initialGoalTarget": "Initial goal target",
-			"autoBalance": "Auto-balance",
-			"rebalancePortfolio": "Rebalance portfolio"
-		},
-		"resetPassword": {
-			"resetPassword": "Reset password",
-			"password": "Password",
-			"resetPasswordButton": "Reset password"
-		},
-		"signUp": {
-			"signUp": "Sign up",
-			"subscribeToNewsletter": "I want to receive product updates and news via email",
-			"createAccount": "Create account",
-			"alreadyHaveAccount": "Already have an account?",
-			"verificationLinkLocal": "An email with a verification link was sent to your {email}.",
-			"verificationLinkRemote": "An email with a verification link was sent to {email}.",
-			"checkEmail": "Check your email to complete sign up!",
-			"checkSpam": "Don't see the email? Please check your spam folder.",
-			"agreeToTerms": "By proceeding you agree to Kalkul {terms} and {privacy}",
-			"terms": "Terms of service",
-			"privacy": "Privacy policy",
-			"betaAccessDescription": "Get free early access, shape the product with your feedback, and lock in exclusive launch pricing—expected public release: early 2026.",
-			"betaDisclaimer": "We're actively developing Kalkul with advisor input. Some features highlighted on our website are still in development and will roll out progressively as they're perfected.",
-			"newsletterModal": {
-				"title": "Newsletter subscription",
-				"description": "We recommend subscribing to our newsletter so you don't miss important product updates and feature releases as we roll them out during the free beta. We won't spam you—expect about 1 email per month.",
-				"subscribe": "Subscribe and proceed",
-				"dontSubscribe": "Don't subscribe"
-			}
-		},
 		"portfolio": {
 			"noInvestmentYet": "No investment yet",
 			"createYourFirstInvestment": "Create a first investment in this portfolio",
 			"addInvestment": "Add investment",
 			"addGoal": "Add goal",
-			"addInvestmentsExplanation": "Ready to get more specific? Right now your plan uses a single ROI rate for everything. Break down your goal by adding actual investment products - each with their own returns & fees.",
 			"addPortfolio": "Add portfolio",
 			"openPortfolio": "Open portfolio",
-			"sharePortfolio": "Share portfolio",
 			"editPortfolioDetails": "Edit portfolio details",
 			"duplicatePortfolio": "Duplicate portfolio",
 			"deletePortfolio": "Delete portfolio",
@@ -428,30 +113,6 @@
 					"description": "Calculate the amount of money needed to save and invest for a home down payment and purchase."
 				}
 			}
-		},
-		"share": {
-			"linkSharingToggle": "Share portfolio with a link (view-only)",
-			"linkSharing": "Link sharing",
-			"linkCopied": "Link copied",
-			"linkSharingExplanation1": "Anyone with the link can view the portfolio — but only you can edit.",
-			"linkSharingExplanation2": "Changes you make will be visible under the same link.",
-			"dontShare": "Keep link sharing off"
-		},
-		"changeEmail": {
-			"changeEmailAddress": "Change email address",
-			"newEmailAddress": "New email address",
-			"changeEmail": "Change email",
-			"header": "Check your new email to confirm change!",
-			"bodyRemote": "An email with a verification link was sent to {newEmail}.",
-			"bodyLocal": "An email with a verification link was sent to {link}.",
-			"footer": "Your account’s email won’t be changed until the new address is verified.",
-			"checkSpam": "Don’t see the email? Please check your spam folder."
-		},
-		"changePassword": {
-			"newPassword": "New password",
-			"successChangePassword": "Your password was successfully changed!",
-			"backToSettings": "Return to account settings",
-			"changePassword": "Change password"
 		}
 	},
 	"component": {
@@ -529,18 +190,11 @@
 		},
 		"help": {
 			"title": "Help",
-			"text": "If you need help, have questions, suggestions, or feedback, join our Discord server for the fastest support, or email us at {email}.",
-			"joinTheConversation": "Join our Discord",
-			"newToKalkulTip": "→ New to Kalkul? We recommend checking our quick start guide. You'll find everything you need to get started.",
-			"checkQuickStartGuide": "Quick start guide"
-		},
-		"footer": {
-			"termsOfService": "Terms of service",
-			"privacyPolicy": "Privacy policy"
+			"text": "Kalkul is a financial portfolio management app. All data is stored locally in your browser."
 		},
 		"header": {
-			"accountSettings": "Account settings",
-			"helpButton": "Help"
+			"helpButton": "Help",
+			"settings": "Settings"
 		},
 		"investmentCard": {
 			"removeFocus": "Remove focus",
@@ -563,18 +217,6 @@
 			"deleteGoalWarningTitle": "Delete goal?",
 			"explainInvestmentsText": "You've set the big picture with this goal. Next, switch to the Investments tab to add the specific products and transactions that will make it happen."
 		},
-		"login": {
-			"forgotPassword": "Forgot password?",
-			"noAccount": "No account yet?",
-			"signUp": "Sign up"
-		},
-		"linkSharingConfirmation": {
-			"title": "Turn link sharing off?",
-			"text": "The current link will no longer work, people might lose access.",
-			"smallText": "If you re-activate link sharing later on, a new link will be generated.",
-			"confirmButton": "Turn off link sharing",
-			"cancelButton": "Keep link sharing on"
-		},
 		"portfolioHeader": {
 			"addInvestment": "Add investment",
 			"editPortfolio": "Edit portfolio details",
@@ -582,9 +224,7 @@
 			"deletePortfolio": "Delete portfolio",
 			"deletePortfolioWarning": "This portfolio and all the investments it contains will be deleted permanently. There's no undo.",
 			"deletePortfolioWarningTitle": "Delete portfolio?",
-			"linkSharing": "Link sharing",
-			"pdfExport": "PDF export",
-			"exportGraphData": "Export graph data"
+			"pdfExport": "PDF export"
 		},
 		"PDFExport": {
 			"value": "Value",
@@ -616,28 +256,12 @@
 			"totalWithdrawn": "Total withdrawn: {amount}",
 			"inflationAdjustmentTooltip": "Adjust the transaction amount to preserve purchasing power over time."
 		},
-		"welcome": {
-			"startUsingKalkul": "Start using Kalkul"
-		},
-		"youtubeIntroVideo": {
-			"title": "Intro video"
-		},
 		"sidebar": {
 			"noGoalsYetTitle": "No goals yet",
 			"noGoalsYetDescription": "Define high-level financial objectives and target amounts. Goals help you stay focused on the big picture.",
 			"noInvestmentsYetTitle": "No investments yet",
 			"noInvestmentsYetDescription": "Add the specific investment products and transactions that make up your client's portfolio. Pro tip: link transactions to goals to easily compare against the big picture target."
 		}
-	},
-	"helpBox": {
-		"addClientTitle": "Add client",
-		"addClientText": "Press the \"Add client\" button to create your first client",
-		"clientListExplanation": "This page will list all your clients. You can access it anytime by clicking on the Kalkul logo in the top-left corner of the screen. Once you set up your first client, you will be able to create an investment portfolio for this client.",
-		"addPortfolioTitle": "Add portfolio",
-		"addPortfolioText": "Press the \"Add portfolio\" button to add a first portfolio for this client",
-		"portfolioExplanation": "A portfolio will contain specific investments. Use portfolios to organise investments for your client. You can create as many portfolios as you want for each client. All the portfolios for this client will be listed on the client's page.",
-		"watchIntroVideo": "Watch intro video",
-		"viewSamplePortfolio": "View sample portfolio"
 	},
 	"common": {
 		"abbreviations": {
@@ -651,17 +275,14 @@
 			"whatYouHave": "What you'll have",
 			"perMonth": "per month",
 			"perYear": "per year",
-			"depositToMatch": "Deposit {amount} {currency} {frequency} to match the goals.",
 			"setDepositAmount": "Set deposit amount",
 			"depositInRealValue": "Deposit amount in real value (today's money) — it will be automatically adjusted to match inflation.",
 			"createPlan": "Create plan",
 			"modifyParameters": "Modify parameters"
 		},
-		"paymentAndBilling": "Payment & billing",
 		"notFound": "Not found",
 		"nominal": "Nominal",
 		"total": "Total",
-		"share": "Share",
 		"loading": "Loading...",
 		"calculatingChartData": "Calculating chart data",
 		"name": "Name",
@@ -679,9 +300,7 @@
 		"done": "Done",
 		"saveChanges": "Save changes",
 		"addTransaction": "Add transaction",
-		"showInvestments": "Show goals / investments",
 		"deleteClient": "Delete client",
-		"login": "Login",
 		"years": "years",
 		"details": "Details",
 		"apy": "APY",
@@ -719,10 +338,8 @@
 		"breakdown": "Breakdown",
 		"viewBreakdown": "View breakdown",
 		"showToday": "Show today",
-		"logout": "Logout",
 		"portfolioName": "Portfolio name",
 		"currentValue": "Today's value",
-		"password": "Password",
 		"withdrawn": "Withdrawn",
 		"deposited": "Deposited",
 		"investmentValue": "Investment value",
@@ -736,139 +353,46 @@
 		"importData": "Import data",
 		"portfolio": "Portfolio",
 		"inflationAdjusted": "Inflation adjusted",
-		"viewSamplePortfolio": "View sample portfolio",
-		"errorWhileFetchingPrice": "Error while fetching price",
-		"thereWasAnErrorWhileLoadingThePage": "There was an error while loading the page",
-		"pleaseTryReloadingThePage": "Please try reloading the page",
-		"welcomeToKalkul": "Welcome to Kalkul!",
-		"noActiveSubscription": "No active subscription",
-		"activateYourTrialRemainingDaysFreeTrialTemplate": "Activate your {trialRemainingDays}-day free trial",
-		"pleaseSubscribeToUseKalkul": "Please subscribe to use Kalkul!",
-		"earlyBirdDiscount": "Early bird discount",
-		"billedEveryYear": "billed every year",
-		"amountChargedNow": "Amount charged now",
-		"firstPaymentOnTemplate": "First payment on {date}",
-		"amountDue": "Amount due",
-		"yearlyPlan": "Yearly plan",
-		"getStartedNow": "Get started now",
-		"proceedToPayment": "Proceed to payment",
-		"yourSubscriptionIsActive": "Your subscription is active",
-		"portfolioLink": "Portfolio link",
-		"thereWasAnError": "There was an error",
-		"manageSubscription": "Manage subscription",
-		"yesFreeTrialNowActive": "Yes! Your free trial is now active!",
-		"freeTrial": "Free trial",
-		"daysRemaining": "days remaining",
-		"paymentSuccessful": "Payment successful",
-		"thankYouForUsingKalkul": "Thank you for using Kalkul!",
-		"startUsingKalkul": "Start using Kalkul",
-		"cancelBeforeTrialEnd": "Cancel before {firstPaymentFormattedDate} and you won't be charged. We will remind you 7 days before your trial period ends.",
-		"subscriptionAutoRenew": "Your subscription will automatically renew annually on a recurring basis.",
-		"manageSubscriptionDetails": "You can view and manage your subscription details on the {accountPaymentsLink} page, accessible at anytime in your account settings.",
 		"noTransactionYet": "No transaction yet",
 		"noClientYet": "No client yet",
-		"resetPasswordLink": "Reset password link",
-		"verificationLinkSent": "Verification link sent",
 		"noPortfolioYet": "No portfolio yet",
 		"noInvestmentsYet": "No investments yet",
-		"changeEmail": "Change email",
-		"changePassword": "Change password",
-		"byProceedingYouAgree": "By proceeding you agree to the",
-		"termsOfUse": "Terms of use",
-		"privacyPolicy": "Privacy Policy.",
-		"reload": "Reload",
 		"search": "Search",
-		"signup": "Sign up",
-		"welcomeToKalkulBeta": "Welcome to Kalkul Beta",
 		"period": "Period",
 		"avatar": "Avatar",
-		"logo": "Logo",
-		"preview": "Preview",
-		"error": "Error",
-		"success": "Success",
 		"realValue": "Real value",
 		"nominalValue": "Nominal value",
 		"totalReal": "Total (real)",
-		"totalNominal": "Total (nominal)",
-		"comingSoon": "Coming soon"
+		"totalNominal": "Total (nominal)"
 	},
 	"error": {
 		"emailError": "This doesn't look like a correct email",
-		"passwordLengthError": "Password must be at least 12 characters",
 		"birthDateError": "Birthdate cannot be in the future.",
 		"birthDateUndefined": "Please set valid birthdate",
 		"invalidYear": "Invalid year",
 		"invalidMonth": "Invalid month",
 		"invalidDay": "Invalid day",
-		"invalidDate": "Invalid date",
-		"emailAlreadyAssociated": "This email is already associated with an account",
-		"pleaseEnterValidEmail": "Please enter a valid email address",
-		"passwordMinimumLength": "Minimum 12 characters",
-		"userAlreadyRegistered": "User already registered",
-		"currentEmailNotFound": "Current email not found"
+		"invalidDate": "Invalid date"
 	},
-	"email": {
-		"common": {
-			"companyName": "Kalkul.app s.r.o.",
-			"companyAddress": "Stará silnice 2314/3, Předměstí, 746 01 Opava, Česká republika",
-			"madeWithLove": "Made with 💚 in 🇨🇿 Czech Republic",
-			"unsubscribe": "Unsubscribe",
-			"contactSupport": "You can also reach us anytime at {supportEmail}",
-			"footerText": "You're receiving this email because you signed up for Kalkul. If you have any concerns, please contact us at {supportEmail}",
-			"viewInBrowser": "View in browser"
-		},
-		"templates": {
-			"welcome": {
-				"subject": "Welcome to Kalkul!",
-				"previewText": "Thank you for being an early adopter of Kalkul! 🚀",
-				"title": "Thank you for being an early adopter of Kalkul! 🚀",
-				"introText": "You're joining an exclusive group of forward-thinking professionals who are helping us build the future of independent financial planning.",
-				"expertiseHeading": "Your expertise matters",
-				"expertiseText": "As one of our first users, your feedback directly shapes our product—helping us fix bugs, prioritize features, and build exactly what independent advisors need. Found an issue or something that could be better? Love something in particular? Have a feature idea or request? Tell us!",
-				"rewardsHeading": "Exclusive rewards for beta users",
-				"rewardsText": "As a beta user, you're getting early and free access to our financial planning tool. Yes, we're still polishing things up, but that's exactly why your presence here is so valuable. As a thank you for being an early adopter and helping us make Kalkul better, you will receive an exclusive discount at public launch.",
-				"getStartedHeading": "Get started!",
-				"step1": "Login to your account at {loginUrl}",
-				"step2": "Create your first client portfolio and explore our features",
-				"step3": "Join our {discordLink} community to share your first impressions and feedback",
-				"discordButton": "Join us on Discord",
-				"thankYou": "Thank you for believing in what we're building."
-			},
-			"newsletter2025September": {
-				"subject": "Kalkul Beta is now open 🚀",
-				"previewText": "Independent tools for better financial planning",
-				"title": "Independent tools for better financial planning",
-				"introText": "Introducing Kalkul — the platform-agnostic financial planning app for advisors who cherish independence.",
-				"betaSignupHeading": "Beta access is now open to everyone",
-				"betaSignupText": "Ready to break free from platform limitations? Beta sign-ups are now open to forward-thinking advisors who refuse to compromise on investment choices.",
-				"signupButton": "Sign up today",
-				"requestDemoButton": "Request a demo",
-				"bodyText1": "If you're a financial advisor dealing with investments from multiple sources, you know the trade-off too well: More independence often means more tools, more admin work, and less time for what really matters — your clients. We've been hearing this frustration from advisors across the market, and we think there's a better way.",
-				"quoteText": "The best planning happens when you have the freedom to choose any investment, from any source, without platform limitations.",
-				"bodyText2": "That's why we’re building a platform-agnostic solution that puts control back in your hands. Unlike institution-tied platforms, Kalkul allows you to add investments from any source, giving you the freedom to build truly unified, platform-independent portfolios tailored to each client's needs.",
-				"closingText": "Thanks,",
-				"teamText": "the Kalkul team.",
-				"kalkulDemoRequest": "Kalkul demo request",
-				"kalkulDemoRequestBody": "Hi, I am interested in Kalkul and would like to request a demo."
-			}
-		}
+	"settings": {
+		"title": "Settings",
+		"language": "Language",
+		"backup": "Backup & Restore",
+		"backupDescription": "Export all data as a JSON file or import a backup from a previously exported file.",
+		"exportBackup": "Export backup",
+		"importBackup": "Import backup",
+		"importError": "Invalid backup format",
+		"importSuccess": "Backup imported successfully"
 	},
 	"demo": {
 		"transactions": {
 			"initialSavings": "Initial Savings",
 			"regularDeposit": "Regular Deposit",
 			"retirementWithdrawal": "Retirement Withdrawal",
-			"initialInvestment": "Initial Investment",
-			"monthlyContribution": "Monthly Contribution",
-			"monthlyRetirementWithdrawal": "Monthly Retirement Withdrawal",
 			"educationWithdrawal": "Education Withdrawal"
 		},
 		"investments": {
-			"retirement": "Retirement",
-			"education": "Kid's Education"
-		},
-		"portfolio": {
-			"demoPortfolio": "Demo Portfolio"
+			"retirement": "Retirement"
 		},
 		"notImplemented": "This feature is not yet implemented"
 	}

@@ -28,18 +28,11 @@
 	import DesktopOnly from '$lib/components/desktop-only.svelte'
 	import MobileOnly from '$lib/components/mobile-only.svelte'
 	import Vertical from '$lib/components/ui/vertical.svelte'
-	import HelpBox from '$lib/components/help-box.svelte'
-	import { authStore } from '$lib/stores/auth.svelte'
-	import VideoModal from '$lib/components/video-modal.svelte'
 	import { investmentStore } from '$lib/stores/investment.svelte'
-	import GetStarted from '$lib/components/get-started.svelte'
 	import Horizontal from '$lib/components/ui/horizontal.svelte'
 	import ContentLayout from '$lib/components/content-layout.svelte'
-	import { layoutStore } from '$lib/stores/layout.svelte'
-	import { umami, UMAMI_EVENTS } from '$lib/umami-events'
 
 	let showConfirmModal = $state(false)
-	let showWelcome = $state(authStore.user?.user_metadata.first_visit ? true : false)
 	let clientToBeDeleted: string | undefined = $state()
 	let searchQuery = $state('')
 	let filteredClient = $derived(
@@ -47,12 +40,6 @@
 			(a, b) => new Date(a.created_at).getDate() - new Date(b.created_at).getDate(),
 		),
 	)
-	let isVideoPlayer = $state(false)
-
-	function hideVideoPlayer() {
-		isVideoPlayer = false
-	}
-
 	function addClient() {
 		goto(routes.NEW_CLIENT)
 	}
@@ -102,13 +89,7 @@
 <Header />
 
 <ContentLayout centered={false}>
-	{#if showWelcome}
-		<GetStarted
-			onPrimaryActionClick={async () => {
-				adapter.updateUserMetadata({ first_visit: false })
-			}}
-		/>
-	{:else if clientStore.loading}
+	{#if clientStore.loading}
 		<Typography>{$_('common.loading')}</Typography><Loader />
 	{:else if clientStore.data.length === 0}
 		<section class="empty">
@@ -120,37 +101,6 @@
 				>{$_('page.home.addClient')}</Button
 			>
 		</section>
-		<HelpBox
-			open={layoutStore.mobile ? false : true}
-			title={$_('helpBox.addClientTitle')}
-			boxText={$_('helpBox.addClientText')}
-			text={$_('helpBox.clientListExplanation')}
-		>
-			<Vertical --vertical-gap="var(--half-padding)">
-				<Button
-					variant="strong"
-					dimension="compact"
-					onclick={() => umami?.track(UMAMI_EVENTS.HELP_BOX_GET_STARTED)}
-					href={routes.GET_STARTED}
-					target="_blank">{$_('component.help.checkQuickStartGuide')}</Button
-				>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					onclick={() => umami?.track(UMAMI_EVENTS.HELP_BOX_VIEW_PORTFOLIO)}
-					href={routes.SAMPLE_PORTFOLIO_LINK}
-					target="_blank">{$_('helpBox.viewSamplePortfolio')}</Button
-				>
-				<Button
-					variant="ghost"
-					dimension="compact"
-					onclick={() => {
-						isVideoPlayer = true
-						umami?.track(UMAMI_EVENTS.HELP_BOX_WATCH_VIDEO)
-					}}>{$_('helpBox.watchIntroVideo')}</Button
-				>
-			</Vertical>
-		</HelpBox>
 	{:else}
 		<DesktopOnly>
 			<section class="horizontal">
@@ -257,8 +207,6 @@
 		</MobileOnly>
 	{/if}
 </ContentLayout>
-
-<VideoModal oncancel={hideVideoPlayer} bind:open={isVideoPlayer} />
 
 <DeleteModal
 	confirm={deleteClient}

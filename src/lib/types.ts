@@ -1,6 +1,7 @@
 import type { Period, TransactionType } from './@snaha/kalkul-maths'
-import type { Tables, Json } from './typesdb'
 import type { ChartDataset, ChartTypeRegistry } from 'chart.js'
+
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Store<T> {
 	data: (Omit<T, MetaFields> & { id: number | string })[]
@@ -8,16 +9,64 @@ export interface Store<T> {
 	reset: () => void
 }
 
-export type Client = Tables<'client'>
-export type ClientNoId = Omit<Client, 'id' | 'created_at' | 'advisor'>
-
 export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
-export type Portfolio = Tables<'portfolio'>
-// Make goal_data optional for backward compatibility with existing code
-export type Investment = Omit<Tables<'investment'>, 'goal_data'> & { goal_data?: Json }
-export type Transaction = Tables<'transaction'> & {
-	repeat_unit: Period | null
+
+export interface Client {
+	id: string
+	name: string
+	email: string
+	birth_date: string
+	created_at: string
+}
+
+export type ClientNoId = Omit<Client, 'id' | 'created_at'>
+
+export interface Portfolio {
+	id: string
+	name: string
+	client: string
+	currency: string
+	start_date: string
+	end_date: string
+	inflation_rate: number
+	link: string | null
+	created_at: string
+	last_edited_at: string
+}
+
+export interface Investment {
+	id: string
+	portfolio_id: string
+	name: string
+	apy: number | null
+	type: string | null
+	created_at: string
+	last_edited_at: string | null
+	advanced_fees: boolean | null
+	entry_fee: number | null
+	entry_fee_type: string | null
+	exit_fee: number | null
+	exit_fee_type: string | null
+	management_fee: number | null
+	management_fee_type: string | null
+	success_fee: number | null
+	ter: number | null
+	goal_data?: Json
+}
+
+export interface Transaction {
+	id: string
+	investment_id: string
+	amount: number
+	date: string
+	end_date: string | null
 	type: TransactionType
+	created_at: string
+	last_edited_at: string | null
+	inflation_adjusted: boolean
+	label: string | null
+	repeat: number | null
+	repeat_unit: Period | null
 }
 
 export type InvestmentWithColorIndex = Investment & {
@@ -48,42 +97,20 @@ export type ChartDatasetWithColor = ChartDataset & {
 	colorIndex?: number
 }
 
-export type TypedUserMetadata = {
-	prefer_language: string
-	newsletter_consent: boolean
-	first_visit: boolean
-	promotion_code?: string
-	goals_enabled?: boolean
-}
-
-export type StripeSubscription = Tables<'stripe_subscription'>
-
-export interface ApiToken {
-	id: string
-	token_prefix: string
-	name: string
-	created_at: string
-	last_used_at: string | null
-	is_active: boolean
-	user_id: string
-	token_hash: string // New field
-}
-
-// Base type for periodic withdrawal goals (stored in database)
+// Goal-related types
 export type PeriodicWithdrawalGoalData = {
-	depositStart: string // ISO date
+	depositStart: string
 	depositPeriod: 'month' | 'year'
 	currentSavings: number
 	customDepositAmount?: number
-	withdrawalStart: string // ISO date - when withdrawals begin
-	withdrawalDuration: number // years - how long withdrawals last
+	withdrawalStart: string
+	withdrawalDuration: number
 	desiredBudget: number
 	budgetPeriod: 'month' | 'year'
-	apy: number // percentage
-	inflation: number // percentage
+	apy: number
+	inflation: number
 }
 
-// Goal types
 export type RetirementGoalData = PeriodicWithdrawalGoalData & {
 	type: 'retirement'
 }
@@ -96,7 +123,6 @@ export type EducationGoalData = PeriodicWithdrawalGoalData & {
 
 export type GoalData = RetirementGoalData | EducationGoalData
 
-// Investment with goal data
 export type Goal = Investment & {
 	goal_data: GoalData
 }

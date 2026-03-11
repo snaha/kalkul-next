@@ -9,7 +9,6 @@
 	import Vertical from './ui/vertical.svelte'
 	import Horizontal from './ui/horizontal.svelte'
 	import Divider from './ui/divider.svelte'
-	import routes from '$lib/routes'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
 	import { SERIES_COLORS } from '$lib/colors'
@@ -32,12 +31,7 @@
 		keyDates = [],
 	}: Props = $props()
 
-	// Construct view link
-	const viewLink = $derived(
-		graphValueData?.portfolio?.link && browser
-			? `${window.location.origin}${routes.VIEW(graphValueData.portfolio.link)}`
-			: undefined,
-	)
+	const viewLink = undefined
 
 	// Calculate breakdown data for each key date
 	const breakdownData = $derived.by(() => {

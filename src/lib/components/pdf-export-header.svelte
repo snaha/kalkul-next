@@ -3,7 +3,6 @@
 	import Typography from './ui/typography.svelte'
 	import Vertical from './ui/vertical.svelte'
 	import Horizontal from './ui/horizontal.svelte'
-	import { authStore } from '$lib/stores/auth.svelte'
 	import QrCode from '@castlenine/svelte-qrcode'
 
 	interface Props {
@@ -13,11 +12,7 @@
 
 	let { portfolioName, viewLink }: Props = $props()
 
-	// Get current locale for date formatting
 	const formattedDate = $derived(new Date().toLocaleDateString($locale ?? undefined))
-
-	// Get user email for advisor info
-	const userEmail = $derived(authStore.user?.email || '')
 </script>
 
 <header class="page-header">
@@ -40,9 +35,6 @@
 		<div style="flex: 1;"></div>
 		<Horizontal --horizontal-gap="0" --horizontal-alignment="center">
 			<Typography style="font-size: 10.66px; ; line-height: 13.325px;">
-				{#if userEmail}
-					by <a href="mailto:{userEmail}" class="advisor-email" target="_blank">{userEmail} | </a>
-				{/if}
 				{formattedDate}
 			</Typography>
 		</Horizontal>
@@ -55,7 +47,6 @@
 		margin-bottom: calc(var(--padding) * var(--print-multiplier));
 	}
 
-	.advisor-email,
 	.view-link {
 		color: black;
 		text-decoration: underline;
