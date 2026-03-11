@@ -51,10 +51,10 @@ pnpm test:integration # Run e2e tests (Playwright)
 
 ## Environment Variables
 
-| Variable       | Default | Description                        |
-| -------------- | ------- | ---------------------------------- |
-| `VITE_ROUTER`  |         | Router type (`hash` or `pathname`) |
-| `VITE_BASE_URL`|         | Base path for deployment           |
+| Variable        | Default | Description                        |
+| --------------- | ------- | ---------------------------------- |
+| `VITE_ROUTER`   |         | Router type (`hash` or `pathname`) |
+| `VITE_BASE_URL` |         | Base path for deployment           |
 
 ## Testing
 
