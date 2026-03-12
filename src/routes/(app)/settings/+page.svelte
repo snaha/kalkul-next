@@ -25,10 +25,14 @@
     }
   }
 
-  function changeLanguage(newLocale: string) {
-    locale.set(newLocale)
-    localStorage.setItem(LOCALE_STORAGE_KEY, newLocale)
-  }
+  let selectedLocale = $state($locale ?? 'cs')
+
+  $effect(() => {
+    if (selectedLocale && selectedLocale !== $locale) {
+      locale.set(selectedLocale)
+      localStorage.setItem(LOCALE_STORAGE_KEY, selectedLocale)
+    }
+  })
 
   function exportBackup() {
     const data = appStore.exportBackup()
@@ -80,8 +84,7 @@
       <Select
         variant="solid"
         dimension="compact"
-        value={$locale ?? 'cs'}
-        onchange={(e) => changeLanguage(e.currentTarget.value)}
+        bind:value={selectedLocale}
         items={[
           { value: 'cs', label: 'Čeština' },
           { value: 'en', label: 'English' },
