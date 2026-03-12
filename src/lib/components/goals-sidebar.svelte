@@ -96,13 +96,9 @@
         {portfolio}
         {viewOnly}
         index={i}
-        hidden={false}
-        focused={false}
         showInflation={adjustWithInflation}
         {openTransaction}
         addInvestment={addGoal}
-        toggleHide={() => {}}
-        toggleFocus={() => {}}
         open={true}
         exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
         isCalculating={graphData?.isCalculating &&

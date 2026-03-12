@@ -129,8 +129,8 @@ import { getGraphData, getGraphDataForPortfolio } from '@snaha/kalkul-maths'
 // Single investment graph data
 const graphData = getGraphData(baseData, investment, portfolio)
 
-// Portfolio-wide graph data (investments include nested transactions)
-const { total, data } = getGraphDataForPortfolio(investments, portfolio)
+// Portfolio-wide graph data (portfolio includes nested investments)
+const { total, data } = getGraphDataForPortfolio(portfolio)
 ```
 
 ## Investment Configuration

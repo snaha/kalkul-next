@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state'
   import { appStore } from '$lib/stores/app.svelte'
-  import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import { deriveGraphValueData } from '$lib/graph'
   import PdfExport from '$lib/components/pdf-export.svelte'
   import Loader from '$lib/components/ui/loader.svelte'
@@ -24,16 +23,12 @@
       .map((d) => new Date(d))
       .filter((d) => !isNaN(d.getTime())) || [],
   )
-  const investments = $derived(appStore.getInvestments(portfolioId))
-
-  const investmentsViewStore = $derived(
-    withInvestmentsViewStore(appStore.getInvestments(portfolioId)),
-  )
+  const investments = $derived(portfolio?.investments ?? [])
 
   let isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
-  const { total, data } = $derived(getGraphDataForPortfolio(investments, portfolio!))
+  const { total, data } = $derived(getGraphDataForPortfolio(portfolio!))
 
   const lowColor = getCSSVariableValue('--colors-low')
   const baseColor = `${getCSSVariableValue('--colors-base')}cc`
@@ -43,7 +38,6 @@
       ? deriveGraphValueData({
           portfolio,
           investments,
-          investmentsViewStore,
           total,
           data,
           lowColor,
@@ -51,10 +45,6 @@
         })
       : undefined,
   )
-
-  $effect(() => {
-    investmentsViewStore.allInvestments = investments
-  })
 </script>
 
 <svelte:head>

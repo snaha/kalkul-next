@@ -731,10 +731,10 @@ describe('per-investment caching', () => {
       ]
 
       // First call (no cache)
-      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Second call (should use cache)
-      const result2 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Results should be identical
       expect(result1.data.length).toBe(2)
@@ -756,7 +756,7 @@ describe('per-investment caching', () => {
       ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(nested1, mockPortfolio)
+      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested1, goals: [] })
 
       // Change only investment 2's APY
       const updatedInvestment2 = { ...investment2, apy: 10 }
@@ -766,7 +766,7 @@ describe('per-investment caching', () => {
       ]
 
       // Second calculation
-      const result2 = getGraphDataForPortfolio(nested2, mockPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested2, goals: [] })
 
       // Investment 1 should be the same (potentially from cache)
       expect(result1.data[0].label).toBe(result2.data[0].label)
@@ -789,7 +789,7 @@ describe('per-investment caching', () => {
       ]
 
       // First calculation to warm up cache
-      getGraphDataForPortfolio(nested1, mockPortfolio)
+      getGraphDataForPortfolio({ ...mockPortfolio, investments: nested1, goals: [] })
 
       // Add transaction for investment 1 only
       const tx3 = createMockTransaction('test-transaction-3', 500)
@@ -799,7 +799,7 @@ describe('per-investment caching', () => {
       ]
 
       // Second calculation
-      const result2 = getGraphDataForPortfolio(nested2, mockPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested2, goals: [] })
 
       // Investment 2 should be unchanged (potentially from cache)
       expect(result2.data[1].label).toBe('Investment 2')
@@ -815,10 +815,10 @@ describe('per-investment caching', () => {
       const nested = [createMockInvestmentNested(investment, [])]
 
       // First call
-      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Second call (should use cache)
-      const result2 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       expect(result1.data.length).toBe(1)
       expect(result2.data.length).toBe(1)
@@ -833,12 +833,12 @@ describe('per-investment caching', () => {
       const nested = [createMockInvestmentNested(investment, [tx])]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Change investment APY
       const updatedInvestment = { ...investment, apy: 10 }
       const nested2 = [createMockInvestmentNested(updatedInvestment, [tx])]
-      const result2 = getGraphDataForPortfolio(nested2, mockPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested2, goals: [] })
 
       // Results should be different
       expect(result1.data[0].graphInvestmentValues).toBeDefined()
@@ -853,11 +853,11 @@ describe('per-investment caching', () => {
       ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Change portfolio end date
       const updatedPortfolio = { ...mockPortfolio, end_date: '2025-12-31' }
-      const result2 = getGraphDataForPortfolio(nested, updatedPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...updatedPortfolio, investments: nested, goals: [] })
 
       // Graph labels should reflect different date range
       expect(result1.total.graphLabels.length).toBeLessThanOrEqual(result2.total.graphLabels.length)
@@ -870,11 +870,11 @@ describe('per-investment caching', () => {
       ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Change portfolio inflation
       const updatedPortfolio = { ...mockPortfolio, inflation_rate: 0.05 }
-      const result2 = getGraphDataForPortfolio(nested, updatedPortfolio)
+      const result2 = getGraphDataForPortfolio({ ...updatedPortfolio, investments: nested, goals: [] })
 
       // Inflation-adjusted values should be different
       expect(result1.data[0].graphInflationInvestmentValues).toBeDefined()
@@ -890,7 +890,7 @@ describe('per-investment caching', () => {
         return createMockInvestmentNested(inv, [tx])
       })
 
-      const result = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       expect(result.data.length).toBe(10)
       expect(result.total.graphLabels.length).toBeGreaterThan(0)
@@ -914,7 +914,7 @@ describe('per-investment caching', () => {
         ]),
       ]
 
-      const result = getGraphDataForPortfolio(nested, mockPortfolio)
+      const result = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested, goals: [] })
 
       // Total should aggregate both investments
       expect(result.total.label).toBe('Total')

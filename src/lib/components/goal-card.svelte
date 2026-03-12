@@ -45,16 +45,12 @@
     portfolio: PortfolioNested
     viewOnly?: boolean
     index: number
-    hidden: boolean
-    focused: boolean
     showInflation?: boolean
     openTransaction?: (
       investment: InvestmentWithColorIndex,
       transaction?: EnrichedTransaction,
     ) => void
     addInvestment?: () => void
-    toggleHide: () => void
-    toggleFocus: () => void
     open?: boolean
     exhaustionWarning?: ExhaustionWarning
     isCalculating?: boolean
@@ -68,13 +64,9 @@
     portfolio,
     viewOnly = false,
     index,
-    hidden,
-    focused,
     showInflation = false,
     openTransaction,
     addInvestment,
-    toggleHide,
-    toggleFocus,
     open = $bindable(false),
     exhaustionWarning,
     isCalculating = false,
@@ -82,6 +74,9 @@
     goal,
     showExplainInvestmentsLabel,
   }: Props = $props()
+
+  const hidden = $derived(investment.hidden)
+  const focused = $derived(investment.focused)
 
   let transactionsOpen = $state(true)
   let linkedInvestmentsOpen = $state(true)
@@ -168,7 +163,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleFocus()
+          investment.toggleFocus()
         }}><CenterSquare size={16} /></Button
       >
     {/if}
@@ -179,7 +174,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleHide()
+          investment.toggleHide()
         }}><ViewOff size={16} /></Button
       >
     {:else}
@@ -189,12 +184,12 @@
             <OverflowMenuVertical size={20} />
           {/snippet}
           <List>
-            <ListItem onclick={notImplemented}
+            <ListItem onclick={() => investment.toggleFocus()}
               ><CenterSquare size={24} />{focused
                 ? $_('component.goalCard.removeFocus')
                 : $_('component.goalCard.focusInChart')}</ListItem
             >
-            <ListItem onclick={notImplemented}
+            <ListItem onclick={() => investment.toggleHide()}
               ><ViewOff size={24} />{$_('component.goalCard.hideInChart')}</ListItem
             >
             {#if !viewOnly}

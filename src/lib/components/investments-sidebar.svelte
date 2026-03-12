@@ -7,7 +7,6 @@
   } from '$lib/types'
   import Sidebar from './sidebar.svelte'
   import InvestmentCard from './investment-card.svelte'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
   import FlexItem from './ui/flex-item.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -26,7 +25,6 @@
     portfolio: PortfolioNested
     clientId: string
     investments: EnrichedInvestment[]
-    investmentsViewStore: InvestmentsViewStore
     transactionCount: number
     adjustWithInflation: boolean
     viewOnly: boolean
@@ -44,7 +42,6 @@
     portfolio,
     clientId,
     investments,
-    investmentsViewStore,
     transactionCount,
     adjustWithInflation,
     viewOnly,
@@ -100,16 +97,8 @@
         {clientId}
         {viewOnly}
         index={i}
-        hidden={investmentsViewStore.isHidden(investment.id)}
-        focused={investmentsViewStore.isFocused(investment.id) && investments.length > 1}
         showInflation={adjustWithInflation}
         {openTransaction}
-        toggleHide={() => {
-          investmentsViewStore.toggleHide(investment.id)
-        }}
-        toggleFocus={() => {
-          investmentsViewStore.toggleFocus(investment.id)
-        }}
         open={transactionCount === 0}
         exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
         isCalculating={graphData?.isCalculating &&

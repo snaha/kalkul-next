@@ -44,14 +44,20 @@ export type EnrichedInvestment = Omit<InvestmentNested, 'transactions'> & {
   delete(): void
   duplicate(): string | undefined
   addTransaction(data: Omit<Transaction, MetaFields>): string
+  hidden: boolean
+  toggleHide(): void
+  toggleFocus(): void
+  focused: boolean
 }
 
-export type EnrichedPortfolio = Omit<PortfolioNested, 'investments'> & {
+export type EnrichedPortfolio = Omit<PortfolioNested, 'investments' | 'goals'> & {
   investments: EnrichedInvestment[]
+  goals: EnrichedInvestment[]
   update(updates: Partial<Omit<Portfolio, 'id'>>): void
   delete(): void
   duplicate(): string | undefined
   addInvestment(data: Omit<Investment, MetaFields>): string
+  addGoal(data: Omit<Investment, MetaFields>): string
 }
 
 export type EnrichedClient = Omit<ClientNested, 'portfolios'> & {
@@ -63,6 +69,7 @@ export type EnrichedClient = Omit<ClientNested, 'portfolios'> & {
 
 export type InvestmentWithColorIndex = Investment & {
   colorIndex?: number
+  hidden?: boolean
 }
 
 export type TooltipData = {

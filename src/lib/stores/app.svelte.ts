@@ -1,3 +1,4 @@
+import { SvelteSet } from 'svelte/reactivity'
 import type {
   ClientNested,
   ClientNoId,
@@ -5,7 +6,6 @@ import type {
   EnrichedInvestment,
   EnrichedPortfolio,
   EnrichedTransaction,
-  GoalData,
   Investment,
   InvestmentNested,
   MetaFields,
@@ -48,6 +48,7 @@ function defineMethod(obj: object, name: string, fn: Function): void {
 function withAppStore() {
   let clients = $state.raw<EnrichedClient[]>([])
   let loading = $state(true)
+  const hiddenInvestmentIds = new SvelteSet<string>()
 
   function persist(): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(clients))
@@ -117,8 +118,14 @@ function withAppStore() {
     defineMethod(enriched, 'delete', () => {
       const portfolio = parentMap.get(enriched) as EnrichedPortfolio | undefined
       if (portfolio) {
-        const idx = portfolio.investments.findIndex((i) => i.id === enriched.id)
-        if (idx !== -1) portfolio.investments.splice(idx, 1)
+        // Search both investments and goals arrays
+        let idx = portfolio.investments.findIndex((i) => i.id === enriched.id)
+        if (idx !== -1) {
+          portfolio.investments.splice(idx, 1)
+        } else {
+          idx = portfolio.goals.findIndex((i) => i.id === enriched.id)
+          if (idx !== -1) portfolio.goals.splice(idx, 1)
+        }
         persist()
       }
     })
@@ -142,7 +149,13 @@ function withAppStore() {
       }
       const enrichedNew = enrichInvestment(newInvestment)
       parentMap.set(enrichedNew, portfolio)
-      portfolio.investments.push(enrichedNew)
+      // Add to the same array (investments or goals) as the original
+      const isGoal = portfolio.goals.some((g) => g.id === enriched.id)
+      if (isGoal) {
+        portfolio.goals.push(enrichedNew)
+      } else {
+        portfolio.investments.push(enrichedNew)
+      }
       persist()
       return newInvestmentId
     })
@@ -162,16 +175,95 @@ function withAppStore() {
       return id
     })
 
+    // Visibility methods (non-enumerable, not persisted)
+    Object.defineProperty(enriched, 'hidden', {
+      get: () => hiddenInvestmentIds.has(enriched.id),
+      enumerable: false,
+      configurable: true,
+    })
+
+    defineMethod(enriched, 'toggleHide', () => {
+      if (hiddenInvestmentIds.has(enriched.id)) {
+        hiddenInvestmentIds.delete(enriched.id)
+      } else {
+        hiddenInvestmentIds.add(enriched.id)
+      }
+    })
+
+    defineMethod(enriched, 'toggleFocus', () => {
+      const portfolio = parentMap.get(enriched) as EnrichedPortfolio | undefined
+      if (!portfolio) return
+
+      // Get siblings from the same array (investments or goals)
+      const isGoal = portfolio.goals.some((g) => g.id === enriched.id)
+      const siblings = isGoal ? portfolio.goals : portfolio.investments
+
+      // If already focused (only visible among siblings), show all
+      const othersHidden = siblings.every(
+        (s) => s.id === enriched.id || hiddenInvestmentIds.has(s.id),
+      )
+      if (othersHidden && !hiddenInvestmentIds.has(enriched.id)) {
+        for (const s of siblings) {
+          hiddenInvestmentIds.delete(s.id)
+        }
+      } else {
+        for (const s of siblings) {
+          if (s.id !== enriched.id) {
+            hiddenInvestmentIds.add(s.id)
+          } else {
+            hiddenInvestmentIds.delete(s.id)
+          }
+        }
+      }
+    })
+
+    Object.defineProperty(enriched, 'focused', {
+      get: () => {
+        const portfolio = parentMap.get(enriched) as EnrichedPortfolio | undefined
+        if (!portfolio) return false
+        const isGoal = portfolio.goals.some((g) => g.id === enriched.id)
+        const siblings = isGoal ? portfolio.goals : portfolio.investments
+        if (siblings.length <= 1) return false
+        return siblings.every(
+          (s) => s.id === enriched.id || hiddenInvestmentIds.has(s.id),
+        ) && !hiddenInvestmentIds.has(enriched.id)
+      },
+      enumerable: false,
+      configurable: true,
+    })
+
     return enriched
   }
 
   function enrichPortfolio(portfolio: PortfolioNested): EnrichedPortfolio {
     const enriched = portfolio as unknown as EnrichedPortfolio
 
+    // Data migration: split investments into investments and goals if goals array is missing
+    if (!enriched.goals) {
+      const allInvestments = enriched.investments as unknown as InvestmentNested[]
+      const goals: InvestmentNested[] = []
+      const regularInvestments: InvestmentNested[] = []
+      for (const inv of allInvestments) {
+        if (inv.goal_data !== undefined && inv.goal_data !== null) {
+          goals.push(inv)
+        } else {
+          regularInvestments.push(inv)
+        }
+      }
+      ;(enriched as unknown as PortfolioNested).investments = regularInvestments
+      ;(enriched as unknown as PortfolioNested).goals = goals
+    }
+
     // Enrich child investments
     for (const inv of enriched.investments) {
       enrichInvestment(inv as unknown as InvestmentNested)
       parentMap.set(inv, enriched)
+    }
+
+    // Enrich child goals
+    for (const goal of enriched.goals) {
+      enrichInvestment(goal as unknown as InvestmentNested)
+      parentMap.set(goal, enriched)
     }
 
     defineMethod(enriched, 'update', (updates: Partial<Omit<Portfolio, 'id'>>) => {
@@ -192,14 +284,8 @@ function withAppStore() {
       const client = parentMap.get(enriched) as EnrichedClient | undefined
       if (!client) return undefined
 
-      const newPortfolioId = crypto.randomUUID()
-      const newPortfolio: PortfolioNested = {
-        ...spreadPortfolio(enriched),
-        id: newPortfolioId,
-        name: enriched.name + ' - Copy',
-        created_at: now(),
-        last_edited_at: now(),
-        investments: enriched.investments.map((inv) => {
+      function deepCopyInvestments(investments: EnrichedInvestment[]) {
+        return investments.map((inv) => {
           const newInvestmentId = crypto.randomUUID()
           return {
             ...spreadInvestment(inv),
@@ -213,7 +299,18 @@ function withAppStore() {
               last_edited_at: now(),
             })),
           }
-        }),
+        })
+      }
+
+      const newPortfolioId = crypto.randomUUID()
+      const newPortfolio: PortfolioNested = {
+        ...spreadPortfolio(enriched),
+        id: newPortfolioId,
+        name: enriched.name + ' - Copy',
+        created_at: now(),
+        last_edited_at: now(),
+        investments: deepCopyInvestments(enriched.investments),
+        goals: deepCopyInvestments(enriched.goals),
       }
       const enrichedNew = enrichPortfolio(newPortfolio)
       parentMap.set(enrichedNew, client)
@@ -234,6 +331,22 @@ function withAppStore() {
       const enrichedInv = enrichInvestment(newInvestment)
       parentMap.set(enrichedInv, enriched)
       enriched.investments.push(enrichedInv)
+      persist()
+      return id
+    })
+
+    defineMethod(enriched, 'addGoal', (data: Omit<Investment, MetaFields>) => {
+      const id = crypto.randomUUID()
+      const newGoal: InvestmentNested = {
+        ...data,
+        id,
+        created_at: now(),
+        last_edited_at: now(),
+        transactions: [],
+      }
+      const enrichedGoal = enrichInvestment(newGoal)
+      parentMap.set(enrichedGoal, enriched)
+      enriched.goals.push(enrichedGoal)
       persist()
       return id
     })
@@ -273,6 +386,7 @@ function withAppStore() {
         created_at: now(),
         last_edited_at: now(),
         investments: [],
+        goals: [],
       }
       const enrichedPortf = enrichPortfolio(newPortfolio)
       parentMap.set(enrichedPortf, enriched)
@@ -330,7 +444,7 @@ function withAppStore() {
 
   function spreadPortfolio(
     p: EnrichedPortfolio | PortfolioNested,
-  ): Omit<PortfolioNested, 'investments'> {
+  ): Omit<PortfolioNested, 'investments' | 'goals'> {
     return {
       id: p.id,
       name: p.name,
@@ -388,6 +502,8 @@ function withAppStore() {
         for (const portfolio of client.portfolios) {
           const investment = portfolio.investments.find((i) => i.id === investmentId)
           if (investment) return investment
+          const goal = portfolio.goals.find((i) => i.id === investmentId)
+          if (goal) return goal
         }
       }
       return undefined
@@ -396,7 +512,7 @@ function withAppStore() {
     findTransaction(transactionId: string): EnrichedTransaction | undefined {
       for (const client of clients) {
         for (const portfolio of client.portfolios) {
-          for (const investment of portfolio.investments) {
+          for (const investment of [...portfolio.investments, ...portfolio.goals]) {
             const transaction = investment.transactions.find((t) => t.id === transactionId)
             if (transaction) return transaction
           }
@@ -415,19 +531,6 @@ function withAppStore() {
         if (portfolio) return portfolio.investments
       }
       return []
-    },
-
-    getGoals(portfolioId: string): (EnrichedInvestment & { goal_data: GoalData })[] {
-      const investments = this.getInvestments(portfolioId)
-      return investments.filter(
-        (i): i is EnrichedInvestment & { goal_data: GoalData } =>
-          i.goal_data !== undefined && i.goal_data !== null,
-      )
-    },
-
-    getRegularInvestments(portfolioId: string): EnrichedInvestment[] {
-      const investments = this.getInvestments(portfolioId)
-      return investments.filter((i) => i.goal_data === undefined || i.goal_data === null)
     },
 
     getTransactions(investmentId: string): EnrichedTransaction[] {

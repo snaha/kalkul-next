@@ -41,15 +41,11 @@
     clientId: string
     viewOnly?: boolean
     index: number
-    hidden: boolean
-    focused: boolean
     showInflation?: boolean
     openTransaction?: (
       investment: InvestmentWithColorIndex,
       transaction?: EnrichedTransaction,
     ) => void
-    toggleHide: () => void
-    toggleFocus: () => void
     open?: boolean
     exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
     isCalculating?: boolean
@@ -61,16 +57,15 @@
     clientId,
     viewOnly = false,
     index,
-    hidden,
-    focused,
     showInflation = false,
     openTransaction,
-    toggleHide,
-    toggleFocus,
     open = $bindable(false),
     exhaustionWarning,
     isCalculating = false,
   }: Props = $props()
+
+  const hidden = $derived(investment.hidden)
+  const focused = $derived(investment.focused)
 
   let showDeleteInvestmentModal = $state(false)
   const transactions = $derived(appStore.getTransactions(investment.id))
@@ -147,7 +142,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleFocus()
+          investment.toggleFocus()
         }}><CenterSquare size={16} /></Button
       >
     {/if}
@@ -158,7 +153,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleHide()
+          investment.toggleHide()
         }}><ViewOff size={16} /></Button
       >
     {:else}
@@ -168,12 +163,12 @@
             <OverflowMenuVertical size={20} />
           {/snippet}
           <List>
-            <ListItem onclick={toggleFocus}
+            <ListItem onclick={() => investment.toggleFocus()}
               ><CenterSquare size={24} />{focused
                 ? $_('component.investmentCard.removeFocus')
                 : $_('component.investmentCard.focusInChart')}</ListItem
             >
-            <ListItem onclick={toggleHide}
+            <ListItem onclick={() => investment.toggleHide()}
               ><ViewOff size={24} />{$_('component.investmentCard.hideInChart')}</ListItem
             >
             {#if !viewOnly}

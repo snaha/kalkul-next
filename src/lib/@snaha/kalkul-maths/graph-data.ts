@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js'
-import { type Investment, type InvestmentNested, type Portfolio } from '$lib/types'
+import { type Investment, type InvestmentNested, type Portfolio, type PortfolioNested } from '$lib/types'
 import {
   type PortfolioPeriodCount,
   type PortfolioPeriod,
@@ -379,9 +379,9 @@ const portfolioDataCache = new Map<
   { data: GraphData[]; total: GraphData; timestamp: number }
 >()
 
-function getPortfolioCacheKey(investments: InvestmentNested[], portfolio: Portfolio): string {
+function getPortfolioCacheKey(portfolio: PortfolioNested): string {
   return createHash({
-    investments: investments,
+    investments: portfolio.investments,
     portfolio: portfolio,
   })
 }
@@ -395,10 +395,9 @@ function getPortfolioCacheKey(investments: InvestmentNested[], portfolio: Portfo
  * @returns Array of base data with investment reference
  */
 export function prepareInvestmentBaseData(
-  investments: InvestmentNested[],
-  portfolio: Portfolio,
+  portfolio: PortfolioNested,
 ): Array<{ baseData: ReturnType<typeof getBaseData>; investment: Investment }> {
-  return investments.map((i) => ({
+  return portfolio.investments.map((i) => ({
     baseData: getBaseData(i.transactions, portfolio.inflation_rate, portfolio.start_date),
     investment: i,
   }))
@@ -429,13 +428,12 @@ export function calculateDateRange(
 }
 
 export function getGraphDataForPortfolio(
-  investments: InvestmentNested[],
-  portfolio: Portfolio,
+  portfolio: PortfolioNested,
 ): {
   total: GraphData
   data: GraphData[]
 } {
-  const cacheKey = getPortfolioCacheKey(investments, portfolio)
+  const cacheKey = getPortfolioCacheKey(portfolio)
   const now = Date.now()
 
   // Check cache and return if valid (cache for 5 minutes)
@@ -444,7 +442,7 @@ export function getGraphDataForPortfolio(
     return { data: cached.data, total: cached.total }
   }
 
-  const baseData = prepareInvestmentBaseData(investments, portfolio)
+  const baseData = prepareInvestmentBaseData(portfolio)
   const { startDate, endDate } = calculateDateRange(baseData, portfolio)
 
   const data = baseData.map((d) =>

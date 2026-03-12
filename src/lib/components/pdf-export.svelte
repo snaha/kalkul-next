@@ -181,13 +181,6 @@
                         data={breakdown.investmentValues}
                         labels={breakdown.investments.map((inv) => inv.name)}
                         investments={graphValueData?.investments || []}
-                        investmentsViewStore={{
-                          isHidden: () => false,
-                          toggleHide: () => undefined,
-                          toggleFocus: () => undefined,
-                          isFocused: () => false,
-                          allInvestments: graphValueData?.investments || [],
-                        }}
                         currency={graphValueData?.portfolio?.currency || 'USD'}
                         currentYear={breakdown.year}
                         {clientBirthDate}

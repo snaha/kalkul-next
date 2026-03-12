@@ -77,6 +77,7 @@ export const investmentNestedSchema = investmentSchema.extend({
 
 export const portfolioNestedSchema = portfolioSchema.extend({
   investments: z.array(investmentNestedSchema),
+  goals: z.array(investmentNestedSchema).default([]),
 })
 
 export const clientNestedSchema = clientSchema.extend({

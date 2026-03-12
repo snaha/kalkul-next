@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { withPortfolioSimulationStore } from './portfolio-simulation.svelte'
-import type { InvestmentNested, Portfolio, Transaction } from '$lib/types'
+import type { InvestmentNested, Portfolio, PortfolioNested, Transaction } from '$lib/types'
 import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 
 describe('withPortfolioSimulationStore', () => {
@@ -101,7 +101,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should set isCalculating to true initially', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
 
       const data = store.simulationData
       expect(data?.isCalculating).toBe(true)
@@ -111,7 +111,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should create empty placeholder data immediately', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
 
       const data = store.simulationData
       expect(data?.data).toHaveLength(1)
@@ -122,7 +122,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle empty investments array', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [])
+      store.calculateIteratively({ ...mockPortfolio, investments: [], goals: [] })
 
       const data = store.simulationData
       expect(data?.isCalculating).toBe(false)
@@ -134,7 +134,7 @@ describe('withPortfolioSimulationStore', () => {
       const store = withPortfolioSimulationStore()
 
       // First calculation
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
 
       // Wait for calculation to complete
       vi.runAllTimers()
@@ -144,7 +144,7 @@ describe('withPortfolioSimulationStore', () => {
 
       // Trigger recalculation
       const updatedInvestment = { ...mockInvestment1, apy: 10 }
-      store.calculateIteratively(mockPortfolio, [updatedInvestment])
+      store.calculateIteratively({ ...mockPortfolio, investments: [updatedInvestment], goals: [] })
 
       // Should immediately set isCalculating to true
       expect(store.simulationData?.isCalculating).toBe(true)
@@ -153,7 +153,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should use only nested transactions from each investment', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
 
       // Wait for calculation
       vi.runAllTimers()
@@ -169,7 +169,7 @@ describe('withPortfolioSimulationStore', () => {
       const store = withPortfolioSimulationStore()
 
       const emptyInvestment: InvestmentNested = { ...mockInvestment1, transactions: [] }
-      store.calculateIteratively(mockPortfolio, [emptyInvestment])
+      store.calculateIteratively({ ...mockPortfolio, investments: [emptyInvestment], goals: [] })
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -185,7 +185,7 @@ describe('withPortfolioSimulationStore', () => {
         transactions: [{ ...mockTransaction1, amount: 1e12 }],
       }
 
-      store.calculateIteratively(mockPortfolio, [largeInvestment])
+      store.calculateIteratively({ ...mockPortfolio, investments: [largeInvestment], goals: [] })
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -196,7 +196,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle multiple investments with different transaction sets', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1, mockInvestment2])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1, mockInvestment2], goals: [] })
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -212,11 +212,11 @@ describe('withPortfolioSimulationStore', () => {
     it('should produce identical results to getGraphDataForPortfolio for single investment', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
       vi.runAllTimers()
 
       const storeResult = store.simulationData
-      const directResult = getGraphDataForPortfolio([mockInvestment1], mockPortfolio)
+      const directResult = getGraphDataForPortfolio({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
 
       // Compare investment data
       expect(storeResult?.data).toHaveLength(1)
@@ -229,14 +229,15 @@ describe('withPortfolioSimulationStore', () => {
     it('should produce identical results to getGraphDataForPortfolio for multiple investments', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1, mockInvestment2])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1, mockInvestment2], goals: [] })
       vi.runAllTimers()
 
       const storeResult = store.simulationData
-      const directResult = getGraphDataForPortfolio(
-        [mockInvestment1, mockInvestment2],
-        mockPortfolio,
-      )
+      const directResult = getGraphDataForPortfolio({
+        ...mockPortfolio,
+        investments: [mockInvestment1, mockInvestment2],
+        goals: [],
+      })
 
       // Compare all investment data
       expect(storeResult?.data).toHaveLength(2)
@@ -275,12 +276,12 @@ describe('withPortfolioSimulationStore', () => {
       const store = withPortfolioSimulationStore()
 
       // First calculation
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
       vi.runAllTimers()
       const firstResult = { ...store.simulationData }
 
       // Recalculation with same data
-      store.calculateIteratively(mockPortfolio, [mockInvestment1])
+      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
       vi.runAllTimers()
       const secondResult = store.simulationData
 

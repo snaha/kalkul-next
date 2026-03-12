@@ -125,7 +125,7 @@
     const portfolio = appStore.findPortfolio(portfolioId)
     if (!portfolio) return
 
-    const goalId = portfolio.addInvestment({
+    const goalId = portfolio.addGoal({
       name: goalData.name, // Default name - can be edited later
       type: 'goal',
       apy: calculatorData.goalData.apy,

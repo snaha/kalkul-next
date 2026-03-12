@@ -7,7 +7,6 @@
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
   import { _ } from 'svelte-i18n'
   import { goto } from '$app/navigation'
@@ -31,7 +30,6 @@
     isGraphFullscreened: boolean
     isSidebarFlexible: boolean
     isSidebarOpen: boolean
-    investmentsViewStore: InvestmentsViewStore
     graphData: PortfolioSimulation | undefined
     adjustWithInflation: boolean
     selectedTab: 'goals' | 'investments'
@@ -49,7 +47,6 @@
     isGraphFullscreened,
     isSidebarFlexible,
     isSidebarOpen = $bindable(),
-    investmentsViewStore,
     graphData,
     adjustWithInflation,
     selectedTab = $bindable(),
@@ -187,7 +184,6 @@
             {portfolio}
             {clientId}
             investments={regularInvestments}
-            {investmentsViewStore}
             {transactionCount}
             {adjustWithInflation}
             viewOnly={false}

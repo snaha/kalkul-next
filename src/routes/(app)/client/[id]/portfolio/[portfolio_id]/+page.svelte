@@ -10,8 +10,8 @@
   import PortfolioHeader from '$lib/components/portfolio-header.svelte'
   import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import { base } from '$app/paths'
+  import type { PortfolioNested } from '$lib/types'
   import { layoutStore } from '$lib/stores/layout.svelte'
   import MobileOnly from '$lib/components/mobile-only.svelte'
   import DesktopOnly from '$lib/components/desktop-only.svelte'
@@ -27,35 +27,37 @@
 
   let selectedTab = $state<'goals' | 'investments'>('goals')
 
-  // Filter goals and regular investments using store methods
-  const goals = $derived(appStore.getGoals(portfolioId))
-  const regularInvestments = $derived(appStore.getRegularInvestments(portfolioId))
-
   // Separate simulations for goals and investments to avoid recalculation on tab switch
   const goalsSimulation = withPortfolioSimulationStore()
   const investmentsSimulation = withPortfolioSimulationStore()
 
   // Calculate goals data when goals change
+  // Read from appStore.findPortfolio() directly to track clients state changes
+  // ($derived with same object reference would skip notifications)
   $effect(() => {
-    const currentGoals = goals
-
-    if (portfolio && !isLoading) {
+    const p = appStore.findPortfolio(portfolioId)
+    if (p && !appStore.loading) {
+      const goalsPortfolio: PortfolioNested = { ...p, investments: p.goals, goals: [] }
       setTimeout(() => {
-        goalsSimulation.calculateIteratively(portfolio, currentGoals)
+        goalsSimulation.calculateIteratively(goalsPortfolio)
       }, 0)
     }
   })
 
   // Calculate investments data when investments change
   $effect(() => {
-    const currentInvestments = regularInvestments
-
-    if (portfolio && !isLoading) {
+    const p = appStore.findPortfolio(portfolioId)
+    if (p && !appStore.loading) {
+      const investmentsPortfolio: PortfolioNested = { ...p, investments: p.investments, goals: [] }
       setTimeout(() => {
-        investmentsSimulation.calculateIteratively(portfolio, currentInvestments)
+        investmentsSimulation.calculateIteratively(investmentsPortfolio)
       }, 0)
     }
   })
+
+  // Goals and investments come directly from the portfolio
+  const goals = $derived(portfolio?.goals ?? [])
+  const regularInvestments = $derived(portfolio?.investments ?? [])
 
   // Switch between goal and investment data based on selected tab
   const investments = $derived(selectedTab === 'goals' ? goals : regularInvestments)
@@ -70,10 +72,6 @@
 
   const hasAnyInvestments = $derived(goals.length > 0 || regularInvestments.length > 0)
 
-  const investmentsViewStore = $derived(
-    withInvestmentsViewStore(appStore.getInvestments(portfolioId)),
-  )
-
   const isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
@@ -86,10 +84,6 @@
   let isShareMenuOpen = $state(false)
   const isPortfolioMenuOpen = $derived(isMenuOpen || isShareMenuOpen)
   let parentContainer: HTMLElement | undefined = $state()
-
-  $effect(() => {
-    investmentsViewStore.allInvestments = investments
-  })
 
   $effect(() => {
     if (!isGraphFullscreened) isSidebarOpen = true
@@ -188,7 +182,7 @@
             {isGraphFullscreened}
             {isSidebarFlexible}
             bind:isSidebarOpen
-            {investmentsViewStore}
+
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
@@ -210,7 +204,6 @@
           {investments}
           simulationData={graphData}
           bind:adjustWithInflation
-          {investmentsViewStore}
           isEmpty={transactionCount === 0}
           clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
           {sidebarButton}
@@ -251,7 +244,7 @@
             {investments}
             simulationData={graphData}
             bind:adjustWithInflation
-            {investmentsViewStore}
+
             isEmpty={false}
             clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
             disableInteraction={true}
@@ -264,7 +257,7 @@
             {isGraphFullscreened}
             {isSidebarFlexible}
             bind:isSidebarOpen
-            {investmentsViewStore}
+
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
