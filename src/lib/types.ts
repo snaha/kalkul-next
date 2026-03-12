@@ -16,15 +16,11 @@ export type {
   GoalData,
 } from './schemas'
 
-import type {
-  Client,
-  ClientNested,
-  Investment,
-  InvestmentNested,
-  Portfolio,
-  PortfolioNested,
-  Transaction,
-} from './schemas'
+import type { Client, Investment } from './schemas'
+import type { EnrichedTransactionStore } from './stores/transaction.svelte'
+import type { EnrichedInvestmentStore } from './stores/investment.svelte'
+import type { EnrichedPortfolioStore } from './stores/portfolio.svelte'
+import type { EnrichedClientStore } from './stores/client.svelte'
 
 export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
 
@@ -32,40 +28,10 @@ export type ClientNoId = Omit<Client, 'id' | 'created_at'>
 
 // --- Enriched types (objects with CRUD methods) ---
 
-export type EnrichedTransaction = Transaction & {
-  update(updates: Partial<Omit<Transaction, 'id'>>): void
-  delete(): void
-  duplicate(): string
-}
-
-export type EnrichedInvestment = Omit<InvestmentNested, 'transactions'> & {
-  transactions: EnrichedTransaction[]
-  update(updates: Partial<Omit<Investment, 'id'>>): void
-  delete(): void
-  duplicate(): string | undefined
-  addTransaction(data: Omit<Transaction, MetaFields>): string
-  hidden: boolean
-  toggleHide(): void
-  toggleFocus(): void
-  focused: boolean
-}
-
-export type EnrichedPortfolio = Omit<PortfolioNested, 'investments' | 'goals'> & {
-  investments: EnrichedInvestment[]
-  goals: EnrichedInvestment[]
-  update(updates: Partial<Omit<Portfolio, 'id'>>): void
-  delete(): void
-  duplicate(): string | undefined
-  addInvestment(data: Omit<Investment, MetaFields>): string
-  addGoal(data: Omit<Investment, MetaFields>): string
-}
-
-export type EnrichedClient = Omit<ClientNested, 'portfolios'> & {
-  portfolios: EnrichedPortfolio[]
-  update(updates: Partial<Omit<ClientNested, 'id' | 'created_at' | 'portfolios'>>): void
-  delete(): void
-  addPortfolio(data: Omit<Portfolio, MetaFields>): string
-}
+export type EnrichedTransaction = EnrichedTransactionStore
+export type EnrichedInvestment = EnrichedInvestmentStore
+export type EnrichedPortfolio = EnrichedPortfolioStore
+export type EnrichedClient = EnrichedClientStore
 
 export type InvestmentWithColorIndex = Investment & {
   colorIndex?: number
