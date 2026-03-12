@@ -48,7 +48,7 @@
 
   function deleteClient() {
     if (clientToBeDeleted) {
-      appStore.deleteClient({ id: clientToBeDeleted })
+      appStore.findClient(clientToBeDeleted)?.delete()
       clientToBeDeleted = undefined
       showConfirmModal = false
     }

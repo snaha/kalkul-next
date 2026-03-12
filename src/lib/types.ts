@@ -14,14 +14,52 @@ export type {
   RetirementGoalData,
   EducationGoalData,
   GoalData,
-  Goal,
 } from './schemas'
 
-import type { Client, Investment, Portfolio } from './schemas'
+import type {
+  Client,
+  ClientNested,
+  Investment,
+  InvestmentNested,
+  Portfolio,
+  PortfolioNested,
+  Transaction,
+} from './schemas'
 
 export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
 
 export type ClientNoId = Omit<Client, 'id' | 'created_at'>
+
+// --- Enriched types (objects with CRUD methods) ---
+
+export type EnrichedTransaction = Transaction & {
+  update(updates: Partial<Omit<Transaction, 'id'>>): void
+  delete(): void
+  duplicate(): string
+}
+
+export type EnrichedInvestment = Omit<InvestmentNested, 'transactions'> & {
+  transactions: EnrichedTransaction[]
+  update(updates: Partial<Omit<Investment, 'id'>>): void
+  delete(): void
+  duplicate(): string | undefined
+  addTransaction(data: Omit<Transaction, MetaFields>): string
+}
+
+export type EnrichedPortfolio = Omit<PortfolioNested, 'investments'> & {
+  investments: EnrichedInvestment[]
+  update(updates: Partial<Omit<Portfolio, 'id'>>): void
+  delete(): void
+  duplicate(): string | undefined
+  addInvestment(data: Omit<Investment, MetaFields>): string
+}
+
+export type EnrichedClient = Omit<ClientNested, 'portfolios'> & {
+  portfolios: EnrichedPortfolio[]
+  update(updates: Partial<Omit<ClientNested, 'id' | 'created_at' | 'portfolios'>>): void
+  delete(): void
+  addPortfolio(data: Omit<Portfolio, MetaFields>): string
+}
 
 export type InvestmentWithColorIndex = Investment & {
   colorIndex?: number

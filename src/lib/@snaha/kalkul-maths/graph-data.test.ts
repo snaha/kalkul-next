@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { getCumulativeValues, getGraphData, getGraphDataForPortfolio } from './graph-data'
 import { getBaseData } from './investment-calculations'
-import type { Investment, Portfolio, Transaction } from '$lib/types'
+import type { Investment, InvestmentNested, Portfolio, Transaction } from '$lib/types'
 import type { GraphData } from './types'
 
 describe('getCumulativeValues', () => {
@@ -256,7 +256,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
@@ -270,7 +270,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: 1,
         repeat_unit: 'month' as const,
         inflation_adjusted: true,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-1',
         label: null,
@@ -304,7 +304,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
@@ -319,7 +319,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: true,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-1',
         label: null,
@@ -356,7 +356,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: 1,
         repeat_unit: 'year' as const,
         inflation_adjusted: true,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
@@ -396,7 +396,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: 1,
         repeat_unit: 'year' as const,
         inflation_adjusted: true,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
@@ -447,7 +447,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '1997-11-09',
         id: 'test-transaction-1',
         label: null,
@@ -462,7 +462,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2025-01-13',
         id: 'test-transaction-2',
         label: null,
@@ -515,7 +515,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2000-01-01',
         id: 'test-transaction-1',
         label: null,
@@ -530,7 +530,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2005-01-01',
         id: 'test-transaction-2',
         label: null,
@@ -574,7 +574,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
@@ -589,7 +589,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-1',
         label: null,
@@ -604,7 +604,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-2',
         label: null,
@@ -618,7 +618,7 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat: null,
         repeat_unit: null,
         inflation_adjusted: false,
-        investment_id: 'test-investment-1',
+
         created_at: '2024-01-01',
         id: 'test-transaction-3',
         label: null,
@@ -695,13 +695,8 @@ describe('per-investment caching', () => {
     type: null,
   })
 
-  const createMockTransaction = (
-    id: string,
-    investmentId: string,
-    amount: number,
-  ): Transaction => ({
+  const createMockTransaction = (id: string, amount: number): Transaction => ({
     id,
-    investment_id: investmentId,
     date: '2024-01-01',
     amount,
     type: 'deposit',
@@ -714,28 +709,32 @@ describe('per-investment caching', () => {
     repeat_unit: null,
   })
 
+  const createMockInvestmentNested = (
+    investment: Investment,
+    transactions: Transaction[],
+  ): InvestmentNested => ({
+    ...investment,
+    transactions,
+  })
+
   describe('cache behavior', () => {
     it('should return same results with or without cache', () => {
       const investment1 = createMockInvestment('test-investment-1', 5)
       const investment2 = createMockInvestment('test-investment-2', 7)
-      const transactions = [
-        createMockTransaction('test-transaction-1', 'test-investment-1', 1000),
-        createMockTransaction('test-transaction-2', 'test-investment-2', 2000),
+      const nested = [
+        createMockInvestmentNested(investment1, [
+          createMockTransaction('test-transaction-1', 1000),
+        ]),
+        createMockInvestmentNested(investment2, [
+          createMockTransaction('test-transaction-2', 2000),
+        ]),
       ]
 
       // First call (no cache)
-      const result1 = getGraphDataForPortfolio(
-        transactions,
-        [investment1, investment2],
-        mockPortfolio,
-      )
+      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Second call (should use cache)
-      const result2 = getGraphDataForPortfolio(
-        transactions,
-        [investment1, investment2],
-        mockPortfolio,
-      )
+      const result2 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Results should be identical
       expect(result1.data.length).toBe(2)
@@ -748,27 +747,26 @@ describe('per-investment caching', () => {
     it('should only recalculate changed investment', () => {
       const investment1 = createMockInvestment('test-investment-1', 5, 'Investment 1')
       const investment2 = createMockInvestment('test-investment-2', 7, 'Investment 2')
-      const transactions = [
-        createMockTransaction('test-transaction-1', 'test-investment-1', 1000),
-        createMockTransaction('test-transaction-2', 'test-investment-2', 2000),
+      const tx1 = createMockTransaction('test-transaction-1', 1000)
+      const tx2 = createMockTransaction('test-transaction-2', 2000)
+
+      const nested1 = [
+        createMockInvestmentNested(investment1, [tx1]),
+        createMockInvestmentNested(investment2, [tx2]),
       ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(
-        transactions,
-        [investment1, investment2],
-        mockPortfolio,
-      )
+      const result1 = getGraphDataForPortfolio(nested1, mockPortfolio)
 
       // Change only investment 2's APY
       const updatedInvestment2 = { ...investment2, apy: 10 }
+      const nested2 = [
+        createMockInvestmentNested(investment1, [tx1]),
+        createMockInvestmentNested(updatedInvestment2, [tx2]),
+      ]
 
       // Second calculation
-      const result2 = getGraphDataForPortfolio(
-        transactions,
-        [investment1, updatedInvestment2],
-        mockPortfolio,
-      )
+      const result2 = getGraphDataForPortfolio(nested2, mockPortfolio)
 
       // Investment 1 should be the same (potentially from cache)
       expect(result1.data[0].label).toBe(result2.data[0].label)
@@ -782,26 +780,26 @@ describe('per-investment caching', () => {
     it('should handle transaction changes for specific investment', () => {
       const investment1 = createMockInvestment('test-investment-1', 5, 'Investment 1')
       const investment2 = createMockInvestment('test-investment-2', 7, 'Investment 2')
-      const transactions1 = [
-        createMockTransaction('test-transaction-1', 'test-investment-1', 1000),
-        createMockTransaction('test-transaction-2', 'test-investment-2', 2000),
+      const tx1 = createMockTransaction('test-transaction-1', 1000)
+      const tx2 = createMockTransaction('test-transaction-2', 2000)
+
+      const nested1 = [
+        createMockInvestmentNested(investment1, [tx1]),
+        createMockInvestmentNested(investment2, [tx2]),
       ]
 
       // First calculation to warm up cache
-      getGraphDataForPortfolio(transactions1, [investment1, investment2], mockPortfolio)
+      getGraphDataForPortfolio(nested1, mockPortfolio)
 
       // Add transaction for investment 1 only
-      const transactions2 = [
-        ...transactions1,
-        createMockTransaction('test-transaction-3', 'test-investment-1', 500), // New transaction for investment 1
+      const tx3 = createMockTransaction('test-transaction-3', 500)
+      const nested2 = [
+        createMockInvestmentNested(investment1, [tx1, tx3]),
+        createMockInvestmentNested(investment2, [tx2]),
       ]
 
       // Second calculation
-      const result2 = getGraphDataForPortfolio(
-        transactions2,
-        [investment1, investment2],
-        mockPortfolio,
-      )
+      const result2 = getGraphDataForPortfolio(nested2, mockPortfolio)
 
       // Investment 2 should be unchanged (potentially from cache)
       expect(result2.data[1].label).toBe('Investment 2')
@@ -814,13 +812,13 @@ describe('per-investment caching', () => {
 
     it('should cache empty investment results', () => {
       const investment = createMockInvestment('test-investment-1', 5)
-      const transactions: Transaction[] = []
+      const nested = [createMockInvestmentNested(investment, [])]
 
       // First call
-      const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Second call (should use cache)
-      const result2 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+      const result2 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       expect(result1.data.length).toBe(1)
       expect(result2.data.length).toBe(1)
@@ -831,14 +829,16 @@ describe('per-investment caching', () => {
   describe('cache invalidation', () => {
     it('should invalidate cache when investment parameters change', () => {
       const investment = createMockInvestment('test-investment-1', 5)
-      const transactions = [createMockTransaction('test-transaction-1', 'test-investment-1', 1000)]
+      const tx = createMockTransaction('test-transaction-1', 1000)
+      const nested = [createMockInvestmentNested(investment, [tx])]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Change investment APY
       const updatedInvestment = { ...investment, apy: 10 }
-      const result2 = getGraphDataForPortfolio(transactions, [updatedInvestment], mockPortfolio)
+      const nested2 = [createMockInvestmentNested(updatedInvestment, [tx])]
+      const result2 = getGraphDataForPortfolio(nested2, mockPortfolio)
 
       // Results should be different
       expect(result1.data[0].graphInvestmentValues).toBeDefined()
@@ -848,14 +848,16 @@ describe('per-investment caching', () => {
 
     it('should invalidate cache when portfolio dates change', () => {
       const investment = createMockInvestment('test-investment-1', 5)
-      const transactions = [createMockTransaction('test-transaction-1', 'test-investment-1', 1000)]
+      const nested = [
+        createMockInvestmentNested(investment, [createMockTransaction('test-transaction-1', 1000)]),
+      ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Change portfolio end date
       const updatedPortfolio = { ...mockPortfolio, end_date: '2025-12-31' }
-      const result2 = getGraphDataForPortfolio(transactions, [investment], updatedPortfolio)
+      const result2 = getGraphDataForPortfolio(nested, updatedPortfolio)
 
       // Graph labels should reflect different date range
       expect(result1.total.graphLabels.length).toBeLessThanOrEqual(result2.total.graphLabels.length)
@@ -863,14 +865,16 @@ describe('per-investment caching', () => {
 
     it('should invalidate cache when portfolio inflation changes', () => {
       const investment = createMockInvestment('test-investment-1', 5)
-      const transactions = [createMockTransaction('test-transaction-1', 'test-investment-1', 1000)]
+      const nested = [
+        createMockInvestmentNested(investment, [createMockTransaction('test-transaction-1', 1000)]),
+      ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio(transactions, [investment], mockPortfolio)
+      const result1 = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Change portfolio inflation
       const updatedPortfolio = { ...mockPortfolio, inflation_rate: 0.05 }
-      const result2 = getGraphDataForPortfolio(transactions, [investment], updatedPortfolio)
+      const result2 = getGraphDataForPortfolio(nested, updatedPortfolio)
 
       // Inflation-adjusted values should be different
       expect(result1.data[0].graphInflationInvestmentValues).toBeDefined()
@@ -880,14 +884,13 @@ describe('per-investment caching', () => {
 
   describe('multiple investments', () => {
     it('should handle portfolio with many investments efficiently', () => {
-      const investments = Array.from({ length: 10 }, (_, i) =>
-        createMockInvestment(`test-investment-${i + 1}`, 5 + i, `Investment ${i + 1}`),
-      )
-      const transactions = investments.map((inv, i) =>
-        createMockTransaction(`test-transaction-${i + 1}`, inv.id, 1000 * (i + 1)),
-      )
+      const nested = Array.from({ length: 10 }, (_, i) => {
+        const inv = createMockInvestment(`test-investment-${i + 1}`, 5 + i, `Investment ${i + 1}`)
+        const tx = createMockTransaction(`test-transaction-${i + 1}`, 1000 * (i + 1))
+        return createMockInvestmentNested(inv, [tx])
+      })
 
-      const result = getGraphDataForPortfolio(transactions, investments, mockPortfolio)
+      const result = getGraphDataForPortfolio(nested, mockPortfolio)
 
       expect(result.data.length).toBe(10)
       expect(result.total.graphLabels.length).toBeGreaterThan(0)
@@ -902,16 +905,16 @@ describe('per-investment caching', () => {
     it('should aggregate totals correctly across investments', () => {
       const investment1 = createMockInvestment('test-investment-1', 5)
       const investment2 = createMockInvestment('test-investment-2', 7)
-      const transactions = [
-        createMockTransaction('test-transaction-1', 'test-investment-1', 1000),
-        createMockTransaction('test-transaction-2', 'test-investment-2', 2000),
+      const nested = [
+        createMockInvestmentNested(investment1, [
+          createMockTransaction('test-transaction-1', 1000),
+        ]),
+        createMockInvestmentNested(investment2, [
+          createMockTransaction('test-transaction-2', 2000),
+        ]),
       ]
 
-      const result = getGraphDataForPortfolio(
-        transactions,
-        [investment1, investment2],
-        mockPortfolio,
-      )
+      const result = getGraphDataForPortfolio(nested, mockPortfolio)
 
       // Total should aggregate both investments
       expect(result.total.label).toBe('Total')

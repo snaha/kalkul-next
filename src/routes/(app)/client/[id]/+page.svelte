@@ -65,13 +65,13 @@
       return
     }
 
-    appStore.deletePortfolio({ id: portfolioToBeDeleted })
+    appStore.findPortfolio(portfolioToBeDeleted)?.delete()
     portfolioToBeDeleted = undefined
     showConfirmModal = false
   }
 
   function deleteClient() {
-    appStore.deleteClient({ id: clientId })
+    client?.delete()
     goto(routes.HOME)
   }
 
@@ -136,7 +136,7 @@
       <ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(clientId, portfolioId))}
         ><FolderDetails size={24} />{$_('page.portfolio.editPortfolioDetails')}</ListItem
       >
-      <ListItem onclick={() => appStore.duplicatePortfolio(clientId, portfolioId)}
+      <ListItem onclick={() => appStore.findPortfolio(portfolioId)?.duplicate()}
         ><Copy size={24} />{$_('page.portfolio.duplicatePortfolio')}</ListItem
       >
       <ListItem onclick={() => confirmDeletePortfolio(portfolioId)}

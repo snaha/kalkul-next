@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { withPortfolioSimulationStore } from './portfolio-simulation.svelte'
-import type { Investment, Portfolio, Transaction } from '$lib/types'
+import type { InvestmentNested, Portfolio, Transaction } from '$lib/types'
 import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 
 describe('withPortfolioSimulationStore', () => {
@@ -15,7 +15,35 @@ describe('withPortfolioSimulationStore', () => {
     last_edited_at: '2024-01-01',
   }
 
-  const mockInvestment1: Investment = {
+  const mockTransaction1: Transaction = {
+    id: 'test-transaction-1',
+    date: '2024-01-01',
+    amount: 1000,
+    type: 'deposit',
+    inflation_adjusted: false,
+    created_at: '2024-01-01',
+    end_date: null,
+    label: null,
+    last_edited_at: null,
+    repeat: null,
+    repeat_unit: null,
+  }
+
+  const mockTransaction2: Transaction = {
+    id: 'test-transaction-2',
+    date: '2024-01-01',
+    amount: 2000,
+    type: 'deposit',
+    inflation_adjusted: false,
+    created_at: '2024-01-01',
+    end_date: null,
+    label: null,
+    last_edited_at: null,
+    repeat: null,
+    repeat_unit: null,
+  }
+
+  const mockInvestment1: InvestmentNested = {
     id: 'test-investment-1',
     name: 'Investment 1',
     apy: 5,
@@ -31,9 +59,10 @@ describe('withPortfolioSimulationStore', () => {
     created_at: '2024-01-01',
     last_edited_at: '2024-01-01',
     type: null,
+    transactions: [mockTransaction1],
   }
 
-  const mockInvestment2: Investment = {
+  const mockInvestment2: InvestmentNested = {
     id: 'test-investment-2',
     name: 'Investment 2',
     apy: 7,
@@ -49,36 +78,7 @@ describe('withPortfolioSimulationStore', () => {
     created_at: '2024-01-01',
     last_edited_at: '2024-01-01',
     type: null,
-  }
-
-  const mockTransaction1: Transaction = {
-    id: 'test-transaction-1',
-    investment_id: 'test-investment-1',
-    date: '2024-01-01',
-    amount: 1000,
-    type: 'deposit',
-    inflation_adjusted: false,
-    created_at: '2024-01-01',
-    end_date: null,
-    label: null,
-    last_edited_at: null,
-    repeat: null,
-    repeat_unit: null,
-  }
-
-  const mockTransaction2: Transaction = {
-    id: 'test-transaction-2',
-    investment_id: 'test-investment-2',
-    date: '2024-01-01',
-    amount: 2000,
-    type: 'deposit',
-    inflation_adjusted: false,
-    created_at: '2024-01-01',
-    end_date: null,
-    label: null,
-    last_edited_at: null,
-    repeat: null,
-    repeat_unit: null,
+    transactions: [mockTransaction2],
   }
 
   beforeEach(() => {
@@ -101,7 +101,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should set isCalculating to true initially', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
 
       const data = store.simulationData
       expect(data?.isCalculating).toBe(true)
@@ -111,7 +111,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should create empty placeholder data immediately', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
 
       const data = store.simulationData
       expect(data?.data).toHaveLength(1)
@@ -122,7 +122,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle empty investments array', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [], [])
+      store.calculateIteratively(mockPortfolio, [])
 
       const data = store.simulationData
       expect(data?.isCalculating).toBe(false)
@@ -134,7 +134,7 @@ describe('withPortfolioSimulationStore', () => {
       const store = withPortfolioSimulationStore()
 
       // First calculation
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
 
       // Wait for calculation to complete
       vi.runAllTimers()
@@ -144,40 +144,21 @@ describe('withPortfolioSimulationStore', () => {
 
       // Trigger recalculation
       const updatedInvestment = { ...mockInvestment1, apy: 10 }
-      store.calculateIteratively(mockPortfolio, [updatedInvestment], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [updatedInvestment])
 
       // Should immediately set isCalculating to true
       expect(store.simulationData?.isCalculating).toBe(true)
     })
 
-    it('should filter transactions to portfolio investments', () => {
+    it('should use only nested transactions from each investment', () => {
       const store = withPortfolioSimulationStore()
 
-      const unrelatedTransaction: Transaction = {
-        id: 'test-transaction-3',
-        investment_id: 'test-investment-999', // Not in our investments
-        date: '2024-01-01',
-        amount: 5000,
-        type: 'deposit',
-        inflation_adjusted: false,
-        created_at: '2024-01-01',
-        end_date: null,
-        label: null,
-        last_edited_at: null,
-        repeat: null,
-        repeat_unit: null,
-      }
-
-      store.calculateIteratively(
-        mockPortfolio,
-        [mockInvestment1],
-        [mockTransaction1, unrelatedTransaction],
-      )
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
 
       // Wait for calculation
       vi.runAllTimers()
 
-      // Should only process mockTransaction1
+      // Should only process mockInvestment1's nested transactions
       const data = store.simulationData
       expect(data?.data).toHaveLength(1)
     })
@@ -187,7 +168,8 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle investment with no transactions', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [])
+      const emptyInvestment: InvestmentNested = { ...mockInvestment1, transactions: [] }
+      store.calculateIteratively(mockPortfolio, [emptyInvestment])
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -198,12 +180,12 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle very large transaction amounts', () => {
       const store = withPortfolioSimulationStore()
 
-      const largeTransaction: Transaction = {
-        ...mockTransaction1,
-        amount: 1e12, // 1 trillion
+      const largeInvestment: InvestmentNested = {
+        ...mockInvestment1,
+        transactions: [{ ...mockTransaction1, amount: 1e12 }],
       }
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [largeTransaction])
+      store.calculateIteratively(mockPortfolio, [largeInvestment])
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -214,11 +196,7 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle multiple investments with different transaction sets', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(
-        mockPortfolio,
-        [mockInvestment1, mockInvestment2],
-        [mockTransaction1, mockTransaction2],
-      )
+      store.calculateIteratively(mockPortfolio, [mockInvestment1, mockInvestment2])
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -234,15 +212,11 @@ describe('withPortfolioSimulationStore', () => {
     it('should produce identical results to getGraphDataForPortfolio for single investment', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
       vi.runAllTimers()
 
       const storeResult = store.simulationData
-      const directResult = getGraphDataForPortfolio(
-        [mockTransaction1],
-        [mockInvestment1],
-        mockPortfolio,
-      )
+      const directResult = getGraphDataForPortfolio([mockInvestment1], mockPortfolio)
 
       // Compare investment data
       expect(storeResult?.data).toHaveLength(1)
@@ -255,16 +229,11 @@ describe('withPortfolioSimulationStore', () => {
     it('should produce identical results to getGraphDataForPortfolio for multiple investments', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively(
-        mockPortfolio,
-        [mockInvestment1, mockInvestment2],
-        [mockTransaction1, mockTransaction2],
-      )
+      store.calculateIteratively(mockPortfolio, [mockInvestment1, mockInvestment2])
       vi.runAllTimers()
 
       const storeResult = store.simulationData
       const directResult = getGraphDataForPortfolio(
-        [mockTransaction1, mockTransaction2],
         [mockInvestment1, mockInvestment2],
         mockPortfolio,
       )
@@ -306,12 +275,12 @@ describe('withPortfolioSimulationStore', () => {
       const store = withPortfolioSimulationStore()
 
       // First calculation
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
       vi.runAllTimers()
       const firstResult = { ...store.simulationData }
 
       // Recalculation with same data
-      store.calculateIteratively(mockPortfolio, [mockInvestment1], [mockTransaction1])
+      store.calculateIteratively(mockPortfolio, [mockInvestment1])
       vi.runAllTimers()
       const secondResult = store.simulationData
 

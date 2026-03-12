@@ -1,5 +1,11 @@
 <script lang="ts">
-  import type { InvestmentWithColorIndex, Portfolio, Transaction, Goal } from '$lib/types'
+  import type {
+    EnrichedInvestment,
+    EnrichedTransaction,
+    GoalData,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import {
     Add,
     ArrowRight,
@@ -35,22 +41,25 @@
   import { goto } from '$app/navigation'
 
   type Props = {
-    investment: InvestmentWithColorIndex
-    portfolio: Portfolio
+    investment: InvestmentWithColorIndex & EnrichedInvestment
+    portfolio: PortfolioNested
     viewOnly?: boolean
     index: number
     hidden: boolean
     focused: boolean
     showInflation?: boolean
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    openTransaction?: (
+      investment: InvestmentWithColorIndex,
+      transaction?: EnrichedTransaction,
+    ) => void
     addInvestment?: () => void
     toggleHide: () => void
     toggleFocus: () => void
     open?: boolean
     exhaustionWarning?: ExhaustionWarning
     isCalculating?: boolean
-    transactions?: Transaction[]
-    goal: Goal
+    transactions?: EnrichedTransaction[]
+    goal: EnrichedInvestment & { goal_data: GoalData }
     showExplainInvestmentsLabel: boolean
   }
 
@@ -77,7 +86,6 @@
   let transactionsOpen = $state(true)
   let linkedInvestmentsOpen = $state(true)
   let showDeleteGoalModal = $state(false)
-  let selectedGoalIdForDeletion = $state<string | undefined>(undefined)
 
   const transactions = $derived(providedTransactions ?? appStore.getTransactions(investment.id))
   // Linked investments will be implemented in Task 5
@@ -102,8 +110,8 @@
     alert($_('demo.notImplemented'))
   }
 
-  function deleteGoal(goalId: string) {
-    appStore.deleteInvestment({ id: goalId })
+  function deleteGoal() {
+    investment.delete()
   }
 
   $effect(() => {
@@ -198,7 +206,6 @@
               >
               <ListItem
                 onclick={() => {
-                  selectedGoalIdForDeletion = investment.id
                   showDeleteGoalModal = true
                 }}><TrashCan size={24} />{$_('component.goalCard.deleteGoal')}</ListItem
               >
@@ -375,16 +382,12 @@
 </div>
 
 <DeleteModal
-  confirm={async () => {
-    if (selectedGoalIdForDeletion) {
-      await deleteGoal(selectedGoalIdForDeletion)
-      selectedGoalIdForDeletion = undefined
-      showDeleteGoalModal = false
-    }
+  confirm={() => {
+    deleteGoal()
+    showDeleteGoalModal = false
   }}
   oncancel={() => {
     showDeleteGoalModal = false
-    selectedGoalIdForDeletion = undefined
   }}
   bind:open={showDeleteGoalModal}
   title={$_('component.goalCard.deleteGoalWarningTitle')}

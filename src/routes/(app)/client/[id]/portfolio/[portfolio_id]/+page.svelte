@@ -35,39 +35,24 @@
   const goalsSimulation = withPortfolioSimulationStore()
   const investmentsSimulation = withPortfolioSimulationStore()
 
-  // Get transactions for goals and investments separately
-  const goalTransactions = $derived(goals.flatMap((goal) => appStore.getTransactions(goal.id)))
-
-  const investmentTransactions = $derived(
-    regularInvestments.flatMap((investment) => appStore.getTransactions(investment.id)),
-  )
-
   // Calculate goals data when goals change
   $effect(() => {
-    // Explicitly reference dependencies to ensure Svelte tracks them
     const currentGoals = goals
-    const currentTransactions = goalTransactions
 
     if (portfolio && !isLoading) {
       setTimeout(() => {
-        goalsSimulation.calculateIteratively(portfolio, currentGoals, currentTransactions)
+        goalsSimulation.calculateIteratively(portfolio, currentGoals)
       }, 0)
     }
   })
 
   // Calculate investments data when investments change
   $effect(() => {
-    // Explicitly reference dependencies to ensure Svelte tracks them
     const currentInvestments = regularInvestments
-    const currentTransactions = investmentTransactions
 
     if (portfolio && !isLoading) {
       setTimeout(() => {
-        investmentsSimulation.calculateIteratively(
-          portfolio,
-          currentInvestments,
-          currentTransactions,
-        )
+        investmentsSimulation.calculateIteratively(portfolio, currentInvestments)
       }, 0)
     }
   })
@@ -79,7 +64,9 @@
     selectedTab === 'goals' ? goalsSimulation.simulationData : investmentsSimulation.simulationData,
   )
 
-  const transactions = $derived(selectedTab === 'goals' ? goalTransactions : investmentTransactions)
+  const transactionCount = $derived(
+    investments.reduce((sum, inv) => sum + inv.transactions.length, 0),
+  )
 
   const hasAnyInvestments = $derived(goals.length > 0 || regularInvestments.length > 0)
 
@@ -205,7 +192,7 @@
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
-            transactionCount={transactions.length}
+            {transactionCount}
             {clientId}
             {portfolioId}
           />
@@ -224,7 +211,7 @@
           simulationData={graphData}
           bind:adjustWithInflation
           {investmentsViewStore}
-          isEmpty={transactions.length === 0}
+          isEmpty={transactionCount === 0}
           clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
           {sidebarButton}
           disableInteraction={graphData.isCalculating}
@@ -281,7 +268,7 @@
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
-            transactionCount={transactions.length}
+            {transactionCount}
             {clientId}
             {portfolioId}
             {parentContainer}

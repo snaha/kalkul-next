@@ -59,7 +59,6 @@ export const investmentSchema = z.object({
 
 export const transactionSchema = z.object({
   id: z.string(),
-  investment_id: z.string(),
   amount: z.number(),
   date: z.string(),
   end_date: z.string().nullable(),
@@ -112,10 +111,6 @@ export const goalDataSchema = z.discriminatedUnion('type', [
   educationGoalDataSchema,
 ])
 
-export const goalSchema = investmentSchema.extend({
-  goal_data: goalDataSchema,
-})
-
 // --- Derived types ---
 
 export type Client = z.infer<typeof clientSchema>
@@ -129,7 +124,6 @@ export type PeriodicWithdrawalGoalData = z.infer<typeof periodicWithdrawalGoalDa
 export type RetirementGoalData = z.infer<typeof retirementGoalDataSchema>
 export type EducationGoalData = z.infer<typeof educationGoalDataSchema>
 export type GoalData = z.infer<typeof goalDataSchema>
-export type Goal = z.infer<typeof goalSchema>
 
 // --- Other schemas ---
 

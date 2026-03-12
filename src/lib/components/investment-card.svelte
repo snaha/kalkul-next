@@ -1,5 +1,10 @@
 <script lang="ts">
-  import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+  import type {
+    EnrichedInvestment,
+    EnrichedTransaction,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import {
     CenterSquare,
     ChevronRight,
@@ -31,15 +36,18 @@
   import Loader from './ui/loader.svelte'
 
   type Props = {
-    investment: InvestmentWithColorIndex
-    portfolio: Portfolio
+    investment: InvestmentWithColorIndex & EnrichedInvestment
+    portfolio: PortfolioNested
     clientId: string
     viewOnly?: boolean
     index: number
     hidden: boolean
     focused: boolean
     showInflation?: boolean
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    openTransaction?: (
+      investment: InvestmentWithColorIndex,
+      transaction?: EnrichedTransaction,
+    ) => void
     toggleHide: () => void
     toggleFocus: () => void
     open?: boolean
@@ -64,7 +72,6 @@
     isCalculating = false,
   }: Props = $props()
 
-  let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
   let showDeleteInvestmentModal = $state(false)
   const transactions = $derived(appStore.getTransactions(investment.id))
 
@@ -83,8 +90,8 @@
     goto(routes.EDIT_INVESTMENT(clientId, portfolio.id, investment.id))
   }
 
-  function deleteInvestment(investmentId: string) {
-    appStore.deleteInvestment({ id: investmentId })
+  function deleteInvestment() {
+    investment.delete()
   }
 
   $effect(() => {
@@ -175,12 +182,11 @@
                   'component.investmentCard.editInvestmentDetails',
                 )}</ListItem
               >
-              <ListItem onclick={() => appStore.duplicateInvestment(investment.id, portfolio.id)}
+              <ListItem onclick={() => investment.duplicate()}
                 ><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
               >
               <ListItem
                 onclick={() => {
-                  selectedTransactionIdForDeletion = investment.id
                   showDeleteInvestmentModal = true
                 }}><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
               >
@@ -250,16 +256,12 @@
 </div>
 
 <DeleteModal
-  confirm={async () => {
-    if (selectedTransactionIdForDeletion) {
-      await deleteInvestment(selectedTransactionIdForDeletion)
-      selectedTransactionIdForDeletion = undefined
-      showDeleteInvestmentModal = false
-    }
+  confirm={() => {
+    deleteInvestment()
+    showDeleteInvestmentModal = false
   }}
   oncancel={() => {
     showDeleteInvestmentModal = false
-    selectedTransactionIdForDeletion = undefined
   }}
   bind:open={showDeleteInvestmentModal}
   title={$_('component.editInvestment.deleteInvestmentWarningTitle')}

@@ -6,7 +6,7 @@
   import LocalizedDateInput from '$lib/components/localized-date-input.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import type { ClientNoId, Client } from '$lib/types'
+  import type { ClientNoId, EnrichedClient } from '$lib/types'
   import DeleteModal from './delete-modal.svelte'
   import ErrorComp from './error.svelte'
   import type { z, ZodFormattedError } from 'zod'
@@ -19,7 +19,7 @@
 
   type Props = {
     close: () => void
-    client?: Client
+    client?: EnrichedClient
   }
 
   let { close, client }: Props = $props()
@@ -77,8 +77,7 @@
       return
     }
 
-    appStore.updateClient({
-      id: client.id,
+    client.update({
       name,
       birth_date: birthDate.toDateString(),
     })
@@ -90,7 +89,7 @@
       return
     }
     showConfirmModal = false
-    appStore.deleteClient(client)
+    client.delete()
     close()
   }
 

@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js'
-import { type Investment, type Portfolio, type Transaction } from '$lib/types'
+import { type Investment, type InvestmentNested, type Portfolio } from '$lib/types'
 import {
   type PortfolioPeriodCount,
   type PortfolioPeriod,
@@ -379,39 +379,29 @@ const portfolioDataCache = new Map<
   { data: GraphData[]; total: GraphData; timestamp: number }
 >()
 
-function getPortfolioCacheKey(
-  transactions: Transaction[],
-  investments: Investment[],
-  portfolio: Portfolio,
-): string {
+function getPortfolioCacheKey(investments: InvestmentNested[], portfolio: Portfolio): string {
   return createHash({
-    transactions: transactions,
     investments: investments,
     portfolio: portfolio,
   })
 }
 
 /**
- * Prepares base calculation data for each investment by filtering its transactions
+ * Prepares base calculation data for each investment using its nested transactions
  * and computing initial date ranges and transaction maps.
  *
- * @param investments - Array of investments to prepare
- * @param transactions - All transactions (will be filtered per investment)
+ * @param investments - Array of investments with nested transactions
  * @param portfolio - Portfolio configuration
  * @returns Array of base data with investment reference
  */
 export function prepareInvestmentBaseData(
-  investments: Investment[],
-  transactions: Transaction[],
+  investments: InvestmentNested[],
   portfolio: Portfolio,
 ): Array<{ baseData: ReturnType<typeof getBaseData>; investment: Investment }> {
-  return investments.map((i) => {
-    const filteredTransactions = transactions.filter((t) => t.investment_id === i.id)
-    return {
-      baseData: getBaseData(filteredTransactions, portfolio.inflation_rate, portfolio.start_date),
-      investment: i,
-    }
-  })
+  return investments.map((i) => ({
+    baseData: getBaseData(i.transactions, portfolio.inflation_rate, portfolio.start_date),
+    investment: i,
+  }))
 }
 
 /**
@@ -439,14 +429,13 @@ export function calculateDateRange(
 }
 
 export function getGraphDataForPortfolio(
-  transactions: Transaction[],
-  investments: Investment[],
+  investments: InvestmentNested[],
   portfolio: Portfolio,
 ): {
   total: GraphData
   data: GraphData[]
 } {
-  const cacheKey = getPortfolioCacheKey(transactions, investments, portfolio)
+  const cacheKey = getPortfolioCacheKey(investments, portfolio)
   const now = Date.now()
 
   // Check cache and return if valid (cache for 5 minutes)
@@ -455,7 +444,7 @@ export function getGraphDataForPortfolio(
     return { data: cached.data, total: cached.total }
   }
 
-  const baseData = prepareInvestmentBaseData(investments, transactions, portfolio)
+  const baseData = prepareInvestmentBaseData(investments, portfolio)
   const { startDate, endDate } = calculateDateRange(baseData, portfolio)
 
   const data = baseData.map((d) =>

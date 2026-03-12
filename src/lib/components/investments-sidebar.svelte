@@ -1,5 +1,10 @@
 <script lang="ts">
-  import type { Investment, InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+  import type {
+    EnrichedInvestment,
+    EnrichedTransaction,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import Sidebar from './sidebar.svelte'
   import InvestmentCard from './investment-card.svelte'
   import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
@@ -18,15 +23,18 @@
     isGraphFullscreened: boolean
     isSidebarOpen: boolean
     isSidebarFlexible: boolean
-    portfolio: Portfolio
+    portfolio: PortfolioNested
     clientId: string
-    investments: Investment[]
+    investments: EnrichedInvestment[]
     investmentsViewStore: InvestmentsViewStore
     transactionCount: number
     adjustWithInflation: boolean
     viewOnly: boolean
     graphData?: PortfolioSimulation
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    openTransaction?: (
+      investment: InvestmentWithColorIndex,
+      transaction?: EnrichedTransaction,
+    ) => void
   }
 
   let {

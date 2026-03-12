@@ -122,7 +122,10 @@
     }
 
     // Create goal in database as an investment with goal_data
-    const goalId = appStore.addInvestment(portfolioId, {
+    const portfolio = appStore.findPortfolio(portfolioId)
+    if (!portfolio) return
+
+    const goalId = portfolio.addInvestment({
       name: goalData.name, // Default name - can be edited later
       type: 'goal',
       apy: calculatorData.goalData.apy,
@@ -140,13 +143,16 @@
     })
 
     // Generate and create transactions for this goal
-    const transactions = goalToTransactions(goalData, goalId, {
-      initialSavings: $_('demo.transactions.initialSavings'),
-      regularDeposit: $_('demo.transactions.regularDeposit'),
-      withdrawal: $_('demo.transactions.educationWithdrawal'),
-    })
-    for (const transaction of transactions) {
-      appStore.addTransaction(transaction)
+    const goalInvestment = appStore.findInvestment(goalId)
+    if (goalInvestment) {
+      const transactions = goalToTransactions(goalData, {
+        initialSavings: $_('demo.transactions.initialSavings'),
+        regularDeposit: $_('demo.transactions.regularDeposit'),
+        withdrawal: $_('demo.transactions.educationWithdrawal'),
+      })
+      for (const transaction of transactions) {
+        goalInvestment.addTransaction(transaction)
+      }
     }
 
     // Navigate back to portfolio (before clearing state to avoid $effect redirect)

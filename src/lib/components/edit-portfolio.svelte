@@ -4,7 +4,7 @@
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import type { Client, Portfolio } from '$lib/types'
+  import type { EnrichedClient, EnrichedPortfolio } from '$lib/types'
   import Select from '$lib/components/ui/select/select.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
   import { appStore } from '$lib/stores/app.svelte'
@@ -19,8 +19,8 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    client: Client
-    portfolio?: Portfolio
+    client: EnrichedClient
+    portfolio?: EnrichedPortfolio
     close: () => void
   }
 
@@ -68,7 +68,7 @@
   })
 
   function createPortfolio() {
-    appStore.addPortfolio(client.id, {
+    client.addPortfolio({
       name,
       currency,
       start_date: startDate.toDateString(),
@@ -83,8 +83,7 @@
       return
     }
 
-    appStore.updatePortfolio({
-      id: portfolio.id,
+    portfolio.update({
       name,
       currency,
       start_date: startDate.toDateString(),
@@ -144,7 +143,7 @@
       return
     }
     showConfirmModal = false
-    appStore.deletePortfolio({ id: portfolio.id })
+    portfolio.delete()
     close()
   }
 </script>

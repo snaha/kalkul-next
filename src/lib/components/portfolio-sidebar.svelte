@@ -1,11 +1,11 @@
 <script lang="ts">
   import type {
     Client,
-    Goal,
-    Investment,
+    EnrichedInvestment,
+    EnrichedTransaction,
+    GoalData,
     InvestmentWithColorIndex,
-    Portfolio,
-    Transaction,
+    PortfolioNested,
   } from '$lib/types'
   import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
@@ -25,9 +25,9 @@
 
   interface Props {
     client: Client
-    portfolio: Portfolio
-    goals: Goal[]
-    regularInvestments: Investment[]
+    portfolio: PortfolioNested
+    goals: (EnrichedInvestment & { goal_data: GoalData })[]
+    regularInvestments: EnrichedInvestment[]
     isGraphFullscreened: boolean
     isSidebarFlexible: boolean
     isSidebarOpen: boolean
@@ -60,13 +60,17 @@
   }: Props = $props()
 
   // Transaction editing state - managed internally
-  let editedTransaction: Transaction | undefined = $state()
-  let selectedInvestment: InvestmentWithColorIndex | undefined = $state()
+  let editedTransaction: EnrichedTransaction | undefined = $state()
+  let selectedInvestment: (InvestmentWithColorIndex & EnrichedInvestment) | undefined = $state()
   let open = $state(false)
   let prevSelectedTab = $state(selectedTab)
 
-  function openTransaction(investment: InvestmentWithColorIndex, transaction?: Transaction) {
-    selectedInvestment = investment
+  function openTransaction(
+    investment: InvestmentWithColorIndex,
+    transaction?: EnrichedTransaction,
+  ) {
+    // The investment objects from the store are EnrichedInvestment at runtime
+    selectedInvestment = investment as InvestmentWithColorIndex & EnrichedInvestment
     if (transaction) editedTransaction = transaction
   }
 

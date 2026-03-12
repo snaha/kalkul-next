@@ -5,7 +5,7 @@
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { type Investment, type Portfolio } from '$lib/types'
+  import { type EnrichedInvestment, type EnrichedPortfolio } from '$lib/types'
   import {
     DEFAULT_ENTRY_FEE_TYPE,
     DEFAULT_FEE_TYPE,
@@ -25,8 +25,8 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    portfolio: Portfolio
-    investment?: Investment
+    portfolio: EnrichedPortfolio
+    investment?: EnrichedInvestment
     close: () => void
   }
 
@@ -82,7 +82,7 @@
   })
 
   function createInvestment() {
-    appStore.addInvestment(portfolio.id, {
+    portfolio.addInvestment({
       name,
       apy: Number(apy),
       entry_fee: Number(entryFee),
@@ -104,8 +104,7 @@
       return
     }
 
-    appStore.updateInvestment({
-      id: investment.id,
+    investment.update({
       name,
       apy: Number(apy),
       entry_fee: Number(entryFee),
@@ -133,7 +132,7 @@
       return
     }
 
-    appStore.deleteInvestment({ id: investment.id })
+    investment.delete()
     close()
   }
 

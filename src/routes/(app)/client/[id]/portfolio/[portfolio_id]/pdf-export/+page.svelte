@@ -25,7 +25,6 @@
       .filter((d) => !isNaN(d.getTime())) || [],
   )
   const investments = $derived(appStore.getInvestments(portfolioId))
-  const transactions = $derived(investments.flatMap((i) => appStore.getTransactions(i.id)))
 
   const investmentsViewStore = $derived(
     withInvestmentsViewStore(appStore.getInvestments(portfolioId)),
@@ -34,13 +33,13 @@
   let isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
-  const { total, data } = $derived(getGraphDataForPortfolio(transactions, investments, portfolio!))
+  const { total, data } = $derived(getGraphDataForPortfolio(investments, portfolio!))
 
   const lowColor = getCSSVariableValue('--colors-low')
   const baseColor = `${getCSSVariableValue('--colors-base')}cc`
 
   const graphValueData = $derived(
-    portfolio && investments && transactions
+    portfolio && investments
       ? deriveGraphValueData({
           portfolio,
           investments,

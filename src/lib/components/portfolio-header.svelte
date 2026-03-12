@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { appStore } from '$lib/stores/app.svelte'
   import DeleteModal from './delete-modal.svelte'
   import { goto } from '$app/navigation'
   import routes from '$lib/routes'
@@ -17,13 +16,13 @@
   import Dropdown from './ui/dropdown.svelte'
   import List from './ui/list/list.svelte'
   import ListItem from './ui/list/list-item.svelte'
-  import type { Client, Investment, Portfolio } from '$lib/types'
+  import type { EnrichedClient, EnrichedPortfolio, Investment } from '$lib/types'
   import PortfolioHeaderView from './portfolio-header-view.svelte'
   import { layoutStore } from '$lib/stores/layout.svelte'
 
   type Props = {
-    client: Client
-    portfolio: Portfolio
+    client: EnrichedClient
+    portfolio: EnrichedPortfolio
     investments: Investment[]
     back?: () => void
     adjustWithInflation: boolean
@@ -56,7 +55,7 @@
   }
 
   async function deletePortfolio() {
-    appStore.deletePortfolio({ id: portfolio.id })
+    portfolio.delete()
     await goto(routes.CLIENT(client.id))
     showConfirmModal = false
   }
@@ -104,7 +103,7 @@
         >
         <ListItem
           onclick={() => {
-            const duplicatedPortfolioId = appStore.duplicatePortfolio(client.id, portfolio.id)
+            const duplicatedPortfolioId = portfolio.duplicate()
             if (duplicatedPortfolioId) {
               goto(routes.CLIENT_PORTFOLIO(client.id, duplicatedPortfolioId))
             }

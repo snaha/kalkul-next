@@ -1,4 +1,4 @@
-import type { Investment, Portfolio, Transaction } from '$lib/types'
+import type { InvestmentNested, Portfolio } from '$lib/types'
 import type { GraphData } from '$lib/@snaha/kalkul-maths'
 import {
   getGraphData,
@@ -48,14 +48,9 @@ interface PortfolioSimulationStore {
    * investment is calculated.
    *
    * @param portfolio - Portfolio configuration
-   * @param investments - Array of investments to calculate
-   * @param transactions - All transactions for the investments
+   * @param investments - Array of investments with nested transactions
    */
-  calculateIteratively: (
-    portfolio: Portfolio,
-    investments: Investment[],
-    transactions: Transaction[],
-  ) => void
+  calculateIteratively: (portfolio: Portfolio, investments: InvestmentNested[]) => void
 }
 
 /**
@@ -76,8 +71,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
   let calculationQueue:
     | {
         portfolio: Portfolio
-        investments: Investment[]
-        transactions: Transaction[]
+        investments: InvestmentNested[]
         currentIndex: number
         accumulatedTotal: GraphData | undefined
         baseData: ReturnType<typeof prepareInvestmentBaseData>
@@ -146,11 +140,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
       return simulationData
     },
 
-    calculateIteratively(
-      portfolio: Portfolio,
-      investments: Investment[],
-      transactions: Transaction[],
-    ) {
+    calculateIteratively(portfolio: Portfolio, investments: InvestmentNested[]) {
       // Reset state for new calculation
       calculationQueue = undefined
 
@@ -165,7 +155,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
       }
 
       // Prepare base calculation data for all investments
-      const baseData = prepareInvestmentBaseData(investments, transactions, portfolio)
+      const baseData = prepareInvestmentBaseData(investments, portfolio)
 
       // Calculate overall date range from all investments
       const { startDate, endDate } = calculateDateRange(baseData, portfolio)
@@ -181,7 +171,6 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
       calculationQueue = {
         portfolio,
         investments,
-        transactions,
         currentIndex: 0,
         accumulatedTotal: undefined,
         baseData,

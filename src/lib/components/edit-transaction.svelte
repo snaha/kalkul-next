@@ -7,9 +7,10 @@
   import Typography from '$lib/components/ui/typography.svelte'
   import {
     type Client,
+    type EnrichedInvestment,
+    type EnrichedTransaction,
     type InvestmentWithColorIndex,
     type Portfolio,
-    type Transaction,
   } from '$lib/types'
   import {
     type Period,
@@ -17,7 +18,6 @@
     calculateTotalDisplayAmount,
     type Transaction as MathTransaction,
   } from '$lib/@snaha/kalkul-maths'
-  import { appStore } from '$lib/stores/app.svelte'
   import Select from '$lib/components/ui/select/select.svelte'
   import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
   import {
@@ -37,10 +37,10 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    investment: InvestmentWithColorIndex
+    investment: InvestmentWithColorIndex & EnrichedInvestment
     portfolio: Portfolio
     client: Client
-    transaction?: Transaction
+    transaction?: EnrichedTransaction
     showInflation?: boolean
     close: () => void
   }
@@ -118,8 +118,7 @@
       return
     }
 
-    appStore.addTransaction({
-      investment_id: investment.id,
+    investment.addTransaction({
       type: transactionType,
       amount,
       label,
@@ -137,9 +136,7 @@
       return
     }
 
-    appStore.updateTransaction({
-      id: transaction.id,
-      investment_id: investment.id,
+    transaction.update({
       type: transactionType,
       amount,
       label,
@@ -158,7 +155,7 @@
     }
 
     if (confirm($_('component.editTransaction.deleteConfirmWarning'))) {
-      appStore.deleteTransaction(transaction)
+      transaction.delete()
       close()
     }
   }

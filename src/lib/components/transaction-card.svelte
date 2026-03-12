@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { Transaction, Portfolio } from '$lib/types'
+  import type { EnrichedTransaction, Portfolio } from '$lib/types'
   import { ChevronRight, Edit, Copy, TrashCan, OverflowMenuVertical } from 'carbon-icons-svelte'
   import Typography from './ui/typography.svelte'
   import { _, locale } from 'svelte-i18n'
   import { formatCurrency } from '$lib/utils'
-  import { appStore } from '$lib/stores/app.svelte'
   import Horizontal from './ui/horizontal.svelte'
   import FlexItem from './ui/flex-item.svelte'
   import {
@@ -21,12 +20,12 @@
   import { WarningAltFilled } from 'carbon-icons-svelte'
 
   type Props = {
-    transaction: Transaction
+    transaction: EnrichedTransaction
     portfolio: Portfolio
     currency: string
     viewOnly: boolean
     showInflation?: boolean
-    editTransaction?: (transaction: Transaction) => void
+    editTransaction?: (transaction: EnrichedTransaction) => void
     exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
   }
 
@@ -61,7 +60,7 @@
     }
 
     if (confirm($_('component.transactionCard.deleteWarning'))) {
-      appStore.deleteTransaction(transaction)
+      transaction.delete()
     }
   }
 
@@ -72,11 +71,7 @@
       return
     }
 
-    const duplicatedTransaction = {
-      ...transaction,
-      id: undefined,
-    }
-    appStore.addTransaction(duplicatedTransaction)
+    transaction.duplicate()
   }
 
   function localisedAbbreviatedPeriod(period: Period) {
