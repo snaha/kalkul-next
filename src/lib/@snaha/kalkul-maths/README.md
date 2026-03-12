@@ -264,7 +264,12 @@ const investments = [
   },
 ]
 
-const totalPortfolioValue = getCurrentPortfolioValue(investments)
+const transactionStore = {
+  filter: (investmentId: string) =>
+    investments.find((i) => i.id === investmentId)?.transactions ?? [],
+}
+
+const totalPortfolioValue = getCurrentPortfolioValue(transactionStore, investments)
 console.log(`Total portfolio value: ${totalPortfolioValue}`)
 ```
 

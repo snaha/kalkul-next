@@ -118,30 +118,24 @@ Goals and investments share the same `InvestmentStore` type but are stored in se
 
 ### How Enrichment Works
 
-Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "enriches" each object by attaching non-enumerable CRUD methods via `Object.defineProperty()`. This means:
+Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "enriches" this data by wrapping it in plain object literals that expose CRUD methods and a `toJSON()` implementation. This means:
 
-- Methods don't appear in `JSON.stringify()` output (safe for persistence)
-- A `WeakMap` tracks parent back-references (child → parent) so that `delete()` and `duplicate()` can find and modify the parent's array
-- After any mutation, `persist()` saves to localStorage and reassigns the `clients` array to trigger Svelte's `$state.raw` reactivity
+- `toJSON()` returns the underlying plain data, so `JSON.stringify()` stays safe for persistence
+- Child stores receive their parent (and the relevant array key) explicitly as arguments, so `delete()` and `duplicate()` can find and modify the parent's array directly
+- After any mutation, `persist()` saves to localStorage and the relevant store array (e.g. `clients`) is reassigned to trigger Svelte's `$state.raw` reactivity
 
 ### AppStore Root
 
-| Method / Property               | Description                                            |
-| ------------------------------- | ------------------------------------------------------ |
-| `clients`                       | Reactive array of all enriched clients                 |
-| `loading`                       | `true` until initial data load completes               |
-| `load()`                        | Load from localStorage and enrich all objects          |
-| `reset()`                       | Clear all data, set loading to `true`                  |
-| `findClient(id)`                | Find client by ID                                      |
-| `findPortfolio(id)`             | Find portfolio by ID (searches all clients)            |
-| `findInvestment(id)`            | Find investment by ID (searches investments and goals) |
-| `findTransaction(id)`           | Find transaction by ID (searches entire tree)          |
-| `getPortfolios(clientId)`       | Get portfolios for a client                            |
-| `getInvestments(portfolioId)`   | Get investments for a portfolio                        |
-| `getTransactions(investmentId)` | Get transactions for an investment                     |
-| `addClient(data)`               | Add a new client, returns ID                           |
-| `exportBackup()`                | JSON string of all data                                |
-| `importBackup(json)`            | Import and enrich from JSON string                     |
+| Method / Property    | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `clients`            | Reactive array of all enriched clients        |
+| `loading`            | `true` until initial data load completes      |
+| `load()`             | Load from localStorage and enrich all objects |
+| `reset()`            | Clear all data, set loading to `true`         |
+| `findClient(id)`     | Find client by ID                             |
+| `addClient(data)`    | Add a new client, returns ID                  |
+| `exportBackup()`     | JSON string of all data                       |
+| `importBackup(json)` | Import and enrich from JSON string            |
 
 ### ClientStore
 
@@ -186,12 +180,13 @@ Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "e
 
 ```typescript
 // Find and update
-const portfolio = appStore.findPortfolio(id)
+const client = appStore.findClient(id)
+const portfolio = client?.portfolios.find((p) => p.id === portfolioId)
 portfolio?.update({ name: 'New Name' })
 
 // Add nested data
 const investmentId = portfolio?.addInvestment({ name: 'ETF', apy: 7, ... })
-const investment = appStore.findInvestment(investmentId)
+const investment = portfolio?.investments.find((i) => i.id === investmentId)
 investment?.addTransaction({ amount: 1000, date: '2024-01-01', type: 'deposit', ... })
 
 // Delete (automatically removes from parent)
