@@ -12,7 +12,7 @@
   import routes from '$lib/routes'
   import { page } from '$app/state'
   import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import type { EducationGoalData } from '$lib/types'
   import { goalToTransactions } from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/goal-transactions'
   import ContentLayout from '$lib/components/content-layout.svelte'
@@ -102,7 +102,7 @@
     history.back()
   }
 
-  async function saveGoal(finalDepositAmount: number) {
+  function saveGoal(finalDepositAmount: number) {
     if (!calculatorData) return
 
     // Ensure deposit amount is valid (not NaN or undefined)
@@ -122,8 +122,7 @@
     }
 
     // Create goal in database as an investment with goal_data
-    const goalId = await adapter.addGoal({
-      portfolio_id: portfolioId,
+    const goalId = appStore.addInvestment(portfolioId, {
       name: goalData.name, // Default name - can be edited later
       type: 'goal',
       apy: calculatorData.goalData.apy,
@@ -147,14 +146,14 @@
       withdrawal: $_('demo.transactions.educationWithdrawal'),
     })
     for (const transaction of transactions) {
-      await adapter.addTransaction(transaction)
+      appStore.addTransaction(transaction)
     }
 
-    // Navigate back to portfolio first (before clearing state to avoid $effect redirect)
-    await goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))
-
-    // Clear temporary state after navigation
-    goalCalculatorStore.clearGoalInput()
+    // Navigate back to portfolio (before clearing state to avoid $effect redirect)
+    goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId)).then(() => {
+      // Clear temporary state after navigation
+      goalCalculatorStore.clearGoalInput()
+    })
   }
 </script>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { cascadeDuplicateInvestment } from '$lib/cascade'
   import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
   import {
     CenterSquare,
@@ -24,9 +23,8 @@
   import Vertical from './ui/vertical.svelte'
   import TransactionCard from './transaction-card.svelte'
   import Divider from './ui/divider.svelte'
-  import adapters from '$lib/adapters'
   import { base } from '$app/paths'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import DeleteModal from './delete-modal.svelte'
   import InvestmentColorBox from './investment-color-box.svelte'
   import Badge from './ui/badge.svelte'
@@ -35,6 +33,7 @@
   type Props = {
     investment: InvestmentWithColorIndex
     portfolio: Portfolio
+    clientId: string
     viewOnly?: boolean
     index: number
     hidden: boolean
@@ -51,6 +50,7 @@
   let {
     investment,
     portfolio,
+    clientId,
     viewOnly = false,
     index,
     hidden,
@@ -66,7 +66,7 @@
 
   let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
   let showDeleteInvestmentModal = $state(false)
-  const transactions = $derived(transactionStore.filter(investment.id))
+  const transactions = $derived(appStore.getTransactions(investment.id))
 
   function cardOpenInvestment(e: MouseEvent) {
     if (e.defaultPrevented) {
@@ -80,11 +80,11 @@
   }
 
   function editInvestment() {
-    goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
+    goto(routes.EDIT_INVESTMENT(clientId, portfolio.id, investment.id))
   }
 
-  async function deleteInvestment(investmentId: string) {
-    await adapters.deleteInvestment({ id: investmentId })
+  function deleteInvestment(investmentId: string) {
+    appStore.deleteInvestment({ id: investmentId })
   }
 
   $effect(() => {
@@ -175,8 +175,7 @@
                   'component.investmentCard.editInvestmentDetails',
                 )}</ListItem
               >
-              <ListItem
-                onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
+              <ListItem onclick={() => appStore.duplicateInvestment(investment.id, portfolio.id)}
                 ><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
               >
               <ListItem

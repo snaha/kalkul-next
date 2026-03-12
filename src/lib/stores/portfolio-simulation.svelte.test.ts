@@ -6,7 +6,6 @@ import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 describe('withPortfolioSimulationStore', () => {
   const mockPortfolio: Portfolio = {
     id: 'test-portfolio-1',
-    client: 'test-client-1',
     name: 'Test Portfolio',
     currency: 'USD',
     start_date: '2024-01-01',
@@ -14,12 +13,10 @@ describe('withPortfolioSimulationStore', () => {
     inflation_rate: 0.03,
     created_at: '2024-01-01',
     last_edited_at: '2024-01-01',
-    link: null,
   }
 
   const mockInvestment1: Investment = {
     id: 'test-investment-1',
-    portfolio_id: 'test-portfolio-1',
     name: 'Investment 1',
     apy: 5,
     entry_fee: 0,
@@ -38,7 +35,6 @@ describe('withPortfolioSimulationStore', () => {
 
   const mockInvestment2: Investment = {
     id: 'test-investment-2',
-    portfolio_id: 'test-portfolio-1',
     name: 'Investment 2',
     apy: 7,
     entry_fee: 0,

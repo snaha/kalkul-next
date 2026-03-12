@@ -5,14 +5,11 @@
   import Loader from '$lib/components/ui/loader.svelte'
   import routes from '$lib/routes'
   import { page } from '$app/state'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
   import { goto } from '$app/navigation'
-  import { investmentStore } from '$lib/stores/investment.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import PortfolioHeader from '$lib/components/portfolio-header.svelte'
   import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
   import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import { base } from '$app/paths'
   import { layoutStore } from '$lib/stores/layout.svelte'
@@ -24,31 +21,25 @@
   import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
 
   const clientId = $derived(page.params.id)
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+  const portfolio = $derived(appStore.findPortfolio(portfolioId))
 
   let selectedTab = $state<'goals' | 'investments'>('goals')
 
   // Filter goals and regular investments using store methods
-  const goals = $derived(investmentStore.filterGoals(portfolioId))
-  const regularInvestments = $derived(investmentStore.filterRegularInvestments(portfolioId))
+  const goals = $derived(appStore.getGoals(portfolioId))
+  const regularInvestments = $derived(appStore.getRegularInvestments(portfolioId))
 
   // Separate simulations for goals and investments to avoid recalculation on tab switch
   const goalsSimulation = withPortfolioSimulationStore()
   const investmentsSimulation = withPortfolioSimulationStore()
 
   // Get transactions for goals and investments separately
-  const goalIds = $derived(goals.map((goal) => goal.id))
-  const goalTransactions = $derived(
-    transactionStore.data.filter((transaction) => goalIds.includes(transaction.investment_id)),
-  )
+  const goalTransactions = $derived(goals.flatMap((goal) => appStore.getTransactions(goal.id)))
 
-  const investmentIds = $derived(regularInvestments.map((investment) => investment.id))
   const investmentTransactions = $derived(
-    transactionStore.data.filter((transaction) =>
-      investmentIds.includes(transaction.investment_id),
-    ),
+    regularInvestments.flatMap((investment) => appStore.getTransactions(investment.id)),
   )
 
   // Calculate goals data when goals change
@@ -93,15 +84,10 @@
   const hasAnyInvestments = $derived(goals.length > 0 || regularInvestments.length > 0)
 
   const investmentsViewStore = $derived(
-    withInvestmentsViewStore(investmentStore.filter(portfolioId)),
+    withInvestmentsViewStore(appStore.getInvestments(portfolioId)),
   )
 
-  const isLoading = $derived(
-    clientStore.loading ||
-      portfolioStore.loading ||
-      investmentStore.loading ||
-      transactionStore.loading,
-  )
+  const isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
   let isGraphFullscreened = $state(false)

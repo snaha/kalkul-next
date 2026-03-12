@@ -1,5 +1,5 @@
 <script lang="ts">
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import { Close } from 'carbon-icons-svelte'
   import { _ } from 'svelte-i18n'
   import Button from '$lib/components/ui/button.svelte'
@@ -44,7 +44,7 @@
     }
   })
 
-  async function create() {
+  function create() {
     error = undefined
     if (!birthDate) {
       error = $_('error.birthDateUndefined')
@@ -57,7 +57,7 @@
         birth_date: birthDate.toDateString(),
         email,
       }
-      await adapter.addClient(client)
+      appStore.addClient(client)
       name = ''
       birthDate = undefined
       close()
@@ -72,12 +72,12 @@
     close()
   }
 
-  async function updateClient() {
+  function updateClient() {
     if (!client || !birthDate) {
       return
     }
 
-    await adapter.updateClient({
+    appStore.updateClient({
       id: client.id,
       name,
       birth_date: birthDate.toDateString(),
@@ -85,12 +85,12 @@
     close()
   }
 
-  async function deleteClient() {
+  function deleteClient() {
     if (!client) {
       return
     }
     showConfirmModal = false
-    await adapter.deleteClient(client)
+    appStore.deleteClient(client)
     close()
   }
 

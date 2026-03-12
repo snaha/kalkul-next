@@ -6,7 +6,7 @@
   import { ArrowLeft, Download, Upload } from 'carbon-icons-svelte'
   import { _, locale } from 'svelte-i18n'
   import { goto } from '$app/navigation'
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import { LOCALE_STORAGE_KEY } from '$lib/locales'
   import Header from '$lib/components/header.svelte'
   import ContentLayout from '$lib/components/content-layout.svelte'
@@ -31,7 +31,7 @@
   }
 
   function exportBackup() {
-    const data = adapter.exportBackup()
+    const data = appStore.exportBackup()
     const blob = new Blob([data], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -54,7 +54,7 @@
 
       try {
         const text = await file.text()
-        adapter.importBackup(text)
+        appStore.importBackup(text)
         importSuccess = true
       } catch {
         importError = $_('settings.importError')

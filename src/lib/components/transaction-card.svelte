@@ -4,7 +4,7 @@
   import Typography from './ui/typography.svelte'
   import { _, locale } from 'svelte-i18n'
   import { formatCurrency } from '$lib/utils'
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import Horizontal from './ui/horizontal.svelte'
   import FlexItem from './ui/flex-item.svelte'
   import {
@@ -53,7 +53,7 @@
     ),
   )
   const totalAmount = $derived(showInflation ? totalAmounts.adjusted : totalAmounts.nominal)
-  async function deleteTransaction(e: Event) {
+  function deleteTransaction(e: Event) {
     e.stopPropagation()
 
     if (!transaction.id) {
@@ -61,11 +61,11 @@
     }
 
     if (confirm($_('component.transactionCard.deleteWarning'))) {
-      await adapter.deleteTransaction(transaction)
+      appStore.deleteTransaction(transaction)
     }
   }
 
-  async function duplicateTransaction(e: Event) {
+  function duplicateTransaction(e: Event) {
     e.stopPropagation()
 
     if (!transaction.id) {
@@ -76,7 +76,7 @@
       ...transaction,
       id: undefined,
     }
-    await adapter.addTransaction(duplicatedTransaction)
+    appStore.addTransaction(duplicatedTransaction)
   }
 
   function localisedAbbreviatedPeriod(period: Period) {

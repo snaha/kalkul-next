@@ -17,7 +17,7 @@
     calculateTotalDisplayAmount,
     type Transaction as MathTransaction,
   } from '$lib/@snaha/kalkul-maths'
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import Select from '$lib/components/ui/select/select.svelte'
   import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
   import {
@@ -113,12 +113,12 @@
     }
   })
 
-  async function createTransaction() {
+  function createTransaction() {
     if (amount === undefined || amount <= 0) {
       return
     }
 
-    await adapter.addTransaction({
+    appStore.addTransaction({
       investment_id: investment.id,
       type: transactionType,
       amount,
@@ -132,12 +132,12 @@
     close()
   }
 
-  async function editTransaction() {
+  function editTransaction() {
     if (!transaction || amount === undefined || amount <= 0) {
       return
     }
 
-    await adapter.updateTransaction({
+    appStore.updateTransaction({
       id: transaction.id,
       investment_id: investment.id,
       type: transactionType,
@@ -152,13 +152,13 @@
     close()
   }
 
-  async function deleteTransaction() {
+  function deleteTransaction() {
     if (!transaction) {
       return
     }
 
     if (confirm($_('component.editTransaction.deleteConfirmWarning'))) {
-      await adapter.deleteTransaction(transaction)
+      appStore.deleteTransaction(transaction)
       close()
     }
   }

@@ -4,11 +4,11 @@
   import Fullscreen from '$lib/components/fullscreen.svelte'
   import Loader from '$lib/components/ui/loader.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { _ } from 'svelte-i18n'
 
   const portfolioId = page.params.portfolio_id
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+  const portfolio = $derived(appStore.findPortfolio(portfolioId))
 
   function close() {
     history.back()
@@ -16,7 +16,7 @@
 </script>
 
 <Fullscreen hasCustomHeader={false}>
-  {#if portfolioStore.loading}
+  {#if appStore.loading}
     <Loader />
   {:else if portfolio}
     <EditInvestment {close} {portfolio} />

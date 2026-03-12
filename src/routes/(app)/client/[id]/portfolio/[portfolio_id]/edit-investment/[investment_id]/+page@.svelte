@@ -4,16 +4,13 @@
   import Fullscreen from '$lib/components/fullscreen.svelte'
   import Loader from '$lib/components/ui/loader.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { investmentStore } from '$lib/stores/investment.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { _ } from 'svelte-i18n'
 
   const portfolioId = $derived(page.params.portfolio_id)
   const investmentId = $derived(page.params.investment_id)
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
-  const investment = $derived(
-    investmentStore.data.find((investment) => investment.id === investmentId),
-  )
+  const portfolio = $derived(appStore.findPortfolio(portfolioId))
+  const investment = $derived(appStore.findInvestment(investmentId))
 
   function close() {
     history.back()
@@ -21,7 +18,7 @@
 </script>
 
 <Fullscreen>
-  {#if portfolioStore.loading || investmentStore.loading}
+  {#if appStore.loading}
     <Loader />
   {:else if portfolio && investment}
     <EditInvestment {close} {portfolio} {investment} />

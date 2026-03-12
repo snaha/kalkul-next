@@ -25,11 +25,10 @@
   import TransactionCard from '$lib/components/transaction-card.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
   import { base } from '$app/paths'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import Badge from '$lib/components/ui/badge.svelte'
   import Loader from '$lib/components/ui/loader.svelte'
   import DeleteModal from '$lib/components/delete-modal.svelte'
-  import adapter from '$lib/adapters'
   import { SERIES_COLORS } from '$lib/colors'
   import InvestmentColorBox from './investment-color-box.svelte'
   import { type ExhaustionWarning } from '$lib/@snaha/kalkul-maths'
@@ -80,7 +79,7 @@
   let showDeleteGoalModal = $state(false)
   let selectedGoalIdForDeletion = $state<string | undefined>(undefined)
 
-  const transactions = $derived(providedTransactions ?? transactionStore.filter(investment.id))
+  const transactions = $derived(providedTransactions ?? appStore.getTransactions(investment.id))
   // Linked investments will be implemented in Task 5
   const linkedInvestments = $derived<
     { investment?: InvestmentWithColorIndex; percentage: number }[]
@@ -103,8 +102,8 @@
     alert($_('demo.notImplemented'))
   }
 
-  async function deleteGoal(goalId: string) {
-    await adapter.deleteInvestment({ id: goalId })
+  function deleteGoal(goalId: string) {
+    appStore.deleteInvestment({ id: goalId })
   }
 
   $effect(() => {

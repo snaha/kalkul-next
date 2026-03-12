@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import DeleteModal from './delete-modal.svelte'
   import { goto } from '$app/navigation'
-  import { cascadeDuplicatePortfolio } from '$lib/cascade'
   import routes from '$lib/routes'
   import {
     OverflowMenuVertical,
@@ -19,7 +18,6 @@
   import List from './ui/list/list.svelte'
   import ListItem from './ui/list/list-item.svelte'
   import type { Client, Investment, Portfolio } from '$lib/types'
-  import adapters from '$lib/adapters'
   import PortfolioHeaderView from './portfolio-header-view.svelte'
   import { layoutStore } from '$lib/stores/layout.svelte'
 
@@ -58,12 +56,9 @@
   }
 
   async function deletePortfolio() {
-    portfolioStore.loading = true
-    await adapters.deletePortfolio({ id: portfolio.id })
-    portfolioStore.loading = true
+    appStore.deletePortfolio({ id: portfolio.id })
     await goto(routes.CLIENT(client.id))
     showConfirmModal = false
-    portfolioStore.loading = false
   }
 </script>
 
@@ -108,13 +103,11 @@
           ><Edit size={24} />{$_('component.portfolioHeader.editPortfolio')}</ListItem
         >
         <ListItem
-          onclick={async () => {
-            portfolioStore.loading = true
-            const duplicatedPortfolioId = await cascadeDuplicatePortfolio(client.id, portfolio.id)
-            if (!duplicatedPortfolioId) {
-              return
+          onclick={() => {
+            const duplicatedPortfolioId = appStore.duplicatePortfolio(client.id, portfolio.id)
+            if (duplicatedPortfolioId) {
+              goto(routes.CLIENT_PORTFOLIO(client.id, duplicatedPortfolioId))
             }
-            goto(routes.CLIENT_PORTFOLIO(client.id, duplicatedPortfolioId))
           }}><Copy size={24} />{$_('component.portfolioHeader.duplicatePortfolio')}</ListItem
         >
         <ListItem onclick={() => confirmDeletePortfolio()}

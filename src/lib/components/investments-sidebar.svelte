@@ -19,6 +19,7 @@
     isSidebarOpen: boolean
     isSidebarFlexible: boolean
     portfolio: Portfolio
+    clientId: string
     investments: Investment[]
     investmentsViewStore: InvestmentsViewStore
     transactionCount: number
@@ -33,6 +34,7 @@
     isSidebarOpen = $bindable(),
     isSidebarFlexible,
     portfolio,
+    clientId,
     investments,
     investmentsViewStore,
     transactionCount,
@@ -75,7 +77,7 @@
             ><Button
               variant="strong"
               dimension="compact"
-              onclick={() => goto(routes.NEW_INVESTMENT(portfolio.client, portfolio.id))}
+              onclick={() => goto(routes.NEW_INVESTMENT(clientId, portfolio.id))}
               >{$_('page.portfolio.addInvestment')}</Button
             ></Horizontal
           >
@@ -87,6 +89,7 @@
       <InvestmentCard
         {investment}
         {portfolio}
+        {clientId}
         {viewOnly}
         index={i}
         hidden={investmentsViewStore.isHidden(investment.id)}

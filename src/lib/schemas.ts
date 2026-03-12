@@ -1,5 +1,138 @@
 import { z } from 'zod'
 
+// --- Domain schemas ---
+
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
+export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.record(jsonSchema.optional()),
+    z.array(jsonSchema),
+  ]),
+)
+
+export const clientSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  birth_date: z.string(),
+  created_at: z.string(),
+})
+
+export const portfolioSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  currency: z.string(),
+  start_date: z.string(),
+  end_date: z.string(),
+  inflation_rate: z.number(),
+  created_at: z.string(),
+  last_edited_at: z.string(),
+})
+
+export const transactionTypeSchema = z.enum(['deposit', 'withdrawal'])
+
+export const periodSchema = z.enum(['day', 'week', 'month', 'year'])
+
+export const investmentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  apy: z.number().nullable(),
+  type: z.string().nullable(),
+  created_at: z.string(),
+  last_edited_at: z.string().nullable(),
+  advanced_fees: z.boolean().nullable(),
+  entry_fee: z.number().nullable(),
+  entry_fee_type: z.string().nullable(),
+  exit_fee: z.number().nullable(),
+  exit_fee_type: z.string().nullable(),
+  management_fee: z.number().nullable(),
+  management_fee_type: z.string().nullable(),
+  success_fee: z.number().nullable(),
+  ter: z.number().nullable(),
+  goal_data: jsonSchema.optional(),
+})
+
+export const transactionSchema = z.object({
+  id: z.string(),
+  investment_id: z.string(),
+  amount: z.number(),
+  date: z.string(),
+  end_date: z.string().nullable(),
+  type: transactionTypeSchema,
+  created_at: z.string(),
+  last_edited_at: z.string().nullable(),
+  inflation_adjusted: z.boolean(),
+  label: z.string().nullable(),
+  repeat: z.number().nullable(),
+  repeat_unit: periodSchema.nullable(),
+})
+
+export const investmentNestedSchema = investmentSchema.extend({
+  transactions: z.array(transactionSchema),
+})
+
+export const portfolioNestedSchema = portfolioSchema.extend({
+  investments: z.array(investmentNestedSchema),
+})
+
+export const clientNestedSchema = clientSchema.extend({
+  portfolios: z.array(portfolioNestedSchema),
+})
+
+export const periodicWithdrawalGoalDataSchema = z.object({
+  depositStart: z.string(),
+  depositPeriod: z.enum(['month', 'year']),
+  currentSavings: z.number(),
+  customDepositAmount: z.number().optional(),
+  withdrawalStart: z.string(),
+  withdrawalDuration: z.number(),
+  desiredBudget: z.number(),
+  budgetPeriod: z.enum(['month', 'year']),
+  apy: z.number(),
+  inflation: z.number(),
+})
+
+export const retirementGoalDataSchema = periodicWithdrawalGoalDataSchema.extend({
+  type: z.literal('retirement'),
+})
+
+export const educationGoalDataSchema = periodicWithdrawalGoalDataSchema.extend({
+  type: z.literal('education'),
+  childName: z.string(),
+  name: z.string(),
+})
+
+export const goalDataSchema = z.discriminatedUnion('type', [
+  retirementGoalDataSchema,
+  educationGoalDataSchema,
+])
+
+export const goalSchema = investmentSchema.extend({
+  goal_data: goalDataSchema,
+})
+
+// --- Derived types ---
+
+export type Client = z.infer<typeof clientSchema>
+export type Portfolio = z.infer<typeof portfolioSchema>
+export type Investment = z.infer<typeof investmentSchema>
+export type Transaction = z.infer<typeof transactionSchema>
+export type InvestmentNested = z.infer<typeof investmentNestedSchema>
+export type PortfolioNested = z.infer<typeof portfolioNestedSchema>
+export type ClientNested = z.infer<typeof clientNestedSchema>
+export type PeriodicWithdrawalGoalData = z.infer<typeof periodicWithdrawalGoalDataSchema>
+export type RetirementGoalData = z.infer<typeof retirementGoalDataSchema>
+export type EducationGoalData = z.infer<typeof educationGoalDataSchema>
+export type GoalData = z.infer<typeof goalDataSchema>
+export type Goal = z.infer<typeof goalSchema>
+
+// --- Other schemas ---
+
 export const emailFormSchema = z.object({
   email: z.string().email({ message: 'error.emailError' }),
 })

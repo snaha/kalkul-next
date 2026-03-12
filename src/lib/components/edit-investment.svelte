@@ -12,9 +12,8 @@
     type EntryFeeType,
     type FeeType,
   } from '$lib/@snaha/kalkul-maths'
-  import adapter from '$lib/adapters'
   import Select from '$lib/components/ui/select/select.svelte'
-  import { investmentStore } from '$lib/stores/investment.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { capitalizeFirstLetter } from '$lib/utils'
   import Toggle from './ui/toggle.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -36,7 +35,7 @@
   const defaultName =
     capitalizeFirstLetter($_('common.investment')) +
     ' ' +
-    (investmentStore.filter(portfolio.id).length + 1).toString()
+    (appStore.getInvestments(portfolio.id).length + 1).toString()
 
   let name = $state(defaultName)
   let type = $state('')
@@ -82,9 +81,8 @@
     type = investment.type || ''
   })
 
-  async function createInvestment() {
-    await adapter.addInvestment({
-      portfolio_id: portfolio.id,
+  function createInvestment() {
+    appStore.addInvestment(portfolio.id, {
       name,
       apy: Number(apy),
       entry_fee: Number(entryFee),
@@ -101,14 +99,13 @@
     close()
   }
 
-  async function updateInvestment() {
+  function updateInvestment() {
     if (!investment) {
       return
     }
 
-    await adapter.updateInvestment({
+    appStore.updateInvestment({
       id: investment.id,
-      portfolio_id: portfolio.id,
       name,
       apy: Number(apy),
       entry_fee: Number(entryFee),
@@ -131,12 +128,12 @@
     close()
   }
 
-  async function deleteInvestment() {
+  function deleteInvestment() {
     if (!investment) {
       return
     }
 
-    await adapter.deleteInvestment({ id: investment.id })
+    appStore.deleteInvestment({ id: investment.id })
     close()
   }
 

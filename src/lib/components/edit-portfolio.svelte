@@ -5,11 +5,11 @@
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
   import type { Client, Portfolio } from '$lib/types'
-  import adapter from '$lib/adapters'
   import Select from '$lib/components/ui/select/select.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { capitalizeFirstLetter, formatAge } from '$lib/utils'
+
   import DateAge from './date-age.svelte'
   import DeleteModal from './delete-modal.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -29,7 +29,7 @@
   let name = $state(
     capitalizeFirstLetter($_('common.portfolio')) +
       ' ' +
-      (portfolioStore.filter(client.id).length + 1).toString(),
+      (appStore.getPortfolios(client.id).length + 1).toString(),
   )
   let currency = $state('EUR')
   let inflation = $state('2.25')
@@ -67,25 +67,23 @@
     }
   })
 
-  async function createPortfolio() {
-    await adapter.addPortfolio({
-      client: client.id,
+  function createPortfolio() {
+    appStore.addPortfolio(client.id, {
       name,
       currency,
       start_date: startDate.toDateString(),
       end_date: endDate.toDateString(),
       inflation_rate: Number(inflation) / 100,
-      link: null,
     })
     close()
   }
 
-  async function updatePortfolio() {
+  function updatePortfolio() {
     if (!portfolio) {
       return
     }
 
-    await adapter.updatePortfolio({
+    appStore.updatePortfolio({
       id: portfolio.id,
       name,
       currency,
@@ -141,12 +139,12 @@
     showConfirmModal = true
   }
 
-  async function deletePortfolio() {
+  function deletePortfolio() {
     if (!portfolio) {
       return
     }
     showConfirmModal = false
-    await adapter.deletePortfolio({ id: portfolio.id })
+    appStore.deletePortfolio({ id: portfolio.id })
     close()
   }
 </script>

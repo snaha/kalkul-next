@@ -1,9 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
-  import { investmentStore } from '$lib/stores/investment.svelte'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import { deriveGraphValueData } from '$lib/graph'
   import PdfExport from '$lib/components/pdf-export.svelte'
@@ -14,9 +11,9 @@
   import { getCSSVariableValue } from '$lib/css-vars'
 
   const clientId = $derived(page.params.id)
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+  const portfolio = $derived(appStore.findPortfolio(portfolioId))
 
   // Read PDF export parameters from URL
   const searchParams = $derived(page.url.searchParams)
@@ -27,29 +24,17 @@
       .map((d) => new Date(d))
       .filter((d) => !isNaN(d.getTime())) || [],
   )
-  const investments = $derived(investmentStore.filter(portfolioId))
-  const investmentIds = $derived(investments.map((investment) => investment.id))
-  const transactions = $derived(
-    transactionStore.data.filter((transaction) =>
-      investmentIds.includes(transaction.investment_id),
-    ),
-  )
+  const investments = $derived(appStore.getInvestments(portfolioId))
+  const transactions = $derived(investments.flatMap((i) => appStore.getTransactions(i.id)))
 
   const investmentsViewStore = $derived(
-    withInvestmentsViewStore(investmentStore.filter(portfolioId)),
+    withInvestmentsViewStore(appStore.getInvestments(portfolioId)),
   )
 
-  let isLoading = $derived(
-    clientStore.loading ||
-      portfolioStore.loading ||
-      investmentStore.loading ||
-      transactionStore.loading,
-  )
+  let isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
-  const { total, data } = $derived(
-    getGraphDataForPortfolio(transactionStore.data, investments, portfolio!),
-  )
+  const { total, data } = $derived(getGraphDataForPortfolio(transactions, investments, portfolio!))
 
   const lowColor = getCSSVariableValue('--colors-low')
   const baseColor = `${getCSSVariableValue('--colors-base')}cc`

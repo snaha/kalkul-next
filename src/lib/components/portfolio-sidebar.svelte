@@ -181,6 +181,7 @@
             {isSidebarFlexible}
             bind:isSidebarOpen
             {portfolio}
+            {clientId}
             investments={regularInvestments}
             {investmentsViewStore}
             {transactionCount}

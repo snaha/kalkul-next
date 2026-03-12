@@ -21,7 +21,6 @@ const DEFAULT_INVESTMENT: Investment = {
   management_fee: 0,
   management_fee_type: 'upfront' as const,
   name: '',
-  portfolio_id: 'test-portfolio-1',
   success_fee: 0,
   ter: null,
   type: '',

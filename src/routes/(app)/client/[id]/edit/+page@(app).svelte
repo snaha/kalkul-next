@@ -2,10 +2,10 @@
   import EditClient from '$lib/components/edit-client.svelte'
   import Fullscreen from '$lib/components/fullscreen.svelte'
   import { page } from '$app/state'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
 
   const clientId = page.params.id
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
 
   function close() {
     history.back()

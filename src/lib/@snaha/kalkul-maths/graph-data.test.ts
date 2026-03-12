@@ -230,21 +230,18 @@ describe('inflation-adjusted transactions on graph', () => {
     management_fee: 0,
     management_fee_type: 'upfront',
     name: 'Test',
-    portfolio_id: 'test-portfolio-1',
     success_fee: 0,
     ter: null,
     type: '',
   }
 
   const portfolio: Portfolio = {
-    client: 'test-client-1',
     created_at: '2024-01-01',
     currency: 'USD',
     end_date: '2030-12-31',
     id: 'test-portfolio-1',
     inflation_rate: 0.03,
     last_edited_at: '2024-01-01',
-    link: null,
     name: 'P',
     start_date: '2024-01-01',
   }
@@ -431,14 +428,12 @@ describe('inflation-adjusted transactions on graph', () => {
   it('should use earliest transaction date as inflation baseline', () => {
     // Portfolio runs from 2025-2055 but first transaction is from 1997
     const portfolio: Portfolio = {
-      client: 'test-client-1',
       created_at: '2025-01-13',
       currency: 'EUR',
       end_date: '2055-01-13',
       id: 'test-portfolio-2',
       inflation_rate: 0.0225,
       last_edited_at: '2025-01-13',
-      link: null,
       name: 'Test Portfolio',
       start_date: '2025-01-13',
     }
@@ -501,14 +496,12 @@ describe('inflation-adjusted transactions on graph', () => {
   it('should use portfolio start date when it is earlier than first transaction', () => {
     // Portfolio starts in 1990, first transaction is in 2000
     const portfolio: Portfolio = {
-      client: 'test-client-1',
       created_at: '1990-01-01',
       currency: 'USD',
       end_date: '2030-01-01',
       id: 'test-portfolio-3',
       inflation_rate: 0.05,
       last_edited_at: '1990-01-01',
-      link: null,
       name: 'Early Portfolio',
       start_date: '1990-01-01',
     }
@@ -675,7 +668,6 @@ describe('inflation-adjusted transactions on graph', () => {
 describe('per-investment caching', () => {
   const mockPortfolio: Portfolio = {
     id: 'test-portfolio-1',
-    client: 'test-client-1',
     name: 'Test Portfolio',
     currency: 'USD',
     start_date: '2024-01-01',
@@ -683,12 +675,10 @@ describe('per-investment caching', () => {
     inflation_rate: 0.03,
     created_at: '2024-01-01',
     last_edited_at: '2024-01-01',
-    link: null,
   }
 
   const createMockInvestment = (id: string, apy: number, name?: string): Investment => ({
     id,
-    portfolio_id: 'test-portfolio-1',
     name: name ?? `Investment ${id}`,
     apy,
     entry_fee: 0,
