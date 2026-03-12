@@ -83,11 +83,11 @@ Component tests are ideal for testing complex UI components like the formatted n
 ```typescript
 // src/lib/components/ui/input/formatted-number/formatted-number-input.ct.spec.ts
 test('should format numbers correctly', async ({ mount }) => {
-	const component = await mount(FormattedNumberInput, {
-		props: { value: 1234.56, locale: 'en-US' },
-	})
-	const input = component.locator('input')
-	await expect(input).toHaveValue('1,234.56')
+  const component = await mount(FormattedNumberInput, {
+    props: { value: 1234.56, locale: 'en-US' },
+  })
+  const input = component.locator('input')
+  await expect(input).toHaveValue('1,234.56')
 })
 ```
 

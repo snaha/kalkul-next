@@ -8,18 +8,18 @@ import { getCSSVariableValue } from '$lib/css-vars'
  * @param firstErrorIndex - Index of the first exhaustion
  */
 export function drawExhaustionLine(
-	ctx: CanvasRenderingContext2D,
-	xAxis: { getPixelForValue: (value: number) => number; right: number },
-	lineY: number,
-	firstErrorIndex: number,
+  ctx: CanvasRenderingContext2D,
+  xAxis: { getPixelForValue: (value: number) => number; right: number },
+  lineY: number,
+  firstErrorIndex: number,
 ) {
-	const firstStartX = xAxis.getPixelForValue(firstErrorIndex)
-	ctx.beginPath()
-	ctx.moveTo(firstStartX, lineY)
-	ctx.lineTo(xAxis.right, lineY)
-	ctx.lineWidth = 4
-	ctx.strokeStyle = getCSSVariableValue('--colors-red')
-	ctx.stroke()
+  const firstStartX = xAxis.getPixelForValue(firstErrorIndex)
+  ctx.beginPath()
+  ctx.moveTo(firstStartX, lineY)
+  ctx.lineTo(xAxis.right, lineY)
+  ctx.lineWidth = 4
+  ctx.strokeStyle = getCSSVariableValue('--colors-red')
+  ctx.stroke()
 }
 
 /**
@@ -30,43 +30,43 @@ export function drawExhaustionLine(
  * @param errorIndices - Array of X-axis indices where warnings should be drawn
  */
 export function drawExclamationMarks(
-	ctx: CanvasRenderingContext2D,
-	xAxis: { getPixelForValue: (value: number) => number },
-	iconY: number,
-	errorIndices: number[],
+  ctx: CanvasRenderingContext2D,
+  xAxis: { getPixelForValue: (value: number) => number },
+  iconY: number,
+  errorIndices: number[],
 ) {
-	const redColor = getCSSVariableValue('--colors-red')
-	const width = 32
-	const height = 24
-	const radius = 12
+  const redColor = getCSSVariableValue('--colors-red')
+  const width = 32
+  const height = 24
+  const radius = 12
 
-	for (const errorIndex of errorIndices) {
-		const startX = xAxis.getPixelForValue(errorIndex)
+  for (const errorIndex of errorIndices) {
+    const startX = xAxis.getPixelForValue(errorIndex)
 
-		// Background
-		ctx.fillStyle = redColor
-		ctx.beginPath()
-		ctx.roundRect(startX - width / 2, iconY - height / 2, width, height, radius)
-		ctx.fill()
+    // Background
+    ctx.fillStyle = redColor
+    ctx.beginPath()
+    ctx.roundRect(startX - width / 2, iconY - height / 2, width, height, radius)
+    ctx.fill()
 
-		// Triangle
-		const triangleSize = 14
-		const triangleY = iconY - 1
-		ctx.fillStyle = 'white'
-		ctx.beginPath()
-		ctx.moveTo(startX, triangleY - triangleSize / 2)
-		ctx.lineTo(startX - triangleSize / 2, triangleY + triangleSize / 2)
-		ctx.lineTo(startX + triangleSize / 2, triangleY + triangleSize / 2)
-		ctx.closePath()
-		ctx.fill()
+    // Triangle
+    const triangleSize = 14
+    const triangleY = iconY - 1
+    ctx.fillStyle = 'white'
+    ctx.beginPath()
+    ctx.moveTo(startX, triangleY - triangleSize / 2)
+    ctx.lineTo(startX - triangleSize / 2, triangleY + triangleSize / 2)
+    ctx.lineTo(startX + triangleSize / 2, triangleY + triangleSize / 2)
+    ctx.closePath()
+    ctx.fill()
 
-		// Exclamation line
-		ctx.fillStyle = redColor
-		ctx.fillRect(startX - 0.75, triangleY - 3, 1.5, 6)
+    // Exclamation line
+    ctx.fillStyle = redColor
+    ctx.fillRect(startX - 0.75, triangleY - 3, 1.5, 6)
 
-		// Exclamation dot
-		ctx.beginPath()
-		ctx.arc(startX, triangleY + 5, 1, 0, Math.PI * 2)
-		ctx.fill()
-	}
+    // Exclamation dot
+    ctx.beginPath()
+    ctx.arc(startX, triangleY + 5, 1, 0, Math.PI * 2)
+    ctx.fill()
+  }
 }

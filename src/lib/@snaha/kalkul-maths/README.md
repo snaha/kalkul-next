@@ -30,29 +30,29 @@ pnpm add @snaha/kalkul-maths
 
 ```typescript
 import {
-	getCurrentInvestmentValue,
-	getInvestmentValues,
-	createTransactionMap,
+  getCurrentInvestmentValue,
+  getInvestmentValues,
+  createTransactionMap,
 } from '@snaha/kalkul-maths'
 
 // Create transaction data
 const transactions = [
-	{
-		type: 'deposit',
-		amount: 1000,
-		date: '2024-01-01',
-		end_date: null,
-		repeat: null,
-		repeat_unit: null,
-	},
+  {
+    type: 'deposit',
+    amount: 1000,
+    date: '2024-01-01',
+    end_date: null,
+    repeat: null,
+    repeat_unit: null,
+  },
 ]
 
 // Define investment parameters
 const investment = {
-	apy: 8, // 8% annual return
-	entry_fee: 1, // 1% entry fee
-	entry_fee_type: 'ongoing',
-	// ... other investment properties
+  apy: 8, // 8% annual return
+  entry_fee: 1, // 1% entry fee
+  entry_fee_type: 'ongoing',
+  // ... other investment properties
 }
 
 // Calculate current value
@@ -76,9 +76,9 @@ const currentValue = getCurrentInvestmentValue(baseData, investment)
 
 // Get historical values by period (monthly/yearly)
 const { investmentValues, feeValues } = getInvestmentValues(
-	{ period: 'month', count: 1 },
-	baseData,
-	investment,
+  { period: 'month', count: 1 },
+  baseData,
+  investment,
 )
 ```
 
@@ -104,14 +104,14 @@ Handle various transaction types and recurring patterns.
 import { createTransactionMap, calculateTotalAmount } from '@snaha/kalkul-maths'
 
 const transactions = [
-	{
-		type: 'deposit',
-		amount: 1000,
-		date: '2024-01-01',
-		repeat: 1,
-		repeat_unit: 'month',
-		end_date: '2024-12-31',
-	},
+  {
+    type: 'deposit',
+    amount: 1000,
+    date: '2024-01-01',
+    repeat: 1,
+    repeat_unit: 'month',
+    end_date: '2024-12-31',
+  },
 ]
 
 // Create optimized transaction maps
@@ -137,16 +137,16 @@ const { total, data } = getGraphDataForPortfolio(transactionStore, investments, 
 
 ```typescript
 interface Investment {
-	apy: number // Annual percentage yield
-	entry_fee: number // Entry fee percentage/amount
-	entry_fee_type: 'ongoing' | 'upfront' | 'forty-sixty'
-	exit_fee: number // Exit fee percentage/amount
-	exit_fee_type: 'percentage' | 'fixed'
-	management_fee: number // Management fee percentage/amount
-	management_fee_type: 'percentage' | 'fixed'
-	success_fee: number // Success fee percentage
-	ter: number | null // Total expense ratio
-	// ... other properties
+  apy: number // Annual percentage yield
+  entry_fee: number // Entry fee percentage/amount
+  entry_fee_type: 'ongoing' | 'upfront' | 'forty-sixty'
+  exit_fee: number // Exit fee percentage/amount
+  exit_fee_type: 'percentage' | 'fixed'
+  management_fee: number // Management fee percentage/amount
+  management_fee_type: 'percentage' | 'fixed'
+  success_fee: number // Success fee percentage
+  ter: number | null // Total expense ratio
+  // ... other properties
 }
 ```
 
@@ -172,12 +172,12 @@ interface Investment {
 
 ```typescript
 interface Transaction {
-	type: 'deposit' | 'withdrawal'
-	amount: number
-	date: string // YYYY-MM-DD format
-	end_date?: string | null // For recurring transactions
-	repeat?: number | null // Repeat interval
-	repeat_unit?: 'day' | 'week' | 'month' | 'year' | null
+  type: 'deposit' | 'withdrawal'
+  amount: number
+  date: string // YYYY-MM-DD format
+  end_date?: string | null // For recurring transactions
+  repeat?: number | null // Repeat interval
+  repeat_unit?: 'day' | 'week' | 'month' | 'year' | null
 }
 ```
 
@@ -189,25 +189,25 @@ interface Transaction {
 import { getCurrentInvestmentValue, getBaseData } from '@snaha/kalkul-maths'
 
 const transactions = [
-	{
-		type: 'deposit',
-		amount: 10000,
-		date: '2024-01-01',
-		end_date: null,
-		repeat: null,
-		repeat_unit: null,
-	},
+  {
+    type: 'deposit',
+    amount: 10000,
+    date: '2024-01-01',
+    end_date: null,
+    repeat: null,
+    repeat_unit: null,
+  },
 ]
 
 const investment = {
-	apy: 7,
-	entry_fee: 0,
-	exit_fee: 0,
-	management_fee: 1.5,
-	management_fee_type: 'percentage',
-	success_fee: 0,
-	ter: null,
-	// ... required properties
+  apy: 7,
+  entry_fee: 0,
+  exit_fee: 0,
+  management_fee: 1.5,
+  management_fee_type: 'percentage',
+  success_fee: 0,
+  ter: null,
+  // ... required properties
 }
 
 const baseData = getBaseData(transactions)
@@ -221,20 +221,20 @@ console.log(`Value after one year: ${valueAfterOneYear}`)
 
 ```typescript
 const monthlyInvestment = [
-	{
-		type: 'deposit',
-		amount: 1000,
-		date: '2024-01-01',
-		end_date: '2024-12-31',
-		repeat: 1,
-		repeat_unit: 'month',
-	},
+  {
+    type: 'deposit',
+    amount: 1000,
+    date: '2024-01-01',
+    end_date: '2024-12-31',
+    repeat: 1,
+    repeat_unit: 'month',
+  },
 ]
 
 const { investmentValues } = getInvestmentValues(
-	{ period: 'month', count: 1 },
-	getBaseData(monthlyInvestment),
-	investment,
+  { period: 'month', count: 1 },
+  getBaseData(monthlyInvestment),
+  investment,
 )
 
 // investmentValues contains end-of-month values for each month
@@ -248,12 +248,12 @@ import { getCurrentPortfolioValue } from '@snaha/kalkul-maths'
 
 // Mock transaction store
 const transactionStore = {
-	filter: (investmentId: number) => transactions.filter((t) => t.investment_id === investmentId),
+  filter: (investmentId: number) => transactions.filter((t) => t.investment_id === investmentId),
 }
 
 const investments = [
-	{ id: 1, apy: 8 /* ... */ },
-	{ id: 2, apy: 6 /* ... */ },
+  { id: 1, apy: 8 /* ... */ },
+  { id: 2, apy: 6 /* ... */ },
 ]
 
 const totalPortfolioValue = getCurrentPortfolioValue(transactionStore, investments)
@@ -322,12 +322,12 @@ The library is written in TypeScript and provides full type definitions:
 
 ```typescript
 import type {
-	Investment,
-	Transaction,
-	TransactionMap,
-	InvestmentData,
-	FeeBreakdown,
-	GraphData,
+  Investment,
+  Transaction,
+  TransactionMap,
+  InvestmentData,
+  FeeBreakdown,
+  GraphData,
 } from '@snaha/kalkul-maths'
 ```
 

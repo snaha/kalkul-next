@@ -3,24 +3,24 @@
 <!-- This file contains examples of hardcoded text that should be caught by check-locales -->
 
 <script>
-	/* eslint-disable */
-	// Code snippets that should NOT be caught
-	let message = 'code'
-	const result = someFunction()
-	let formErrors: ZodFormattedError
-	let plugins: Plugin | undefined = undefined
-	const props = $props()
-	if (value > 0 && index < 10) {
-		// do something
-	}
+  /* eslint-disable */
+  // Code snippets that should NOT be caught
+  let message = 'code'
+  const result = someFunction()
+  let formErrors: ZodFormattedError
+  let plugins: Plugin | undefined = undefined
+  const props = $props()
+  if (value > 0 && index < 10) {
+    // do something
+  }
 
-	// Examples that SHOULD be caught - user-facing error messages
-	function validateEmail() {
-		emailError = 'Please enter a valid email address'
-	}
+  // Examples that SHOULD be caught - user-facing error messages
+  function validateEmail() {
+    emailError = 'Please enter a valid email address'
+  }
 
-	let someError = 'This is an error message'
-	/* eslint-enable */
+  let someError = 'This is an error message'
+  /* eslint-enable */
 </script>
 
 <!-- Examples that SHOULD be caught -->
@@ -37,8 +37,8 @@
 
 <!-- 4. Text starting with arrow symbol -->
 <Typography
-	>→ New to Kalkul? We recommend checking our quick start guide. You'll find everything you need to
-	get started.</Typography
+  >→ New to Kalkul? We recommend checking our quick start guide. You'll find everything you need to
+  get started.</Typography
 >
 
 <!-- 5. Text in button -->
@@ -66,19 +66,19 @@
 
 <!-- 10. Text inside Svelte if blocks (like inflation-badge.svelte) -->
 <Badge
-	><Growth size={16} />{#if showText}Inflation adjusted{/if}</Badge
+  ><Growth size={16} />{#if showText}Inflation adjusted{/if}</Badge
 >
 
 <!-- 11. Multi-line text between tags (like in signup page) -->
 <Typography>
-	Get free early access, shape the product with your feedback, and lock in exclusive launch
-	pricing—expected public release: early 2026.
+  Get free early access, shape the product with your feedback, and lock in exclusive launch
+  pricing—expected public release: early 2026.
 </Typography>
 
 <!-- 12. Multi-line text with variant attribute -->
 <Typography variant="small" accent
-	>We're actively developing Kalkul with advisor input. Some features highlighted on our website are
-	still in development and will roll out progressively as they're perfected.</Typography
+  >We're actively developing Kalkul with advisor input. Some features highlighted on our website are
+  still in development and will roll out progressively as they're perfected.</Typography
 >
 
 <!-- 13. Multi-line text with simpler case -->

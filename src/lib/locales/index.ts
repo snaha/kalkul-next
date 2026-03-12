@@ -8,6 +8,6 @@ register('en', () => import('$lib/locales/en.json'))
 register('cs', () => import('$lib/locales/cs.json'))
 
 init({
-	fallbackLocale: defaultLocale,
-	initialLocale: (browser ? window.navigator.language : undefined) ?? defaultLocale,
+  fallbackLocale: defaultLocale,
+  initialLocale: (browser ? window.navigator.language : undefined) ?? defaultLocale,
 })
