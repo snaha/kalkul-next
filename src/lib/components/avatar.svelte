@@ -1,26 +1,26 @@
 <script lang="ts">
-	import { createAvatar } from '@dicebear/core'
-	import { initials } from '@dicebear/collection'
-	import { _ } from 'svelte-i18n'
+  import { createAvatar } from '@dicebear/core'
+  import { initials } from '@dicebear/collection'
+  import { _ } from 'svelte-i18n'
 
-	type Props = {
-		name: string
-		birthDate: Date
-		imageURI?: string
-		size?: number
-	}
+  type Props = {
+    name: string
+    birthDate: Date
+    imageURI?: string
+    size?: number
+  }
 
-	let { name, birthDate, imageURI, size = 40 }: Props = $props()
+  let { name, birthDate, imageURI, size = 40 }: Props = $props()
 
-	const seed = $derived(`${name} ${Number(birthDate)}`)
-	let avatar = $derived(
-		createAvatar(initials, {
-			seed,
-			size,
-			backgroundType: ['gradientLinear'],
-			backgroundRotation: [45],
-		}).toDataUri(),
-	)
+  const seed = $derived(`${name} ${Number(birthDate)}`)
+  let avatar = $derived(
+    createAvatar(initials, {
+      seed,
+      size,
+      backgroundType: ['gradientLinear'],
+      backgroundRotation: [45],
+    }).toDataUri(),
+  )
 </script>
 
 <img src={imageURI || avatar} alt={$_('common.avatar')} width={size} height={size} />

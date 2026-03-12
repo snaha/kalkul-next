@@ -42,7 +42,7 @@ See `README.md` for development commands, project structure, and conventions.
 
    ```svelte
    <script>
-   	import { _, locale } from 'svelte-i18n'
+     import { _, locale } from 'svelte-i18n'
    </script>
 
    <h1>{$_('page.account.settings')}</h1>
@@ -199,21 +199,21 @@ See `README.md` for development commands, project structure, and conventions.
 
 ```typescript
 test('should handle text selection replacement', async ({ mount }) => {
-	const component = await mount(FormattedNumberInput, {
-		props: { value: 1234, locale: 'en-US' },
-	})
-	const input = component.locator('input')
+  const component = await mount(FormattedNumberInput, {
+    props: { value: 1234, locale: 'en-US' },
+  })
+  const input = component.locator('input')
 
-	await input.focus()
-	await expect(input).toHaveValue('1,234')
+  await input.focus()
+  await expect(input).toHaveValue('1,234')
 
-	// Select "23" and replace with "9"
-	await input.evaluate((el) => {
-		;(el as HTMLInputElement).setSelectionRange(2, 4)
-	})
-	await input.press('9')
+  // Select "23" and replace with "9"
+  await input.evaluate((el) => {
+    ;(el as HTMLInputElement).setSelectionRange(2, 4)
+  })
+  await input.press('9')
 
-	await expect(input).toHaveValue('1,94') // Specific expected value
+  await expect(input).toHaveValue('1,94') // Specific expected value
 })
 ```
 

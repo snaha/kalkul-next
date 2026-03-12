@@ -9,42 +9,42 @@ Decimal.set({ precision: 30 })
 const inflationCache = new Map<string, Decimal>()
 
 function getCacheKey(baseDate: string, targetDate: string, inflationRate: number): string {
-	return `${baseDate}:${targetDate}:${inflationRate}`
+  return `${baseDate}:${targetDate}:${inflationRate}`
 }
 
 function getInflationMultiplier(
-	baseDate: string,
-	targetDate: string,
-	inflationRate: number,
+  baseDate: string,
+  targetDate: string,
+  inflationRate: number,
 ): Decimal {
-	const cacheKey = getCacheKey(baseDate, targetDate, inflationRate)
+  const cacheKey = getCacheKey(baseDate, targetDate, inflationRate)
 
-	let multiplier = inflationCache.get(cacheKey)
-	if (multiplier) {
-		return multiplier
-	}
+  let multiplier = inflationCache.get(cacheKey)
+  if (multiplier) {
+    return multiplier
+  }
 
-	const baseDateObj = new Date(baseDate)
-	const targetDateObj = new Date(targetDate)
-	const daysDifference = differenceInDays(targetDateObj, baseDateObj)
+  const baseDateObj = new Date(baseDate)
+  const targetDateObj = new Date(targetDate)
+  const daysDifference = differenceInDays(targetDateObj, baseDateObj)
 
-	if (daysDifference === 0) {
-		multiplier = DECIMAL_1
-	} else {
-		const yearsDifference = daysDifference / DAYS_PER_YEAR
-		multiplier = DECIMAL_1.add(inflationRate).pow(yearsDifference)
-	}
+  if (daysDifference === 0) {
+    multiplier = DECIMAL_1
+  } else {
+    const yearsDifference = daysDifference / DAYS_PER_YEAR
+    multiplier = DECIMAL_1.add(inflationRate).pow(yearsDifference)
+  }
 
-	inflationCache.set(cacheKey, multiplier)
-	return multiplier
+  inflationCache.set(cacheKey, multiplier)
+  return multiplier
 }
 
 export function calculateTotalDepositAmount(deposits: TransactionMap): number {
-	let total = 0
-	for (const [, entry] of deposits) {
-		total += entry.amount
-	}
-	return total
+  let total = 0
+  for (const [, entry] of deposits) {
+    total += entry.amount
+  }
+  return total
 }
 
 /**
@@ -57,35 +57,35 @@ export function calculateTotalDepositAmount(deposits: TransactionMap): number {
  * @returns The inflation-adjusted amount
  */
 export function calculateInflationAdjustedAmount(
-	originalAmount: number,
-	transactionDate: string,
-	baseDate: string,
-	inflationRate: number,
+  originalAmount: number,
+  transactionDate: string,
+  baseDate: string,
+  inflationRate: number,
 ): number {
-	// Use cached inflation multiplier
-	const inflationMultiplier = getInflationMultiplier(baseDate, transactionDate, inflationRate)
+  // Use cached inflation multiplier
+  const inflationMultiplier = getInflationMultiplier(baseDate, transactionDate, inflationRate)
 
-	// Apply inflation adjustment
-	const adjustedAmount = new Decimal(originalAmount).mul(inflationMultiplier)
+  // Apply inflation adjustment
+  const adjustedAmount = new Decimal(originalAmount).mul(inflationMultiplier)
 
-	return adjustedAmount.toNumber()
+  return adjustedAmount.toNumber()
 }
 
 /**
  * Calculate both real and nominal terms in a single operation for performance
  */
 export function calculateBothTerms(
-	nominalAmount: number,
-	transactionDate: string,
-	baseDate: string,
-	inflationRate: number,
+  nominalAmount: number,
+  transactionDate: string,
+  baseDate: string,
+  inflationRate: number,
 ): { real: number; nominal: number } {
-	const inflationMultiplier = getInflationMultiplier(baseDate, transactionDate, inflationRate)
-	const deflationMultiplier = DECIMAL_1.div(inflationMultiplier)
-	const realTermsAmount = new Decimal(nominalAmount).mul(deflationMultiplier)
+  const inflationMultiplier = getInflationMultiplier(baseDate, transactionDate, inflationRate)
+  const deflationMultiplier = DECIMAL_1.div(inflationMultiplier)
+  const realTermsAmount = new Decimal(nominalAmount).mul(deflationMultiplier)
 
-	return {
-		real: realTermsAmount.toNumber(),
-		nominal: nominalAmount,
-	}
+  return {
+    real: realTermsAmount.toNumber(),
+    nominal: nominalAmount,
+  }
 }

@@ -1,341 +1,341 @@
 <script lang="ts">
-	import { cascadeDuplicateInvestment } from '$lib/cascade'
-	import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
-	import {
-		CenterSquare,
-		ChevronRight,
-		Copy,
-		OverflowMenuVertical,
-		Settings,
-		TrashCan,
-		ViewOff,
-		WarningAltFilled,
-	} from 'carbon-icons-svelte'
-	import Button from './ui/button.svelte'
-	import Typography from './ui/typography.svelte'
-	import { _ } from 'svelte-i18n'
-	import { goto } from '$app/navigation'
-	import routes from '$lib/routes'
-	import Dropdown from './ui/dropdown.svelte'
-	import List from './ui/list/list.svelte'
-	import ListItem from './ui/list/list-item.svelte'
-	import Horizontal from './ui/horizontal.svelte'
-	import FlexItem from './ui/flex-item.svelte'
-	import Vertical from './ui/vertical.svelte'
-	import TransactionCard from './transaction-card.svelte'
-	import Divider from './ui/divider.svelte'
-	import adapters from '$lib/adapters'
-	import { base } from '$app/paths'
-	import { transactionStore } from '$lib/stores/transaction.svelte'
-	import DeleteModal from './delete-modal.svelte'
-	import InvestmentColorBox from './investment-color-box.svelte'
-	import Badge from './ui/badge.svelte'
-	import Loader from './ui/loader.svelte'
+  import { cascadeDuplicateInvestment } from '$lib/cascade'
+  import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+  import {
+    CenterSquare,
+    ChevronRight,
+    Copy,
+    OverflowMenuVertical,
+    Settings,
+    TrashCan,
+    ViewOff,
+    WarningAltFilled,
+  } from 'carbon-icons-svelte'
+  import Button from './ui/button.svelte'
+  import Typography from './ui/typography.svelte'
+  import { _ } from 'svelte-i18n'
+  import { goto } from '$app/navigation'
+  import routes from '$lib/routes'
+  import Dropdown from './ui/dropdown.svelte'
+  import List from './ui/list/list.svelte'
+  import ListItem from './ui/list/list-item.svelte'
+  import Horizontal from './ui/horizontal.svelte'
+  import FlexItem from './ui/flex-item.svelte'
+  import Vertical from './ui/vertical.svelte'
+  import TransactionCard from './transaction-card.svelte'
+  import Divider from './ui/divider.svelte'
+  import adapters from '$lib/adapters'
+  import { base } from '$app/paths'
+  import { transactionStore } from '$lib/stores/transaction.svelte'
+  import DeleteModal from './delete-modal.svelte'
+  import InvestmentColorBox from './investment-color-box.svelte'
+  import Badge from './ui/badge.svelte'
+  import Loader from './ui/loader.svelte'
 
-	type Props = {
-		investment: InvestmentWithColorIndex
-		portfolio: Portfolio
-		viewOnly?: boolean
-		index: number
-		hidden: boolean
-		focused: boolean
-		showInflation?: boolean
-		openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
-		toggleHide: () => void
-		toggleFocus: () => void
-		open?: boolean
-		exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
-		isCalculating?: boolean
-	}
+  type Props = {
+    investment: InvestmentWithColorIndex
+    portfolio: Portfolio
+    viewOnly?: boolean
+    index: number
+    hidden: boolean
+    focused: boolean
+    showInflation?: boolean
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    toggleHide: () => void
+    toggleFocus: () => void
+    open?: boolean
+    exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
+    isCalculating?: boolean
+  }
 
-	let {
-		investment,
-		portfolio,
-		viewOnly = false,
-		index,
-		hidden,
-		focused,
-		showInflation = false,
-		openTransaction,
-		toggleHide,
-		toggleFocus,
-		open = $bindable(false),
-		exhaustionWarning,
-		isCalculating = false,
-	}: Props = $props()
+  let {
+    investment,
+    portfolio,
+    viewOnly = false,
+    index,
+    hidden,
+    focused,
+    showInflation = false,
+    openTransaction,
+    toggleHide,
+    toggleFocus,
+    open = $bindable(false),
+    exhaustionWarning,
+    isCalculating = false,
+  }: Props = $props()
 
-	let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
-	let showDeleteInvestmentModal = $state(false)
-	const transactions = $derived(transactionStore.filter(investment.id))
+  let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
+  let showDeleteInvestmentModal = $state(false)
+  const transactions = $derived(transactionStore.filter(investment.id))
 
-	function cardOpenInvestment(e: MouseEvent) {
-		if (e.defaultPrevented) {
-			return
-		}
-		toggleInvestment()
-	}
+  function cardOpenInvestment(e: MouseEvent) {
+    if (e.defaultPrevented) {
+      return
+    }
+    toggleInvestment()
+  }
 
-	function toggleInvestment() {
-		open = !open
-	}
+  function toggleInvestment() {
+    open = !open
+  }
 
-	function editInvestment() {
-		goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
-	}
+  function editInvestment() {
+    goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
+  }
 
-	async function deleteInvestment(investmentId: string) {
-		await adapters.deleteInvestment({ id: investmentId })
-	}
+  async function deleteInvestment(investmentId: string) {
+    await adapters.deleteInvestment({ id: investmentId })
+  }
 
-	$effect(() => {
-		investment.colorIndex = index
-	})
+  $effect(() => {
+    investment.colorIndex = index
+  })
 </script>
 
 <div
-	class="card"
-	role="button"
-	tabindex="0"
-	aria-expanded={open}
-	onclick={cardOpenInvestment}
-	onkeydown={(e) => {
-		if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
-			e.preventDefault()
-			toggleInvestment()
-		}
-	}}
-	class:hidden
-	class:open
+  class="card"
+  role="button"
+  tabindex="0"
+  aria-expanded={open}
+  onclick={cardOpenInvestment}
+  onkeydown={(e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+      e.preventDefault()
+      toggleInvestment()
+    }
+  }}
+  class:hidden
+  class:open
 >
-	<Horizontal --horizontal-gap="var(--quarter-padding)">
-		<div class="chevron">
-			<ChevronRight
-				size={20}
-				class="open-investment-icon"
-				color={hidden ? 'transparent' : undefined}
-			/>
-		</div>
-		<InvestmentColorBox colorIndex={investment.colorIndex ?? 0}>
-			{#if isCalculating}
-				<Vertical
-					--vertical-justify-content="center"
-					--vertical-align-items="center"
-					style="min-height: 24px;"><Loader dimension="small" color="high" /></Vertical
-				>
-			{/if}
-		</InvestmentColorBox>
-		<Typography variant="h5" class="investment-name">{investment.name}</Typography>
-		<FlexItem />
-		{#if open}
-			<Badge>{investment.apy}% APY</Badge>
-		{/if}
-		{#if exhaustionWarning && !open}
-			<Badge variant="error">
-				<WarningAltFilled size={16} />
-			</Badge>
-		{/if}
-		{#if focused}
-			<Button
-				variant="ghost"
-				dimension="compact"
-				onclick={(e: Event) => {
-					e.preventDefault()
-					toggleFocus()
-				}}><CenterSquare size={16} /></Button
-			>
-		{/if}
-		{#if hidden}
-			<Button
-				class="show-investment-button"
-				variant="ghost"
-				dimension="compact"
-				onclick={(e: Event) => {
-					e.preventDefault()
-					toggleHide()
-				}}><ViewOff size={16} /></Button
-			>
-		{:else}
-			<div class="dropdown">
-				<Dropdown left buttonDimension="compact">
-					{#snippet button()}
-						<OverflowMenuVertical size={20} />
-					{/snippet}
-					<List>
-						<ListItem onclick={toggleFocus}
-							><CenterSquare size={24} />{focused
-								? $_('component.investmentCard.removeFocus')
-								: $_('component.investmentCard.focusInChart')}</ListItem
-						>
-						<ListItem onclick={toggleHide}
-							><ViewOff size={24} />{$_('component.investmentCard.hideInChart')}</ListItem
-						>
-						{#if !viewOnly}
-							<ListItem onclick={editInvestment}
-								><Settings size={24} />{$_(
-									'component.investmentCard.editInvestmentDetails',
-								)}</ListItem
-							>
-							<ListItem
-								onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
-								><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
-							>
-							<ListItem
-								onclick={() => {
-									selectedTransactionIdForDeletion = investment.id
-									showDeleteInvestmentModal = true
-								}}><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
-							>
-						{/if}
-					</List>
-				</Dropdown>
-			</div>
-		{/if}
-	</Horizontal>
-	<div class="transaction-container" class:modalShow={!open || hidden}>
-		{#if transactions.length === 0}
-			<Vertical --vertical-gap="var(--padding)">
-				<Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center">
-					<img src={`${base}/images/no-draft.svg`} alt={$_('common.noTransactionYet')} />
-					<Typography variant="h5">{$_('component.investmentCard.noTransactions')}</Typography>
-					{#if !viewOnly}
-						<Typography variant="small"
-							>{$_('component.investmentCard.noTransactionsText')}</Typography
-						>
-					{/if}
-				</Vertical>
-				<Horizontal --horizontal-justify-content="center" style="padding: var(--half-padding)"
-					><Button
-						variant="strong"
-						dimension="compact"
-						onclick={(e: Event) => {
-							e.preventDefault()
-							openTransaction?.(investment)
-						}}>{$_('common.addTransaction')}</Button
-					></Horizontal
-				>
-			</Vertical>
-		{:else}
-			<Vertical --vertical-gap="0">
-				{#each transactions as transaction}
-					<Divider --margin="0" />
-					<TransactionCard
-						{viewOnly}
-						{showInflation}
-						editTransaction={openTransaction
-							? () => openTransaction(investment, transaction)
-							: undefined}
-						{transaction}
-						{portfolio}
-						currency={portfolio.currency}
-						exhaustionWarning={exhaustionWarning?.transactionIds.includes(transaction.id ?? -1)
-							? exhaustionWarning
-							: undefined}
-					/>
-				{/each}
-			</Vertical>
-			{#if openTransaction && !viewOnly}
-				<Horizontal --horizontal-justify-content="stretch"
-					><Button
-						variant="ghost"
-						dimension="compact"
-						flexGrow
-						onclick={(e: Event) => {
-							e.preventDefault()
-							openTransaction(investment)
-						}}>{$_('common.addTransaction')}</Button
-					></Horizontal
-				>
-			{/if}
-		{/if}
-	</div>
+  <Horizontal --horizontal-gap="var(--quarter-padding)">
+    <div class="chevron">
+      <ChevronRight
+        size={20}
+        class="open-investment-icon"
+        color={hidden ? 'transparent' : undefined}
+      />
+    </div>
+    <InvestmentColorBox colorIndex={investment.colorIndex ?? 0}>
+      {#if isCalculating}
+        <Vertical
+          --vertical-justify-content="center"
+          --vertical-align-items="center"
+          style="min-height: 24px;"><Loader dimension="small" color="high" /></Vertical
+        >
+      {/if}
+    </InvestmentColorBox>
+    <Typography variant="h5" class="investment-name">{investment.name}</Typography>
+    <FlexItem />
+    {#if open}
+      <Badge>{investment.apy}% APY</Badge>
+    {/if}
+    {#if exhaustionWarning && !open}
+      <Badge variant="error">
+        <WarningAltFilled size={16} />
+      </Badge>
+    {/if}
+    {#if focused}
+      <Button
+        variant="ghost"
+        dimension="compact"
+        onclick={(e: Event) => {
+          e.preventDefault()
+          toggleFocus()
+        }}><CenterSquare size={16} /></Button
+      >
+    {/if}
+    {#if hidden}
+      <Button
+        class="show-investment-button"
+        variant="ghost"
+        dimension="compact"
+        onclick={(e: Event) => {
+          e.preventDefault()
+          toggleHide()
+        }}><ViewOff size={16} /></Button
+      >
+    {:else}
+      <div class="dropdown">
+        <Dropdown left buttonDimension="compact">
+          {#snippet button()}
+            <OverflowMenuVertical size={20} />
+          {/snippet}
+          <List>
+            <ListItem onclick={toggleFocus}
+              ><CenterSquare size={24} />{focused
+                ? $_('component.investmentCard.removeFocus')
+                : $_('component.investmentCard.focusInChart')}</ListItem
+            >
+            <ListItem onclick={toggleHide}
+              ><ViewOff size={24} />{$_('component.investmentCard.hideInChart')}</ListItem
+            >
+            {#if !viewOnly}
+              <ListItem onclick={editInvestment}
+                ><Settings size={24} />{$_(
+                  'component.investmentCard.editInvestmentDetails',
+                )}</ListItem
+              >
+              <ListItem
+                onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
+                ><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
+              >
+              <ListItem
+                onclick={() => {
+                  selectedTransactionIdForDeletion = investment.id
+                  showDeleteInvestmentModal = true
+                }}><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
+              >
+            {/if}
+          </List>
+        </Dropdown>
+      </div>
+    {/if}
+  </Horizontal>
+  <div class="transaction-container" class:modalShow={!open || hidden}>
+    {#if transactions.length === 0}
+      <Vertical --vertical-gap="var(--padding)">
+        <Vertical --vertical-gap="var(--half-padding)" --vertical-align-items="center">
+          <img src={`${base}/images/no-draft.svg`} alt={$_('common.noTransactionYet')} />
+          <Typography variant="h5">{$_('component.investmentCard.noTransactions')}</Typography>
+          {#if !viewOnly}
+            <Typography variant="small"
+              >{$_('component.investmentCard.noTransactionsText')}</Typography
+            >
+          {/if}
+        </Vertical>
+        <Horizontal --horizontal-justify-content="center" style="padding: var(--half-padding)"
+          ><Button
+            variant="strong"
+            dimension="compact"
+            onclick={(e: Event) => {
+              e.preventDefault()
+              openTransaction?.(investment)
+            }}>{$_('common.addTransaction')}</Button
+          ></Horizontal
+        >
+      </Vertical>
+    {:else}
+      <Vertical --vertical-gap="0">
+        {#each transactions as transaction}
+          <Divider --margin="0" />
+          <TransactionCard
+            {viewOnly}
+            {showInflation}
+            editTransaction={openTransaction
+              ? () => openTransaction(investment, transaction)
+              : undefined}
+            {transaction}
+            {portfolio}
+            currency={portfolio.currency}
+            exhaustionWarning={exhaustionWarning?.transactionIds.includes(transaction.id ?? -1)
+              ? exhaustionWarning
+              : undefined}
+          />
+        {/each}
+      </Vertical>
+      {#if openTransaction && !viewOnly}
+        <Horizontal --horizontal-justify-content="stretch"
+          ><Button
+            variant="ghost"
+            dimension="compact"
+            flexGrow
+            onclick={(e: Event) => {
+              e.preventDefault()
+              openTransaction(investment)
+            }}>{$_('common.addTransaction')}</Button
+          ></Horizontal
+        >
+      {/if}
+    {/if}
+  </div>
 </div>
 
 <DeleteModal
-	confirm={async () => {
-		if (selectedTransactionIdForDeletion) {
-			await deleteInvestment(selectedTransactionIdForDeletion)
-			selectedTransactionIdForDeletion = undefined
-			showDeleteInvestmentModal = false
-		}
-	}}
-	oncancel={() => {
-		showDeleteInvestmentModal = false
-		selectedTransactionIdForDeletion = undefined
-	}}
-	bind:open={showDeleteInvestmentModal}
-	title={$_('component.editInvestment.deleteInvestmentWarningTitle')}
-	text={$_('component.editInvestment.deleteInvestmentWarning')}
+  confirm={async () => {
+    if (selectedTransactionIdForDeletion) {
+      await deleteInvestment(selectedTransactionIdForDeletion)
+      selectedTransactionIdForDeletion = undefined
+      showDeleteInvestmentModal = false
+    }
+  }}
+  oncancel={() => {
+    showDeleteInvestmentModal = false
+    selectedTransactionIdForDeletion = undefined
+  }}
+  bind:open={showDeleteInvestmentModal}
+  title={$_('component.editInvestment.deleteInvestmentWarningTitle')}
+  text={$_('component.editInvestment.deleteInvestmentWarning')}
 />
 
 <style type="postcss">
-	.card {
-		border: 1px solid var(--colors-low);
-		border-radius: var(--border-radius);
-		background-color: var(--colors-base);
-		padding: var(--half-padding);
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-		cursor: pointer;
-		transition: border 0.2s;
-		transition-timing-function: ease-in;
-		:global(.open-investment-icon) {
-			transform: rotate(0deg);
-			transition: transform 0.2s ease-out;
-		}
-		:global(.investment-name) {
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-	}
-	.dropdown {
-		opacity: 1;
-		transition: opacity 0.2s ease-out;
-		visibility: visible;
-	}
-	.card:hover {
-		border: 1px solid var(--colors-ultra-high);
-		transition: border 0.2s;
-		transition-timing-function: ease-out;
-	}
-	.chevron {
-		padding: var(--half-padding);
-		border: 1px solid transparent;
-		display: flex;
-	}
-	.hidden {
-		background-color: var(--colors-low);
-		pointer-events: none;
-		:global(.open-investment-icon) {
-			opacity: 0.25;
-		}
-		:global(.show-investment-button) {
-			pointer-events: all;
-		}
-		:global(.investment-name) {
-			text-decoration: line-through;
-		}
-		:global(.investment-badge) {
-			display: none;
-		}
-		&:hover {
-			border: 1px solid var(--colors-low);
-			transition: none;
-		}
-	}
-	.card.open {
-		:global(.open-investment-icon) {
-			transform: rotate(90deg);
-			transition: transform 0.2s ease-out;
-		}
-	}
-	.transaction-container {
-		display: flex;
-		flex-direction: column;
-		gap: var(--half-padding);
-		&.modalShow {
-			display: none;
-		}
-	}
+  .card {
+    border: 1px solid var(--colors-low);
+    border-radius: var(--border-radius);
+    background-color: var(--colors-base);
+    padding: var(--half-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-padding);
+    cursor: pointer;
+    transition: border 0.2s;
+    transition-timing-function: ease-in;
+    :global(.open-investment-icon) {
+      transform: rotate(0deg);
+      transition: transform 0.2s ease-out;
+    }
+    :global(.investment-name) {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .dropdown {
+    opacity: 1;
+    transition: opacity 0.2s ease-out;
+    visibility: visible;
+  }
+  .card:hover {
+    border: 1px solid var(--colors-ultra-high);
+    transition: border 0.2s;
+    transition-timing-function: ease-out;
+  }
+  .chevron {
+    padding: var(--half-padding);
+    border: 1px solid transparent;
+    display: flex;
+  }
+  .hidden {
+    background-color: var(--colors-low);
+    pointer-events: none;
+    :global(.open-investment-icon) {
+      opacity: 0.25;
+    }
+    :global(.show-investment-button) {
+      pointer-events: all;
+    }
+    :global(.investment-name) {
+      text-decoration: line-through;
+    }
+    :global(.investment-badge) {
+      display: none;
+    }
+    &:hover {
+      border: 1px solid var(--colors-low);
+      transition: none;
+    }
+  }
+  .card.open {
+    :global(.open-investment-icon) {
+      transform: rotate(90deg);
+      transition: transform 0.2s ease-out;
+    }
+  }
+  .transaction-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-padding);
+    &.modalShow {
+      display: none;
+    }
+  }
 </style>

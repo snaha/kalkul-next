@@ -1,3 +1,3 @@
 export function getCSSVariableValue(name: string) {
-	return window.getComputedStyle(document.documentElement).getPropertyValue(name)
+  return window.getComputedStyle(document.documentElement).getPropertyValue(name)
 }
