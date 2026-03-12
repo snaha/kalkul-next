@@ -3,7 +3,6 @@
   import type {
     EnrichedInvestment,
     EnrichedTransaction,
-    GoalData,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -22,7 +21,7 @@
     isSidebarOpen: boolean
     isSidebarFlexible: boolean
     portfolio: PortfolioNested
-    goals: (EnrichedInvestment & { goal_data: GoalData })[]
+    goals: EnrichedInvestment[]
     adjustWithInflation: boolean
     viewOnly: boolean
     graphData?: PortfolioSimulation

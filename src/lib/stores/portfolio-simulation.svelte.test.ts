@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { withPortfolioSimulationStore } from './portfolio-simulation.svelte'
-import type { InvestmentNested, Portfolio, PortfolioNested, Transaction } from '$lib/types'
+import type { InvestmentNested, Portfolio, Transaction } from '$lib/types'
 import { getGraphDataForPortfolio } from '$lib/@snaha/kalkul-maths'
 
 describe('withPortfolioSimulationStore', () => {

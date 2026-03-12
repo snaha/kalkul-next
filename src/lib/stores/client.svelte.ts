@@ -1,11 +1,5 @@
 import type { SvelteSet } from 'svelte/reactivity'
-import type {
-  ClientNested,
-  EnrichedClient,
-  EnrichedPortfolio,
-  Portfolio,
-  PortfolioNested,
-} from '$lib/types'
+import type { ClientNested, EnrichedPortfolio, Portfolio, PortfolioNested } from '$lib/types'
 import { withPortfolioStore } from './portfolio.svelte'
 
 type AppParent = {
@@ -26,10 +20,7 @@ export type EnrichedClientStore = Omit<ClientNested, 'portfolios'> & {
   toJSON(): ClientNested
 }
 
-export function withClientStore(
-  client: ClientNested,
-  app: AppParent,
-): EnrichedClientStore {
+export function withClientStore(client: ClientNested, app: AppParent): EnrichedClientStore {
   let id = $state(client.id)
   let name = $state(client.name)
   let email = $state(client.email)

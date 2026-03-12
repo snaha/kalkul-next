@@ -3,7 +3,6 @@
     Client,
     EnrichedInvestment,
     EnrichedTransaction,
-    GoalData,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -25,7 +24,7 @@
   interface Props {
     client: Client
     portfolio: PortfolioNested
-    goals: (EnrichedInvestment & { goal_data: GoalData })[]
+    goals: EnrichedInvestment[]
     regularInvestments: EnrichedInvestment[]
     isGraphFullscreened: boolean
     isSidebarFlexible: boolean

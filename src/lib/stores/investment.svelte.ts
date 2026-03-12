@@ -216,9 +216,7 @@ export function withInvestmentStore(
 
     toggleFocus() {
       const siblings = portfolio.getSiblingsOf(id)
-      const othersHidden = siblings.every(
-        (s) => s.id === id || portfolio.hiddenIds.has(s.id),
-      )
+      const othersHidden = siblings.every((s) => s.id === id || portfolio.hiddenIds.has(s.id))
       if (othersHidden && !portfolio.hiddenIds.has(id)) {
         for (const s of siblings) {
           portfolio.hiddenIds.delete(s.id)

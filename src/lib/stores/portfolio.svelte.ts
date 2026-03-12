@@ -1,7 +1,6 @@
 import type { SvelteSet } from 'svelte/reactivity'
 import type {
   EnrichedInvestment,
-  EnrichedPortfolio,
   Investment,
   InvestmentNested,
   Portfolio,

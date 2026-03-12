@@ -34,6 +34,7 @@ export type EnrichedClient = EnrichedClientStore
 export type InvestmentWithColorIndex = Investment & {
   colorIndex?: number
   hidden?: boolean
+  toggleHide?: () => void
 }
 
 export type TooltipData = {

@@ -2,7 +2,6 @@
   import type {
     EnrichedInvestment,
     EnrichedTransaction,
-    GoalData,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -55,7 +54,7 @@
     exhaustionWarning?: ExhaustionWarning
     isCalculating?: boolean
     transactions?: EnrichedTransaction[]
-    goal: EnrichedInvestment & { goal_data: GoalData }
+    goal: EnrichedInvestment
     showExplainInvestmentsLabel: boolean
   }
 
