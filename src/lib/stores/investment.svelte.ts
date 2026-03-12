@@ -183,7 +183,8 @@ export function withInvestmentStore(
 
     deleteTransaction(txId: string) {
       const idx = transactions.findIndex((t) => t.id === txId)
-      if (idx !== -1) transactions.splice(idx, 1)
+      if (idx === -1) return
+      transactions.splice(idx, 1)
       portfolio.persist()
     },
 

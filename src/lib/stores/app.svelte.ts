@@ -7,6 +7,7 @@ import type {
   PortfolioStore,
   TransactionStore,
 } from '$lib/types'
+import { clientNestedSchema } from '$lib/schemas'
 import { withClientStore } from './client.svelte'
 
 const STORAGE_KEY = 'kalkul-data'
@@ -15,7 +16,8 @@ function loadData(): ClientNested[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
-      return JSON.parse(raw) as ClientNested[]
+      const parsed: unknown = JSON.parse(raw)
+      return clientNestedSchema.array().parse(parsed)
     }
   } catch (e) {
     console.error('Failed to load data from localStorage', e)
@@ -37,7 +39,8 @@ function withAppStore() {
 
   function deleteClient(id: string): void {
     const idx = clients.findIndex((c) => c.id === id)
-    if (idx !== -1) clients.splice(idx, 1)
+    if (idx === -1) return
+    clients.splice(idx, 1)
     persist()
   }
 
@@ -160,11 +163,9 @@ function withAppStore() {
     },
 
     importBackup(json: string): void {
-      const parsed = JSON.parse(json) as unknown
-      if (!Array.isArray(parsed)) {
-        throw new Error('Invalid backup format')
-      }
-      clients = enrichAll(parsed as ClientNested[])
+      const parsed: unknown = JSON.parse(json)
+      const validated = clientNestedSchema.array().parse(parsed)
+      clients = enrichAll(validated)
       loading = false
       persist()
     },

@@ -229,7 +229,7 @@ describe('inflation-adjusted transactions on graph', () => {
     management_fee_type: 'upfront',
     name: 'Test',
     success_fee: 0,
-    ter: null,
+    ter: undefined,
     type: '',
   }
 
@@ -248,13 +248,13 @@ describe('inflation-adjusted transactions on graph', () => {
       {
         amount: 100000,
         date: '2024-01-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-0',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
       {
@@ -266,7 +266,7 @@ describe('inflation-adjusted transactions on graph', () => {
         inflation_adjusted: true,
 
         id: 'test-transaction-1',
-        label: null,
+        label: undefined,
         type: 'withdrawal' as const,
       },
     ]
@@ -292,26 +292,26 @@ describe('inflation-adjusted transactions on graph', () => {
       {
         amount: 5000,
         date: '2024-01-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-0',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
       // Inflation-adjusted deposit 1 year later
       {
         amount: 1000,
         date: '2025-01-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: true,
 
         id: 'test-transaction-1',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
     ]
@@ -346,7 +346,7 @@ describe('inflation-adjusted transactions on graph', () => {
         inflation_adjusted: true,
 
         id: 'test-transaction-0',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
     ]
@@ -384,7 +384,7 @@ describe('inflation-adjusted transactions on graph', () => {
         inflation_adjusted: true,
 
         id: 'test-transaction-0',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
     ]
@@ -425,26 +425,26 @@ describe('inflation-adjusted transactions on graph', () => {
       {
         amount: 1000,
         date: '1997-11-09',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-1',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
       // Transaction from 2025 (portfolio start date)
       {
         amount: 2000,
         date: '2025-01-13',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-2',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
     ]
@@ -487,26 +487,26 @@ describe('inflation-adjusted transactions on graph', () => {
       {
         amount: 1000,
         date: '2000-01-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-1',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
       // Second transaction is 5 years later with same amount
       {
         amount: 1000,
         date: '2005-01-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-2',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
     ]
@@ -542,51 +542,51 @@ describe('inflation-adjusted transactions on graph', () => {
       {
         amount: 1000,
         date: '2024-01-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-0',
-        label: null,
+        label: undefined,
         type: 'deposit' as const,
       },
       // Withdrawal that causes exhaustion
       {
         amount: 1500,
         date: '2024-02-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-1',
-        label: null,
+        label: undefined,
         type: 'withdrawal' as const,
       },
       // Withdrawals scheduled after exhaustion
       {
         amount: 500,
         date: '2024-03-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-2',
-        label: null,
+        label: undefined,
         type: 'withdrawal' as const,
       },
       {
         amount: 500,
         date: '2024-04-01',
-        end_date: null,
-        repeat: null,
-        repeat_unit: null,
+        end_date: undefined,
+        repeat: undefined,
+        repeat_unit: undefined,
         inflation_adjusted: false,
 
         id: 'test-transaction-3',
-        label: null,
+        label: undefined,
         type: 'withdrawal' as const,
       },
     ]
@@ -647,12 +647,12 @@ describe('per-investment caching', () => {
     exit_fee: 0,
     management_fee: 0,
     success_fee: 0,
-    ter: null,
+    ter: undefined,
     entry_fee_type: 'ongoing',
     exit_fee_type: 'percentage',
     management_fee_type: 'percentage',
     advanced_fees: false,
-    type: null,
+    type: undefined,
   })
 
   const createMockTransaction = (id: string, amount: number): Transaction => ({
@@ -661,10 +661,10 @@ describe('per-investment caching', () => {
     amount,
     type: 'deposit',
     inflation_adjusted: false,
-    end_date: null,
-    label: null,
-    repeat: null,
-    repeat_unit: null,
+    end_date: undefined,
+    label: undefined,
+    repeat: undefined,
+    repeat_unit: undefined,
   })
 
   const createMockInvestmentNested = (

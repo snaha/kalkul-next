@@ -31,7 +31,7 @@ describe('goalToTransactions', () => {
     expect(transactions[0].amount).toBe(10000)
     expect(transactions[0].label).toBe('Initial Savings')
     expect(transactions[0].inflation_adjusted).toBe(true)
-    expect(transactions[0].repeat).toBeNull()
+    expect(transactions[0].repeat).toBeUndefined()
 
     expect(transactions[1].type).toBe('deposit')
     expect(transactions[1].amount).toBe(500)

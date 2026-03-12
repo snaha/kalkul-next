@@ -133,16 +133,11 @@
       type: 'goal',
       apy: calculatorData.goalData.apy,
       goal_data: goalData,
-      // Set default fees to 0 (null is allowed for database/SQL fields)
       advanced_fees: false,
       entry_fee: 0,
-      entry_fee_type: null,
       exit_fee: 0,
-      exit_fee_type: null,
       management_fee: 0,
-      management_fee_type: null,
       ter: 0,
-      success_fee: null,
     })
 
     // Generate and create transactions for this goal

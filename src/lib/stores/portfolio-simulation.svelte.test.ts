@@ -19,10 +19,6 @@ describe('withPortfolioSimulationStore', () => {
     amount: 1000,
     type: 'deposit',
     inflation_adjusted: false,
-    end_date: null,
-    label: null,
-    repeat: null,
-    repeat_unit: null,
   }
 
   const mockTransaction2: Transaction = {
@@ -31,10 +27,6 @@ describe('withPortfolioSimulationStore', () => {
     amount: 2000,
     type: 'deposit',
     inflation_adjusted: false,
-    end_date: null,
-    label: null,
-    repeat: null,
-    repeat_unit: null,
   }
 
   const mockInvestment1: InvestmentNested = {
@@ -50,7 +42,7 @@ describe('withPortfolioSimulationStore', () => {
     exit_fee_type: 'percentage',
     management_fee_type: 'percentage',
     advanced_fees: false,
-    type: null,
+    type: undefined,
     transactions: [mockTransaction1],
   }
 
@@ -67,7 +59,7 @@ describe('withPortfolioSimulationStore', () => {
     exit_fee_type: 'percentage',
     management_fee_type: 'percentage',
     advanced_fees: false,
-    type: null,
+    type: undefined,
     transactions: [mockTransaction2],
   }
 

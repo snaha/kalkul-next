@@ -30,7 +30,7 @@ const DEFAULT_INVESTMENT: Investment = {
   management_fee_type: 'upfront' as const,
   name: '',
   success_fee: 0,
-  ter: null,
+  ter: undefined,
   type: '',
 }
 
@@ -722,8 +722,8 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 1000,
         date: '2025-01-01',
         end_date: '2025-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactionStore = createMockTransactionStore(
@@ -745,8 +745,8 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 1000,
         date: '2025-01-01',
         end_date: '2026-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactions2: Transaction[] = [
@@ -755,8 +755,8 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 2000,
         date: '2025-01-01',
         end_date: '2026-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactionStore = createMockTransactionStore(
@@ -784,8 +784,8 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 1000,
         date: '2025-01-01',
         end_date: '2025-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactions2: Transaction[] = [
@@ -794,16 +794,16 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 1000,
         date: '2025-01-01',
         end_date: '2025-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
       {
         type: 'withdrawal',
         amount: 200,
         date: '2025-06-01',
         end_date: '2025-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactionStore = createMockTransactionStore(
@@ -831,8 +831,8 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 1000,
         date: '2025-01-01',
         end_date: '2026-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactionStore = createMockTransactionStore(
@@ -860,8 +860,8 @@ describe('#getCurrentPortfolioValue', () => {
         amount: 1000,
         date: '2025-01-01',
         end_date: '2026-12-31',
-        repeat: null,
-        repeat_unit: null,
+        repeat: undefined,
+        repeat_unit: undefined,
       },
     ]
     const transactionStore = createMockTransactionStore(
@@ -889,18 +889,18 @@ describe('#auto-inflation integration tests', () => {
         amount: 1000,
         date: '2024-01-01',
         inflation_adjusted: false,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
       {
         type: 'deposit',
         amount: 1000,
         date: '2025-01-01',
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -948,9 +948,9 @@ describe('#auto-inflation integration tests', () => {
         amount: 1000,
         date: '2024-01-01',
         inflation_adjusted: false,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -960,9 +960,9 @@ describe('#auto-inflation integration tests', () => {
         amount: 1000,
         date: '2024-01-01',
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1007,9 +1007,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 12000,
         date: '2024-01-01',
         inflation_adjusted: false,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
       // Inflation-adjusted monthly withdrawals of $1000
       {
@@ -1054,9 +1054,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2025-01-01',
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1073,9 +1073,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2025-01-01', // 1 year after portfolio start
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1093,9 +1093,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2025-01-01',
         inflation_adjusted: false,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
       // Inflation adjusted deposit (same date for easy comparison)
       {
@@ -1103,9 +1103,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2025-01-01',
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1124,9 +1124,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2026-01-01', // 2 years after portfolio start
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1143,9 +1143,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 10000,
         date: '2034-01-01', // 10 years after portfolio start
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1163,9 +1163,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2024-01-01',
         inflation_adjusted: false,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1176,9 +1176,9 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2025-01-01', // 1 year later
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 
@@ -1216,18 +1216,18 @@ describe('#comprehensive inflation-adjusted transaction tests', () => {
         amount: 1000,
         date: '2025-01-01', // 1 year after portfolio start
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
       {
         type: 'withdrawal',
         amount: 500,
         date: '2025-01-01', // Same date
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
 

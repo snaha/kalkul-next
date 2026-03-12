@@ -46,11 +46,8 @@ export function goalToTransactions(
       amount: goalData.currentSavings,
       date: formatDate(depositStart),
       type: 'deposit',
-      end_date: null,
       inflation_adjusted: true,
       label: labels.initialSavings,
-      repeat: null,
-      repeat_unit: null,
     })
   }
 

@@ -16,9 +16,9 @@ export type TransactionType = 'deposit' | 'withdrawal'
 export type Transaction = {
   id?: string
   date: string
-  repeat?: number | null
-  repeat_unit?: Period | null
-  end_date?: string | null
+  repeat?: number
+  repeat_unit?: Period
+  end_date?: string
   amount: number
   type: TransactionType
   inflation_adjusted?: boolean

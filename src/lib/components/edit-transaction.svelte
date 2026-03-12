@@ -76,9 +76,9 @@
       type: transactionType,
       date: formatDate(date),
       inflation_adjusted: inflationAdjusted,
-      end_date: isRecurring ? formatDate(endDate) : null,
-      repeat: isRecurring ? repeat : null,
-      repeat_unit: isRecurring ? repeatUnit : null,
+      end_date: isRecurring ? formatDate(endDate) : undefined,
+      repeat: isRecurring ? repeat : undefined,
+      repeat_unit: isRecurring ? repeatUnit : undefined,
     }
 
     return calculateTotalDisplayAmount(
@@ -104,7 +104,7 @@
       amount = transaction.amount
       date = new Date(transaction.date)
       inflationAdjusted = transaction.inflation_adjusted ?? false
-      isRecurring = transaction.end_date !== null
+      isRecurring = transaction.end_date !== undefined
       repeat = transaction.repeat ? transaction.repeat : 1
       repeatUnit = transactionRepeatUnit(transaction)
       endDate = transaction.end_date ? new Date(transaction.end_date) : new Date()
@@ -124,9 +124,9 @@
       label,
       date: formatDate(date),
       inflation_adjusted: inflationAdjusted,
-      repeat: isRecurring ? repeat : null,
-      repeat_unit: isRecurring ? repeatUnit : null,
-      end_date: isRecurring ? formatDate(endDate) : null,
+      repeat: isRecurring ? repeat : undefined,
+      repeat_unit: isRecurring ? repeatUnit : undefined,
+      end_date: isRecurring ? formatDate(endDate) : undefined,
     })
     close()
   }
@@ -142,9 +142,9 @@
       label,
       date: formatDate(date),
       inflation_adjusted: inflationAdjusted,
-      repeat: isRecurring ? repeat : null,
-      repeat_unit: isRecurring ? repeatUnit : null,
-      end_date: isRecurring ? formatDate(endDate) : null,
+      repeat: isRecurring ? repeat : undefined,
+      repeat_unit: isRecurring ? repeatUnit : undefined,
+      end_date: isRecurring ? formatDate(endDate) : undefined,
     })
     close()
   }

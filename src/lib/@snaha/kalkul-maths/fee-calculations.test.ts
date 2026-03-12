@@ -20,7 +20,7 @@ const DEFAULT_INVESTMENT: Investment = {
   management_fee_type: 'upfront' as const,
   name: '',
   success_fee: 0,
-  ter: null,
+  ter: undefined,
   type: '',
 }
 

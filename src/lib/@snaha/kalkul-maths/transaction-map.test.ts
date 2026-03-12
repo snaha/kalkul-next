@@ -10,7 +10,13 @@ describe('#createTransactionMap', () => {
 
   it('correctly stores a single transaction', () => {
     const transactions: Omit<Transaction, 'type'>[] = [
-      { date: '2025-03-17', amount: 100, repeat: null, repeat_unit: null, end_date: null },
+      {
+        date: '2025-03-17',
+        amount: 100,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
+      },
     ]
     const result = createTransactionMap(transactions, '2024-01-01', 0)
     expect(result.get('2025-03-17')?.amount).toBe(100)
@@ -23,9 +29,9 @@ describe('#addTransaction', () => {
     const transaction: Omit<Transaction, 'type'> = {
       date: '2025-03-17',
       amount: 50,
-      repeat: null,
-      repeat_unit: null,
-      end_date: null,
+      repeat: undefined,
+      repeat_unit: undefined,
+      end_date: undefined,
     }
     addTransaction(map, transaction, '2024-01-01', 0)
     expect(map.get('2025-03-17')?.amount).toBe(50)
@@ -66,17 +72,17 @@ describe('#inflation adjustment integration', () => {
         date: '2024-01-01',
         amount: 1000,
         inflation_adjusted: false,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
       {
         date: '2025-01-01',
         amount: 1000,
         inflation_adjusted: true,
-        repeat: null,
-        repeat_unit: null,
-        end_date: null,
+        repeat: undefined,
+        repeat_unit: undefined,
+        end_date: undefined,
       },
     ]
     const result = createTransactionMap(transactions, '2024-01-01', 0.03)
