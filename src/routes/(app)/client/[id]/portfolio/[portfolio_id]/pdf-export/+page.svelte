@@ -28,13 +28,15 @@
   let isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
-  const { total, data } = $derived(getGraphDataForPortfolio(portfolio!))
+  const graphResult = $derived(portfolio ? getGraphDataForPortfolio(portfolio) : undefined)
+  const total = $derived(graphResult?.total)
+  const data = $derived(graphResult?.data)
 
   const lowColor = getCSSVariableValue('--colors-low')
   const baseColor = `${getCSSVariableValue('--colors-base')}cc`
 
   const graphValueData = $derived(
-    portfolio && investments
+    portfolio && investments && total && data
       ? deriveGraphValueData({
           portfolio,
           investments,
