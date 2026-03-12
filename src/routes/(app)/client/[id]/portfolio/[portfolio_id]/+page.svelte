@@ -182,7 +182,6 @@
             {isGraphFullscreened}
             {isSidebarFlexible}
             bind:isSidebarOpen
-
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
@@ -244,7 +243,6 @@
             {investments}
             simulationData={graphData}
             bind:adjustWithInflation
-
             isEmpty={false}
             clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
             disableInteraction={true}
@@ -257,7 +255,6 @@
             {isGraphFullscreened}
             {isSidebarFlexible}
             bind:isSidebarOpen
-
             {graphData}
             {adjustWithInflation}
             bind:selectedTab

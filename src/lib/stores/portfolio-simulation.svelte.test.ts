@@ -196,7 +196,11 @@ describe('withPortfolioSimulationStore', () => {
     it('should handle multiple investments with different transaction sets', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1, mockInvestment2], goals: [] })
+      store.calculateIteratively({
+        ...mockPortfolio,
+        investments: [mockInvestment1, mockInvestment2],
+        goals: [],
+      })
       vi.runAllTimers()
 
       const data = store.simulationData
@@ -216,7 +220,11 @@ describe('withPortfolioSimulationStore', () => {
       vi.runAllTimers()
 
       const storeResult = store.simulationData
-      const directResult = getGraphDataForPortfolio({ ...mockPortfolio, investments: [mockInvestment1], goals: [] })
+      const directResult = getGraphDataForPortfolio({
+        ...mockPortfolio,
+        investments: [mockInvestment1],
+        goals: [],
+      })
 
       // Compare investment data
       expect(storeResult?.data).toHaveLength(1)
@@ -229,7 +237,11 @@ describe('withPortfolioSimulationStore', () => {
     it('should produce identical results to getGraphDataForPortfolio for multiple investments', () => {
       const store = withPortfolioSimulationStore()
 
-      store.calculateIteratively({ ...mockPortfolio, investments: [mockInvestment1, mockInvestment2], goals: [] })
+      store.calculateIteratively({
+        ...mockPortfolio,
+        investments: [mockInvestment1, mockInvestment2],
+        goals: [],
+      })
       vi.runAllTimers()
 
       const storeResult = store.simulationData

@@ -224,9 +224,10 @@ function withAppStore() {
         const isGoal = portfolio.goals.some((g) => g.id === enriched.id)
         const siblings = isGoal ? portfolio.goals : portfolio.investments
         if (siblings.length <= 1) return false
-        return siblings.every(
-          (s) => s.id === enriched.id || hiddenInvestmentIds.has(s.id),
-        ) && !hiddenInvestmentIds.has(enriched.id)
+        return (
+          siblings.every((s) => s.id === enriched.id || hiddenInvestmentIds.has(s.id)) &&
+          !hiddenInvestmentIds.has(enriched.id)
+        )
       },
       enumerable: false,
       configurable: true,

@@ -61,7 +61,7 @@
         label: r.label,
         colorIndex: investments[i].colorIndex ?? i,
         fill: 'origin',
-        hidden: (investments[i].hidden ?? false),
+        hidden: investments[i].hidden ?? false,
       }
     }),
   )
@@ -81,7 +81,7 @@
         label: r.label,
         colorIndex: investments[i].colorIndex ?? i,
         fill: 'origin',
-        hidden: (investments[i].hidden ?? false),
+        hidden: investments[i].hidden ?? false,
       }
     }),
     {
@@ -108,7 +108,7 @@
     const totals = data.reduce(
       (acc, r, i) => {
         // Only include visible investments
-        if ((investments[i].hidden ?? false)) {
+        if (investments[i].hidden ?? false) {
           return acc
         }
         const values = getCumulativeValues(r, selectedIndex)
@@ -141,7 +141,7 @@
     const totals = data.reduce(
       (acc, r, i) => {
         // Only include visible investments
-        if ((investments[i].hidden ?? false)) {
+        if (investments[i].hidden ?? false) {
           return acc
         }
         const values = getCumulativeValues(r, selectedIndex, true)

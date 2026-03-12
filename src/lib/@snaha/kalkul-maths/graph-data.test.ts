@@ -756,7 +756,11 @@ describe('per-investment caching', () => {
       ]
 
       // First calculation
-      const result1 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested1, goals: [] })
+      const result1 = getGraphDataForPortfolio({
+        ...mockPortfolio,
+        investments: nested1,
+        goals: [],
+      })
 
       // Change only investment 2's APY
       const updatedInvestment2 = { ...investment2, apy: 10 }
@@ -766,7 +770,11 @@ describe('per-investment caching', () => {
       ]
 
       // Second calculation
-      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested2, goals: [] })
+      const result2 = getGraphDataForPortfolio({
+        ...mockPortfolio,
+        investments: nested2,
+        goals: [],
+      })
 
       // Investment 1 should be the same (potentially from cache)
       expect(result1.data[0].label).toBe(result2.data[0].label)
@@ -799,7 +807,11 @@ describe('per-investment caching', () => {
       ]
 
       // Second calculation
-      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested2, goals: [] })
+      const result2 = getGraphDataForPortfolio({
+        ...mockPortfolio,
+        investments: nested2,
+        goals: [],
+      })
 
       // Investment 2 should be unchanged (potentially from cache)
       expect(result2.data[1].label).toBe('Investment 2')
@@ -838,7 +850,11 @@ describe('per-investment caching', () => {
       // Change investment APY
       const updatedInvestment = { ...investment, apy: 10 }
       const nested2 = [createMockInvestmentNested(updatedInvestment, [tx])]
-      const result2 = getGraphDataForPortfolio({ ...mockPortfolio, investments: nested2, goals: [] })
+      const result2 = getGraphDataForPortfolio({
+        ...mockPortfolio,
+        investments: nested2,
+        goals: [],
+      })
 
       // Results should be different
       expect(result1.data[0].graphInvestmentValues).toBeDefined()
@@ -857,7 +873,11 @@ describe('per-investment caching', () => {
 
       // Change portfolio end date
       const updatedPortfolio = { ...mockPortfolio, end_date: '2025-12-31' }
-      const result2 = getGraphDataForPortfolio({ ...updatedPortfolio, investments: nested, goals: [] })
+      const result2 = getGraphDataForPortfolio({
+        ...updatedPortfolio,
+        investments: nested,
+        goals: [],
+      })
 
       // Graph labels should reflect different date range
       expect(result1.total.graphLabels.length).toBeLessThanOrEqual(result2.total.graphLabels.length)
@@ -874,7 +894,11 @@ describe('per-investment caching', () => {
 
       // Change portfolio inflation
       const updatedPortfolio = { ...mockPortfolio, inflation_rate: 0.05 }
-      const result2 = getGraphDataForPortfolio({ ...updatedPortfolio, investments: nested, goals: [] })
+      const result2 = getGraphDataForPortfolio({
+        ...updatedPortfolio,
+        investments: nested,
+        goals: [],
+      })
 
       // Inflation-adjusted values should be different
       expect(result1.data[0].graphInflationInvestmentValues).toBeDefined()

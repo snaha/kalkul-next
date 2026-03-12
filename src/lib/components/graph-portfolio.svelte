@@ -312,7 +312,6 @@
             {total}
             {investments}
             {adjustWithInflation}
-
             bind:selectedIndex
             {lowColor}
             {baseColor}
@@ -362,7 +361,6 @@
               {total}
               {investments}
               {adjustWithInflation}
-  
               bind:selectedIndex
               {lowColor}
               {baseColor}
@@ -437,20 +435,13 @@
         </Horizontal>
         <Horizontal class="wrap">
           {#each investments as investment}
-            <Button
-              variant="ghost"
-              dimension="small"
-              onclick={() => investment.toggleHide?.()}
-            >
+            <Button variant="ghost" dimension="small" onclick={() => investment.toggleHide?.()}>
               <Horizontal --horizontal-gap="var(--quarter-padding)">
                 <InvestmentColorBox
                   width="24px"
                   height="16px"
                   colorIndex={investment.colorIndex ?? 0}
-                /><Typography
-                  variant="small"
-                  nowrap
-                  lineThrough={investment.hidden ?? false}
+                /><Typography variant="small" nowrap lineThrough={investment.hidden ?? false}
                   >{investment.name}</Typography
                 >
               </Horizontal>

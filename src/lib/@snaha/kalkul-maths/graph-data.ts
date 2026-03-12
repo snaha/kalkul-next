@@ -1,5 +1,10 @@
 import Decimal from 'decimal.js'
-import { type Investment, type InvestmentNested, type Portfolio, type PortfolioNested } from '$lib/types'
+import {
+  type Investment,
+  type InvestmentNested,
+  type Portfolio,
+  type PortfolioNested,
+} from '$lib/types'
 import {
   type PortfolioPeriodCount,
   type PortfolioPeriod,
@@ -427,9 +432,7 @@ export function calculateDateRange(
   )
 }
 
-export function getGraphDataForPortfolio(
-  portfolio: PortfolioNested,
-): {
+export function getGraphDataForPortfolio(portfolio: PortfolioNested): {
   total: GraphData
   data: GraphData[]
 } {

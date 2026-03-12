@@ -98,6 +98,106 @@ test('should format numbers correctly', async ({ mount }) => {
 - Use `--reporter=list` to avoid HTML server for faster CI runs
 - Financial calculations must have comprehensive test coverage
 
+## State Management: Nested AppStore
+
+The application uses a single nested reactive store (`appStore`) that manages all domain data. Data is persisted to localStorage and enriched with CRUD methods at each level of the hierarchy.
+
+### Data Hierarchy
+
+```
+appStore
+└── clients: EnrichedClient[]
+    └── portfolios: EnrichedPortfolio[]
+        ├── investments: EnrichedInvestment[]
+        │   └── transactions: EnrichedTransaction[]
+        └── goals: EnrichedInvestment[]
+            └── transactions: EnrichedTransaction[]
+```
+
+Goals and investments share the same `EnrichedInvestment` type but are stored in separate arrays on each portfolio. Goals are distinguished by having `goal_data` populated.
+
+### How Enrichment Works
+
+Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "enriches" each object by attaching non-enumerable CRUD methods via `Object.defineProperty()`. This means:
+
+- Methods don't appear in `JSON.stringify()` output (safe for persistence)
+- A `WeakMap` tracks parent back-references (child → parent) so that `delete()` and `duplicate()` can find and modify the parent's array
+- After any mutation, `persist()` saves to localStorage and reassigns the `clients` array to trigger Svelte's `$state.raw` reactivity
+
+### AppStore Root
+
+| Method / Property               | Description                                            |
+| ------------------------------- | ------------------------------------------------------ |
+| `clients`                       | Reactive array of all enriched clients                 |
+| `loading`                       | `true` until initial data load completes               |
+| `load()`                        | Load from localStorage and enrich all objects          |
+| `reset()`                       | Clear all data, set loading to `true`                  |
+| `findClient(id)`                | Find client by ID                                      |
+| `findPortfolio(id)`             | Find portfolio by ID (searches all clients)            |
+| `findInvestment(id)`            | Find investment by ID (searches investments and goals) |
+| `findTransaction(id)`           | Find transaction by ID (searches entire tree)          |
+| `getPortfolios(clientId)`       | Get portfolios for a client                            |
+| `getInvestments(portfolioId)`   | Get investments for a portfolio                        |
+| `getTransactions(investmentId)` | Get transactions for an investment                     |
+| `addClient(data)`               | Add a new client, returns ID                           |
+| `exportBackup()`                | JSON string of all data                                |
+| `importBackup(json)`            | Import and enrich from JSON string                     |
+
+### EnrichedClient
+
+| Method               | Description                    |
+| -------------------- | ------------------------------ |
+| `update(updates)`    | Update name, email, birth_date |
+| `delete()`           | Remove client from store       |
+| `addPortfolio(data)` | Add portfolio, returns ID      |
+
+### EnrichedPortfolio
+
+| Method                | Description                                                   |
+| --------------------- | ------------------------------------------------------------- |
+| `update(updates)`     | Update name, currency, dates, inflation_rate                  |
+| `delete()`            | Remove portfolio from parent client                           |
+| `duplicate()`         | Deep copy with all investments/goals/transactions, returns ID |
+| `addInvestment(data)` | Add to investments array, returns ID                          |
+| `addGoal(data)`       | Add to goals array, returns ID                                |
+
+### EnrichedInvestment
+
+| Method / Property      | Description                                                            |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `update(updates)`      | Update investment properties                                           |
+| `delete()`             | Remove from parent portfolio (auto-detects investments vs goals array) |
+| `duplicate()`          | Deep copy with all transactions, returns ID                            |
+| `addTransaction(data)` | Add transaction, returns ID                                            |
+| `hidden`               | (getter) Whether hidden in UI via `hiddenInvestmentIds` set            |
+| `toggleHide()`         | Toggle visibility                                                      |
+| `focused`              | (getter) Whether this is the only visible investment among siblings    |
+| `toggleFocus()`        | Hide all siblings, or show all if already focused                      |
+
+### EnrichedTransaction
+
+| Method            | Description                   |
+| ----------------- | ----------------------------- |
+| `update(updates)` | Update transaction properties |
+| `delete()`        | Remove from parent investment |
+| `duplicate()`     | Copy transaction, returns ID  |
+
+### Usage Example
+
+```typescript
+// Find and update
+const portfolio = appStore.findPortfolio(id)
+portfolio?.update({ name: 'New Name' })
+
+// Add nested data
+const investmentId = portfolio?.addInvestment({ name: 'ETF', apy: 7, ... })
+const investment = appStore.findInvestment(investmentId)
+investment?.addTransaction({ amount: 1000, date: '2024-01-01', type: 'deposit', ... })
+
+// Delete (automatically removes from parent)
+investment?.delete()
+```
+
 ## Conventions
 
 - Use conventional commits (`feat:`, `fix:`, `docs:`, etc.)
