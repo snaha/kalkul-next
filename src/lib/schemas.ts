@@ -2,14 +2,13 @@ import { z } from 'zod'
 
 // --- Domain schemas ---
 
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json = string | number | boolean | { [key: string]: Json | undefined } | Json[]
 
 export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
   z.union([
     z.string(),
     z.number(),
     z.boolean(),
-    z.null(),
     z.record(jsonSchema.optional()),
     z.array(jsonSchema),
   ]),
