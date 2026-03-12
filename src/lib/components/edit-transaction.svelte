@@ -7,8 +7,8 @@
   import Typography from '$lib/components/ui/typography.svelte'
   import {
     type Client,
-    type EnrichedInvestment,
-    type EnrichedTransaction,
+    type InvestmentStore,
+    type TransactionStore,
     type InvestmentWithColorIndex,
     type Portfolio,
   } from '$lib/types'
@@ -37,10 +37,10 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    investment: InvestmentWithColorIndex & EnrichedInvestment
+    investment: InvestmentWithColorIndex & InvestmentStore
     portfolio: Portfolio
     client: Client
-    transaction?: EnrichedTransaction
+    transaction?: TransactionStore
     showInflation?: boolean
     close: () => void
   }

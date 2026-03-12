@@ -4,7 +4,7 @@
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import type { EnrichedClient, EnrichedPortfolio } from '$lib/types'
+  import type { ClientStore, PortfolioStore } from '$lib/types'
   import Select from '$lib/components/ui/select/select.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
   import { appStore } from '$lib/stores/app.svelte'
@@ -19,8 +19,8 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    client: EnrichedClient
-    portfolio?: EnrichedPortfolio
+    client: ClientStore
+    portfolio?: PortfolioStore
     close: () => void
   }
 

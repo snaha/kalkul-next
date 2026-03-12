@@ -16,13 +16,13 @@
   import Dropdown from './ui/dropdown.svelte'
   import List from './ui/list/list.svelte'
   import ListItem from './ui/list/list-item.svelte'
-  import type { EnrichedClient, EnrichedPortfolio, Investment } from '$lib/types'
+  import type { ClientStore, PortfolioStore, Investment } from '$lib/types'
   import PortfolioHeaderView from './portfolio-header-view.svelte'
   import { layoutStore } from '$lib/stores/layout.svelte'
 
   type Props = {
-    client: EnrichedClient
-    portfolio: EnrichedPortfolio
+    client: ClientStore
+    portfolio: PortfolioStore
     investments: Investment[]
     back?: () => void
     adjustWithInflation: boolean

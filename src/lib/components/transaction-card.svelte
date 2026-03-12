@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { EnrichedTransaction, Portfolio } from '$lib/types'
+  import type { TransactionStore, Portfolio } from '$lib/types'
   import { ChevronRight, Edit, Copy, TrashCan, OverflowMenuVertical } from 'carbon-icons-svelte'
   import Typography from './ui/typography.svelte'
   import { _, locale } from 'svelte-i18n'
@@ -20,12 +20,12 @@
   import { WarningAltFilled } from 'carbon-icons-svelte'
 
   type Props = {
-    transaction: EnrichedTransaction
+    transaction: TransactionStore
     portfolio: Portfolio
     currency: string
     viewOnly: boolean
     showInflation?: boolean
-    editTransaction?: (transaction: EnrichedTransaction) => void
+    editTransaction?: (transaction: TransactionStore) => void
     exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
   }
 

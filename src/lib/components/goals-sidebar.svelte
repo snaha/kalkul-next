@@ -1,8 +1,8 @@
 <script lang="ts">
   import Button from '$lib/components/ui/button.svelte'
   import type {
-    EnrichedInvestment,
-    EnrichedTransaction,
+    InvestmentStore,
+    TransactionStore,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -21,14 +21,11 @@
     isSidebarOpen: boolean
     isSidebarFlexible: boolean
     portfolio: PortfolioNested
-    goals: EnrichedInvestment[]
+    goals: InvestmentStore[]
     adjustWithInflation: boolean
     viewOnly: boolean
     graphData?: PortfolioSimulation
-    openTransaction?: (
-      investment: InvestmentWithColorIndex,
-      transaction?: EnrichedTransaction,
-    ) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
     addGoal: () => void
     showExplainInvestmentsLabel: boolean
   }

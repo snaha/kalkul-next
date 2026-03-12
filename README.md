@@ -106,15 +106,15 @@ The application uses a single nested reactive store (`appStore`) that manages al
 
 ```
 appStore
-└── clients: EnrichedClient[]
-    └── portfolios: EnrichedPortfolio[]
-        ├── investments: EnrichedInvestment[]
-        │   └── transactions: EnrichedTransaction[]
-        └── goals: EnrichedInvestment[]
-            └── transactions: EnrichedTransaction[]
+└── clients: ClientStore[]
+    └── portfolios: PortfolioStore[]
+        ├── investments: InvestmentStore[]
+        │   └── transactions: TransactionStore[]
+        └── goals: InvestmentStore[]
+            └── transactions: TransactionStore[]
 ```
 
-Goals and investments share the same `EnrichedInvestment` type but are stored in separate arrays on each portfolio. Goals are distinguished by having `goal_data` populated.
+Goals and investments share the same `InvestmentStore` type but are stored in separate arrays on each portfolio. Goals are distinguished by having `goal_data` populated.
 
 ### How Enrichment Works
 
@@ -143,7 +143,7 @@ Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "e
 | `exportBackup()`                | JSON string of all data                                |
 | `importBackup(json)`            | Import and enrich from JSON string                     |
 
-### EnrichedClient
+### ClientStore
 
 | Method               | Description                    |
 | -------------------- | ------------------------------ |
@@ -151,7 +151,7 @@ Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "e
 | `delete()`           | Remove client from store       |
 | `addPortfolio(data)` | Add portfolio, returns ID      |
 
-### EnrichedPortfolio
+### PortfolioStore
 
 | Method                | Description                                                   |
 | --------------------- | ------------------------------------------------------------- |
@@ -161,7 +161,7 @@ Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "e
 | `addInvestment(data)` | Add to investments array, returns ID                          |
 | `addGoal(data)`       | Add to goals array, returns ID                                |
 
-### EnrichedInvestment
+### InvestmentStore
 
 | Method / Property      | Description                                                            |
 | ---------------------- | ---------------------------------------------------------------------- |
@@ -174,7 +174,7 @@ Raw data loaded from localStorage is plain JSON (`ClientNested[]`). The store "e
 | `focused`              | (getter) Whether this is the only visible investment among siblings    |
 | `toggleFocus()`        | Hide all siblings, or show all if already focused                      |
 
-### EnrichedTransaction
+### TransactionStore
 
 | Method            | Description                   |
 | ----------------- | ----------------------------- |

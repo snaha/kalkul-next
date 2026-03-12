@@ -1,8 +1,8 @@
 <script lang="ts">
   import type {
     Client,
-    EnrichedInvestment,
-    EnrichedTransaction,
+    InvestmentStore,
+    TransactionStore,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -24,8 +24,8 @@
   interface Props {
     client: Client
     portfolio: PortfolioNested
-    goals: EnrichedInvestment[]
-    regularInvestments: EnrichedInvestment[]
+    goals: InvestmentStore[]
+    regularInvestments: InvestmentStore[]
     isGraphFullscreened: boolean
     isSidebarFlexible: boolean
     isSidebarOpen: boolean
@@ -56,17 +56,14 @@
   }: Props = $props()
 
   // Transaction editing state - managed internally
-  let editedTransaction: EnrichedTransaction | undefined = $state()
-  let selectedInvestment: (InvestmentWithColorIndex & EnrichedInvestment) | undefined = $state()
+  let editedTransaction: TransactionStore | undefined = $state()
+  let selectedInvestment: (InvestmentWithColorIndex & InvestmentStore) | undefined = $state()
   let open = $state(false)
   let prevSelectedTab = $state(selectedTab)
 
-  function openTransaction(
-    investment: InvestmentWithColorIndex,
-    transaction?: EnrichedTransaction,
-  ) {
-    // The investment objects from the store are EnrichedInvestment at runtime
-    selectedInvestment = investment as InvestmentWithColorIndex & EnrichedInvestment
+  function openTransaction(investment: InvestmentWithColorIndex, transaction?: TransactionStore) {
+    // The investment objects from the store are InvestmentStore at runtime
+    selectedInvestment = investment as InvestmentWithColorIndex & InvestmentStore
     if (transaction) editedTransaction = transaction
   }
 

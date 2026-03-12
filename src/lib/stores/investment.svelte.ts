@@ -1,11 +1,6 @@
 import type { SvelteSet } from 'svelte/reactivity'
-import type {
-  EnrichedInvestment,
-  EnrichedTransaction,
-  Investment,
-  InvestmentNested,
-  Transaction,
-} from '$lib/types'
+import type { Investment, InvestmentNested, Transaction } from '$lib/types'
+import type { TransactionStore } from './transaction.svelte'
 import { withTransactionStore } from './transaction.svelte'
 
 type PortfolioParent = {
@@ -13,11 +8,11 @@ type PortfolioParent = {
   removeChild(id: string): void
   duplicateChild(newInv: InvestmentNested): string | undefined
   hiddenIds: SvelteSet<string>
-  getSiblingsOf(id: string): EnrichedInvestment[]
+  getSiblingsOf(id: string): InvestmentStore[]
 }
 
-export type EnrichedInvestmentStore = Omit<InvestmentNested, 'transactions'> & {
-  transactions: EnrichedTransaction[]
+export type InvestmentStore = Omit<InvestmentNested, 'transactions'> & {
+  transactions: TransactionStore[]
   update(updates: Partial<Omit<Investment, 'id'>>): void
   delete(): void
   duplicate(): string | undefined
@@ -35,7 +30,7 @@ export type EnrichedInvestmentStore = Omit<InvestmentNested, 'transactions'> & {
 export function withInvestmentStore(
   inv: InvestmentNested,
   portfolio: PortfolioParent,
-): EnrichedInvestmentStore {
+): InvestmentStore {
   let id = $state(inv.id)
   let name = $state(inv.name)
   let apy = $state(inv.apy)
@@ -50,9 +45,9 @@ export function withInvestmentStore(
   let success_fee = $state(inv.success_fee)
   let ter = $state(inv.ter)
   let goal_data = $state(inv.goal_data)
-  let transactions = $state<EnrichedTransaction[]>([])
+  let transactions = $state<TransactionStore[]>([])
 
-  const store: EnrichedInvestmentStore = {
+  const store: InvestmentStore = {
     get id() {
       return id
     },

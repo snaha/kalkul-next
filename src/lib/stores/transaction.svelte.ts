@@ -1,7 +1,8 @@
-import type { EnrichedInvestment, Transaction } from '$lib/types'
+import type { Transaction } from '$lib/types'
+import type { InvestmentStore } from './investment.svelte'
 
-export type EnrichedTransactionStore = Transaction & {
-  readonly investment: EnrichedInvestment
+export type TransactionStore = Transaction & {
+  readonly investment: InvestmentStore
   update(updates: Partial<Omit<Transaction, 'id'>>): void
   delete(): void
   duplicate(): string
@@ -10,8 +11,8 @@ export type EnrichedTransactionStore = Transaction & {
 
 export function withTransactionStore(
   tx: Transaction,
-  investment: EnrichedInvestment,
-): EnrichedTransactionStore {
+  investment: InvestmentStore,
+): TransactionStore {
   let id = $state(tx.id)
   let amount = $state(tx.amount)
   let label = $state(tx.label)

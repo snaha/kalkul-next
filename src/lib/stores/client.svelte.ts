@@ -1,5 +1,6 @@
 import type { SvelteSet } from 'svelte/reactivity'
-import type { ClientNested, EnrichedPortfolio, Portfolio, PortfolioNested } from '$lib/types'
+import type { ClientNested, Portfolio, PortfolioNested } from '$lib/types'
+import type { PortfolioStore } from './portfolio.svelte'
 import { withPortfolioStore } from './portfolio.svelte'
 
 type AppParent = {
@@ -8,8 +9,8 @@ type AppParent = {
   hiddenIds: SvelteSet<string>
 }
 
-export type EnrichedClientStore = Omit<ClientNested, 'portfolios'> & {
-  portfolios: EnrichedPortfolio[]
+export type ClientStore = Omit<ClientNested, 'portfolios'> & {
+  portfolios: PortfolioStore[]
   update(updates: Partial<Omit<ClientNested, 'id' | 'portfolios'>>): void
   delete(): void
   addPortfolio(data: Omit<Portfolio, 'id'>): string
@@ -20,14 +21,14 @@ export type EnrichedClientStore = Omit<ClientNested, 'portfolios'> & {
   toJSON(): ClientNested
 }
 
-export function withClientStore(client: ClientNested, app: AppParent): EnrichedClientStore {
+export function withClientStore(client: ClientNested, app: AppParent): ClientStore {
   let id = $state(client.id)
   let name = $state(client.name)
   let email = $state(client.email)
   let birth_date = $state(client.birth_date)
-  let portfolios = $state<EnrichedPortfolio[]>([])
+  let portfolios = $state<PortfolioStore[]>([])
 
-  const store: EnrichedClientStore = {
+  const store: ClientStore = {
     get id() {
       return id
     },

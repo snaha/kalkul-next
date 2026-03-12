@@ -5,7 +5,7 @@
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { type EnrichedInvestment, type EnrichedPortfolio } from '$lib/types'
+  import { type InvestmentStore, type PortfolioStore } from '$lib/types'
   import {
     DEFAULT_ENTRY_FEE_TYPE,
     DEFAULT_FEE_TYPE,
@@ -25,8 +25,8 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    portfolio: EnrichedPortfolio
-    investment?: EnrichedInvestment
+    portfolio: PortfolioStore
+    investment?: InvestmentStore
     close: () => void
   }
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {
-    EnrichedInvestment,
-    EnrichedTransaction,
+    InvestmentStore,
+    TransactionStore,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -24,15 +24,12 @@
     isSidebarFlexible: boolean
     portfolio: PortfolioNested
     clientId: string
-    investments: EnrichedInvestment[]
+    investments: InvestmentStore[]
     transactionCount: number
     adjustWithInflation: boolean
     viewOnly: boolean
     graphData?: PortfolioSimulation
-    openTransaction?: (
-      investment: InvestmentWithColorIndex,
-      transaction?: EnrichedTransaction,
-    ) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
   }
 
   let {

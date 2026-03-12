@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {
-    EnrichedInvestment,
-    EnrichedTransaction,
+    InvestmentStore,
+    TransactionStore,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -36,16 +36,13 @@
   import Loader from './ui/loader.svelte'
 
   type Props = {
-    investment: InvestmentWithColorIndex & EnrichedInvestment
+    investment: InvestmentWithColorIndex & InvestmentStore
     portfolio: PortfolioNested
     clientId: string
     viewOnly?: boolean
     index: number
     showInflation?: boolean
-    openTransaction?: (
-      investment: InvestmentWithColorIndex,
-      transaction?: EnrichedTransaction,
-    ) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
     open?: boolean
     exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
     isCalculating?: boolean

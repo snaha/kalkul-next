@@ -1,11 +1,6 @@
 import type { SvelteSet } from 'svelte/reactivity'
-import type {
-  EnrichedInvestment,
-  Investment,
-  InvestmentNested,
-  Portfolio,
-  PortfolioNested,
-} from '$lib/types'
+import type { Investment, InvestmentNested, Portfolio, PortfolioNested } from '$lib/types'
+import type { InvestmentStore } from './investment.svelte'
 import { withInvestmentStore } from './investment.svelte'
 
 type ClientParent = {
@@ -15,9 +10,9 @@ type ClientParent = {
   hiddenIds: SvelteSet<string>
 }
 
-export type EnrichedPortfolioStore = Omit<PortfolioNested, 'investments' | 'goals'> & {
-  investments: EnrichedInvestment[]
-  goals: EnrichedInvestment[]
+export type PortfolioStore = Omit<PortfolioNested, 'investments' | 'goals'> & {
+  investments: InvestmentStore[]
+  goals: InvestmentStore[]
   update(updates: Partial<Omit<Portfolio, 'id'>>): void
   delete(): void
   duplicate(): string | undefined
@@ -25,7 +20,7 @@ export type EnrichedPortfolioStore = Omit<PortfolioNested, 'investments' | 'goal
   addGoal(data: Omit<Investment, 'id'>): string
   removeChild(id: string): void
   duplicateChild(newInv: InvestmentNested): string | undefined
-  getSiblingsOf(id: string): EnrichedInvestment[]
+  getSiblingsOf(id: string): InvestmentStore[]
   persist(): void
   hiddenIds: SvelteSet<string>
   toJSON(): PortfolioNested
@@ -34,17 +29,17 @@ export type EnrichedPortfolioStore = Omit<PortfolioNested, 'investments' | 'goal
 export function withPortfolioStore(
   portfolio: PortfolioNested,
   client: ClientParent,
-): EnrichedPortfolioStore {
+): PortfolioStore {
   let id = $state(portfolio.id)
   let name = $state(portfolio.name)
   let currency = $state(portfolio.currency)
   let start_date = $state(portfolio.start_date)
   let end_date = $state(portfolio.end_date)
   let inflation_rate = $state(portfolio.inflation_rate)
-  let investments = $state<EnrichedInvestment[]>([])
-  let goals = $state<EnrichedInvestment[]>([])
+  let investments = $state<InvestmentStore[]>([])
+  let goals = $state<InvestmentStore[]>([])
 
-  const store: EnrichedPortfolioStore = {
+  const store: PortfolioStore = {
     get id() {
       return id
     },
@@ -179,7 +174,7 @@ export function withPortfolioStore(
       return newInv.id
     },
 
-    getSiblingsOf(childId: string): EnrichedInvestment[] {
+    getSiblingsOf(childId: string): InvestmentStore[] {
       if (investments.some((i) => i.id === childId)) return investments
       if (goals.some((i) => i.id === childId)) return goals
       return []

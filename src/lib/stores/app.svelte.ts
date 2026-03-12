@@ -2,10 +2,10 @@ import { SvelteSet } from 'svelte/reactivity'
 import type {
   ClientNested,
   ClientNoId,
-  EnrichedClient,
-  EnrichedInvestment,
-  EnrichedPortfolio,
-  EnrichedTransaction,
+  ClientStore,
+  InvestmentStore,
+  PortfolioStore,
+  TransactionStore,
 } from '$lib/types'
 import { withClientStore } from './client.svelte'
 
@@ -24,7 +24,7 @@ function loadData(): ClientNested[] {
 }
 
 function withAppStore() {
-  let clients = $state.raw<EnrichedClient[]>([])
+  let clients = $state.raw<ClientStore[]>([])
   let loading = $state(true)
   const hiddenInvestmentIds = new SvelteSet<string>()
 
@@ -47,7 +47,7 @@ function withAppStore() {
     hiddenIds: hiddenInvestmentIds,
   }
 
-  function enrichAll(rawClients: ClientNested[]): EnrichedClient[] {
+  function enrichAll(rawClients: ClientNested[]): ClientStore[] {
     return rawClients.map((c) => withClientStore(c, appParent))
   }
 
@@ -55,7 +55,7 @@ function withAppStore() {
     get clients() {
       return clients
     },
-    set clients(value: EnrichedClient[]) {
+    set clients(value: ClientStore[]) {
       clients = value
       loading = false
     },
@@ -85,11 +85,11 @@ function withAppStore() {
 
     // --- Finders ---
 
-    findClient(id: string): EnrichedClient | undefined {
+    findClient(id: string): ClientStore | undefined {
       return clients.find((c) => c.id === id)
     },
 
-    findPortfolio(portfolioId: string): EnrichedPortfolio | undefined {
+    findPortfolio(portfolioId: string): PortfolioStore | undefined {
       for (const client of clients) {
         const portfolio = client.portfolios.find((p) => p.id === portfolioId)
         if (portfolio) return portfolio
@@ -97,7 +97,7 @@ function withAppStore() {
       return undefined
     },
 
-    findInvestment(investmentId: string): EnrichedInvestment | undefined {
+    findInvestment(investmentId: string): InvestmentStore | undefined {
       for (const client of clients) {
         for (const portfolio of client.portfolios) {
           const investment = portfolio.investments.find((i) => i.id === investmentId)
@@ -109,7 +109,7 @@ function withAppStore() {
       return undefined
     },
 
-    findTransaction(transactionId: string): EnrichedTransaction | undefined {
+    findTransaction(transactionId: string): TransactionStore | undefined {
       for (const client of clients) {
         for (const portfolio of client.portfolios) {
           for (const investment of [...portfolio.investments, ...portfolio.goals]) {
@@ -121,11 +121,11 @@ function withAppStore() {
       return undefined
     },
 
-    getPortfolios(clientId: string): EnrichedPortfolio[] {
+    getPortfolios(clientId: string): PortfolioStore[] {
       return clients.find((c) => c.id === clientId)?.portfolios ?? []
     },
 
-    getInvestments(portfolioId: string): EnrichedInvestment[] {
+    getInvestments(portfolioId: string): InvestmentStore[] {
       for (const client of clients) {
         const portfolio = client.portfolios.find((p) => p.id === portfolioId)
         if (portfolio) return portfolio.investments
@@ -133,7 +133,7 @@ function withAppStore() {
       return []
     },
 
-    getTransactions(investmentId: string): EnrichedTransaction[] {
+    getTransactions(investmentId: string): TransactionStore[] {
       const investment = this.findInvestment(investmentId)
       return investment?.transactions ?? []
     },

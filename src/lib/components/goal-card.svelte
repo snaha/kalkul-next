@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {
-    EnrichedInvestment,
-    EnrichedTransaction,
+    InvestmentStore,
+    TransactionStore,
     InvestmentWithColorIndex,
     PortfolioNested,
   } from '$lib/types'
@@ -40,21 +40,18 @@
   import { goto } from '$app/navigation'
 
   type Props = {
-    investment: InvestmentWithColorIndex & EnrichedInvestment
+    investment: InvestmentWithColorIndex & InvestmentStore
     portfolio: PortfolioNested
     viewOnly?: boolean
     index: number
     showInflation?: boolean
-    openTransaction?: (
-      investment: InvestmentWithColorIndex,
-      transaction?: EnrichedTransaction,
-    ) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
     addInvestment?: () => void
     open?: boolean
     exhaustionWarning?: ExhaustionWarning
     isCalculating?: boolean
-    transactions?: EnrichedTransaction[]
-    goal: EnrichedInvestment
+    transactions?: TransactionStore[]
+    goal: InvestmentStore
     showExplainInvestmentsLabel: boolean
   }
 

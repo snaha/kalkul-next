@@ -17,19 +17,12 @@ export type {
 } from './schemas'
 
 import type { Client, Investment } from './schemas'
-import type { EnrichedTransactionStore } from './stores/transaction.svelte'
-import type { EnrichedInvestmentStore } from './stores/investment.svelte'
-import type { EnrichedPortfolioStore } from './stores/portfolio.svelte'
-import type { EnrichedClientStore } from './stores/client.svelte'
+export type { TransactionStore } from './stores/transaction.svelte'
+export type { InvestmentStore } from './stores/investment.svelte'
+export type { PortfolioStore } from './stores/portfolio.svelte'
+export type { ClientStore } from './stores/client.svelte'
 
 export type ClientNoId = Omit<Client, 'id'>
-
-// --- Enriched types (objects with CRUD methods) ---
-
-export type EnrichedTransaction = EnrichedTransactionStore
-export type EnrichedInvestment = EnrichedInvestmentStore
-export type EnrichedPortfolio = EnrichedPortfolioStore
-export type EnrichedClient = EnrichedClientStore
 
 export type InvestmentWithColorIndex = Investment & {
   colorIndex?: number
