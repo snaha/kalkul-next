@@ -23,7 +23,7 @@
   const clientId = $derived(page.params.id)
   const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(appStore.findPortfolio(portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   let selectedTab = $state<'goals' | 'investments'>('goals')
 
@@ -32,10 +32,9 @@
   const investmentsSimulation = withPortfolioSimulationStore()
 
   // Calculate goals data when goals change
-  // Read from appStore.findPortfolio() directly to track clients state changes
-  // ($derived with same object reference would skip notifications)
   $effect(() => {
-    const p = appStore.findPortfolio(portfolioId)
+    void appStore.dataVersion // track any data mutation
+    const p = portfolio
     if (p && !appStore.loading) {
       const goalsPortfolio: PortfolioNested = { ...p, investments: p.goals, goals: [] }
       setTimeout(() => {
@@ -46,7 +45,8 @@
 
   // Calculate investments data when investments change
   $effect(() => {
-    const p = appStore.findPortfolio(portfolioId)
+    void appStore.dataVersion // track any data mutation
+    const p = portfolio
     if (p && !appStore.loading) {
       const investmentsPortfolio: PortfolioNested = { ...p, investments: p.investments, goals: [] }
       setTimeout(() => {

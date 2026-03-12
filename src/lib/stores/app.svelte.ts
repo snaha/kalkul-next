@@ -1,12 +1,5 @@
 import { SvelteSet } from 'svelte/reactivity'
-import type {
-  ClientNested,
-  ClientNoId,
-  ClientStore,
-  InvestmentStore,
-  PortfolioStore,
-  TransactionStore,
-} from '$lib/types'
+import type { ClientNested, ClientNoId, ClientStore } from '$lib/types'
 import { clientNestedSchema } from '$lib/schemas'
 import { withClientStore } from './client.svelte'
 
@@ -28,6 +21,7 @@ function loadData(): ClientNested[] {
 function withAppStore() {
   let clients = $state.raw<ClientStore[]>([])
   let loading = $state(true)
+  let dataVersion = $state(0)
   const hiddenInvestmentIds = new SvelteSet<string>()
 
   function persist(): void {
@@ -35,6 +29,7 @@ function withAppStore() {
     // Trigger reactivity: $state.raw only signals on reassignment, so create
     // a new array reference after every mutation.
     clients = [...clients]
+    dataVersion++
   }
 
   function deleteClient(id: string): void {
@@ -55,6 +50,9 @@ function withAppStore() {
   }
 
   return {
+    get dataVersion() {
+      return dataVersion
+    },
     get clients() {
       return clients
     },
@@ -90,55 +88,6 @@ function withAppStore() {
 
     findClient(id: string): ClientStore | undefined {
       return clients.find((c) => c.id === id)
-    },
-
-    findPortfolio(portfolioId: string): PortfolioStore | undefined {
-      for (const client of clients) {
-        const portfolio = client.portfolios.find((p) => p.id === portfolioId)
-        if (portfolio) return portfolio
-      }
-      return undefined
-    },
-
-    findInvestment(investmentId: string): InvestmentStore | undefined {
-      for (const client of clients) {
-        for (const portfolio of client.portfolios) {
-          const investment = portfolio.investments.find((i) => i.id === investmentId)
-          if (investment) return investment
-          const goal = portfolio.goals.find((i) => i.id === investmentId)
-          if (goal) return goal
-        }
-      }
-      return undefined
-    },
-
-    findTransaction(transactionId: string): TransactionStore | undefined {
-      for (const client of clients) {
-        for (const portfolio of client.portfolios) {
-          for (const investment of [...portfolio.investments, ...portfolio.goals]) {
-            const transaction = investment.transactions.find((t) => t.id === transactionId)
-            if (transaction) return transaction
-          }
-        }
-      }
-      return undefined
-    },
-
-    getPortfolios(clientId: string): PortfolioStore[] {
-      return clients.find((c) => c.id === clientId)?.portfolios ?? []
-    },
-
-    getInvestments(portfolioId: string): InvestmentStore[] {
-      for (const client of clients) {
-        const portfolio = client.portfolios.find((p) => p.id === portfolioId)
-        if (portfolio) return portfolio.investments
-      }
-      return []
-    },
-
-    getTransactions(investmentId: string): TransactionStore[] {
-      const investment = this.findInvestment(investmentId)
-      return investment?.transactions ?? []
     },
 
     // --- Clients ---

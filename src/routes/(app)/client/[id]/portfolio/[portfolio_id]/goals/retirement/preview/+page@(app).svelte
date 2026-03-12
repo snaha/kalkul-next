@@ -19,6 +19,7 @@
   import { onMount } from 'svelte'
 
   const clientId = $derived(page.params.id)
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
 
   // Get calculation data from store
@@ -125,7 +126,7 @@
     }
 
     // Create goal in database as an investment with goal_data
-    const portfolio = appStore.findPortfolio(portfolioId)
+    const portfolio = client?.portfolios.find((p) => p.id === portfolioId)
     if (!portfolio) return
 
     const goalId = portfolio.addGoal({
@@ -141,7 +142,7 @@
     })
 
     // Generate and create transactions for this goal
-    const goalInvestment = appStore.findInvestment(goalId)
+    const goalInvestment = portfolio.goals.find((g) => g.id === goalId)
     if (goalInvestment) {
       const transactions = goalToTransactions(goalData, {
         initialSavings: $_('demo.transactions.initialSavings'),

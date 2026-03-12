@@ -9,7 +9,7 @@
   const clientId = page.params.id
   const client = $derived(appStore.findClient(clientId))
   const portfolioId = page.params.portfolio_id
-  const portfolio = $derived(appStore.findPortfolio(portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   function close() {
     history.back()

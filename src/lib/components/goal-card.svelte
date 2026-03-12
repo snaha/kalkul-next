@@ -30,7 +30,6 @@
   import TransactionCard from '$lib/components/transaction-card.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
   import { base } from '$app/paths'
-  import { appStore } from '$lib/stores/app.svelte'
   import Badge from '$lib/components/ui/badge.svelte'
   import Loader from '$lib/components/ui/loader.svelte'
   import DeleteModal from '$lib/components/delete-modal.svelte'
@@ -78,7 +77,7 @@
   let linkedInvestmentsOpen = $state(true)
   let showDeleteGoalModal = $state(false)
 
-  const transactions = $derived(providedTransactions ?? appStore.getTransactions(investment.id))
+  const transactions = $derived(providedTransactions ?? investment.transactions)
   // Linked investments will be implemented in Task 5
   const linkedInvestments = $derived<
     { investment?: InvestmentWithColorIndex; percentage: number }[]

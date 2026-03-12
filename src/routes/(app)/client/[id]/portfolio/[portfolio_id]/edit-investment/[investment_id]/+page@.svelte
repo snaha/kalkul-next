@@ -7,10 +7,15 @@
   import { appStore } from '$lib/stores/app.svelte'
   import { _ } from 'svelte-i18n'
 
+  const clientId = $derived(page.params.id)
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
   const investmentId = $derived(page.params.investment_id)
-  const portfolio = $derived(appStore.findPortfolio(portfolioId))
-  const investment = $derived(appStore.findInvestment(investmentId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
+  const investment = $derived(
+    portfolio?.investments.find((i) => i.id === investmentId) ??
+      portfolio?.goals.find((g) => g.id === investmentId),
+  )
 
   function close() {
     history.back()

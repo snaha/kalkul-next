@@ -13,7 +13,6 @@
     type FeeType,
   } from '$lib/@snaha/kalkul-maths'
   import Select from '$lib/components/ui/select/select.svelte'
-  import { appStore } from '$lib/stores/app.svelte'
   import { capitalizeFirstLetter } from '$lib/utils'
   import Toggle from './ui/toggle.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -35,7 +34,7 @@
   const defaultName =
     capitalizeFirstLetter($_('common.investment')) +
     ' ' +
-    (appStore.getInvestments(portfolio.id).length + 1).toString()
+    (portfolio.investments.length + 1).toString()
 
   let name = $state(defaultName)
   let type = $state('')

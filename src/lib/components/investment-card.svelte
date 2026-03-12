@@ -29,7 +29,6 @@
   import TransactionCard from './transaction-card.svelte'
   import Divider from './ui/divider.svelte'
   import { base } from '$app/paths'
-  import { appStore } from '$lib/stores/app.svelte'
   import DeleteModal from './delete-modal.svelte'
   import InvestmentColorBox from './investment-color-box.svelte'
   import Badge from './ui/badge.svelte'
@@ -65,7 +64,7 @@
   const focused = $derived(investment.focused)
 
   let showDeleteInvestmentModal = $state(false)
-  const transactions = $derived(appStore.getTransactions(investment.id))
+  const transactions = $derived(investment.transactions)
 
   function cardOpenInvestment(e: MouseEvent) {
     if (e.defaultPrevented) {

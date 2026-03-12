@@ -7,7 +7,6 @@
   import type { ClientStore, PortfolioStore } from '$lib/types'
   import Select from '$lib/components/ui/select/select.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
-  import { appStore } from '$lib/stores/app.svelte'
   import { capitalizeFirstLetter, formatAge } from '$lib/utils'
 
   import DateAge from './date-age.svelte'
@@ -27,9 +26,7 @@
   let { client, portfolio, close }: Props = $props()
 
   let name = $state(
-    capitalizeFirstLetter($_('common.portfolio')) +
-      ' ' +
-      (appStore.getPortfolios(client.id).length + 1).toString(),
+    capitalizeFirstLetter($_('common.portfolio')) + ' ' + (client.portfolios.length + 1).toString(),
   )
   let currency = $state('EUR')
   let inflation = $state('2.25')

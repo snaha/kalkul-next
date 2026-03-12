@@ -40,7 +40,7 @@
 
   const clientId = page.params.id
   const client = $derived(appStore.findClient(clientId))
-  const portfolios = $derived(appStore.getPortfolios(clientId))
+  const portfolios = $derived(client?.portfolios ?? [])
   let showConfirmModal = $state(false)
   let portfolioToBeDeleted: string | undefined = $state()
   let showConfirmDeleteClientModal = $state(false)
@@ -65,7 +65,7 @@
       return
     }
 
-    appStore.findPortfolio(portfolioToBeDeleted)?.delete()
+    client?.portfolios.find((p) => p.id === portfolioToBeDeleted)?.delete()
     portfolioToBeDeleted = undefined
     showConfirmModal = false
   }
@@ -76,10 +76,15 @@
   }
 
   function portfolioValue(portfolioId: string): number {
-    const investments = appStore.getInvestments(portfolioId)
+    const portfolio = client?.portfolios.find((p) => p.id === portfolioId)
+    if (!portfolio) return 0
     return getCurrentPortfolioValue(
-      { filter: (id: string) => appStore.getTransactions(id) },
-      investments,
+      {
+        filter: (id: string) =>
+          [...portfolio.investments, ...portfolio.goals].find((i) => i.id === id)?.transactions ??
+          [],
+      },
+      portfolio.investments,
     )
   }
 
@@ -136,7 +141,7 @@
       <ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(clientId, portfolioId))}
         ><FolderDetails size={24} />{$_('page.portfolio.editPortfolioDetails')}</ListItem
       >
-      <ListItem onclick={() => appStore.findPortfolio(portfolioId)?.duplicate()}
+      <ListItem onclick={() => client?.portfolios.find((p) => p.id === portfolioId)?.duplicate()}
         ><Copy size={24} />{$_('page.portfolio.duplicatePortfolio')}</ListItem
       >
       <ListItem onclick={() => confirmDeletePortfolio(portfolioId)}

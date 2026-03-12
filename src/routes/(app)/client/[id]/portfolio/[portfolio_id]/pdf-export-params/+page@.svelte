@@ -19,7 +19,7 @@
   const clientId = $derived(page.params.id)
   const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(appStore.findPortfolio(portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   let isLoading = $derived(appStore.loading)
 
