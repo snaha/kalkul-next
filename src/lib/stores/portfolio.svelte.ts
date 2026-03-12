@@ -134,7 +134,7 @@ export function withPortfolioStore(
         id: invId,
         transactions: [],
       }
-      const enrichedInv = withInvestmentStore(newInvestment, store)
+      const enrichedInv = withInvestmentStore(newInvestment, this)
       investments.push(enrichedInv)
       client.persist()
       return invId
@@ -147,7 +147,7 @@ export function withPortfolioStore(
         id: goalId,
         transactions: [],
       }
-      const enrichedGoal = withInvestmentStore(newGoal, store)
+      const enrichedGoal = withInvestmentStore(newGoal, this)
       goals.push(enrichedGoal)
       client.persist()
       return goalId
@@ -169,7 +169,7 @@ export function withPortfolioStore(
 
     duplicateChild(newInv: InvestmentNested): string | undefined {
       const isGoal = newInv.goal_data !== undefined
-      const enrichedInv = withInvestmentStore(newInv, store)
+      const enrichedInv = withInvestmentStore(newInv, this)
       if (isGoal) {
         goals.push(enrichedInv)
       } else {

@@ -180,7 +180,7 @@ export function withInvestmentStore(
     addTransaction(data: Omit<Transaction, 'id'>) {
       const txId = crypto.randomUUID()
       const newTx: Transaction = { ...data, id: txId }
-      const enrichedTx = withTransactionStore(newTx, store)
+      const enrichedTx = withTransactionStore(newTx, this)
       transactions.push(enrichedTx)
       portfolio.persist()
       return txId
@@ -193,7 +193,7 @@ export function withInvestmentStore(
     },
 
     duplicateTransaction(newTx: Transaction): string {
-      const enrichedTx = withTransactionStore(newTx, store)
+      const enrichedTx = withTransactionStore(newTx, this)
       transactions.push(enrichedTx)
       portfolio.persist()
       return newTx.id
