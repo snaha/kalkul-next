@@ -20,7 +20,6 @@ export const clientSchema = z.object({
   name: z.string(),
   email: z.string(),
   birth_date: z.string(),
-  created_at: z.string(),
 })
 
 export const portfolioSchema = z.object({
@@ -30,8 +29,6 @@ export const portfolioSchema = z.object({
   start_date: z.string(),
   end_date: z.string(),
   inflation_rate: z.number(),
-  created_at: z.string(),
-  last_edited_at: z.string(),
 })
 
 export const transactionTypeSchema = z.enum(['deposit', 'withdrawal'])
@@ -43,8 +40,6 @@ export const investmentSchema = z.object({
   name: z.string(),
   apy: z.number().nullable(),
   type: z.string().nullable(),
-  created_at: z.string(),
-  last_edited_at: z.string().nullable(),
   advanced_fees: z.boolean().nullable(),
   entry_fee: z.number().nullable(),
   entry_fee_type: z.string().nullable(),
@@ -63,8 +58,6 @@ export const transactionSchema = z.object({
   date: z.string(),
   end_date: z.string().nullable(),
   type: transactionTypeSchema,
-  created_at: z.string(),
-  last_edited_at: z.string().nullable(),
   inflation_adjusted: z.boolean(),
   label: z.string().nullable(),
   repeat: z.number().nullable(),

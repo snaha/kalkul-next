@@ -4,11 +4,10 @@ import type {
   EnrichedPortfolio,
   Investment,
   InvestmentNested,
-  MetaFields,
   Portfolio,
   PortfolioNested,
 } from '$lib/types'
-import { now, spreadInvestment, spreadPortfolio, spreadTransaction } from './store-utils'
+import { spreadInvestment, spreadPortfolio, spreadTransaction } from './store-utils'
 import { withInvestmentStore } from './investment.svelte'
 
 type ClientParent = {
@@ -24,8 +23,8 @@ export type EnrichedPortfolioStore = Omit<PortfolioNested, 'investments' | 'goal
   update(updates: Partial<Omit<Portfolio, 'id'>>): void
   delete(): void
   duplicate(): string | undefined
-  addInvestment(data: Omit<Investment, MetaFields>): string
-  addGoal(data: Omit<Investment, MetaFields>): string
+  addInvestment(data: Omit<Investment, 'id'>): string
+  addGoal(data: Omit<Investment, 'id'>): string
   removeChild(id: string): void
   duplicateChild(newInv: InvestmentNested): string | undefined
   getSiblingsOf(id: string): EnrichedInvestment[]
@@ -63,8 +62,6 @@ export function withPortfolioStore(
   let start_date = $state(portfolio.start_date)
   let end_date = $state(portfolio.end_date)
   let inflation_rate = $state(portfolio.inflation_rate)
-  let created_at = $state(portfolio.created_at)
-  let last_edited_at = $state(portfolio.last_edited_at)
   let investments = $state<EnrichedInvestment[]>([])
   let goals = $state<EnrichedInvestment[]>([])
 
@@ -105,18 +102,6 @@ export function withPortfolioStore(
     set inflation_rate(v) {
       inflation_rate = v
     },
-    get created_at() {
-      return created_at
-    },
-    set created_at(v) {
-      created_at = v
-    },
-    get last_edited_at() {
-      return last_edited_at
-    },
-    set last_edited_at(v) {
-      last_edited_at = v
-    },
     get investments() {
       return investments
     },
@@ -135,7 +120,7 @@ export function withPortfolioStore(
     },
 
     update(updates: Partial<Omit<Portfolio, 'id'>>) {
-      Object.assign(this, updates, { last_edited_at: now() })
+      Object.assign(this, updates)
       client.persist()
     },
 
@@ -150,13 +135,9 @@ export function withPortfolioStore(
           return {
             ...spreadInvestment(inv),
             id: newInvestmentId,
-            created_at: now(),
-            last_edited_at: now(),
             transactions: inv.transactions.map((t) => ({
               ...spreadTransaction(t),
               id: crypto.randomUUID(),
-              created_at: now(),
-              last_edited_at: now(),
             })),
           }
         })
@@ -167,21 +148,17 @@ export function withPortfolioStore(
         ...spreadPortfolio(this),
         id: newPortfolioId,
         name: name + ' - Copy',
-        created_at: now(),
-        last_edited_at: now(),
         investments: deepCopyInvestments(investments),
         goals: deepCopyInvestments(goals),
       }
       return client.duplicatePortfolio(newPortfolio)
     },
 
-    addInvestment(data: Omit<Investment, MetaFields>) {
+    addInvestment(data: Omit<Investment, 'id'>) {
       const invId = crypto.randomUUID()
       const newInvestment: InvestmentNested = {
         ...data,
         id: invId,
-        created_at: now(),
-        last_edited_at: now(),
         transactions: [],
       }
       const enrichedInv = withInvestmentStore(newInvestment, store)
@@ -190,13 +167,11 @@ export function withPortfolioStore(
       return invId
     },
 
-    addGoal(data: Omit<Investment, MetaFields>) {
+    addGoal(data: Omit<Investment, 'id'>) {
       const goalId = crypto.randomUUID()
       const newGoal: InvestmentNested = {
         ...data,
         id: goalId,
-        created_at: now(),
-        last_edited_at: now(),
         transactions: [],
       }
       const enrichedGoal = withInvestmentStore(newGoal, store)

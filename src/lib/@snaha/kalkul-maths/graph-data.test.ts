@@ -225,8 +225,6 @@ describe('inflation-adjusted transactions on graph', () => {
     exit_fee_type: 'upfront',
     id: 'test-investment-1',
     advanced_fees: false,
-    created_at: '2024-01-01',
-    last_edited_at: '2024-01-01',
     management_fee: 0,
     management_fee_type: 'upfront',
     name: 'Test',
@@ -236,12 +234,10 @@ describe('inflation-adjusted transactions on graph', () => {
   }
 
   const portfolio: Portfolio = {
-    created_at: '2024-01-01',
     currency: 'USD',
     end_date: '2030-12-31',
     id: 'test-portfolio-1',
     inflation_rate: 0.03,
-    last_edited_at: '2024-01-01',
     name: 'P',
     start_date: '2024-01-01',
   }
@@ -257,10 +253,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'deposit' as const,
       },
       {
@@ -271,10 +265,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: 'month' as const,
         inflation_adjusted: true,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-1',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'withdrawal' as const,
       },
     ]
@@ -305,10 +297,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'deposit' as const,
       },
       // Inflation-adjusted deposit 1 year later
@@ -320,10 +310,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: true,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-1',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'deposit' as const,
       },
     ]
@@ -357,10 +345,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: 'year' as const,
         inflation_adjusted: true,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'deposit' as const,
       },
     ]
@@ -397,10 +383,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: 'year' as const,
         inflation_adjusted: true,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'deposit' as const,
       },
     ]
@@ -428,12 +412,10 @@ describe('inflation-adjusted transactions on graph', () => {
   it('should use earliest transaction date as inflation baseline', () => {
     // Portfolio runs from 2025-2055 but first transaction is from 1997
     const portfolio: Portfolio = {
-      created_at: '2025-01-13',
       currency: 'EUR',
       end_date: '2055-01-13',
       id: 'test-portfolio-2',
       inflation_rate: 0.0225,
-      last_edited_at: '2025-01-13',
       name: 'Test Portfolio',
       start_date: '2025-01-13',
     }
@@ -448,10 +430,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '1997-11-09',
         id: 'test-transaction-1',
         label: null,
-        last_edited_at: '1997-11-09',
         type: 'deposit' as const,
       },
       // Transaction from 2025 (portfolio start date)
@@ -463,10 +443,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2025-01-13',
         id: 'test-transaction-2',
         label: null,
-        last_edited_at: '2025-01-13',
         type: 'deposit' as const,
       },
     ]
@@ -496,12 +474,10 @@ describe('inflation-adjusted transactions on graph', () => {
   it('should use portfolio start date when it is earlier than first transaction', () => {
     // Portfolio starts in 1990, first transaction is in 2000
     const portfolio: Portfolio = {
-      created_at: '1990-01-01',
       currency: 'USD',
       end_date: '2030-01-01',
       id: 'test-portfolio-3',
       inflation_rate: 0.05,
-      last_edited_at: '1990-01-01',
       name: 'Early Portfolio',
       start_date: '1990-01-01',
     }
@@ -516,10 +492,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2000-01-01',
         id: 'test-transaction-1',
         label: null,
-        last_edited_at: '2000-01-01',
         type: 'deposit' as const,
       },
       // Second transaction is 5 years later with same amount
@@ -531,10 +505,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2005-01-01',
         id: 'test-transaction-2',
         label: null,
-        last_edited_at: '2005-01-01',
         type: 'deposit' as const,
       },
     ]
@@ -575,10 +547,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-0',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'deposit' as const,
       },
       // Withdrawal that causes exhaustion
@@ -590,10 +560,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-1',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'withdrawal' as const,
       },
       // Withdrawals scheduled after exhaustion
@@ -605,10 +573,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-2',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'withdrawal' as const,
       },
       {
@@ -619,10 +585,8 @@ describe('inflation-adjusted transactions on graph', () => {
         repeat_unit: null,
         inflation_adjusted: false,
 
-        created_at: '2024-01-01',
         id: 'test-transaction-3',
         label: null,
-        last_edited_at: '2024-01-01',
         type: 'withdrawal' as const,
       },
     ]
@@ -673,8 +637,6 @@ describe('per-investment caching', () => {
     start_date: '2024-01-01',
     end_date: '2024-12-31',
     inflation_rate: 0.03,
-    created_at: '2024-01-01',
-    last_edited_at: '2024-01-01',
   }
 
   const createMockInvestment = (id: string, apy: number, name?: string): Investment => ({
@@ -690,8 +652,6 @@ describe('per-investment caching', () => {
     exit_fee_type: 'percentage',
     management_fee_type: 'percentage',
     advanced_fees: false,
-    created_at: '2024-01-01',
-    last_edited_at: '2024-01-01',
     type: null,
   })
 
@@ -701,10 +661,8 @@ describe('per-investment caching', () => {
     amount,
     type: 'deposit',
     inflation_adjusted: false,
-    created_at: '2024-01-01',
     end_date: null,
     label: null,
-    last_edited_at: null,
     repeat: null,
     repeat_unit: null,
   })

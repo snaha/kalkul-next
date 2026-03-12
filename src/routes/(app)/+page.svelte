@@ -32,11 +32,7 @@
   let showConfirmModal = $state(false)
   let clientToBeDeleted: string | undefined = $state()
   let searchQuery = $state('')
-  let filteredClient = $derived(
-    searchByName(searchQuery).toSorted(
-      (a, b) => new Date(a.created_at).getDate() - new Date(b.created_at).getDate(),
-    ),
-  )
+  let filteredClient = $derived(searchByName(searchQuery))
   function addClient() {
     goto(routes.NEW_CLIENT)
   }

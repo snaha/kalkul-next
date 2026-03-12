@@ -1,4 +1,4 @@
-import type { MetaFields, PeriodicWithdrawalGoalData, Transaction } from '$lib/types'
+import type { PeriodicWithdrawalGoalData, Transaction } from '$lib/types'
 import { formatDate } from '$lib/@snaha/kalkul-maths'
 import { calculateRequiredDeposit, goalDataToCalculationInput } from './periodic-withdrawal'
 
@@ -32,8 +32,8 @@ type TransactionLabels = {
 export function goalToTransactions(
   goalData: PeriodicWithdrawalGoalData,
   labels: TransactionLabels,
-): Omit<Transaction, MetaFields>[] {
-  const transactions: Omit<Transaction, MetaFields>[] = []
+): Omit<Transaction, 'id'>[] {
+  const transactions: Omit<Transaction, 'id'>[] = []
 
   // Convert goal data to calculation input
   const calculationInput = goalDataToCalculationInput(goalData)

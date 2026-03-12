@@ -11,8 +11,6 @@ describe('withPortfolioSimulationStore', () => {
     start_date: '2024-01-01',
     end_date: '2024-12-31',
     inflation_rate: 0.03,
-    created_at: '2024-01-01',
-    last_edited_at: '2024-01-01',
   }
 
   const mockTransaction1: Transaction = {
@@ -21,10 +19,8 @@ describe('withPortfolioSimulationStore', () => {
     amount: 1000,
     type: 'deposit',
     inflation_adjusted: false,
-    created_at: '2024-01-01',
     end_date: null,
     label: null,
-    last_edited_at: null,
     repeat: null,
     repeat_unit: null,
   }
@@ -35,10 +31,8 @@ describe('withPortfolioSimulationStore', () => {
     amount: 2000,
     type: 'deposit',
     inflation_adjusted: false,
-    created_at: '2024-01-01',
     end_date: null,
     label: null,
-    last_edited_at: null,
     repeat: null,
     repeat_unit: null,
   }
@@ -56,8 +50,6 @@ describe('withPortfolioSimulationStore', () => {
     exit_fee_type: 'percentage',
     management_fee_type: 'percentage',
     advanced_fees: false,
-    created_at: '2024-01-01',
-    last_edited_at: '2024-01-01',
     type: null,
     transactions: [mockTransaction1],
   }
@@ -75,8 +67,6 @@ describe('withPortfolioSimulationStore', () => {
     exit_fee_type: 'percentage',
     management_fee_type: 'percentage',
     advanced_fees: false,
-    created_at: '2024-01-01',
-    last_edited_at: '2024-01-01',
     type: null,
     transactions: [mockTransaction2],
   }

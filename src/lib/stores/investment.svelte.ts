@@ -4,10 +4,9 @@ import type {
   EnrichedTransaction,
   Investment,
   InvestmentNested,
-  MetaFields,
   Transaction,
 } from '$lib/types'
-import { now, spreadInvestment, spreadTransaction } from './store-utils'
+import { spreadInvestment, spreadTransaction } from './store-utils'
 import { withTransactionStore } from './transaction.svelte'
 
 type PortfolioParent = {
@@ -23,7 +22,7 @@ export type EnrichedInvestmentStore = Omit<InvestmentNested, 'transactions'> & {
   update(updates: Partial<Omit<Investment, 'id'>>): void
   delete(): void
   duplicate(): string | undefined
-  addTransaction(data: Omit<Transaction, MetaFields>): string
+  addTransaction(data: Omit<Transaction, 'id'>): string
   hidden: boolean
   toggleHide(): void
   toggleFocus(): void
@@ -42,8 +41,6 @@ export function withInvestmentStore(
   let name = $state(inv.name)
   let apy = $state(inv.apy)
   let type = $state(inv.type)
-  let created_at = $state(inv.created_at)
-  let last_edited_at = $state(inv.last_edited_at)
   let advanced_fees = $state(inv.advanced_fees)
   let entry_fee = $state(inv.entry_fee)
   let entry_fee_type = $state(inv.entry_fee_type)
@@ -80,18 +77,6 @@ export function withInvestmentStore(
     },
     set type(v) {
       type = v
-    },
-    get created_at() {
-      return created_at
-    },
-    set created_at(v) {
-      created_at = v
-    },
-    get last_edited_at() {
-      return last_edited_at
-    },
-    set last_edited_at(v) {
-      last_edited_at = v
     },
     get advanced_fees() {
       return advanced_fees
@@ -174,7 +159,7 @@ export function withInvestmentStore(
     },
 
     update(updates: Partial<Omit<Investment, 'id'>>) {
-      Object.assign(this, updates, { last_edited_at: now() })
+      Object.assign(this, updates)
       portfolio.persist()
     },
 
@@ -187,21 +172,17 @@ export function withInvestmentStore(
       const newInvestment: InvestmentNested = {
         ...spreadInvestment(this),
         id: newInvestmentId,
-        created_at: now(),
-        last_edited_at: now(),
         transactions: transactions.map((t: EnrichedTransaction) => ({
           ...spreadTransaction(t),
           id: crypto.randomUUID(),
-          created_at: now(),
-          last_edited_at: now(),
         })),
       }
       return portfolio.duplicateChild(newInvestment)
     },
 
-    addTransaction(data: Omit<Transaction, MetaFields>) {
+    addTransaction(data: Omit<Transaction, 'id'>) {
       const txId = crypto.randomUUID()
-      const newTx: Transaction = { ...data, id: txId, created_at: now(), last_edited_at: now() }
+      const newTx: Transaction = { ...data, id: txId }
       const enrichedTx = withTransactionStore(newTx, store)
       transactions.push(enrichedTx)
       portfolio.persist()

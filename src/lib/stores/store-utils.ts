@@ -7,10 +7,6 @@ import type {
   Transaction,
 } from '$lib/types'
 
-export function now(): string {
-  return new Date().toISOString()
-}
-
 export function spreadTransaction(t: EnrichedTransaction | Transaction): Transaction {
   return {
     id: t.id,
@@ -18,8 +14,6 @@ export function spreadTransaction(t: EnrichedTransaction | Transaction): Transac
     date: t.date,
     end_date: t.end_date,
     type: t.type,
-    created_at: t.created_at,
-    last_edited_at: t.last_edited_at,
     inflation_adjusted: t.inflation_adjusted,
     label: t.label,
     repeat: t.repeat,
@@ -35,8 +29,6 @@ export function spreadInvestment(
     name: i.name,
     apy: i.apy,
     type: i.type,
-    created_at: i.created_at,
-    last_edited_at: i.last_edited_at,
     advanced_fees: i.advanced_fees,
     entry_fee: i.entry_fee,
     entry_fee_type: i.entry_fee_type,
@@ -60,7 +52,5 @@ export function spreadPortfolio(
     start_date: p.start_date,
     end_date: p.end_date,
     inflation_rate: p.inflation_rate,
-    created_at: p.created_at,
-    last_edited_at: p.last_edited_at,
   }
 }

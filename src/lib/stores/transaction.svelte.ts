@@ -1,5 +1,5 @@
 import type { EnrichedInvestment, Transaction } from '$lib/types'
-import { now, spreadTransaction } from './store-utils'
+import { spreadTransaction } from './store-utils'
 
 export type EnrichedTransactionStore = Transaction & {
   readonly investment: EnrichedInvestment
@@ -22,8 +22,6 @@ export function withTransactionStore(
   let inflation_adjusted = $state(tx.inflation_adjusted)
   let repeat = $state(tx.repeat)
   let repeat_unit = $state(tx.repeat_unit)
-  let created_at = $state(tx.created_at)
-  let last_edited_at = $state(tx.last_edited_at)
 
   return {
     get id() {
@@ -80,23 +78,11 @@ export function withTransactionStore(
     set repeat_unit(v) {
       repeat_unit = v
     },
-    get created_at() {
-      return created_at
-    },
-    set created_at(v) {
-      created_at = v
-    },
-    get last_edited_at() {
-      return last_edited_at
-    },
-    set last_edited_at(v) {
-      last_edited_at = v
-    },
 
     investment,
 
     update(updates: Partial<Omit<Transaction, 'id'>>) {
-      Object.assign(this, updates, { last_edited_at: now() })
+      Object.assign(this, updates)
       investment.persist()
     },
 
@@ -109,8 +95,6 @@ export function withTransactionStore(
       const newTx: Transaction = {
         ...spreadTransaction(this),
         id: newId,
-        created_at: now(),
-        last_edited_at: now(),
       }
       return investment.duplicateTransaction(newTx)
     },

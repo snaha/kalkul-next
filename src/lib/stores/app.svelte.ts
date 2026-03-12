@@ -7,7 +7,6 @@ import type {
   EnrichedPortfolio,
   EnrichedTransaction,
 } from '$lib/types'
-import { now } from './store-utils'
 import { withClientStore } from './client.svelte'
 
 const STORAGE_KEY = 'kalkul-data'
@@ -146,7 +145,6 @@ function withAppStore() {
       const newClient: ClientNested = {
         ...client,
         id,
-        created_at: now(),
         portfolios: [],
       }
       const enrichedClient = withClientStore(newClient, appParent)

@@ -22,9 +22,7 @@ import type { EnrichedInvestmentStore } from './stores/investment.svelte'
 import type { EnrichedPortfolioStore } from './stores/portfolio.svelte'
 import type { EnrichedClientStore } from './stores/client.svelte'
 
-export type MetaFields = 'id' | 'created_at' | 'last_edited_at'
-
-export type ClientNoId = Omit<Client, 'id' | 'created_at'>
+export type ClientNoId = Omit<Client, 'id'>
 
 // --- Enriched types (objects with CRUD methods) ---
 
