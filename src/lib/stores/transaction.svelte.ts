@@ -1,5 +1,4 @@
 import type { EnrichedInvestment, Transaction } from '$lib/types'
-import { spreadTransaction } from './store-utils'
 
 export type EnrichedTransactionStore = Transaction & {
   readonly investment: EnrichedInvestment
@@ -93,14 +92,24 @@ export function withTransactionStore(
     duplicate(): string {
       const newId = crypto.randomUUID()
       const newTx: Transaction = {
-        ...spreadTransaction(this),
+        ...this.toJSON(),
         id: newId,
       }
       return investment.duplicateTransaction(newTx)
     },
 
     toJSON(): Transaction {
-      return spreadTransaction(this)
+      return {
+        id,
+        amount,
+        date,
+        end_date,
+        type,
+        inflation_adjusted,
+        label,
+        repeat,
+        repeat_unit,
+      }
     },
   }
 }

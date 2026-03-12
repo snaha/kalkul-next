@@ -6,7 +6,6 @@ import type {
   InvestmentNested,
   Transaction,
 } from '$lib/types'
-import { spreadInvestment, spreadTransaction } from './store-utils'
 import { withTransactionStore } from './transaction.svelte'
 
 type PortfolioParent = {
@@ -169,13 +168,11 @@ export function withInvestmentStore(
 
     duplicate(): string | undefined {
       const newInvestmentId = crypto.randomUUID()
+      const { transactions: txs, ...rest } = this.toJSON()
       const newInvestment: InvestmentNested = {
-        ...spreadInvestment(this),
+        ...rest,
         id: newInvestmentId,
-        transactions: transactions.map((t: EnrichedTransaction) => ({
-          ...spreadTransaction(t),
-          id: crypto.randomUUID(),
-        })),
+        transactions: txs.map((t) => ({ ...t, id: crypto.randomUUID() })),
       }
       return portfolio.duplicateChild(newInvestment)
     },
@@ -234,8 +231,21 @@ export function withInvestmentStore(
 
     toJSON(): InvestmentNested {
       return {
-        ...spreadInvestment(this),
-        transactions: transactions.map((t) => spreadTransaction(t)),
+        id,
+        name,
+        apy,
+        type,
+        advanced_fees,
+        entry_fee,
+        entry_fee_type,
+        exit_fee,
+        exit_fee_type,
+        management_fee,
+        management_fee_type,
+        success_fee,
+        ter,
+        goal_data,
+        transactions: transactions.map((t) => t.toJSON()),
       }
     },
   }

@@ -6,7 +6,6 @@ import type {
   Portfolio,
   PortfolioNested,
 } from '$lib/types'
-import { spreadInvestment, spreadPortfolio, spreadTransaction } from './store-utils'
 import { withInvestmentStore } from './investment.svelte'
 
 type ClientParent = {
@@ -36,25 +35,6 @@ export function withPortfolioStore(
   portfolio: PortfolioNested,
   client: ClientParent,
 ): EnrichedPortfolioStore {
-  // Data migration: split investments into investments and goals if goals array is missing
-  const rawGoals = (portfolio as { goals?: InvestmentNested[] }).goals
-  let investmentData: InvestmentNested[]
-  let goalData: InvestmentNested[]
-  if (rawGoals) {
-    investmentData = portfolio.investments
-    goalData = rawGoals
-  } else {
-    investmentData = []
-    goalData = []
-    for (const inv of portfolio.investments) {
-      if (inv.goal_data !== undefined && inv.goal_data !== null) {
-        goalData.push(inv)
-      } else {
-        investmentData.push(inv)
-      }
-    }
-  }
-
   let id = $state(portfolio.id)
   let name = $state(portfolio.name)
   let currency = $state(portfolio.currency)
@@ -128,27 +108,21 @@ export function withPortfolioStore(
     },
 
     duplicate(): string | undefined {
-      function deepCopyInvestments(invs: EnrichedInvestment[]) {
-        return invs.map((inv) => {
-          const newInvestmentId = crypto.randomUUID()
-          return {
-            ...spreadInvestment(inv),
-            id: newInvestmentId,
-            transactions: inv.transactions.map((t) => ({
-              ...spreadTransaction(t),
-              id: crypto.randomUUID(),
-            })),
-          }
-        })
+      function deepCopyInvestments(invs: InvestmentNested[]) {
+        return invs.map((inv) => ({
+          ...inv,
+          id: crypto.randomUUID(),
+          transactions: inv.transactions.map((t) => ({ ...t, id: crypto.randomUUID() })),
+        }))
       }
 
-      const newPortfolioId = crypto.randomUUID()
+      const { investments: invs, goals: gs, ...rest } = this.toJSON()
       const newPortfolio: PortfolioNested = {
-        ...spreadPortfolio(this),
-        id: newPortfolioId,
+        ...rest,
+        id: crypto.randomUUID(),
         name: name + ' - Copy',
-        investments: deepCopyInvestments(investments),
-        goals: deepCopyInvestments(goals),
+        investments: deepCopyInvestments(invs),
+        goals: deepCopyInvestments(gs),
       }
       return client.duplicatePortfolio(newPortfolio)
     },
@@ -217,7 +191,12 @@ export function withPortfolioStore(
 
     toJSON(): PortfolioNested {
       return {
-        ...spreadPortfolio(this),
+        id,
+        name,
+        currency,
+        start_date,
+        end_date,
+        inflation_rate,
         investments: investments.map((i) => i.toJSON()),
         goals: goals.map((g) => g.toJSON()),
       }
@@ -225,8 +204,8 @@ export function withPortfolioStore(
   }
 
   // Enrich child investments and goals
-  investments = investmentData.map((inv) => withInvestmentStore(inv, store))
-  goals = goalData.map((g) => withInvestmentStore(g, store))
+  investments = portfolio.investments.map((inv) => withInvestmentStore(inv, store))
+  goals = portfolio.goals.map((g) => withInvestmentStore(g, store))
 
   return store
 }
