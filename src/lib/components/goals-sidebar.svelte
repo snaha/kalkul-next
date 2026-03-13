@@ -1,6 +1,11 @@
 <script lang="ts">
   import Button from '$lib/components/ui/button.svelte'
-  import type { Goal, InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+  import type {
+    InvestmentStore,
+    TransactionStore,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import { _ } from 'svelte-i18n'
   import Sidebar from './sidebar.svelte'
   import GoalCard from './goal-card.svelte'
@@ -15,12 +20,12 @@
     isGraphFullscreened: boolean
     isSidebarOpen: boolean
     isSidebarFlexible: boolean
-    portfolio: Portfolio
-    goals: Goal[]
+    portfolio: PortfolioNested
+    goals: InvestmentStore[]
     adjustWithInflation: boolean
     viewOnly: boolean
     graphData?: PortfolioSimulation
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
     addGoal: () => void
     showExplainInvestmentsLabel: boolean
   }
@@ -87,13 +92,9 @@
         {portfolio}
         {viewOnly}
         index={i}
-        hidden={false}
-        focused={false}
         showInflation={adjustWithInflation}
         {openTransaction}
         addInvestment={addGoal}
-        toggleHide={() => {}}
-        toggleFocus={() => {}}
         open={true}
         exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
         isCalculating={graphData?.isCalculating &&

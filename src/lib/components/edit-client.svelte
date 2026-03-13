@@ -1,12 +1,12 @@
 <script lang="ts">
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import { Close } from 'carbon-icons-svelte'
   import { _ } from 'svelte-i18n'
   import Button from '$lib/components/ui/button.svelte'
   import LocalizedDateInput from '$lib/components/localized-date-input.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import type { ClientNoId, Client } from '$lib/types'
+  import type { ClientNoId, ClientStore } from '$lib/types'
   import DeleteModal from './delete-modal.svelte'
   import ErrorComp from './error.svelte'
   import type { z, ZodFormattedError } from 'zod'
@@ -19,7 +19,7 @@
 
   type Props = {
     close: () => void
-    client?: Client
+    client?: ClientStore
   }
 
   let { close, client }: Props = $props()
@@ -44,7 +44,7 @@
     }
   })
 
-  async function create() {
+  function create() {
     error = undefined
     if (!birthDate) {
       error = $_('error.birthDateUndefined')
@@ -57,7 +57,7 @@
         birth_date: birthDate.toDateString(),
         email,
       }
-      await adapter.addClient(client)
+      appStore.addClient(client)
       name = ''
       birthDate = undefined
       close()
@@ -72,25 +72,24 @@
     close()
   }
 
-  async function updateClient() {
+  function updateClient() {
     if (!client || !birthDate) {
       return
     }
 
-    await adapter.updateClient({
-      id: client.id,
+    client.update({
       name,
       birth_date: birthDate.toDateString(),
     })
     close()
   }
 
-  async function deleteClient() {
+  function deleteClient() {
     if (!client) {
       return
     }
     showConfirmModal = false
-    await adapter.deleteClient(client)
+    client.delete()
     close()
   }
 

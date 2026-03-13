@@ -20,20 +20,17 @@ type TransactionLabels = {
  * deposit amount needed to reach the goal.
  *
  * @param goalData - Goal parameters including dates, amounts, and frequencies
- * @param investmentId - The investment ID to associate with the transactions
  * @param labels - Localized labels for the three transaction types
- * @returns Array of transaction objects (without IDs) ready to be inserted into the database
+ * @returns Array of transaction objects (without IDs and meta fields) ready to be inserted
  * @example
  * // Returns array with 3 transactions: initial, deposits, withdrawals
  * goalToTransactions(
  *   goalData,
- *   123,
  *   { initialSavings: 'Initial', regularDeposit: 'Monthly', withdrawal: 'Budget' }
  * )
  */
 export function goalToTransactions(
   goalData: PeriodicWithdrawalGoalData,
-  investmentId: string,
   labels: TransactionLabels,
 ): Omit<Transaction, 'id'>[] {
   const transactions: Omit<Transaction, 'id'>[] = []
@@ -46,17 +43,11 @@ export function goalToTransactions(
   // Add initial deposit if any
   if (goalData.currentSavings > 0) {
     transactions.push({
-      investment_id: investmentId,
       amount: goalData.currentSavings,
       date: formatDate(depositStart),
       type: 'deposit',
-      created_at: new Date().toISOString(),
-      last_edited_at: new Date().toISOString(),
-      end_date: null,
       inflation_adjusted: true,
       label: labels.initialSavings,
-      repeat: null,
-      repeat_unit: null,
     })
   }
 
@@ -65,12 +56,9 @@ export function goalToTransactions(
 
   if (depositAmount > 0) {
     transactions.push({
-      investment_id: investmentId,
       amount: depositAmount,
       date: formatDate(depositStart),
       type: 'deposit',
-      created_at: new Date().toISOString(),
-      last_edited_at: new Date().toISOString(),
       end_date: formatDate(withdrawalStart),
       inflation_adjusted: true,
       label: labels.regularDeposit,
@@ -88,12 +76,9 @@ export function goalToTransactions(
     )
 
     transactions.push({
-      investment_id: investmentId,
       amount: goalData.desiredBudget,
       date: formatDate(withdrawalStart),
       type: 'withdrawal',
-      created_at: new Date().toISOString(),
-      last_edited_at: new Date().toISOString(),
       end_date: formatDate(withdrawalEndDate),
       inflation_adjusted: true,
       label: labels.withdrawal,

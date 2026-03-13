@@ -6,15 +6,14 @@
   import ContentLayout from '$lib/components/content-layout.svelte'
   import KidEducation from '$lib/components/goals-kid-education.svelte'
   import routes from '$lib/routes'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
   import type { EducationGoalData } from '$lib/types'
 
   const clientId = $derived(page.params.id)
-  const client = $derived(clientStore.data.find((c) => c.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(portfolioStore.data.find((p) => p.id === portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   // Convert goalData to calculationInput for the calculator component
   const initialData = $derived(

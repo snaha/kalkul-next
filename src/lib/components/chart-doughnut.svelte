@@ -2,7 +2,6 @@
   import { untrack } from 'svelte'
   import { SERIES_COLORS } from '$lib/colors'
   import { getCSSVariableValue } from '$lib/css-vars'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import type { InvestmentWithColorIndex, TooltipData } from '$lib/types'
   import Chart, { type ChartDataset, type ChartOptions } from 'chart.js/auto'
   import TooltipBreakdownDoughnut from './tooltip-breakdown-doughnut.svelte'
@@ -12,7 +11,6 @@
     nonInflationData?: number[]
     labels: string[]
     investments: InvestmentWithColorIndex[]
-    investmentsViewStore: InvestmentsViewStore
     currency?: string
     currentYear?: string
     clientBirthDate?: Date
@@ -42,7 +40,6 @@
     nonInflationData,
     labels,
     investments,
-    investmentsViewStore,
     currency = 'USD',
     currentYear = '',
     clientBirthDate,
@@ -69,10 +66,10 @@
   const isEmpty = $derived(data.every((d) => d === 0))
 
   function setDataset(): ChartDataset<'doughnut'> {
-    const visibleData = data.filter((_, i) => !investmentsViewStore.isHidden(investments[i].id))
+    const visibleData = data.filter((_, i) => !(investments[i].hidden ?? false))
 
     const visibleColors = data.reduce<string[]>((acc, _, i) => {
-      if (!investmentsViewStore.isHidden(investments[i].id)) {
+      if (!(investments[i].hidden ?? false)) {
         const colorIndex = investments[i].colorIndex ?? i % SERIES_COLORS.length
         acc.push(SERIES_COLORS[colorIndex])
       }

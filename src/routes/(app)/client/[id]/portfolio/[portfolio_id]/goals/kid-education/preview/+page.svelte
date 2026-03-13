@@ -12,13 +12,14 @@
   import routes from '$lib/routes'
   import { page } from '$app/state'
   import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import type { EducationGoalData } from '$lib/types'
   import { goalToTransactions } from '$lib/@snaha/kalkul-calculators/periodic-withdrawal/goal-transactions'
   import ContentLayout from '$lib/components/content-layout.svelte'
   import { onMount } from 'svelte'
 
   const clientId = $derived(page.params.id)
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
 
   // Get calculation data from store
@@ -102,7 +103,7 @@
     history.back()
   }
 
-  async function saveGoal(finalDepositAmount: number) {
+  function saveGoal(finalDepositAmount: number) {
     if (!calculatorData) return
 
     // Ensure deposit amount is valid (not NaN or undefined)
@@ -122,39 +123,39 @@
     }
 
     // Create goal in database as an investment with goal_data
-    const goalId = await adapter.addGoal({
-      portfolio_id: portfolioId,
+    const portfolio = client?.portfolios.find((p) => p.id === portfolioId)
+    if (!portfolio) return
+
+    const goalId = portfolio.addGoal({
       name: goalData.name, // Default name - can be edited later
       type: 'goal',
       apy: calculatorData.goalData.apy,
       goal_data: goalData,
-      // Set default fees to 0 (null is allowed for database/SQL fields)
       advanced_fees: false,
       entry_fee: 0,
-      entry_fee_type: null,
       exit_fee: 0,
-      exit_fee_type: null,
       management_fee: 0,
-      management_fee_type: null,
       ter: 0,
-      success_fee: null,
     })
 
     // Generate and create transactions for this goal
-    const transactions = goalToTransactions(goalData, goalId, {
-      initialSavings: $_('demo.transactions.initialSavings'),
-      regularDeposit: $_('demo.transactions.regularDeposit'),
-      withdrawal: $_('demo.transactions.educationWithdrawal'),
-    })
-    for (const transaction of transactions) {
-      await adapter.addTransaction(transaction)
+    const goalInvestment = portfolio.goals.find((g) => g.id === goalId)
+    if (goalInvestment) {
+      const transactions = goalToTransactions(goalData, {
+        initialSavings: $_('demo.transactions.initialSavings'),
+        regularDeposit: $_('demo.transactions.regularDeposit'),
+        withdrawal: $_('demo.transactions.educationWithdrawal'),
+      })
+      for (const transaction of transactions) {
+        goalInvestment.addTransaction(transaction)
+      }
     }
 
-    // Navigate back to portfolio first (before clearing state to avoid $effect redirect)
-    await goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId))
-
-    // Clear temporary state after navigation
-    goalCalculatorStore.clearGoalInput()
+    // Navigate back to portfolio (before clearing state to avoid $effect redirect)
+    goto(routes.CLIENT_PORTFOLIO(clientId, portfolioId)).then(() => {
+      // Clear temporary state after navigation
+      goalCalculatorStore.clearGoalInput()
+    })
   }
 </script>
 

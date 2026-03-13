@@ -5,7 +5,6 @@
   import type { GraphData } from '$lib/@snaha/kalkul-maths'
   import { getCumulativeValues } from '$lib/@snaha/kalkul-maths'
   import Horizontal from './ui/horizontal.svelte'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import Slider from './ui/slider.svelte'
   import ChartDoughnut from './chart-doughnut.svelte'
   import TooltipBreakdownBar from './tooltip-breakdown-bar.svelte'
@@ -15,7 +14,6 @@
     portfolio: Portfolio
     investments: InvestmentWithColorIndex[]
     adjustWithInflation: boolean
-    investmentsViewStore: InvestmentsViewStore
     selectedIndex: number
     data: GraphData[]
     total: GraphData
@@ -34,7 +32,6 @@
     portfolio,
     investments,
     adjustWithInflation,
-    investmentsViewStore,
     selectedIndex = $bindable(0),
     data,
     total,
@@ -64,7 +61,7 @@
         label: r.label,
         colorIndex: investments[i].colorIndex ?? i,
         fill: 'origin',
-        hidden: investmentsViewStore.isHidden(investments[i].id),
+        hidden: investments[i].hidden ?? false,
       }
     }),
   )
@@ -84,7 +81,7 @@
         label: r.label,
         colorIndex: investments[i].colorIndex ?? i,
         fill: 'origin',
-        hidden: investmentsViewStore.isHidden(investments[i].id),
+        hidden: investments[i].hidden ?? false,
       }
     }),
     {
@@ -111,7 +108,7 @@
     const totals = data.reduce(
       (acc, r, i) => {
         // Only include visible investments
-        if (investmentsViewStore.isHidden(investments[i].id)) {
+        if (investments[i].hidden ?? false) {
           return acc
         }
         const values = getCumulativeValues(r, selectedIndex)
@@ -144,7 +141,7 @@
     const totals = data.reduce(
       (acc, r, i) => {
         // Only include visible investments
-        if (investmentsViewStore.isHidden(investments[i].id)) {
+        if (investments[i].hidden ?? false) {
           return acc
         }
         const values = getCumulativeValues(r, selectedIndex, true)
@@ -255,7 +252,6 @@
       })}
       labels={data.map((d) => d.label)}
       {investments}
-      {investmentsViewStore}
       currency={portfolio.currency}
       currentYear={getDateFromGraphLabels(data[0].graphLabels[selectedIndex])}
       {clientBirthDate}

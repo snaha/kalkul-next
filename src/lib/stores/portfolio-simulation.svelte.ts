@@ -1,4 +1,4 @@
-import type { Investment, Portfolio, Transaction } from '$lib/types'
+import type { PortfolioNested } from '$lib/types'
 import type { GraphData } from '$lib/@snaha/kalkul-maths'
 import {
   getGraphData,
@@ -47,15 +47,9 @@ interface PortfolioSimulationStore {
    * to keep the UI responsive. Updates are progressive - the UI updates after each
    * investment is calculated.
    *
-   * @param portfolio - Portfolio configuration
-   * @param investments - Array of investments to calculate
-   * @param transactions - All transactions for the investments
+   * @param portfolio - Portfolio with nested investments
    */
-  calculateIteratively: (
-    portfolio: Portfolio,
-    investments: Investment[],
-    transactions: Transaction[],
-  ) => void
+  calculateIteratively: (portfolio: PortfolioNested) => void
 }
 
 /**
@@ -75,9 +69,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
   })
   let calculationQueue:
     | {
-        portfolio: Portfolio
-        investments: Investment[]
-        transactions: Transaction[]
+        portfolio: PortfolioNested
         currentIndex: number
         accumulatedTotal: GraphData | undefined
         baseData: ReturnType<typeof prepareInvestmentBaseData>
@@ -92,7 +84,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
     const queue = calculationQueue
     const currentIndex = queue.currentIndex
 
-    if (currentIndex >= queue.investments.length) {
+    if (currentIndex >= queue.portfolio.investments.length) {
       simulationData = {
         ...simulationData,
         isCalculating: false,
@@ -120,8 +112,8 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
     queue.accumulatedTotal = aggregateGraphData(calculatedInvestments)
 
     // Update simulation data with current progress
-    const progress = Math.round(((currentIndex + 1) / queue.investments.length) * 100)
-    const isLastIteration = currentIndex + 1 >= queue.investments.length
+    const progress = Math.round(((currentIndex + 1) / queue.portfolio.investments.length) * 100)
+    const isLastIteration = currentIndex + 1 >= queue.portfolio.investments.length
 
     simulationData = {
       data: simulationData.data,
@@ -136,7 +128,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
     // Schedule next investment calculation
     // setTimeout with 0 delay yields to browser between each investment calculation,
     // allowing the UI to update progressively and remain responsive
-    if (queue.currentIndex < queue.investments.length) {
+    if (queue.currentIndex < queue.portfolio.investments.length) {
       setTimeout(processNextInvestment, 0)
     }
   }
@@ -146,15 +138,11 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
       return simulationData
     },
 
-    calculateIteratively(
-      portfolio: Portfolio,
-      investments: Investment[],
-      transactions: Transaction[],
-    ) {
+    calculateIteratively(portfolio: PortfolioNested) {
       // Reset state for new calculation
       calculationQueue = undefined
 
-      if (investments.length === 0) {
+      if (portfolio.investments.length === 0) {
         simulationData = {
           data: [],
           total: createEmptyGraphData('Total', []),
@@ -165,7 +153,7 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
       }
 
       // Prepare base calculation data for all investments
-      const baseData = prepareInvestmentBaseData(investments, transactions, portfolio)
+      const baseData = prepareInvestmentBaseData(portfolio)
 
       // Calculate overall date range from all investments
       const { startDate, endDate } = calculateDateRange(baseData, portfolio)
@@ -174,14 +162,12 @@ export function withPortfolioSimulationStore(): PortfolioSimulationStore {
       const { period, count } = getSamplingPeriodCount(startDate, endDate)
       const graphLabels = generateGraphDateLabels(startDate, endDate, period, count)
 
-      const emptyGraphData: GraphData[] = investments.map((inv) =>
+      const emptyGraphData: GraphData[] = portfolio.investments.map((inv) =>
         createEmptyGraphData(inv.name, graphLabels),
       )
 
       calculationQueue = {
         portfolio,
-        investments,
-        transactions,
         currentIndex: 0,
         accumulatedTotal: undefined,
         baseData,

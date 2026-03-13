@@ -4,13 +4,12 @@
   import EditPortfolio from '$lib/components/edit-portfolio.svelte'
   import Fullscreen from '$lib/components/fullscreen.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
 
   const clientId = page.params.id
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = page.params.portfolio_id
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   function close() {
     history.back()

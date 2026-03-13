@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { Transaction, Portfolio } from '$lib/types'
+  import type { TransactionStore, Portfolio } from '$lib/types'
   import { ChevronRight, Edit, Copy, TrashCan, OverflowMenuVertical } from 'carbon-icons-svelte'
   import Typography from './ui/typography.svelte'
   import { _, locale } from 'svelte-i18n'
   import { formatCurrency } from '$lib/utils'
-  import adapter from '$lib/adapters'
   import Horizontal from './ui/horizontal.svelte'
   import FlexItem from './ui/flex-item.svelte'
   import {
@@ -21,12 +20,12 @@
   import { WarningAltFilled } from 'carbon-icons-svelte'
 
   type Props = {
-    transaction: Transaction
+    transaction: TransactionStore
     portfolio: Portfolio
     currency: string
     viewOnly: boolean
     showInflation?: boolean
-    editTransaction?: (transaction: Transaction) => void
+    editTransaction?: (transaction: TransactionStore) => void
     exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
   }
 
@@ -53,7 +52,7 @@
     ),
   )
   const totalAmount = $derived(showInflation ? totalAmounts.adjusted : totalAmounts.nominal)
-  async function deleteTransaction(e: Event) {
+  function deleteTransaction(e: Event) {
     e.stopPropagation()
 
     if (!transaction.id) {
@@ -61,22 +60,18 @@
     }
 
     if (confirm($_('component.transactionCard.deleteWarning'))) {
-      await adapter.deleteTransaction(transaction)
+      transaction.delete()
     }
   }
 
-  async function duplicateTransaction(e: Event) {
+  function duplicateTransaction(e: Event) {
     e.stopPropagation()
 
     if (!transaction.id) {
       return
     }
 
-    const duplicatedTransaction = {
-      ...transaction,
-      id: undefined,
-    }
-    await adapter.addTransaction(duplicatedTransaction)
+    transaction.duplicate()
   }
 
   function localisedAbbreviatedPeriod(period: Period) {

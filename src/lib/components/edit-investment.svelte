@@ -5,16 +5,14 @@
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { type Investment, type Portfolio } from '$lib/types'
+  import { type InvestmentStore, type PortfolioStore } from '$lib/types'
   import {
     DEFAULT_ENTRY_FEE_TYPE,
     DEFAULT_FEE_TYPE,
     type EntryFeeType,
     type FeeType,
   } from '$lib/@snaha/kalkul-maths'
-  import adapter from '$lib/adapters'
   import Select from '$lib/components/ui/select/select.svelte'
-  import { investmentStore } from '$lib/stores/investment.svelte'
   import { capitalizeFirstLetter } from '$lib/utils'
   import Toggle from './ui/toggle.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -26,8 +24,8 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    portfolio: Portfolio
-    investment?: Investment
+    portfolio: PortfolioStore
+    investment?: InvestmentStore
     close: () => void
   }
 
@@ -36,7 +34,7 @@
   const defaultName =
     capitalizeFirstLetter($_('common.investment')) +
     ' ' +
-    (investmentStore.filter(portfolio.id).length + 1).toString()
+    (portfolio.investments.length + 1).toString()
 
   let name = $state(defaultName)
   let type = $state('')
@@ -82,9 +80,8 @@
     type = investment.type || ''
   })
 
-  async function createInvestment() {
-    await adapter.addInvestment({
-      portfolio_id: portfolio.id,
+  function createInvestment() {
+    portfolio.addInvestment({
       name,
       apy: Number(apy),
       entry_fee: Number(entryFee),
@@ -101,14 +98,12 @@
     close()
   }
 
-  async function updateInvestment() {
+  function updateInvestment() {
     if (!investment) {
       return
     }
 
-    await adapter.updateInvestment({
-      id: investment.id,
-      portfolio_id: portfolio.id,
+    investment.update({
       name,
       apy: Number(apy),
       entry_fee: Number(entryFee),
@@ -131,12 +126,12 @@
     close()
   }
 
-  async function deleteInvestment() {
+  function deleteInvestment() {
     if (!investment) {
       return
     }
 
-    await adapter.deleteInvestment({ id: investment.id })
+    investment.delete()
     close()
   }
 

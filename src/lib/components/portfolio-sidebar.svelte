@@ -1,13 +1,11 @@
 <script lang="ts">
   import type {
     Client,
-    Goal,
-    Investment,
+    InvestmentStore,
+    TransactionStore,
     InvestmentWithColorIndex,
-    Portfolio,
-    Transaction,
+    PortfolioNested,
   } from '$lib/types'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
   import { _ } from 'svelte-i18n'
   import { goto } from '$app/navigation'
@@ -25,13 +23,12 @@
 
   interface Props {
     client: Client
-    portfolio: Portfolio
-    goals: Goal[]
-    regularInvestments: Investment[]
+    portfolio: PortfolioNested
+    goals: InvestmentStore[]
+    regularInvestments: InvestmentStore[]
     isGraphFullscreened: boolean
     isSidebarFlexible: boolean
     isSidebarOpen: boolean
-    investmentsViewStore: InvestmentsViewStore
     graphData: PortfolioSimulation | undefined
     adjustWithInflation: boolean
     selectedTab: 'goals' | 'investments'
@@ -49,7 +46,6 @@
     isGraphFullscreened,
     isSidebarFlexible,
     isSidebarOpen = $bindable(),
-    investmentsViewStore,
     graphData,
     adjustWithInflation,
     selectedTab = $bindable(),
@@ -60,13 +56,14 @@
   }: Props = $props()
 
   // Transaction editing state - managed internally
-  let editedTransaction: Transaction | undefined = $state()
-  let selectedInvestment: InvestmentWithColorIndex | undefined = $state()
+  let editedTransaction: TransactionStore | undefined = $state()
+  let selectedInvestment: (InvestmentWithColorIndex & InvestmentStore) | undefined = $state()
   let open = $state(false)
   let prevSelectedTab = $state(selectedTab)
 
-  function openTransaction(investment: InvestmentWithColorIndex, transaction?: Transaction) {
-    selectedInvestment = investment
+  function openTransaction(investment: InvestmentWithColorIndex, transaction?: TransactionStore) {
+    // The investment objects from the store are InvestmentStore at runtime
+    selectedInvestment = investment as InvestmentWithColorIndex & InvestmentStore
     if (transaction) editedTransaction = transaction
   }
 
@@ -181,8 +178,8 @@
             {isSidebarFlexible}
             bind:isSidebarOpen
             {portfolio}
+            {clientId}
             investments={regularInvestments}
-            {investmentsViewStore}
             {transactionCount}
             {adjustWithInflation}
             viewOnly={false}

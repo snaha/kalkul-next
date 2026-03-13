@@ -4,12 +4,11 @@
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import type { Client, Portfolio } from '$lib/types'
-  import adapter from '$lib/adapters'
+  import type { ClientStore, PortfolioStore } from '$lib/types'
   import Select from '$lib/components/ui/select/select.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
   import { capitalizeFirstLetter, formatAge } from '$lib/utils'
+
   import DateAge from './date-age.svelte'
   import DeleteModal from './delete-modal.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -19,17 +18,15 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    client: Client
-    portfolio?: Portfolio
+    client: ClientStore
+    portfolio?: PortfolioStore
     close: () => void
   }
 
   let { client, portfolio, close }: Props = $props()
 
   let name = $state(
-    capitalizeFirstLetter($_('common.portfolio')) +
-      ' ' +
-      (portfolioStore.filter(client.id).length + 1).toString(),
+    capitalizeFirstLetter($_('common.portfolio')) + ' ' + (client.portfolios.length + 1).toString(),
   )
   let currency = $state('EUR')
   let inflation = $state('2.25')
@@ -67,26 +64,23 @@
     }
   })
 
-  async function createPortfolio() {
-    await adapter.addPortfolio({
-      client: client.id,
+  function createPortfolio() {
+    client.addPortfolio({
       name,
       currency,
       start_date: startDate.toDateString(),
       end_date: endDate.toDateString(),
       inflation_rate: Number(inflation) / 100,
-      link: null,
     })
     close()
   }
 
-  async function updatePortfolio() {
+  function updatePortfolio() {
     if (!portfolio) {
       return
     }
 
-    await adapter.updatePortfolio({
-      id: portfolio.id,
+    portfolio.update({
       name,
       currency,
       start_date: startDate.toDateString(),
@@ -141,12 +135,12 @@
     showConfirmModal = true
   }
 
-  async function deletePortfolio() {
+  function deletePortfolio() {
     if (!portfolio) {
       return
     }
     showConfirmModal = false
-    await adapter.deletePortfolio({ id: portfolio.id })
+    portfolio.delete()
     close()
   }
 </script>

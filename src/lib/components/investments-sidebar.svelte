@@ -1,8 +1,12 @@
 <script lang="ts">
-  import type { Investment, InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+  import type {
+    InvestmentStore,
+    TransactionStore,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import Sidebar from './sidebar.svelte'
   import InvestmentCard from './investment-card.svelte'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import type { PortfolioSimulation } from '$lib/stores/portfolio-simulation.svelte'
   import FlexItem from './ui/flex-item.svelte'
   import Vertical from './ui/vertical.svelte'
@@ -18,14 +22,14 @@
     isGraphFullscreened: boolean
     isSidebarOpen: boolean
     isSidebarFlexible: boolean
-    portfolio: Portfolio
-    investments: Investment[]
-    investmentsViewStore: InvestmentsViewStore
+    portfolio: PortfolioNested
+    clientId: string
+    investments: InvestmentStore[]
     transactionCount: number
     adjustWithInflation: boolean
     viewOnly: boolean
     graphData?: PortfolioSimulation
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
   }
 
   let {
@@ -33,8 +37,8 @@
     isSidebarOpen = $bindable(),
     isSidebarFlexible,
     portfolio,
+    clientId,
     investments,
-    investmentsViewStore,
     transactionCount,
     adjustWithInflation,
     viewOnly,
@@ -75,7 +79,7 @@
             ><Button
               variant="strong"
               dimension="compact"
-              onclick={() => goto(routes.NEW_INVESTMENT(portfolio.client, portfolio.id))}
+              onclick={() => goto(routes.NEW_INVESTMENT(clientId, portfolio.id))}
               >{$_('page.portfolio.addInvestment')}</Button
             ></Horizontal
           >
@@ -87,18 +91,11 @@
       <InvestmentCard
         {investment}
         {portfolio}
+        {clientId}
         {viewOnly}
         index={i}
-        hidden={investmentsViewStore.isHidden(investment.id)}
-        focused={investmentsViewStore.isFocused(investment.id) && investments.length > 1}
         showInflation={adjustWithInflation}
         {openTransaction}
-        toggleHide={() => {
-          investmentsViewStore.toggleHide(investment.id)
-        }}
-        toggleFocus={() => {
-          investmentsViewStore.toggleFocus(investment.id)
-        }}
         open={transactionCount === 0}
         exhaustionWarning={graphData?.data[i]?.exhaustionWarning}
         isCalculating={graphData?.isCalculating &&

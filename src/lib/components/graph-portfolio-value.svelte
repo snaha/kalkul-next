@@ -31,10 +31,6 @@
     return 2 // Desktop: show more labels
   })
 
-  const gridlineFrequency = $derived.by(() => {
-    return labelFrequency // Keep gridlines in sync with labels
-  })
-
   // Store locale for use in callbacks
   const currentLocale = $derived($locale)
 
@@ -79,7 +75,6 @@
     return Array.from(indices).sort((a, b) => a - b)
   })
 
-  // First exhaustion index (for backward compatibility with total exhaustion)
   const firstZeroCrossingIndex = $derived(zeroCrossingIndices()[0])
 </script>
 
@@ -117,8 +112,7 @@
       x: {
         grid: {
           offset: false,
-          color: ({ index }) =>
-            index % gridlineFrequency === 0 ? 'rgba(0,0,0,0.1)' : 'transparent',
+          color: ({ index }) => (index % labelFrequency === 0 ? 'rgba(0,0,0,0.1)' : 'transparent'),
         },
         ticks: {
           autoSkip: false,

@@ -21,14 +21,11 @@ const DEFAULT_INVESTMENT: Investment = {
   exit_fee_type: 'upfront' as const,
   id: 'test-investment-1',
   advanced_fees: false,
-  created_at: '2024-01-01',
-  last_edited_at: '2024-01-01',
   management_fee: 0,
   management_fee_type: 'upfront' as const,
   name: '',
-  portfolio_id: 'test-portfolio-1',
   success_fee: 0,
-  ter: null,
+  ter: undefined,
   type: '',
 }
 

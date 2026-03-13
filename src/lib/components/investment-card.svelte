@@ -1,6 +1,10 @@
 <script lang="ts">
-  import { cascadeDuplicateInvestment } from '$lib/cascade'
-  import type { InvestmentWithColorIndex, Portfolio, Transaction } from '$lib/types'
+  import type {
+    InvestmentStore,
+    TransactionStore,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import {
     CenterSquare,
     ChevronRight,
@@ -24,25 +28,20 @@
   import Vertical from './ui/vertical.svelte'
   import TransactionCard from './transaction-card.svelte'
   import Divider from './ui/divider.svelte'
-  import adapters from '$lib/adapters'
   import { base } from '$app/paths'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
   import DeleteModal from './delete-modal.svelte'
   import InvestmentColorBox from './investment-color-box.svelte'
   import Badge from './ui/badge.svelte'
   import Loader from './ui/loader.svelte'
 
   type Props = {
-    investment: InvestmentWithColorIndex
-    portfolio: Portfolio
+    investment: InvestmentWithColorIndex & InvestmentStore
+    portfolio: PortfolioNested
+    clientId: string
     viewOnly?: boolean
     index: number
-    hidden: boolean
-    focused: boolean
     showInflation?: boolean
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
-    toggleHide: () => void
-    toggleFocus: () => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
     open?: boolean
     exhaustionWarning?: import('$lib/@snaha/kalkul-maths').ExhaustionWarning
     isCalculating?: boolean
@@ -51,22 +50,21 @@
   let {
     investment,
     portfolio,
+    clientId,
     viewOnly = false,
     index,
-    hidden,
-    focused,
     showInflation = false,
     openTransaction,
-    toggleHide,
-    toggleFocus,
     open = $bindable(false),
     exhaustionWarning,
     isCalculating = false,
   }: Props = $props()
 
-  let selectedTransactionIdForDeletion: string | undefined = $state(undefined)
+  const hidden = $derived(investment.hidden)
+  const focused = $derived(investment.focused)
+
   let showDeleteInvestmentModal = $state(false)
-  const transactions = $derived(transactionStore.filter(investment.id))
+  const transactions = $derived(investment.transactions)
 
   function cardOpenInvestment(e: MouseEvent) {
     if (e.defaultPrevented) {
@@ -80,11 +78,11 @@
   }
 
   function editInvestment() {
-    goto(routes.EDIT_INVESTMENT(portfolio.client, portfolio.id, investment.id))
+    goto(routes.EDIT_INVESTMENT(clientId, portfolio.id, investment.id))
   }
 
-  async function deleteInvestment(investmentId: string) {
-    await adapters.deleteInvestment({ id: investmentId })
+  function deleteInvestment() {
+    investment.delete()
   }
 
   $effect(() => {
@@ -140,7 +138,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleFocus()
+          investment.toggleFocus()
         }}><CenterSquare size={16} /></Button
       >
     {/if}
@@ -151,7 +149,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleHide()
+          investment.toggleHide()
         }}><ViewOff size={16} /></Button
       >
     {:else}
@@ -161,12 +159,12 @@
             <OverflowMenuVertical size={20} />
           {/snippet}
           <List>
-            <ListItem onclick={toggleFocus}
+            <ListItem onclick={() => investment.toggleFocus()}
               ><CenterSquare size={24} />{focused
                 ? $_('component.investmentCard.removeFocus')
                 : $_('component.investmentCard.focusInChart')}</ListItem
             >
-            <ListItem onclick={toggleHide}
+            <ListItem onclick={() => investment.toggleHide()}
               ><ViewOff size={24} />{$_('component.investmentCard.hideInChart')}</ListItem
             >
             {#if !viewOnly}
@@ -175,13 +173,11 @@
                   'component.investmentCard.editInvestmentDetails',
                 )}</ListItem
               >
-              <ListItem
-                onclick={() => cascadeDuplicateInvestment(investment, investment.portfolio_id)}
+              <ListItem onclick={() => investment.duplicate()}
                 ><Copy size={24} />{$_('component.investmentCard.duplicateInvestment')}</ListItem
               >
               <ListItem
                 onclick={() => {
-                  selectedTransactionIdForDeletion = investment.id
                   showDeleteInvestmentModal = true
                 }}><TrashCan size={24} />{$_('component.investmentCard.deleteInvestment')}</ListItem
               >
@@ -251,16 +247,12 @@
 </div>
 
 <DeleteModal
-  confirm={async () => {
-    if (selectedTransactionIdForDeletion) {
-      await deleteInvestment(selectedTransactionIdForDeletion)
-      selectedTransactionIdForDeletion = undefined
-      showDeleteInvestmentModal = false
-    }
+  confirm={() => {
+    deleteInvestment()
+    showDeleteInvestmentModal = false
   }}
   oncancel={() => {
     showDeleteInvestmentModal = false
-    selectedTransactionIdForDeletion = undefined
   }}
   bind:open={showDeleteInvestmentModal}
   title={$_('component.editInvestment.deleteInvestmentWarningTitle')}

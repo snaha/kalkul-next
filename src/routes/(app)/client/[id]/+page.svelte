@@ -19,16 +19,11 @@
   import { goto } from '$app/navigation'
   import routes from '$lib/routes'
   import { page } from '$app/state'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import Dropdown from '$lib/components/ui/dropdown.svelte'
   import List from '$lib/components/ui/list/list.svelte'
   import ListItem from '$lib/components/ui/list/list-item.svelte'
   import DeleteModal from '$lib/components/delete-modal.svelte'
-  import { cascadeDuplicatePortfolio } from '$lib/cascade'
-  import { investmentStore } from '$lib/stores/investment.svelte'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
-  import adapters from '$lib/adapters'
   import { base } from '$app/paths'
   import { getCurrentPortfolioValue } from '$lib/@snaha/kalkul-maths'
   import {
@@ -44,16 +39,14 @@
   import { layoutStore } from '$lib/stores/layout.svelte'
 
   const clientId = page.params.id
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
-  const portfolios = $derived(
-    portfolioStore.data.filter((portfolio) => portfolio.client === clientId),
-  )
+  const client = $derived(appStore.findClient(clientId))
+  const portfolios = $derived(client?.portfolios ?? [])
   let showConfirmModal = $state(false)
   let portfolioToBeDeleted: string | undefined = $state()
   let showConfirmDeleteClientModal = $state(false)
 
   $effect(() => {
-    if (!clientStore.loading && !client) {
+    if (!appStore.loading && !client) {
       goto(routes.HOME)
     }
   })
@@ -67,24 +60,32 @@
     showConfirmModal = true
   }
 
-  async function deletePortfolio() {
+  function deletePortfolio() {
     if (!portfolioToBeDeleted) {
       return
     }
 
-    await adapters.deletePortfolio({ id: portfolioToBeDeleted })
+    client?.portfolios.find((p) => p.id === portfolioToBeDeleted)?.delete()
     portfolioToBeDeleted = undefined
     showConfirmModal = false
   }
 
-  async function deleteClient() {
-    await adapters.deleteClient({ id: clientId })
+  function deleteClient() {
+    client?.delete()
     goto(routes.HOME)
   }
 
   function portfolioValue(portfolioId: string): number {
-    const investments = investmentStore.filter(portfolioId)
-    return getCurrentPortfolioValue(transactionStore, investments)
+    const portfolio = client?.portfolios.find((p) => p.id === portfolioId)
+    if (!portfolio) return 0
+    return getCurrentPortfolioValue(
+      {
+        filter: (id: string) =>
+          [...portfolio.investments, ...portfolio.goals].find((i) => i.id === id)?.transactions ??
+          [],
+      },
+      portfolio.investments,
+    )
   }
 
   function portfolioPeriod(portfolio: Portfolio) {
@@ -140,7 +141,7 @@
       <ListItem onclick={() => goto(routes.CLIENT_EDIT_PORTFOLIO(clientId, portfolioId))}
         ><FolderDetails size={24} />{$_('page.portfolio.editPortfolioDetails')}</ListItem
       >
-      <ListItem onclick={() => cascadeDuplicatePortfolio(clientId, portfolioId)}
+      <ListItem onclick={() => client?.portfolios.find((p) => p.id === portfolioId)?.duplicate()}
         ><Copy size={24} />{$_('page.portfolio.duplicatePortfolio')}</ListItem
       >
       <ListItem onclick={() => confirmDeletePortfolio(portfolioId)}
@@ -174,7 +175,7 @@
       {@render clientDropdown()}
     </section>
     {#if client}
-      {#if portfolioStore.loading}
+      {#if appStore.loading}
         <Typography>{$_('common.loading')}</Typography><Loader />
       {:else if portfolios.length === 0}
         <section class="empty">

@@ -1,5 +1,10 @@
 <script lang="ts">
-  import type { InvestmentWithColorIndex, Portfolio, Transaction, Goal } from '$lib/types'
+  import type {
+    InvestmentStore,
+    TransactionStore,
+    InvestmentWithColorIndex,
+    PortfolioNested,
+  } from '$lib/types'
   import {
     Add,
     ArrowRight,
@@ -25,33 +30,27 @@
   import TransactionCard from '$lib/components/transaction-card.svelte'
   import Divider from '$lib/components/ui/divider.svelte'
   import { base } from '$app/paths'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
   import Badge from '$lib/components/ui/badge.svelte'
   import Loader from '$lib/components/ui/loader.svelte'
   import DeleteModal from '$lib/components/delete-modal.svelte'
-  import adapter from '$lib/adapters'
   import { SERIES_COLORS } from '$lib/colors'
   import InvestmentColorBox from './investment-color-box.svelte'
   import { type ExhaustionWarning } from '$lib/@snaha/kalkul-maths'
   import { goto } from '$app/navigation'
 
   type Props = {
-    investment: InvestmentWithColorIndex
-    portfolio: Portfolio
+    investment: InvestmentWithColorIndex & InvestmentStore
+    portfolio: PortfolioNested
     viewOnly?: boolean
     index: number
-    hidden: boolean
-    focused: boolean
     showInflation?: boolean
-    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: Transaction) => void
+    openTransaction?: (investment: InvestmentWithColorIndex, transaction?: TransactionStore) => void
     addInvestment?: () => void
-    toggleHide: () => void
-    toggleFocus: () => void
     open?: boolean
     exhaustionWarning?: ExhaustionWarning
     isCalculating?: boolean
-    transactions?: Transaction[]
-    goal: Goal
+    transactions?: TransactionStore[]
+    goal: InvestmentStore
     showExplainInvestmentsLabel: boolean
   }
 
@@ -60,13 +59,9 @@
     portfolio,
     viewOnly = false,
     index,
-    hidden,
-    focused,
     showInflation = false,
     openTransaction,
     addInvestment,
-    toggleHide,
-    toggleFocus,
     open = $bindable(false),
     exhaustionWarning,
     isCalculating = false,
@@ -75,12 +70,14 @@
     showExplainInvestmentsLabel,
   }: Props = $props()
 
+  const hidden = $derived(investment.hidden)
+  const focused = $derived(investment.focused)
+
   let transactionsOpen = $state(true)
   let linkedInvestmentsOpen = $state(true)
   let showDeleteGoalModal = $state(false)
-  let selectedGoalIdForDeletion = $state<string | undefined>(undefined)
 
-  const transactions = $derived(providedTransactions ?? transactionStore.filter(investment.id))
+  const transactions = $derived(providedTransactions ?? investment.transactions)
   // Linked investments will be implemented in Task 5
   const linkedInvestments = $derived<
     { investment?: InvestmentWithColorIndex; percentage: number }[]
@@ -103,8 +100,8 @@
     alert($_('demo.notImplemented'))
   }
 
-  async function deleteGoal(goalId: string) {
-    await adapter.deleteInvestment({ id: goalId })
+  function deleteGoal() {
+    investment.delete()
   }
 
   $effect(() => {
@@ -161,7 +158,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleFocus()
+          investment.toggleFocus()
         }}><CenterSquare size={16} /></Button
       >
     {/if}
@@ -172,7 +169,7 @@
         dimension="compact"
         onclick={(e: Event) => {
           e.preventDefault()
-          toggleHide()
+          investment.toggleHide()
         }}><ViewOff size={16} /></Button
       >
     {:else}
@@ -182,12 +179,12 @@
             <OverflowMenuVertical size={20} />
           {/snippet}
           <List>
-            <ListItem onclick={notImplemented}
+            <ListItem onclick={() => investment.toggleFocus()}
               ><CenterSquare size={24} />{focused
                 ? $_('component.goalCard.removeFocus')
                 : $_('component.goalCard.focusInChart')}</ListItem
             >
-            <ListItem onclick={notImplemented}
+            <ListItem onclick={() => investment.toggleHide()}
               ><ViewOff size={24} />{$_('component.goalCard.hideInChart')}</ListItem
             >
             {#if !viewOnly}
@@ -199,7 +196,6 @@
               >
               <ListItem
                 onclick={() => {
-                  selectedGoalIdForDeletion = investment.id
                   showDeleteGoalModal = true
                 }}><TrashCan size={24} />{$_('component.goalCard.deleteGoal')}</ListItem
               >
@@ -376,16 +372,12 @@
 </div>
 
 <DeleteModal
-  confirm={async () => {
-    if (selectedGoalIdForDeletion) {
-      await deleteGoal(selectedGoalIdForDeletion)
-      selectedGoalIdForDeletion = undefined
-      showDeleteGoalModal = false
-    }
+  confirm={() => {
+    deleteGoal()
+    showDeleteGoalModal = false
   }}
   oncancel={() => {
     showDeleteGoalModal = false
-    selectedGoalIdForDeletion = undefined
   }}
   bind:open={showDeleteGoalModal}
   title={$_('component.goalCard.deleteGoalWarningTitle')}

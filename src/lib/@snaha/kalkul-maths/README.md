@@ -129,8 +129,8 @@ import { getGraphData, getGraphDataForPortfolio } from '@snaha/kalkul-maths'
 // Single investment graph data
 const graphData = getGraphData(baseData, investment, portfolio)
 
-// Portfolio-wide graph data
-const { total, data } = getGraphDataForPortfolio(transactionStore, investments, portfolio)
+// Portfolio-wide graph data (portfolio includes nested investments)
+const { total, data } = getGraphDataForPortfolio(portfolio)
 ```
 
 ## Investment Configuration
@@ -246,15 +246,28 @@ console.log('Monthly portfolio values:', investmentValues)
 ```typescript
 import { getCurrentPortfolioValue } from '@snaha/kalkul-maths'
 
-// Mock transaction store
-const transactionStore = {
-  filter: (investmentId: number) => transactions.filter((t) => t.investment_id === investmentId),
-}
-
+// Investments with nested transactions
 const investments = [
-  { id: 1, apy: 8 /* ... */ },
-  { id: 2, apy: 6 /* ... */ },
+  {
+    id: 1,
+    apy: 8,
+    transactions: [
+      /* ... */
+    ],
+  },
+  {
+    id: 2,
+    apy: 6,
+    transactions: [
+      /* ... */
+    ],
+  },
 ]
+
+const transactionStore = {
+  filter: (investmentId: string) =>
+    investments.find((i) => i.id === investmentId)?.transactions ?? [],
+}
 
 const totalPortfolioValue = getCurrentPortfolioValue(transactionStore, investments)
 console.log(`Total portfolio value: ${totalPortfolioValue}`)

@@ -8,7 +8,6 @@
   import Button from './ui/button.svelte'
   import { Maximize, SettingsView } from 'carbon-icons-svelte'
   import Checkbox from './ui/checkbox.svelte'
-  import type { InvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import Toggle from './ui/toggle.svelte'
   import Badge from './ui/badge.svelte'
   import FullscreenGraph from './graph-fullscreen.svelte'
@@ -39,7 +38,6 @@
       progress?: number
     }
     title?: string
-    investmentsViewStore: InvestmentsViewStore
     fullscreen: () => void
     isGraphFullscreened: boolean
     fullscreenGraph?: FullscreenGraphType
@@ -56,7 +54,6 @@
     portfolio,
     simulationData,
     adjustWithInflation = $bindable(),
-    investmentsViewStore,
     fullscreen,
     isGraphFullscreened,
     fullscreenGraph = $bindable(undefined),
@@ -91,7 +88,6 @@
     deriveGraphValueData({
       investments,
       portfolio,
-      investmentsViewStore,
       data,
       total,
       lowColor,
@@ -103,7 +99,6 @@
       data,
       total,
       investments,
-      investmentsViewStore,
       lowColor,
       baseColor,
     }),
@@ -317,7 +312,6 @@
             {total}
             {investments}
             {adjustWithInflation}
-            {investmentsViewStore}
             bind:selectedIndex
             {lowColor}
             {baseColor}
@@ -367,7 +361,6 @@
               {total}
               {investments}
               {adjustWithInflation}
-              {investmentsViewStore}
               bind:selectedIndex
               {lowColor}
               {baseColor}
@@ -442,20 +435,13 @@
         </Horizontal>
         <Horizontal class="wrap">
           {#each investments as investment}
-            <Button
-              variant="ghost"
-              dimension="small"
-              onclick={() => investmentsViewStore.toggleHide(investment.id)}
-            >
+            <Button variant="ghost" dimension="small" onclick={() => investment.toggleHide?.()}>
               <Horizontal --horizontal-gap="var(--quarter-padding)">
                 <InvestmentColorBox
                   width="24px"
                   height="16px"
                   colorIndex={investment.colorIndex ?? 0}
-                /><Typography
-                  variant="small"
-                  nowrap
-                  lineThrough={investmentsViewStore.isHidden(investment.id)}
+                /><Typography variant="small" nowrap lineThrough={investment.hidden ?? false}
                   >{investment.name}</Typography
                 >
               </Horizontal>

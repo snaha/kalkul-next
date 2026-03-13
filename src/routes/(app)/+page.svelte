@@ -16,30 +16,23 @@
   import Loader from '$lib/components/ui/loader.svelte'
   import { goto } from '$app/navigation'
   import routes from '$lib/routes'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import Header from '$lib/components/header.svelte'
   import Dropdown from '$lib/components/ui/dropdown.svelte'
   import List from '$lib/components/ui/list/list.svelte'
   import ListItem from '$lib/components/ui/list/list-item.svelte'
-  import adapter from '$lib/adapters'
   import DeleteModal from '$lib/components/delete-modal.svelte'
   import { base } from '$app/paths'
   import DesktopOnly from '$lib/components/desktop-only.svelte'
   import MobileOnly from '$lib/components/mobile-only.svelte'
   import Vertical from '$lib/components/ui/vertical.svelte'
-  import { investmentStore } from '$lib/stores/investment.svelte'
   import Horizontal from '$lib/components/ui/horizontal.svelte'
   import ContentLayout from '$lib/components/content-layout.svelte'
 
   let showConfirmModal = $state(false)
   let clientToBeDeleted: string | undefined = $state()
   let searchQuery = $state('')
-  let filteredClient = $derived(
-    searchByName(searchQuery).toSorted(
-      (a, b) => new Date(a.created_at).getDate() - new Date(b.created_at).getDate(),
-    ),
-  )
+  let filteredClient = $derived(searchByName(searchQuery))
   function addClient() {
     goto(routes.NEW_CLIENT)
   }
@@ -49,20 +42,20 @@
     clientToBeDeleted = clientId
   }
 
-  async function deleteClient() {
+  function deleteClient() {
     if (clientToBeDeleted) {
-      await adapter.deleteClient({ id: clientToBeDeleted })
+      appStore.clients.find((c) => c.id === clientToBeDeleted)?.delete()
       clientToBeDeleted = undefined
       showConfirmModal = false
     }
   }
   function searchByName(searchQuery: string) {
     if (searchQuery) {
-      return clientStore.data.filter((client) =>
+      return appStore.clients.filter((client) =>
         client.name.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     } else {
-      return clientStore.data
+      return appStore.clients
     }
   }
 </script>
@@ -89,9 +82,9 @@
 <Header />
 
 <ContentLayout centered={false}>
-  {#if clientStore.loading}
+  {#if appStore.loading}
     <Typography>{$_('common.loading')}</Typography><Loader />
-  {:else if clientStore.data.length === 0}
+  {:else if appStore.clients.length === 0}
     <section class="empty">
       <img src={`${base}/images/no-client.svg`} alt={$_('common.noClientYet')} />
       <Typography variant="h4">{$_('page.home.noClientsYet')}</Typography>
@@ -128,7 +121,7 @@
         </li>
         {#each filteredClient as client}
           {@const birtDate = new Date(client.birth_date)}
-          {@const portfolioIds = portfolioStore.filter(client.id).map((portfolio) => portfolio.id)}
+          {@const portfolios = client.portfolios}
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <li
@@ -148,11 +141,8 @@
             >
             <span>{formatDate(new Date(client.birth_date))}</span>
             <span class="right-aligned">{formatAge(birtDate)}</span>
-            <span class="right-aligned">{portfolioIds.length}</span>
-            <span class="right-aligned"
-              >{portfolioIds.flatMap((portfolioId) => investmentStore.filter(portfolioId))
-                .length}</span
-            >
+            <span class="right-aligned">{portfolios.length}</span>
+            <span class="right-aligned">{portfolios.flatMap((p) => p.investments).length}</span>
             <span class="right-aligned">{@render clientDropdown(client.id)}</span>
           </li>
         {/each}

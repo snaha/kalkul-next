@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
+  import { onMount } from 'svelte'
   import '../app.pcss'
-  import adapter from '$lib/adapters'
+  import { appStore } from '$lib/stores/app.svelte'
   import { locale, locales } from 'svelte-i18n'
   import { get } from 'svelte/store'
   import { browser } from '$app/environment'
@@ -28,11 +28,7 @@
   })
 
   onMount(() => {
-    adapter.start()
-  })
-
-  onDestroy(() => {
-    adapter.stop()
+    appStore.load()
   })
 </script>
 

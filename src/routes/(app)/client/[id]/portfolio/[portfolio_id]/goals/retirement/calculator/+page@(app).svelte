@@ -2,8 +2,7 @@
   import RetirementCalculator from '$lib/components/goals-retirement-calculator.svelte'
   import Fullscreen from '$lib/components/fullscreen.svelte'
   import { page } from '$app/state'
-  import { clientStore } from '$lib/stores/clients.svelte'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import { goto } from '$app/navigation'
   import routes from '$lib/routes'
   import { goalCalculatorStore } from '$lib/stores/goal-calculator.svelte'
@@ -12,9 +11,9 @@
   import type { RetirementGoalData } from '$lib/types'
 
   const clientId = $derived(page.params.id)
-  const client = $derived(clientStore.data.find((c) => c.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(portfolioStore.data.find((p) => p.id === portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   // Convert goalData to calculationInput for the calculator component
   const initialData = $derived(

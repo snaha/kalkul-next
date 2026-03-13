@@ -7,9 +7,10 @@
   import Typography from '$lib/components/ui/typography.svelte'
   import {
     type Client,
+    type InvestmentStore,
+    type TransactionStore,
     type InvestmentWithColorIndex,
     type Portfolio,
-    type Transaction,
   } from '$lib/types'
   import {
     type Period,
@@ -17,7 +18,6 @@
     calculateTotalDisplayAmount,
     type Transaction as MathTransaction,
   } from '$lib/@snaha/kalkul-maths'
-  import adapter from '$lib/adapters'
   import Select from '$lib/components/ui/select/select.svelte'
   import { capitalizeFirstLetter, formatCurrency } from '$lib/utils'
   import {
@@ -37,10 +37,10 @@
   import LoaderButton from './loader-button.svelte'
 
   type Props = {
-    investment: InvestmentWithColorIndex
+    investment: InvestmentWithColorIndex & InvestmentStore
     portfolio: Portfolio
     client: Client
-    transaction?: Transaction
+    transaction?: TransactionStore
     showInflation?: boolean
     close: () => void
   }
@@ -76,9 +76,9 @@
       type: transactionType,
       date: formatDate(date),
       inflation_adjusted: inflationAdjusted,
-      end_date: isRecurring ? formatDate(endDate) : null,
-      repeat: isRecurring ? repeat : null,
-      repeat_unit: isRecurring ? repeatUnit : null,
+      end_date: isRecurring ? formatDate(endDate) : undefined,
+      repeat: isRecurring ? repeat : undefined,
+      repeat_unit: isRecurring ? repeatUnit : undefined,
     }
 
     return calculateTotalDisplayAmount(
@@ -104,7 +104,7 @@
       amount = transaction.amount
       date = new Date(transaction.date)
       inflationAdjusted = transaction.inflation_adjusted ?? false
-      isRecurring = transaction.end_date !== null
+      isRecurring = transaction.end_date !== undefined
       repeat = transaction.repeat ? transaction.repeat : 1
       repeatUnit = transactionRepeatUnit(transaction)
       endDate = transaction.end_date ? new Date(transaction.end_date) : new Date()
@@ -113,52 +113,49 @@
     }
   })
 
-  async function createTransaction() {
+  function createTransaction() {
     if (amount === undefined || amount <= 0) {
       return
     }
 
-    await adapter.addTransaction({
-      investment_id: investment.id,
+    investment.addTransaction({
       type: transactionType,
       amount,
       label,
       date: formatDate(date),
       inflation_adjusted: inflationAdjusted,
-      repeat: isRecurring ? repeat : null,
-      repeat_unit: isRecurring ? repeatUnit : null,
-      end_date: isRecurring ? formatDate(endDate) : null,
+      repeat: isRecurring ? repeat : undefined,
+      repeat_unit: isRecurring ? repeatUnit : undefined,
+      end_date: isRecurring ? formatDate(endDate) : undefined,
     })
     close()
   }
 
-  async function editTransaction() {
+  function editTransaction() {
     if (!transaction || amount === undefined || amount <= 0) {
       return
     }
 
-    await adapter.updateTransaction({
-      id: transaction.id,
-      investment_id: investment.id,
+    transaction.update({
       type: transactionType,
       amount,
       label,
       date: formatDate(date),
       inflation_adjusted: inflationAdjusted,
-      repeat: isRecurring ? repeat : null,
-      repeat_unit: isRecurring ? repeatUnit : null,
-      end_date: isRecurring ? formatDate(endDate) : null,
+      repeat: isRecurring ? repeat : undefined,
+      repeat_unit: isRecurring ? repeatUnit : undefined,
+      end_date: isRecurring ? formatDate(endDate) : undefined,
     })
     close()
   }
 
-  async function deleteTransaction() {
+  function deleteTransaction() {
     if (!transaction) {
       return
     }
 
     if (confirm($_('component.editTransaction.deleteConfirmWarning'))) {
-      await adapter.deleteTransaction(transaction)
+      transaction.delete()
       close()
     }
   }

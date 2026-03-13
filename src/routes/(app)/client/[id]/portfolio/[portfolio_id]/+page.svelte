@@ -5,16 +5,13 @@
   import Loader from '$lib/components/ui/loader.svelte'
   import routes from '$lib/routes'
   import { page } from '$app/state'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
   import { goto } from '$app/navigation'
-  import { investmentStore } from '$lib/stores/investment.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import PortfolioHeader from '$lib/components/portfolio-header.svelte'
   import PortfolioGraph from '$lib/components/graph-portfolio.svelte'
   import Typography from '$lib/components/ui/typography.svelte'
-  import { transactionStore } from '$lib/stores/transaction.svelte'
-  import { withInvestmentsViewStore } from '$lib/stores/investments-view.svelte'
   import { base } from '$app/paths'
+  import type { PortfolioNested } from '$lib/types'
   import { layoutStore } from '$lib/stores/layout.svelte'
   import MobileOnly from '$lib/components/mobile-only.svelte'
   import DesktopOnly from '$lib/components/desktop-only.svelte'
@@ -24,62 +21,43 @@
   import { withPortfolioSimulationStore } from '$lib/stores/portfolio-simulation.svelte'
 
   const clientId = $derived(page.params.id)
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
   let selectedTab = $state<'goals' | 'investments'>('goals')
-
-  // Filter goals and regular investments using store methods
-  const goals = $derived(investmentStore.filterGoals(portfolioId))
-  const regularInvestments = $derived(investmentStore.filterRegularInvestments(portfolioId))
 
   // Separate simulations for goals and investments to avoid recalculation on tab switch
   const goalsSimulation = withPortfolioSimulationStore()
   const investmentsSimulation = withPortfolioSimulationStore()
 
-  // Get transactions for goals and investments separately
-  const goalIds = $derived(goals.map((goal) => goal.id))
-  const goalTransactions = $derived(
-    transactionStore.data.filter((transaction) => goalIds.includes(transaction.investment_id)),
-  )
-
-  const investmentIds = $derived(regularInvestments.map((investment) => investment.id))
-  const investmentTransactions = $derived(
-    transactionStore.data.filter((transaction) =>
-      investmentIds.includes(transaction.investment_id),
-    ),
-  )
-
   // Calculate goals data when goals change
   $effect(() => {
-    // Explicitly reference dependencies to ensure Svelte tracks them
-    const currentGoals = goals
-    const currentTransactions = goalTransactions
-
-    if (portfolio && !isLoading) {
+    void appStore.dataVersion // track any data mutation
+    const p = portfolio
+    if (p && !appStore.loading) {
+      const goalsPortfolio: PortfolioNested = { ...p, investments: p.goals, goals: [] }
       setTimeout(() => {
-        goalsSimulation.calculateIteratively(portfolio, currentGoals, currentTransactions)
+        goalsSimulation.calculateIteratively(goalsPortfolio)
       }, 0)
     }
   })
 
   // Calculate investments data when investments change
   $effect(() => {
-    // Explicitly reference dependencies to ensure Svelte tracks them
-    const currentInvestments = regularInvestments
-    const currentTransactions = investmentTransactions
-
-    if (portfolio && !isLoading) {
+    void appStore.dataVersion // track any data mutation
+    const p = portfolio
+    if (p && !appStore.loading) {
+      const investmentsPortfolio: PortfolioNested = { ...p, investments: p.investments, goals: [] }
       setTimeout(() => {
-        investmentsSimulation.calculateIteratively(
-          portfolio,
-          currentInvestments,
-          currentTransactions,
-        )
+        investmentsSimulation.calculateIteratively(investmentsPortfolio)
       }, 0)
     }
   })
+
+  // Goals and investments come directly from the portfolio
+  const goals = $derived(portfolio?.goals ?? [])
+  const regularInvestments = $derived(portfolio?.investments ?? [])
 
   // Switch between goal and investment data based on selected tab
   const investments = $derived(selectedTab === 'goals' ? goals : regularInvestments)
@@ -88,20 +66,13 @@
     selectedTab === 'goals' ? goalsSimulation.simulationData : investmentsSimulation.simulationData,
   )
 
-  const transactions = $derived(selectedTab === 'goals' ? goalTransactions : investmentTransactions)
+  const transactionCount = $derived(
+    investments.reduce((sum, inv) => sum + inv.transactions.length, 0),
+  )
 
   const hasAnyInvestments = $derived(goals.length > 0 || regularInvestments.length > 0)
 
-  const investmentsViewStore = $derived(
-    withInvestmentsViewStore(investmentStore.filter(portfolioId)),
-  )
-
-  const isLoading = $derived(
-    clientStore.loading ||
-      portfolioStore.loading ||
-      investmentStore.loading ||
-      transactionStore.loading,
-  )
+  const isLoading = $derived(appStore.loading)
 
   let adjustWithInflation = $state(false)
   let isGraphFullscreened = $state(false)
@@ -113,10 +84,6 @@
   let isShareMenuOpen = $state(false)
   const isPortfolioMenuOpen = $derived(isMenuOpen || isShareMenuOpen)
   let parentContainer: HTMLElement | undefined = $state()
-
-  $effect(() => {
-    investmentsViewStore.allInvestments = investments
-  })
 
   $effect(() => {
     if (!isGraphFullscreened) isSidebarOpen = true
@@ -215,11 +182,10 @@
             {isGraphFullscreened}
             {isSidebarFlexible}
             bind:isSidebarOpen
-            {investmentsViewStore}
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
-            transactionCount={transactions.length}
+            {transactionCount}
             {clientId}
             {portfolioId}
           />
@@ -237,8 +203,7 @@
           {investments}
           simulationData={graphData}
           bind:adjustWithInflation
-          {investmentsViewStore}
-          isEmpty={transactions.length === 0}
+          isEmpty={transactionCount === 0}
           clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
           {sidebarButton}
           disableInteraction={graphData.isCalculating}
@@ -278,7 +243,6 @@
             {investments}
             simulationData={graphData}
             bind:adjustWithInflation
-            {investmentsViewStore}
             isEmpty={false}
             clientBirthDate={client?.birth_date ? new Date(client.birth_date) : undefined}
             disableInteraction={true}
@@ -291,11 +255,10 @@
             {isGraphFullscreened}
             {isSidebarFlexible}
             bind:isSidebarOpen
-            {investmentsViewStore}
             {graphData}
             {adjustWithInflation}
             bind:selectedTab
-            transactionCount={transactions.length}
+            {transactionCount}
             {clientId}
             {portfolioId}
             {parentContainer}

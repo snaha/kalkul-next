@@ -1,8 +1,7 @@
 <script lang="ts">
   import { page } from '$app/state'
   import { goto } from '$app/navigation'
-  import { portfolioStore } from '$lib/stores/portfolio.svelte'
-  import { clientStore } from '$lib/stores/clients.svelte'
+  import { appStore } from '$lib/stores/app.svelte'
   import routes from '$lib/routes'
   import { _ } from 'svelte-i18n'
   import { AddLarge, Close, DocumentExport, TrashCan } from 'carbon-icons-svelte'
@@ -18,11 +17,11 @@
   import { addYears } from 'date-fns'
 
   const clientId = $derived(page.params.id)
-  const client = $derived(clientStore.data.find((client) => client.id === clientId))
+  const client = $derived(appStore.findClient(clientId))
   const portfolioId = $derived(page.params.portfolio_id)
-  const portfolio = $derived(portfolioStore.data.find((portfolio) => portfolio.id === portfolioId))
+  const portfolio = $derived(client?.portfolios.find((p) => p.id === portfolioId))
 
-  let isLoading = $derived(clientStore.loading || portfolioStore.loading)
+  let isLoading = $derived(appStore.loading)
 
   let includeBreakdown = $state(false)
   let breakdownKeyDates: Date[] = $state([])
