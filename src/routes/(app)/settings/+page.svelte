@@ -7,7 +7,7 @@
   import { _, locale } from 'svelte-i18n'
   import { goto } from '$app/navigation'
   import { appStore } from '$lib/stores/app.svelte'
-  import { LOCALE_STORAGE_KEY } from '$lib/locales'
+  import { defaultLocale, LOCALE_STORAGE_KEY } from '$lib/locales'
   import Header from '$lib/components/header.svelte'
   import ContentLayout from '$lib/components/content-layout.svelte'
   import LoaderButton from '$lib/components/loader-button.svelte'
@@ -25,7 +25,7 @@
     }
   }
 
-  let selectedLocale = $state($locale ?? 'cs')
+  let selectedLocale = $state($locale ?? defaultLocale)
 
   $effect(() => {
     if (selectedLocale && selectedLocale !== $locale) {
