@@ -1,35 +1,35 @@
 import { SvelteSet } from 'svelte/reactivity'
 import type { ClientNested, ClientNoId, ClientStore } from '$lib/types'
-import { clientNestedSchema } from '$lib/schemas'
+import { clientNestedSchema, storedDataSchema, type StoredData } from '$lib/schemas'
 import { withClientStore } from './client.svelte'
 
 const STORAGE_KEY = 'kalkul-data'
 
-function loadData(): ClientNested[] {
+function loadData(): StoredData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
-      const parsed: unknown = JSON.parse(raw)
-      return clientNestedSchema.array().parse(parsed)
+      return storedDataSchema.parse(JSON.parse(raw))
     }
   } catch (e) {
     console.error('Failed to load data from localStorage', e)
   }
-  return []
+  return { lastUpdated: 0, clients: [] }
 }
 
 function withAppStore() {
   let clients = $state.raw<ClientStore[]>([])
   let loading = $state(true)
-  let dataVersion = $state(0)
+  let lastUpdated = $state(0)
   const hiddenInvestmentIds = new SvelteSet<string>()
 
   function persist(): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clients))
+    lastUpdated = Date.now()
+    const stored: StoredData = { lastUpdated, clients }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored))
     // Trigger reactivity: $state.raw only signals on reassignment, so create
     // a new array reference after every mutation.
     clients = [...clients]
-    dataVersion++
   }
 
   function deleteClient(id: string): void {
@@ -50,8 +50,8 @@ function withAppStore() {
   }
 
   return {
-    get dataVersion() {
-      return dataVersion
+    get lastUpdated() {
+      return lastUpdated
     },
     get clients() {
       return clients
@@ -80,8 +80,29 @@ function withAppStore() {
     // --- Load ---
 
     load(): void {
-      clients = enrichAll(loadData())
+      const data = loadData()
+      clients = enrichAll(data.clients)
+      lastUpdated = data.lastUpdated
       loading = false
+    },
+
+    startSync(): () => void {
+      function onStorage(event: StorageEvent): void {
+        if (event.key !== STORAGE_KEY || !event.newValue) return
+
+        try {
+          const data = storedDataSchema.parse(JSON.parse(event.newValue))
+          if (data.lastUpdated === lastUpdated) return
+
+          clients = enrichAll(data.clients)
+          lastUpdated = data.lastUpdated
+        } catch {
+          // Ignore malformed data from other tabs
+        }
+      }
+
+      window.addEventListener('storage', onStorage)
+      return () => window.removeEventListener('storage', onStorage)
     },
 
     // --- Finders ---

@@ -76,6 +76,11 @@ export const clientNestedSchema = clientSchema.extend({
   portfolios: z.array(portfolioNestedSchema),
 })
 
+export const storedDataSchema = z.object({
+  lastUpdated: z.number(),
+  clients: z.array(clientNestedSchema),
+})
+
 export const periodicWithdrawalGoalDataSchema = z.object({
   depositStart: z.string(),
   depositPeriod: z.enum(['month', 'year']),
@@ -113,6 +118,7 @@ export type Transaction = z.infer<typeof transactionSchema>
 export type InvestmentNested = z.infer<typeof investmentNestedSchema>
 export type PortfolioNested = z.infer<typeof portfolioNestedSchema>
 export type ClientNested = z.infer<typeof clientNestedSchema>
+export type StoredData = z.infer<typeof storedDataSchema>
 export type PeriodicWithdrawalGoalData = z.infer<typeof periodicWithdrawalGoalDataSchema>
 export type RetirementGoalData = z.infer<typeof retirementGoalDataSchema>
 export type EducationGoalData = z.infer<typeof educationGoalDataSchema>
