@@ -7,7 +7,7 @@
   import { _, locale } from 'svelte-i18n'
   import { goto } from '$app/navigation'
   import { appStore } from '$lib/stores/app.svelte'
-  import { LOCALE_STORAGE_KEY } from '$lib/locales'
+  import { defaultLocale, LOCALE_STORAGE_KEY } from '$lib/locales'
   import Header from '$lib/components/header.svelte'
   import ContentLayout from '$lib/components/content-layout.svelte'
   import LoaderButton from '$lib/components/loader-button.svelte'
@@ -25,10 +25,14 @@
     }
   }
 
-  function changeLanguage(newLocale: string) {
-    locale.set(newLocale)
-    localStorage.setItem(LOCALE_STORAGE_KEY, newLocale)
-  }
+  let selectedLocale = $state($locale ?? defaultLocale)
+
+  $effect(() => {
+    if (selectedLocale && selectedLocale !== $locale) {
+      locale.set(selectedLocale)
+      localStorage.setItem(LOCALE_STORAGE_KEY, selectedLocale)
+    }
+  })
 
   function exportBackup() {
     const data = appStore.exportBackup()
@@ -80,8 +84,7 @@
       <Select
         variant="solid"
         dimension="compact"
-        value={$locale ?? 'cs'}
-        onchange={(e) => changeLanguage(e.currentTarget.value)}
+        bind:value={selectedLocale}
         items={[
           { value: 'cs', label: 'Čeština' },
           { value: 'en', label: 'English' },
