@@ -33,7 +33,7 @@
 
   // Calculate goals data when goals change
   $effect(() => {
-    void appStore.dataVersion // track any data mutation
+    void appStore.lastUpdated // track any data mutation
     const p = portfolio
     if (p && !appStore.loading) {
       const goalsPortfolio: PortfolioNested = { ...p, investments: p.goals, goals: [] }
@@ -45,7 +45,7 @@
 
   // Calculate investments data when investments change
   $effect(() => {
-    void appStore.dataVersion // track any data mutation
+    void appStore.lastUpdated // track any data mutation
     const p = portfolio
     if (p && !appStore.loading) {
       const investmentsPortfolio: PortfolioNested = { ...p, investments: p.investments, goals: [] }

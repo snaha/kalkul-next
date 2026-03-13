@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import '../app.pcss'
   import { appStore } from '$lib/stores/app.svelte'
   import { locale, locales } from 'svelte-i18n'
@@ -27,8 +27,15 @@
     }
   })
 
+  let cleanupSync: (() => void) | undefined
+
   onMount(() => {
     appStore.load()
+    cleanupSync = appStore.startSync()
+  })
+
+  onDestroy(() => {
+    cleanupSync?.()
   })
 </script>
 
