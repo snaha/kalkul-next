@@ -1,6 +1,6 @@
 <script lang="ts">
   import DeleteModal from './delete-modal.svelte'
-  import { Close, DocumentImport, InformationFilled } from 'carbon-icons-svelte'
+  import { Close } from 'carbon-icons-svelte'
   import { _ } from 'svelte-i18n'
   import Button from '$lib/components/ui/button.svelte'
   import Input from '$lib/components/ui/input/input.svelte'
@@ -17,7 +17,6 @@
   import Toggle from './ui/toggle.svelte'
   import Vertical from './ui/vertical.svelte'
   import Horizontal from './ui/horizontal.svelte'
-  import ImportInvestmentModal from './import-investment-modal.svelte'
   import HelperTooltip from './helper-tooltip.svelte'
   import ResponsiveLayout from './ui/responsive-layout.svelte'
   import { layoutStore } from '$lib/stores/layout.svelte'
@@ -53,8 +52,6 @@
   let showConfirmModal = $state(false)
 
   let advancedFees = $state(false)
-  let isImportInvestmentModalOpen = $state(false)
-
   let showTERHelper = $state(false)
   let showEntryFeeHelper = $state(false)
   let showExitFeeHelper = $state(false)
@@ -158,13 +155,6 @@
   }
 </script>
 
-{#snippet APYError()}
-  <Horizontal --horizontal-gap="var(--half-padding)">
-    <InformationFilled size={24} />
-    {$_('component.editInvestment.noImportDataFound')}
-  </Horizontal>
-{/snippet}
-
 <Vertical class="max-width-560" --vertical-gap="var(--double-padding)">
   <Horizontal>
     {#if formType === 'create'}
@@ -176,17 +166,7 @@
     <Button variant="ghost" dimension="compact" onclick={close}><Close size={20} /></Button>
   </Horizontal>
   <Vertical --vertical-gap="var(--padding)">
-    <Horizontal --horizontal-justify-content="space-between">
-      <Typography variant="h5">{$_('common.details')}</Typography>
-      <Button
-        dimension="compact"
-        variant="ghost"
-        onclick={() => (isImportInvestmentModalOpen = true)}
-      >
-        <DocumentImport size={24} />
-        {$_('common.importData')}
-      </Button>
-    </Horizontal>
+    <Typography variant="h5">{$_('common.details')}</Typography>
     <section class="horizontal half-gap">
       <Input
         dimension="compact"
@@ -206,7 +186,6 @@
         type="number"
         step={0.001}
         min={0}
-        error={apy === undefined ? APYError : undefined}
         class="grower"
       ></Input>
     </section>
@@ -379,15 +358,6 @@
   bind:open={showConfirmModal}
   title={$_('component.editInvestment.deleteInvestmentWarningTitle')}
   text={$_('component.editInvestment.deleteInvestmentWarning')}
-/>
-
-<ImportInvestmentModal
-  oncancel={() => (isImportInvestmentModalOpen = false)}
-  bind:open={isImportInvestmentModalOpen}
-  bind:name
-  bind:type
-  bind:apy
-  currency={portfolio.currency}
 />
 
 <style>
